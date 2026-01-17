@@ -55,6 +55,10 @@
 .auth-header {
     font-family: var(--font-google-sans), sans-serif;
     color: black;
-    font-size: 40px;
-    margin-top: 202px;
+    font-size: 50px;
+    margin-top: 210px;
+}
+
+.auth-paragraph {
+    color: rgb(90, 90, 90);
 }

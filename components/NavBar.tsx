@@ -11,6 +11,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function NavBar() {
     const { user, setUser, loading } = useUser();
@@ -27,8 +28,8 @@ export default function NavBar() {
 
     if (loading) {
         return (
-            <header className="header">
-                <nav className="nav" style={{ height: 64 }}></nav>
+            <header className="navBar flex justify-center items-center h-16">
+                <CircularProgress />
             </header>
         );
     }

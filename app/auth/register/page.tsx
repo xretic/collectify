@@ -65,7 +65,6 @@ export default function RegisterPage() {
             setErrorMsg('Network error. Please try again.');
         }
     };
-
     return (
         <Box
             className="auth-page"

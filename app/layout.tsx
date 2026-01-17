@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import NavBar from '@/components/NavBar';
 import localFont from 'next/font/local';
 import './globals.css';
-import { UserProvider } from '@/context/UserProvider';
+import { UserProvider, useUser } from '@/context/UserProvider';
 
 const googleSans = localFont({
     src: [
