@@ -23,6 +23,7 @@
     padding-left: 3px;
     font-family: var(--font-google-sans), sans-serif;
     margin: 2;
+    margin-top: 3px;
 }
 
 .navBarIcon {
@@ -37,7 +38,18 @@
 .authPanel {
     position: absolute;
     right: 10px;
-    bottom: calc(0px + 6px);
+    bottom: calc(0px + 4px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.authPanel:hover {
+    background-color: #f3f4f6;
 }
 
 .auth-header {
@@ -45,10 +57,4 @@
     color: black;
     font-size: 40px;
     margin-top: 202px;
-}
-
-.userNavbarProfile {
-    position: absolute;
-    right: 10px;
-    bottom: calc(0px + 6px);
 }

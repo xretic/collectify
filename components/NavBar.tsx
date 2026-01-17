@@ -2,13 +2,15 @@
 
 import Image from 'next/image';
 import { Button } from 'antd';
-import { LoginRounded } from '@mui/icons-material';
+import { LoginRounded, LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useUser } from '@/context/UserProvider';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 export default function NavBar() {
     const { user, setUser, loading } = useUser();
@@ -55,7 +57,7 @@ export default function NavBar() {
                                 setAnchorEl(event.currentTarget);
                             }
                         }}
-                        className="authPanel flex items-center gap-2"
+                        className="authPanel"
                     >
                         <span className="font-medium text-gray-800">{user.name}</span>
                         <Avatar alt={user.name} src={user.avatarUrl} sx={{ width: 36, height: 36 }}>
@@ -75,9 +77,34 @@ export default function NavBar() {
                                 horizontal: 'right',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>Settings</MenuItem>
-                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            <MenuItem onClick={handleClose}>
+                                <ListItemIcon>
+                                    <AccountCircleOutlinedIcon fontSize="small" />
+                                </ListItemIcon>
+                                Profile
+                            </MenuItem>
+
+                            <MenuItem onClick={handleClose}>
+                                <ListItemIcon>
+                                    <SettingsOutlined fontSize="small" />
+                                </ListItemIcon>
+                                Settings
+                            </MenuItem>
+
+                            <MenuItem
+                                onClick={handleLogout}
+                                sx={{
+                                    color: 'error.main',
+                                    '&:hover': {
+                                        backgroundColor: 'light',
+                                    },
+                                }}
+                            >
+                                <ListItemIcon sx={{ color: 'error.main' }}>
+                                    <LogoutOutlined fontSize="small" />
+                                </ListItemIcon>
+                                Logout
+                            </MenuItem>
                         </Menu>
                     </div>
                 ) : (
