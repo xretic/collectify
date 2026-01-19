@@ -83,7 +83,7 @@ export default function ProfilePage() {
     };
 
     const handleSave = async () => {
-        const res = await fetch('/api/users/' + user.id, {
+        const res = await fetch('/api/admin/users/' + user.id, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
