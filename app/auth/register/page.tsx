@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import { useUser } from '@/context/UserProvider';
+import { useUIStore } from '@/stores/uiStore';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type RegisterFormData = {
     email: string;
@@ -17,14 +19,13 @@ type RegisterFormData = {
 export default function RegisterPage() {
     const { control, handleSubmit } = useForm<RegisterFormData>();
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
-
+    const { startLoading, stopLoading, loadingCount } = useUIStore();
     const { setUser } = useUser();
 
     const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
-        setLoading(true);
+        startLoading();
 
         try {
             const response = await fetch('/api/auth/register', {
@@ -33,8 +34,6 @@ export default function RegisterPage() {
                 body: JSON.stringify(data),
                 credentials: 'include',
             });
-
-            setLoading(false);
 
             switch (response.status) {
                 case 200: {
@@ -61,99 +60,119 @@ export default function RegisterPage() {
                     break;
             }
         } catch (error) {
-            setLoading(false);
             setErrorMsg('Network error. Please try again.');
+        } finally {
+            stopLoading();
         }
     };
+
     return (
-        <Box
-            className="auth-page"
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 2,
-            }}
+        <Suspense
+            fallback={
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        inset: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'rgba(0,0,0,0.3)',
+                        zIndex: 1300,
+                    }}
+                >
+                    <CircularProgress size={48} />
+                </Box>
+            }
         >
-            <h1 className="auth-header">Registration</h1>
-            <p className="auth-paragraph">In order to use the site fully, you must register.</p>
+            <Box
+                className="auth-page"
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                }}
+            >
+                <h1 className="auth-header">Registration</h1>
+                <p className="auth-paragraph">In order to use the site fully, you must register.</p>
 
-            <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 400 }}>
-                <Controller
-                    name="email"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        required: 'Email is required',
-                        pattern: {
-                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: 'Please enter a valid email address',
-                        },
-                    }}
-                    render={({ field, fieldState }) => (
-                        <TextField
-                            {...field}
-                            type="email"
-                            label="Email"
-                            placeholder="Write your email"
-                            fullWidth
-                            id="email"
-                            variant="standard"
-                            error={!!fieldState.error}
-                            helperText={fieldState.error ? fieldState.error.message : ' '}
-                            onChange={(e) => {
-                                field.onChange(e);
-                                setEmailError(!e.target.validity.valid);
-                            }}
-                        />
+                <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 400 }}>
+                    <Controller
+                        name="email"
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                            required: 'Email is required',
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: 'Please enter a valid email address',
+                            },
+                        }}
+                        render={({ field, fieldState }) => (
+                            <TextField
+                                {...field}
+                                type="email"
+                                label="Email"
+                                placeholder="Write your email"
+                                fullWidth
+                                id="email"
+                                variant="standard"
+                                error={!!fieldState.error}
+                                helperText={fieldState.error ? fieldState.error.message : ' '}
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    setEmailError(!e.target.validity.valid);
+                                }}
+                            />
+                        )}
+                    />
+
+                    <Controller
+                        name="password"
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                            required: 'Password is required',
+                            minLength: { value: 8, message: 'Password too short' },
+                        }}
+                        render={({ field, fieldState }) => (
+                            <TextField
+                                {...field}
+                                type="password"
+                                label="Password"
+                                placeholder="Write your password"
+                                fullWidth
+                                id="password"
+                                variant="standard"
+                                error={!!fieldState.error}
+                                helperText={fieldState.error ? fieldState.error.message : ' '}
+                                sx={{ mt: 2 }}
+                            />
+                        )}
+                    />
+
+                    {emailError && (
+                        <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
+                            Your email is invalid!
+                        </Alert>
                     )}
-                />
-
-                <Controller
-                    name="password"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        required: 'Password is required',
-                        minLength: { value: 8, message: 'Password too short' },
-                    }}
-                    render={({ field, fieldState }) => (
-                        <TextField
-                            {...field}
-                            type="password"
-                            label="Password"
-                            placeholder="Write your password"
-                            fullWidth
-                            id="password"
-                            variant="standard"
-                            error={!!fieldState.error}
-                            helperText={fieldState.error ? fieldState.error.message : ' '}
-                            sx={{ mt: 2 }}
-                        />
-                    )}
-                />
-
-                {(emailError && (
-                    <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
-                        Your email is invalid!
-                    </Alert>
-                )) ||
-                    (errorMsg !== '' && (
+                    {!emailError && errorMsg && (
                         <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
                             {errorMsg}
                         </Alert>
-                    ))}
+                    )}
 
-                <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    sx={{ mt: 3 }}
-                    disabled={loading}
-                >
-                    {loading ? 'Loading...' : 'Submit'}
-                </Button>
-            </form>
-        </Box>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        fullWidth
+                        sx={{ mt: 3 }}
+                        disabled={loadingCount > 0}
+                    >
+                        {loadingCount > 0 ? 'Loading...' : 'Submit'}
+                    </Button>
+                </form>
+            </Box>
+        </Suspense>
     );
 }

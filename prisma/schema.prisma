@@ -5,28 +5,36 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+    provider = "prisma-client"
+    output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique
-  passwordHash String
-  avatarUrl    String    @default("")
-  name         String
-  sessions     Session[]
+    id Int @id @unique
+
+    email        String @unique
+    passwordHash String
+
+    avatarUrl String @default("")
+    bannerUrl String @default("")
+
+    username String
+    fullName String
+
+    description String @default("No bio yet")
+
+    sessions Session[]
 }
 
 model Session {
-  id        String   @id
-  userId    Int
-  expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id        String   @id
+    userId    Int
+    expiresAt DateTime
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
+    @@index([userId])
 }

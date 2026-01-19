@@ -2,7 +2,8 @@ import { NextResponse, NextRequest } from 'next/server';
 import isPasswordValid from '@/helpers/isPasswordValid';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
-import { prisma } from '@/libs/prisma';
+import { prisma } from '@/lib/prisma';
+import { generateRandomId } from '@/helpers/generateRandomId';
 
 export async function POST(req: NextRequest) {
     try {
@@ -26,12 +27,15 @@ export async function POST(req: NextRequest) {
 
         const passwordHash = await bcrypt.hash(password, 12);
         const name = email.split('@')[0];
+        const uniqueId = await generateRandomId();
 
         const user = await prisma.user.create({
             data: {
+                id: uniqueId,
                 email,
                 passwordHash,
-                name,
+                username: name,
+                fullName: name,
             },
         });
 
@@ -43,7 +47,16 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        const response = NextResponse.json({ user: { id: user.id, name, email: user.email } });
+        const response = NextResponse.json({
+            user: {
+                id: user.id,
+                avatarUrl: user.avatarUrl,
+                bannerUrl: user.bannerUrl,
+                username: user.username,
+                fullName: user.fullName,
+                description: user.description,
+            },
+        });
 
         response.cookies.set({
             name: 'sessionId',

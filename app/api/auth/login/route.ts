@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
-import { prisma } from '@/libs/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
     try {
@@ -27,12 +27,19 @@ export async function POST(req: NextRequest) {
             data: {
                 id: randomUUID(),
                 userId: user.id,
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 дней
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             },
         });
 
         const response = NextResponse.json({
-            user: { name: user.name, avatarUrl: user.avatarUrl || '/default-avatar.png' },
+            user: {
+                id: user.id,
+                avatarUrl: user.avatarUrl,
+                bannerUrl: user.bannerUrl,
+                username: user.username,
+                fullName: user.fullName,
+                description: user.description,
+            },
         });
 
         response.cookies.set({
@@ -42,7 +49,7 @@ export async function POST(req: NextRequest) {
             path: '/',
             sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7, // 7 дней
+            maxAge: 60 * 60 * 24 * 7,
         });
 
         return response;

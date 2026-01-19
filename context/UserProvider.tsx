@@ -3,8 +3,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface User {
-    name: string;
+    id: number;
     avatarUrl: string;
+    bannerUrl: string;
+    username: string;
+    fullName: string;
+    description: string;
 }
 
 interface UserContextType {

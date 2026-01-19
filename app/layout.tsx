@@ -2,7 +2,9 @@ import { Metadata } from 'next';
 import NavBar from '@/components/NavBar';
 import localFont from 'next/font/local';
 import './globals.css';
-import { UserProvider, useUser } from '@/context/UserProvider';
+import { UserProvider } from '@/context/UserProvider';
+import { GlobalLoader } from '@/components/GlobalLoader';
+import Script from 'next/script';
 
 const googleSans = localFont({
     src: [
@@ -24,8 +26,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en" className={googleSans.variable}>
             <body>
+                <Script id="uploadcare-key" strategy="beforeInteractive">
+                    {`UPLOADCARE_PUBLIC_KEY = '${process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY}';`}
+                </Script>
+
+                <Script
+                    src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js"
+                    strategy="beforeInteractive"
+                />
+
                 <UserProvider>
                     <NavBar />
+                    <GlobalLoader />
                     {children}
                 </UserProvider>
             </body>

@@ -2,51 +2,32 @@
 
 import Image from 'next/image';
 import { Button } from 'antd';
-import { LoginRounded, LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
+import { LoginRounded } from '@mui/icons-material';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useUser } from '@/context/UserProvider';
-import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import CircularProgress from '@mui/material/CircularProgress';
+import { useUIStore } from '@/stores/uiStore';
+import HoverMenu from './HoverMenu';
 
 export default function NavBar() {
-    const { user, setUser, loading } = useUser();
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const { user, loading } = useUser();
+    const { anchorEl, setAnchorEl } = useUIStore();
 
-    const handleClose = () => setAnchorEl(null);
-
-    const handleLogout = async () => {
-        handleClose();
-        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-        setUser(null);
-    };
-
-    if (loading) {
-        return (
-            <header className="navBar flex justify-center items-center h-16">
-                <CircularProgress />
-            </header>
-        );
-    }
+    if (loading) return null;
 
     return (
         <header>
-            <nav className="navBar">
+            <nav className="nav-bar">
                 <a href="/">
                     <Image
-                        className="navBarIcon"
+                        className="nav-bar-icon"
                         src="/icon.svg"
                         alt="Collectify icon"
                         width={35}
                         height={35}
                     />
                 </a>
-                <a className="navBarTitle" href="/">
+                <a className="nav-bar-title" href="/">
                     Collectify
                 </a>
                 {user ? (
@@ -58,60 +39,23 @@ export default function NavBar() {
                                 setAnchorEl(event.currentTarget);
                             }
                         }}
-                        className="authPanel"
+                        className="auth-panel"
                     >
-                        <span className="font-medium text-gray-800">{user.name}</span>
-                        <Avatar alt={user.name} src={user.avatarUrl} sx={{ width: 36, height: 36 }}>
-                            {user.name[0]}
+                        <span className="font-medium text-gray-800">{user.username}</span>
+                        <Avatar
+                            alt={user.username}
+                            src={user.avatarUrl}
+                            sx={{ width: 36, height: 36 }}
+                        >
+                            {user.username}
                         </Avatar>
 
-                        <Menu
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                        >
-                            <MenuItem onClick={handleClose}>
-                                <ListItemIcon>
-                                    <AccountCircleOutlinedIcon fontSize="small" />
-                                </ListItemIcon>
-                                Profile
-                            </MenuItem>
-
-                            <MenuItem onClick={handleClose}>
-                                <ListItemIcon>
-                                    <SettingsOutlined fontSize="small" />
-                                </ListItemIcon>
-                                Settings
-                            </MenuItem>
-
-                            <MenuItem
-                                onClick={handleLogout}
-                                sx={{
-                                    color: 'error.main',
-                                    '&:hover': {
-                                        backgroundColor: 'light',
-                                    },
-                                }}
-                            >
-                                <ListItemIcon sx={{ color: 'error.main' }}>
-                                    <LogoutOutlined fontSize="small" />
-                                </ListItemIcon>
-                                Logout
-                            </MenuItem>
-                        </Menu>
+                        <HoverMenu />
                     </div>
                 ) : (
-                    <div className="authPanel">
+                    <div className="auth-panel">
                         <Button
-                            className="loginBtn"
+                            className="login-btn"
                             color="primary"
                             variant="solid"
                             icon={<LoginRounded />}
