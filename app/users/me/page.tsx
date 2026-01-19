@@ -15,27 +15,21 @@ export default function ProfilePage() {
     const [copied, setCopied] = useState(false);
     const [editing, setEditing] = useState(false);
     const [fullName, setFullName] = useState('');
+    const [username, setUserName] = useState('');
     const [description, setDescription] = useState('');
     const [bannerUrl, setBannerUrl] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     if (loading) return null;
-
-    if (!user) {
-        return (
-            <div className={`toast ${copied ? 'show' : ''}`}>
-                <Alert severity="error" variant="filled">
-                    Something went wrong.
-                </Alert>
-            </div>
-        );
-    }
+    if (!user) return;
 
     const handleEdit = () => {
         setFullName(user.fullName);
         setDescription(user.description);
         setBannerUrl(user.bannerUrl);
         setAvatarUrl(user.avatarUrl);
+        setUserName(user.username);
         setEditing(true);
     };
 
@@ -83,7 +77,7 @@ export default function ProfilePage() {
     };
 
     const handleSave = async () => {
-        const res = await fetch('/api/admin/users/' + user.id, {
+        const res = await fetch('/api/users/' + user.id, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,15 +85,19 @@ export default function ProfilePage() {
             body: JSON.stringify({
                 fullName,
                 description,
+                username,
                 bannerUrl,
                 avatarUrl,
             }),
         });
 
-        if (!res.ok) {
-            console.error('Failed to update user');
+        if (res.status === 409) {
+            setErrorMessage('User with this username already exists.');
+            setTimeout(() => setErrorMessage(''), 2000);
             return;
         }
+
+        if (!res.ok) return;
 
         const updatedUser = await res.json();
 
@@ -120,6 +118,15 @@ export default function ProfilePage() {
                     </Alert>
                 </div>
             )}
+
+            {errorMessage.length > 0 && (
+                <div className={`toast ${errorMessage.length > 0 ? 'show' : ''}`}>
+                    <Alert severity="error" variant="filled">
+                        {errorMessage}
+                    </Alert>
+                </div>
+            )}
+
             <div
                 onClick={editing ? () => handleUpload(setBannerUrl) : () => {}}
                 className={editing ? 'profile-cover-editing' : 'profile-cover'}
@@ -140,19 +147,26 @@ export default function ProfilePage() {
                     <>
                         <Button
                             style={{
-                                backgroundColor: '#52c41a',
-                                borderColor: '#52c41a',
+                                backgroundColor: '#74f878',
+                                borderColor: '#74f878',
                                 color: 'black',
                             }}
                             shape="circle"
                             icon={<CheckIcon />}
                             className="confim-btn"
                             onClick={handleSave}
+                            disabled={
+                                !fullName.trim() ||
+                                !username.trim() ||
+                                !isUsernameValid(username) ||
+                                fullName.length > 30 ||
+                                description.length > 100
+                            }
                         />
                         <Button
                             style={{
-                                backgroundColor: '#ff0004',
-                                borderColor: '#ff0004',
+                                backgroundColor: '#f55b5d',
+                                borderColor: '#f55b5d',
                                 color: 'black',
                             }}
                             shape="circle"
@@ -179,6 +193,12 @@ export default function ProfilePage() {
                                     placeholder="Full Name"
                                     style={{ marginBottom: '8px' }}
                                 />
+                                <Input
+                                    value={username}
+                                    onChange={(e) => setUserName(e.target.value)}
+                                    placeholder="@username"
+                                    style={{ marginBottom: '8px' }}
+                                />
                                 <Input.TextArea
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
@@ -195,7 +215,7 @@ export default function ProfilePage() {
                                 </span>
                                 <p className="profile-description">
                                     <FormatQuoteIcon />
-                                    {user.description}
+                                    {description.length === 0 ? 'No bio yet' : description}
                                 </p>
                             </>
                         )}
@@ -205,3 +225,10 @@ export default function ProfilePage() {
         </header>
     );
 }
+
+const isUsernameValid = (username: string): boolean => {
+    if (username.length > 18) return false;
+
+    const regex = /^[a-zA-Z0-9_.]+$/;
+    return regex.test(username);
+};

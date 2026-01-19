@@ -14,7 +14,8 @@ datasource db {
 }
 
 model User {
-    id Int @id @unique
+    id    Int    @id @unique
+    token String @unique
 
     email        String @unique
     passwordHash String
@@ -25,7 +26,7 @@ model User {
     username String
     fullName String
 
-    description String @default("No bio yet")
+    description String
 
     sessions Session[]
 }

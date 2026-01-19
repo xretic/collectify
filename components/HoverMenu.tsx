@@ -56,7 +56,7 @@ export default function HoverMenu() {
                 horizontal: 'right',
             }}
         >
-            <MenuItem onClick={() => handleClose('/profile')}>
+            <MenuItem onClick={() => handleClose('/users/me')}>
                 <ListItemIcon>
                     <AccountCircleOutlinedIcon fontSize="small" />
                 </ListItemIcon>

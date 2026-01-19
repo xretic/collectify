@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { generateRandomId } from '@/helpers/generateRandomId';
+import { generateAuthToken } from '@/helpers/generateAuthToken';
 
 export async function POST(req: NextRequest) {
     try {
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
         const passwordHash = await bcrypt.hash(password, 12);
         const name = email.split('@')[0];
         const uniqueId = await generateRandomId();
+        const token = await generateAuthToken();
 
         const user = await prisma.user.create({
             data: {
@@ -36,6 +38,7 @@ export async function POST(req: NextRequest) {
                 passwordHash,
                 username: name,
                 fullName: name,
+                token,
             },
         });
 
@@ -64,8 +67,18 @@ export async function POST(req: NextRequest) {
             httpOnly: true,
             path: '/',
             sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7,
+            secure: true,
+            maxAge: 60 * 60 * 24 * 30,
+        });
+
+        response.cookies.set({
+            name: 'token',
+            value: user.token,
+            httpOnly: true,
+            path: '/',
+            sameSite: 'lax',
+            secure: true,
+            maxAge: 60 * 60 * 24 * 365,
         });
 
         return response;

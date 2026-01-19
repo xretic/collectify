@@ -52,6 +52,16 @@ export async function POST(req: NextRequest) {
             maxAge: 60 * 60 * 24 * 7,
         });
 
+        response.cookies.set({
+            name: 'token',
+            value: user.token,
+            httpOnly: true,
+            path: '/',
+            sameSite: 'lax',
+            secure: true,
+            maxAge: 60 * 60 * 24 * 365,
+        });
+
         return response;
     } catch (err) {
         console.error(err);

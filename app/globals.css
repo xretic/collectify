@@ -73,14 +73,14 @@
 
 .confim-btn {
     position: absolute;
-    top: 79px;
+    top: 50px;
     right: 14px;
     text-transform: none;
 }
 
 .close-btn {
     position: absolute;
-    top: 39px;
+    top: 14px;
     right: 14px;
     text-transform: none;
 }

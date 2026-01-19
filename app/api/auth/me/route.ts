@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
         {
             user: {
                 id: session.user.id,
@@ -30,4 +30,16 @@ export async function GET(req: NextRequest) {
         },
         { status: 200 },
     );
+
+    response.cookies.set({
+        name: 'token',
+        value: session.user.token,
+        httpOnly: true,
+        path: '/',
+        sameSite: 'lax',
+        secure: true,
+        maxAge: 60 * 60 * 24 * 365,
+    });
+
+    return response;
 }
