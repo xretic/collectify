@@ -27,6 +27,7 @@ model User {
     fullName String
 
     description String
+    collections Collection[]
 
     sessions Session[]
 }
@@ -38,4 +39,44 @@ model Session {
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
+}
+
+model Notification {
+    id              Int      @id @default(autoincrement())
+    senderUserId    Int
+    recipientUserId Int
+    message         String
+    createdAt       DateTime @default(now())
+}
+
+model Collection {
+    id Int @id @unique
+
+    user            Int
+    name            String
+    description     String
+    bannerUrl       String
+    category        String
+    likes           Int[]
+    addedToFavorite Int[]
+
+    items  Item[]
+    User   User?  @relation(fields: [userId], references: [id])
+    userId Int?
+}
+
+model Item {
+    id Int @id @unique
+
+    title       String
+    description String
+    tags        String[]
+
+    Collection   Collection? @relation(fields: [collectionId], references: [id])
+    collectionId Int?
+}
+
+model Category {
+    id    Int    @id @default(autoincrement())
+    title String
 }
