@@ -21,6 +21,7 @@ export default function HoverMenu() {
             router.push(path);
         }
     };
+
     const open = Boolean(anchorEl);
     const router = useRouter();
 

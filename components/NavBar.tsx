@@ -18,10 +18,12 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import SearchBar from './SearchBar';
+import { IconButton } from '@mui/material';
 
 export default function NavBar() {
     const { user, loading } = useUser();
-    const { anchorEl, setAnchorEl } = useUIStore();
+    const { anchorEl, setAnchorEl, searchBarOpened, setSearchBarOpened } = useUIStore();
     const pathname = usePathname();
     const buttonStyle = { width: 22, height: 22, marginLeft: 2 };
 
@@ -66,7 +68,7 @@ export default function NavBar() {
                             ) : (
                                 <HomeOutlinedIcon sx={buttonStyle} />
                             )}
-                            Home
+                            <span className="nav-text">Home</span>
                         </Link>
 
                         {user && (
@@ -83,7 +85,7 @@ export default function NavBar() {
                                 ) : (
                                     <AccountCircleOutlinedIcon sx={buttonStyle} />
                                 )}
-                                Profile
+                                <span className="nav-text">Profile</span>
                             </Link>
                         )}
 
@@ -100,7 +102,7 @@ export default function NavBar() {
                             ) : (
                                 <NotificationsOutlinedIcon sx={buttonStyle} />
                             )}
-                            Notifications
+                            <span className="nav-text">Notifications</span>
                         </Link>
                     </nav>
                 )}
@@ -114,10 +116,19 @@ export default function NavBar() {
                             className="auth-panel-search-btn"
                             style={{
                                 right: 65 + width,
-                                top: 15,
+                                top: 17,
                             }}
                         >
-                            <SearchIcon sx={{ color: '#afafaf' }} />
+                            {searchBarOpened ? (
+                                <SearchBar />
+                            ) : (
+                                <IconButton type="button" sx={{ p: '6px' }} aria-label="search">
+                                    <SearchIcon
+                                        onClick={setSearchBarOpened}
+                                        sx={{ color: '#afafaf' }}
+                                    />
+                                </IconButton>
+                            )}
                         </div>
                     )}
 
