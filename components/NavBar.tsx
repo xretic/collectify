@@ -17,6 +17,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 
 export default function NavBar() {
     const { user, loading } = useUser();
@@ -38,7 +39,7 @@ export default function NavBar() {
     return (
         <header>
             <nav className="nav-bar">
-                <a href="/">
+                <Link href="/">
                     <Image
                         className="nav-bar-icon"
                         src="/icon.svg"
@@ -46,14 +47,15 @@ export default function NavBar() {
                         width={35}
                         height={35}
                     />
-                </a>
-                <a className="nav-bar-title" href="/">
+                </Link>
+
+                <Link className="nav-bar-title" href="/">
                     Collectify
-                </a>
+                </Link>
 
                 {user && (
                     <nav className="nav-bar-navigation">
-                        <a
+                        <Link
                             className={
                                 pathname === '/' ? 'navigation-button-in' : 'navigation-button'
                             }
@@ -65,10 +67,10 @@ export default function NavBar() {
                                 <HomeOutlinedIcon sx={buttonStyle} />
                             )}
                             Home
-                        </a>
+                        </Link>
 
                         {user && (
-                            <a
+                            <Link
                                 className={
                                     pathname === '/users/me'
                                         ? 'navigation-button-in'
@@ -82,10 +84,10 @@ export default function NavBar() {
                                     <AccountCircleOutlinedIcon sx={buttonStyle} />
                                 )}
                                 Profile
-                            </a>
+                            </Link>
                         )}
 
-                        <a
+                        <Link
                             className={
                                 pathname === '/notifications' // TODO: refactor this shit
                                     ? 'navigation-button-in'
@@ -99,7 +101,7 @@ export default function NavBar() {
                                 <NotificationsOutlinedIcon sx={buttonStyle} />
                             )}
                             Notifications
-                        </a>
+                        </Link>
                     </nav>
                 )}
 
@@ -112,7 +114,7 @@ export default function NavBar() {
                             className="auth-panel-search-btn"
                             style={{
                                 right: 65 + width,
-                                top: 4,
+                                top: 15,
                             }}
                         >
                             <SearchIcon sx={{ color: '#afafaf' }} />
