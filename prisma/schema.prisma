@@ -26,7 +26,7 @@ model User {
     username String
     fullName String
 
-    description String
+    description String       @default("")
     collections Collection[]
 
     sessions Session[]
@@ -54,7 +54,7 @@ model Collection {
 
     user            Int
     name            String
-    description     String
+    description     String @default("")
     bannerUrl       String
     category        String
     likes           Int[]

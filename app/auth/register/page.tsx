@@ -10,10 +10,17 @@ import Box from '@mui/material/Box';
 import { useUser } from '@/context/UserProvider';
 import { useUIStore } from '@/stores/uiStore';
 import CircularProgress from '@mui/material/CircularProgress';
+import {
+    PASSWORD_MAX_LENGTH,
+    PASSWORD_MIN_LENGTH,
+    USERNAME_MAX_LENGTH,
+    USERNAME_MIN_LENGTH,
+} from '@/lib/constans';
 
 type RegisterFormData = {
     email: string;
     password: string;
+    username: string;
 };
 
 export default function RegisterPage() {
@@ -52,7 +59,8 @@ export default function RegisterPage() {
                     break;
 
                 case 409:
-                    setErrorMsg('User with this email already exists.');
+                    const resData = await response.json();
+                    setErrorMsg(resData.message);
                     break;
 
                 case 500:
@@ -107,6 +115,10 @@ export default function RegisterPage() {
                                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                 message: 'Please enter a valid email address',
                             },
+                            maxLength: {
+                                value: 100,
+                                message: 'Email cannot be that long',
+                            },
                         }}
                         render={({ field, fieldState }) => (
                             <TextField
@@ -128,12 +140,44 @@ export default function RegisterPage() {
                     />
 
                     <Controller
+                        name="username"
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                            required: 'Username is required',
+                            minLength: {
+                                value: USERNAME_MIN_LENGTH,
+                                message: 'Username too short',
+                            },
+                            maxLength: { value: USERNAME_MAX_LENGTH, message: 'Username too long' },
+                        }}
+                        render={({ field, fieldState }) => (
+                            <TextField
+                                {...field}
+                                type="text"
+                                label="Username"
+                                placeholder="Write your username"
+                                fullWidth
+                                id="username"
+                                variant="standard"
+                                error={!!fieldState.error}
+                                helperText={fieldState.error ? fieldState.error.message : ' '}
+                                sx={{ mt: 2 }}
+                            />
+                        )}
+                    />
+
+                    <Controller
                         name="password"
                         control={control}
                         defaultValue=""
                         rules={{
                             required: 'Password is required',
-                            minLength: { value: 8, message: 'Password too short' },
+                            minLength: {
+                                value: PASSWORD_MIN_LENGTH,
+                                message: 'Password too short',
+                            },
+                            maxLength: { value: PASSWORD_MAX_LENGTH, message: 'Password too long' },
                         }}
                         render={({ field, fieldState }) => (
                             <TextField

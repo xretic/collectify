@@ -9,6 +9,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button, Input } from 'antd';
 import { useState } from 'react';
+import { DESCRPITION_MAX_LENGTH, FULLNAME_MAX_LENGTH, USERNAME_MAX_LENGTH } from '@/lib/constans';
 
 export default function ProfilePage() {
     const { user, loading, setUser } = useUser();
@@ -42,7 +43,7 @@ export default function ProfilePage() {
     const waitForUploadcare = (): Promise<any> => {
         return new Promise((resolve, reject) => {
             let attempts = 0;
-            const maxAttempts = 100;
+            const maxAttempts = 10;
 
             const interval = setInterval(() => {
                 if ((window as any).uploadcare) {
@@ -52,7 +53,7 @@ export default function ProfilePage() {
                     clearInterval(interval);
                     reject(new Error('Uploadcare failed to load.'));
                 }
-            }, 100);
+            }, 10);
         });
     };
 
@@ -159,8 +160,8 @@ export default function ProfilePage() {
                                 !fullName.trim() ||
                                 !username.trim() ||
                                 !isUsernameValid(username) ||
-                                fullName.length > 30 ||
-                                description.length > 100
+                                fullName.length > FULLNAME_MAX_LENGTH ||
+                                description.length > DESCRPITION_MAX_LENGTH
                             }
                         />
                         <Button
@@ -227,7 +228,7 @@ export default function ProfilePage() {
 }
 
 const isUsernameValid = (username: string): boolean => {
-    if (username.length > 12) return false;
+    if (username.length > USERNAME_MAX_LENGTH) return false;
 
     const regex = /^[a-z0-9_.]+$/;
     return regex.test(username);

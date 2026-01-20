@@ -8,9 +8,9 @@ import { generateAuthToken } from '@/helpers/generateAuthToken';
 
 export async function POST(req: NextRequest) {
     try {
-        const { email, password } = await req.json();
+        const { email, password, username } = await req.json();
 
-        if (!email || !password || password.length < 8) {
+        if (!email || !password || !username || password.length < 8) {
             return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
         }
 
@@ -26,8 +26,18 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'This user already exists!' }, { status: 409 });
         }
 
+        const usernameExistence = await prisma.user.findFirst({
+            where: { username },
+        });
+
+        if (usernameExistence) {
+            return NextResponse.json(
+                { message: 'User with this username already exists!' },
+                { status: 409 },
+            );
+        }
+
         const passwordHash = await bcrypt.hash(password, 12);
-        const name = email.split('@')[0];
         const uniqueId = await generateRandomId();
         const token = await generateAuthToken();
 
@@ -36,8 +46,8 @@ export async function POST(req: NextRequest) {
                 id: uniqueId,
                 email,
                 passwordHash,
-                username: name,
-                fullName: name,
+                username: username,
+                fullName: username,
                 token,
             },
         });
