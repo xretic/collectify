@@ -215,7 +215,7 @@ export default function ProfilePage() {
                                 </span>
                                 <p className="profile-description">
                                     <FormatQuoteIcon />
-                                    {description.length === 0 ? 'No bio yet' : description}
+                                    {user.description.length > 0 ? user.description : 'No bio yet'}
                                 </p>
                             </>
                         )}
@@ -227,8 +227,8 @@ export default function ProfilePage() {
 }
 
 const isUsernameValid = (username: string): boolean => {
-    if (username.length > 18) return false;
+    if (username.length > 12) return false;
 
-    const regex = /^[a-zA-Z0-9_.]+$/;
+    const regex = /^[a-z0-9_.]+$/;
     return regex.test(username);
 };

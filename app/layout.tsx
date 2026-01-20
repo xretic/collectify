@@ -17,6 +17,17 @@ const googleSans = localFont({
     variable: '--font-google-sans',
 });
 
+const rubikMedium = localFont({
+    src: [
+        {
+            path: '../public/fonts/Rubik-Medium.ttf',
+            weight: '500',
+            style: 'normal',
+        },
+    ],
+    variable: '--font-rubik-medium',
+});
+
 export const metadata: Metadata = {
     title: 'Collectify',
     description: 'Create your interesting collection with us.',
@@ -24,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en" className={googleSans.variable}>
+        <html lang="en" className={`${googleSans.variable} ${rubikMedium.variable}`}>
             <body>
                 <Script id="uploadcare-key" strategy="beforeInteractive">
                     {`UPLOADCARE_PUBLIC_KEY = '${process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY}';`}

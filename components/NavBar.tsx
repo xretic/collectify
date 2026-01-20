@@ -8,10 +8,30 @@ import { useUser } from '@/context/UserProvider';
 import Avatar from '@mui/material/Avatar';
 import { useUIStore } from '@/stores/uiStore';
 import HoverMenu from './HoverMenu';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import { usePathname } from 'next/navigation';
+import HomeIcon from '@mui/icons-material/Home';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SearchIcon from '@mui/icons-material/Search';
+import { useEffect, useRef, useState } from 'react';
 
 export default function NavBar() {
     const { user, loading } = useUser();
     const { anchorEl, setAnchorEl } = useUIStore();
+    const pathname = usePathname();
+    const buttonStyle = { width: 22, height: 22, marginLeft: 2 };
+
+    const usernameRef = useRef<HTMLSpanElement>(null);
+    const [width, setWidth] = useState(0);
+
+    useEffect(() => {
+        if (usernameRef.current) {
+            setWidth(usernameRef.current.offsetWidth);
+        }
+    }, [user?.username]);
 
     if (loading) return null;
 
@@ -30,52 +50,121 @@ export default function NavBar() {
                 <a className="nav-bar-title" href="/">
                     Collectify
                 </a>
-                {user ? (
-                    <div
-                        onClick={(event) => {
-                            if (anchorEl === event.currentTarget) {
-                                setAnchorEl(null);
-                            } else {
-                                setAnchorEl(event.currentTarget);
+
+                {user && (
+                    <nav className="nav-bar-navigation">
+                        <a
+                            className={
+                                pathname === '/' ? 'navigation-button-in' : 'navigation-button'
                             }
-                        }}
-                        className="auth-panel"
-                    >
-                        <span className="font-medium text-gray-800">{user.username}</span>
-                        <Avatar
-                            alt={user.username}
-                            src={user.avatarUrl}
-                            sx={{ width: 36, height: 36 }}
+                            href="/"
                         >
-                            {user.username}
-                        </Avatar>
+                            {pathname === '/' ? (
+                                <HomeIcon sx={buttonStyle} />
+                            ) : (
+                                <HomeOutlinedIcon sx={buttonStyle} />
+                            )}
+                            Home
+                        </a>
 
-                        <HoverMenu />
-                    </div>
-                ) : (
-                    <div className="auth-panel">
-                        <Button
-                            className="login-btn"
-                            color="primary"
-                            variant="solid"
-                            icon={<LoginRounded />}
-                            size="large"
-                            href="/auth/login"
-                        >
-                            Login
-                        </Button>
+                        {user && (
+                            <a
+                                className={
+                                    pathname === '/users/me'
+                                        ? 'navigation-button-in'
+                                        : 'navigation-button'
+                                }
+                                href="/users/me"
+                            >
+                                {pathname === '/users/me' ? (
+                                    <AccountCircleIcon sx={buttonStyle} />
+                                ) : (
+                                    <AccountCircleOutlinedIcon sx={buttonStyle} />
+                                )}
+                                Profile
+                            </a>
+                        )}
 
-                        <Button
-                            color="primary"
-                            variant="outlined"
-                            icon={<ExitToAppOutlinedIcon />}
-                            size="large"
-                            href="/auth/register"
+                        <a
+                            className={
+                                pathname === '/notifications' // TODO: refactor this shit
+                                    ? 'navigation-button-in'
+                                    : 'navigation-button'
+                            }
+                            href="/notifications"
                         >
-                            Register
-                        </Button>
-                    </div>
+                            {pathname === '/notifications' ? (
+                                <NotificationsIcon sx={buttonStyle} />
+                            ) : (
+                                <NotificationsOutlinedIcon sx={buttonStyle} />
+                            )}
+                            Notifications
+                        </a>
+                    </nav>
                 )}
+
+                <div
+                    className="nav-right"
+                    style={{ display: 'flex', alignItems: 'center', gap: 15 }}
+                >
+                    {user && (
+                        <div
+                            className="auth-panel-search-btn"
+                            style={{
+                                right: 65 + width,
+                                top: 4,
+                            }}
+                        >
+                            <SearchIcon sx={{ color: '#afafaf' }} />
+                        </div>
+                    )}
+
+                    {user ? (
+                        <div
+                            onClick={(event) =>
+                                setAnchorEl(
+                                    anchorEl === event.currentTarget ? null : event.currentTarget,
+                                )
+                            }
+                            className="auth-panel"
+                            style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                        >
+                            <span ref={usernameRef} className="font-medium text-gray-800">
+                                {user.username}
+                            </span>
+                            <Avatar
+                                alt={user.username}
+                                src={user.avatarUrl}
+                                sx={{ width: 36, height: 36 }}
+                            >
+                                {user.username}
+                            </Avatar>
+                            <HoverMenu />
+                        </div>
+                    ) : (
+                        <div className="auth-panel" style={{ display: 'flex', gap: 10 }}>
+                            <Button
+                                className="login-btn"
+                                color="primary"
+                                variant="solid"
+                                icon={<LoginRounded />}
+                                size="large"
+                                href="/auth/login"
+                            >
+                                Login
+                            </Button>
+                            <Button
+                                color="primary"
+                                variant="outlined"
+                                icon={<ExitToAppOutlinedIcon />}
+                                size="large"
+                                href="/auth/register"
+                            >
+                                Register
+                            </Button>
+                        </div>
+                    )}
+                </div>
             </nav>
         </header>
     );

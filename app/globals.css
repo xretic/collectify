@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,500;1,500&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -173,6 +174,38 @@
     box-sizing: border-box;
 }
 
+.nav-bar-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media (max-width: 600px) {
+    .nav-bar-navigation {
+        display: none;
+    }
+}
+
+.navigation-button {
+    color: #afafaf;
+    font-family: var(--font-rubik-medium), rubik-medium;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.navigation-button-in {
+    color: #000000;
+    font-family: var(--font-rubik-medium), rubik-medium;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 14px;
+}
+
 .nav-bar-title {
     color: black;
     font-size: 20px;
@@ -201,11 +234,22 @@
     cursor: pointer;
     padding: 4px;
     border-radius: 6px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s ease;
 }
 
 .auth-panel:hover {
     background-color: #f3f4f6;
+}
+
+.auth-panel-search {
+    position: relative;
+}
+
+.auth-panel-search-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .auth-header {
