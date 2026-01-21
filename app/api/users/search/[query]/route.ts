@@ -1,7 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ query: string }> }) {
+    const { query } = await params;
+
     const token = req.cookies.get('token')?.value;
 
     if (!token) {
@@ -18,10 +20,23 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+        where: {
+            username: {
+                contains: query,
+                mode: 'insensitive',
+            },
+        },
+        take: 5,
+        select: {
+            id: true,
+            avatarUrl: true,
+            username: true,
+        },
+    });
 
     if (users.length === 0) {
-        return NextResponse.json({ user: null }, { status: 404 });
+        return NextResponse.json({ users: [] }, { status: 404 });
     }
 
     return NextResponse.json(
@@ -29,10 +44,7 @@ export async function GET(req: NextRequest) {
             users: users.map((user) => ({
                 id: user.id,
                 avatarUrl: user.avatarUrl,
-                bannerUrl: user.bannerUrl,
                 username: user.username,
-                fullName: user.fullName,
-                description: user.description,
             })),
         },
         { status: 200 },

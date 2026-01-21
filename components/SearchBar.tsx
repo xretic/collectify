@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
 import { useUIStore } from '@/stores/uiStore';
+import { useDebounce } from '@/lib/useDebounce';
 
 interface User {
     id: number;
@@ -25,7 +26,7 @@ export default function SearchBar() {
     const { setSearchBarOpened } = useUIStore();
     const [users, setUsers] = useState<User[]>([]);
     const [inputValue, setInputValue] = useState('');
-    const [options, setOptions] = useState<User[]>([]);
+    const debouncedQuery = useDebounce(inputValue, 400);
 
     const handleSelect = (_: any, value: User | string | null) => {
         if (!value) return;
@@ -37,31 +38,24 @@ export default function SearchBar() {
 
     useEffect(() => {
         const loadUsers = async () => {
-            const res = await fetch('/api/users');
+            if (!debouncedQuery) return;
+
+            const res = await fetch('/api/users/search/' + inputValue, {
+                method: 'GET',
+                credentials: 'include',
+            });
+
             const data = await res.json();
             setUsers(data.users);
         };
         loadUsers();
-    }, []);
-
-    useEffect(() => {
-        if (!inputValue) {
-            setOptions([]);
-            return;
-        }
-
-        const filtered = users
-            .filter((u) => u.username.toLowerCase().includes(inputValue.toLowerCase()))
-            .slice(0, 5);
-
-        setOptions(filtered);
-    }, [inputValue, users]);
+    }, [debouncedQuery]);
 
     return (
         <Autocomplete
             className="search-bar-form"
             freeSolo
-            options={options}
+            options={users}
             getOptionLabel={(option) => (typeof option === 'string' ? option : option.username)}
             inputValue={inputValue}
             onChange={handleSelect}
