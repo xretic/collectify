@@ -1,4 +1,5 @@
 import { Prisma } from '@/generated/prisma/client';
+import { PAGE_SIZE } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { CollectionFieldProps } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
@@ -81,9 +82,10 @@ export async function GET(req: NextRequest) {
                     User: true,
                     items: true,
                     likes: true,
+                    addedToFavorite: true,
                 },
                 orderBy: ORDER_BY_MAP[sortedBy],
-                take: 8,
+                take: PAGE_SIZE,
                 skip,
             });
 
@@ -91,7 +93,7 @@ export async function GET(req: NextRequest) {
         }
     }
 
-    if (collections.length < 8) {
+    if (collections.length < PAGE_SIZE) {
         const publicCollections = await prisma.collection.findMany({
             where: {
                 ...(category && { category }),
@@ -100,9 +102,10 @@ export async function GET(req: NextRequest) {
                 User: true,
                 items: true,
                 likes: true,
+                addedToFavorite: true,
             },
             orderBy: ORDER_BY_MAP[sortedBy],
-            take: 8 - collections.length,
+            take: PAGE_SIZE - collections.length,
             skip,
         });
 

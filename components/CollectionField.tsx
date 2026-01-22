@@ -10,5 +10,5 @@ export default function CollectionField({
     addedToFavorite,
     items,
 }: CollectionFieldProps) {
-    return <div></div>;
+    return <div>{author}</div>;
 }

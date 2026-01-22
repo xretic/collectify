@@ -28,6 +28,7 @@ model User {
 
     description String       @default("")
     collections Collection[]
+    favorites   Collection[] @relation("FavoriteCollections")
 
     subscribed    Int[]
     subscriptions Int[]
@@ -60,10 +61,10 @@ model Collection {
     bannerUrl       String
     category        String
     likes           Like[]
-    addedToFavorite Int[]
+    addedToFavorite User[] @relation("FavoriteCollections")
+    items           Item[]
 
-    items  Item[]
-    User   User?  @relation(fields: [userId], references: [id])
+    User   User? @relation(fields: [userId], references: [id])
     userId Int?
 
     createdAt DateTime @default(now())
