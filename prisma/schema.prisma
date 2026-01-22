@@ -59,7 +59,7 @@ model Collection {
     description     String @default("")
     bannerUrl       String
     category        String
-    likes           Int[]
+    likes           Like[]
     addedToFavorite Int[]
 
     items  Item[]
@@ -67,6 +67,13 @@ model Collection {
     userId Int?
 
     createdAt DateTime @default(now())
+}
+
+model Like {
+    id           Int        @id @default(autoincrement())
+    userId       Int
+    collectionId Int
+    Collection   Collection @relation(fields: [collectionId], references: [id])
 }
 
 model Item {

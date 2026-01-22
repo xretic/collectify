@@ -1,31 +1,61 @@
+import { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { CollectionFieldProps } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
 
+const SORT_OPTIONS = ['popular', 'newest', 'old'] as const;
+type SortOption = (typeof SORT_OPTIONS)[number];
+
+const ORDER_BY_MAP: Record<SortOption, Prisma.CollectionOrderByWithRelationInput> = {
+    newest: { createdAt: 'desc' },
+    old: { createdAt: 'asc' },
+    popular: { likes: { _count: 'desc' } },
+};
+
+function isSortOption(value: unknown): value is SortOption {
+    return typeof value === 'string' && SORT_OPTIONS.includes(value as SortOption);
+}
+
+function mapCollection(collection: any): CollectionFieldProps {
+    return {
+        id: collection.id,
+        author: collection.User?.fullName ?? 'Unknown',
+        authorAvatarUrl: collection.User?.avatarUrl ?? '',
+        bannerUrl: collection.bannerUrl,
+        name: collection.name,
+        category: collection.category,
+        likes: collection.likes.length,
+        addedToFavorite: collection.addedToFavorite.length,
+        items: collection.items.length,
+    };
+}
+
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
+
     const category = searchParams.get('category');
     const userId = searchParams.get('userId');
     const sortedBy = searchParams.get('sortedBy');
-    const skip = searchParams.get('skip');
+    const skip = Number(searchParams.get('skip'));
 
-    let collectionsToSend: CollectionFieldProps[] = [];
-
-    if (!skip || !sortedBy) {
+    if (!sortedBy || isNaN(skip)) {
         return NextResponse.json(
-            { message: 'You should set skip and sortedBy option' },
+            { message: 'You should set skip and sortedBy value' },
             { status: 400 },
         );
     }
 
+    if (!isSortOption(sortedBy)) {
+        return NextResponse.json({ message: 'Invalid sortedBy value' }, { status: 400 });
+    }
+
     if (category) {
-        const check = await prisma.category.findFirst({
-            where: {
-                title: category,
-            },
+        const exists = await prisma.category.findFirst({
+            where: { title: category },
+            select: { id: true },
         });
 
-        if (!check) {
+        if (!exists) {
             return NextResponse.json(
                 { message: 'You should set a valid category name' },
                 { status: 404 },
@@ -33,69 +63,51 @@ export async function GET(req: NextRequest) {
         }
     }
 
+    const collections: CollectionFieldProps[] = [];
+
     if (userId) {
         const user = await prisma.user.findUnique({
             where: { id: Number(userId) },
+            select: { subscriptions: true },
         });
 
-        if (user && user.subscriptions.length > 0) {
-            const subscriptions = await prisma.collection.findMany({
+        if (user?.subscriptions.length) {
+            const subscribedCollections = await prisma.collection.findMany({
                 where: {
-                    userId: user.id,
+                    userId: { in: user.subscriptions },
+                    ...(category && { category }),
                 },
-                include: { items: true },
+                include: {
+                    User: true,
+                    items: true,
+                    likes: true,
+                },
+                orderBy: ORDER_BY_MAP[sortedBy],
                 take: 8,
+                skip,
             });
 
-            for (const subscription of subscriptions) {
-                if (!subscription.userId) {
-                    return NextResponse.json([], { status: 200 });
-                }
-
-                const author = await prisma.user.findUnique({
-                    where: {
-                        id: subscription.userId,
-                    },
-                });
-
-                if (!author) {
-                    return NextResponse.json([], { status: 200 });
-                }
-
-                collectionsToSend.push({
-                    id: subscription.id,
-                    author: author.fullName,
-                    authorAvatarUrl: author.avatarUrl,
-                    bannerUrl: subscription.bannerUrl,
-                    name: subscription.name,
-                    category: subscription.category,
-                    likes: subscription.likes.length,
-                    addedToFavorite: subscription.addedToFavorite.length,
-                    items: subscription.items.length,
-                });
-            }
+            collections.push(...subscribedCollections.map(mapCollection));
         }
     }
 
-    const publicCollections = await prisma.collection.findMany({
-        where: {},
-        take: 8 - collectionsToSend.length,
-        orderBy: {
-            createdAt: 'desc',
-        },
-        select: {
-            id: true,
-            name: true,
-            bannerUrl: true,
-            category: true,
-            userId: true,
-            likes: true,
-            addedToFavorite: true,
-            items: true,
-        },
-    });
+    if (collections.length < 8) {
+        const publicCollections = await prisma.collection.findMany({
+            where: {
+                ...(category && { category }),
+            },
+            include: {
+                User: true,
+                items: true,
+                likes: true,
+            },
+            orderBy: ORDER_BY_MAP[sortedBy],
+            take: 8 - collections.length,
+            skip,
+        });
 
-    return NextResponse.json({
-        query: category,
-    });
+        collections.push(...publicCollections.map(mapCollection));
+    }
+
+    return NextResponse.json({ data: collections }, { status: 200 });
 }
