@@ -1,13 +1,4 @@
-interface CollectionFieldProps {
-    author: string;
-    authorAvatarUrl: string;
-    bannerUrl: string;
-    name: string;
-    category: string;
-    likes: number;
-    addedToFavorite: number[];
-    items: number;
-}
+import { CollectionFieldProps } from '@/types/CollectionField';
 
 export default function CollectionField({
     author,
