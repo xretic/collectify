@@ -318,3 +318,14 @@
     transform: translateX(-50%) translateY(0);
     opacity: 2;
 }
+
+.home-page-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-google-sans), sans-serif;
+    color: rgb(0, 0, 0);
+    font-size: 28px;
+    margin-top: 20px;
+    margin-left: 10px;
+}
