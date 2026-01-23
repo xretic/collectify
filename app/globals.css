@@ -322,10 +322,142 @@
 .home-page-title {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     font-family: var(--font-google-sans), sans-serif;
     color: rgb(0, 0, 0);
     font-size: 28px;
     margin-top: 20px;
     margin-left: 10px;
+}
+
+.collections-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 21px;
+    margin-top: 25px;
+    justify-content: flex-start;
+    padding: 0 190px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .collections-wrapper {
+        padding: 0 50px;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .collection-card {
+        width: 45%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .collections-wrapper {
+        padding: 0 16px;
+        gap: 12px;
+    }
+
+    .collection-card {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .collection-title {
+        font-size: 16px;
+    }
+
+    .collection-author-name {
+        font-size: 13px;
+    }
+
+    .collection-category {
+        font-size: 11px;
+    }
+
+    .collection-items {
+        font-size: 12px;
+    }
+
+    .collection-stats {
+        font-size: 11px;
+    }
+}
+
+.collection-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 256px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 13px;
+    overflow: hidden;
+}
+
+.collection-banner {
+    height: 160px;
+    width: 100%;
+}
+
+.collection-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.collection-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.collection-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.collection-author {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.collection-author-name {
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.collection-category {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.collection-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.collection-items {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 13px;
+    gap: 2px;
+    color: #4b5563;
+}
+
+.collection-stats {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 12px;
+    gap: 5px;
+    color: #4b5563;
 }

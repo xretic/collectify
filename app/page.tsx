@@ -4,8 +4,8 @@ import CollectionField from '@/components/CollectionField';
 import { useUser } from '@/context/UserProvider';
 import { PAGE_SIZE } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
-import { Avatar } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Avatar, Box, CircularProgress } from '@mui/material';
+import { Suspense, useEffect, useState } from 'react';
 
 export default function HomePage() {
     const { user, loading } = useUser();
@@ -42,40 +42,43 @@ export default function HomePage() {
     if (loading) return null;
 
     return (
-        <div>
-            <div className="home-page-title">
-                {user ? (
-                    <>
-                        <Avatar
-                            src={user.avatarUrl}
-                            alt={user.username}
-                            sx={{ width: 45, height: 45 }}
-                        />
-                        <span>Welcome back, {user.username}!</span>
-                    </>
-                ) : (
-                    <span>Discover collections</span>
-                )}
+        <Suspense>
+            <div>
+                <div className="home-page-title">
+                    {user ? (
+                        <>
+                            <Avatar
+                                src={user.avatarUrl}
+                                alt={user.username}
+                                sx={{ width: 45, height: 45 }}
+                            />
+                            <span>Welcome back, {user.username}!</span>
+                        </>
+                    ) : (
+                        <span>Discover collections</span>
+                    )}
+                </div>
+                <div className="collections-wrapper">
+                    {collections.length > 0 ? (
+                        collections.map((x) => (
+                            <CollectionField
+                                key={x.id}
+                                id={x.id}
+                                author={x.author}
+                                authorAvatarUrl={x.authorAvatarUrl}
+                                bannerUrl={x.bannerUrl}
+                                name={x.name}
+                                category={x.category}
+                                likes={x.likes}
+                                addedToFavorite={x.addedToFavorite}
+                                items={x.items}
+                            />
+                        ))
+                    ) : (
+                        <></>
+                    )}
+                </div>
             </div>
-
-            {collections.length > 0 ? (
-                collections.map((x) => (
-                    <CollectionField
-                        key={x.id}
-                        id={x.id}
-                        author={x.author}
-                        authorAvatarUrl={x.authorAvatarUrl}
-                        bannerUrl={x.bannerUrl}
-                        name={x.name}
-                        category={x.category}
-                        likes={x.likes}
-                        addedToFavorite={x.addedToFavorite}
-                        items={x.items}
-                    />
-                ))
-            ) : (
-                <></>
-            )}
-        </div>
+        </Suspense>
     );
 }
