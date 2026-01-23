@@ -5,7 +5,6 @@ import { useUser } from '@/context/UserProvider';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
 import {
-    Alert,
     Avatar,
     Button,
     FormControl,
@@ -57,7 +56,7 @@ export default function HomePage() {
 
     return (
         <Suspense>
-            <div>
+            <div className="home-page-container">
                 <div>
                     <div className="home-page-title">
                         {user ? (
@@ -95,23 +94,32 @@ export default function HomePage() {
                         </Button>
                     ))}
 
-                    <FormControl sx={{ marginLeft: 'auto', transform: 'translateX(-80px)' }}>
+                    <FormControl
+                        sx={{
+                            ml: { xs: 0, sm: 'auto' },
+                            mt: { xs: 2, sm: 0 },
+                            width: { xs: '100%', sm: '100%', lg: 110, xl: 110 },
+                        }}
+                    >
                         <InputLabel id="sort-select-label">Sorted by</InputLabel>
+
                         <Select
-                            sx={{ width: 110, height: 40, borderRadius: 5 }}
                             labelId="sort-select-label"
                             id="sort-select"
                             value={sortedBy}
                             label="Sorted by"
-                            title="Sorted by"
+                            sx={{
+                                height: 40,
+                                borderRadius: 5,
+                            }}
                         >
-                            <MenuItem onClick={() => setSortedBy('popular')} value="popular">
+                            <MenuItem value="popular" onClick={() => setSortedBy('popular')}>
                                 Popular
                             </MenuItem>
-                            <MenuItem onClick={() => setSortedBy('newest')} value="newest">
+                            <MenuItem value="newest" onClick={() => setSortedBy('newest')}>
                                 Newest
                             </MenuItem>
-                            <MenuItem onClick={() => setSortedBy('old')} value="old">
+                            <MenuItem value="old" onClick={() => setSortedBy('old')}>
                                 Oldest
                             </MenuItem>
                         </Select>

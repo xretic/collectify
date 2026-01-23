@@ -19,6 +19,7 @@ export default function CollectionField({
     return (
         <div className="collection-card">
             <div className="collection-banner">
+                <span className="collection-category">{category}</span>
                 <img src={bannerUrl} alt={name} className="collection-banner-img" />
             </div>
 
@@ -30,7 +31,7 @@ export default function CollectionField({
                     <span className="collection-author-name">{author}</span>
                 </Link>
 
-                {category && <span className="collection-category">{category}</span>}
+                <div className="collection-border-line"></div>
 
                 <div className="collection-footer">
                     <span className="collection-items">
