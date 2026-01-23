@@ -84,6 +84,8 @@ export default function SearchBar() {
             renderInput={(params) => (
                 <TextField
                     {...params}
+                    autoFocus
+                    onBlur={() => setSearchBarOpened()}
                     placeholder="Search users"
                     variant="outlined"
                     size="small"

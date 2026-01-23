@@ -19,7 +19,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 
 export default function NavBar() {
     const { user, loading } = useUser();
@@ -122,12 +122,16 @@ export default function NavBar() {
                             {searchBarOpened ? (
                                 <SearchBar />
                             ) : (
-                                <IconButton type="button" sx={{ p: '6px' }} aria-label="search">
-                                    <SearchIcon
+                                <Tooltip title="Search">
+                                    <IconButton
                                         onClick={setSearchBarOpened}
-                                        sx={{ color: '#afafaf' }}
-                                    />
-                                </IconButton>
+                                        type="button"
+                                        sx={{ p: '6px' }}
+                                        aria-label="search"
+                                    >
+                                        <SearchIcon sx={{ color: '#afafaf' }} />
+                                    </IconButton>
+                                </Tooltip>
                             )}
                         </div>
                     )}

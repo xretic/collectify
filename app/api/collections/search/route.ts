@@ -21,6 +21,7 @@ function mapCollection(collection: any): CollectionFieldProps {
     return {
         id: collection.id,
         author: collection.User?.fullName ?? 'Unknown',
+        authorId: collection.User?.id ?? null,
         authorAvatarUrl: collection.User?.avatarUrl ?? '',
         bannerUrl: collection.bannerUrl,
         name: collection.name,

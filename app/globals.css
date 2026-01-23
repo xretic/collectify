@@ -321,14 +321,15 @@
 
 .home-page-title {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 25px;
+    justify-content: flex-start;
+    padding: 0 210px;
+    box-sizing: border-box;
     font-family: var(--font-google-sans), sans-serif;
     color: rgb(0, 0, 0);
-    font-size: 28px;
-    margin-top: 20px;
-    margin-left: 10px;
+    font-size: 27px;
 }
 
 .collections-wrapper {
@@ -339,51 +340,6 @@
     justify-content: flex-start;
     padding: 0 190px;
     box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-    .collections-wrapper {
-        padding: 0 50px;
-        justify-content: center;
-        gap: 16px;
-    }
-
-    .collection-card {
-        width: 45%;
-        margin-left: 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .collections-wrapper {
-        padding: 0 16px;
-        gap: 12px;
-    }
-
-    .collection-card {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .collection-title {
-        font-size: 16px;
-    }
-
-    .collection-author-name {
-        font-size: 13px;
-    }
-
-    .collection-category {
-        font-size: 11px;
-    }
-
-    .collection-items {
-        font-size: 12px;
-    }
-
-    .collection-stats {
-        font-size: 11px;
-    }
 }
 
 .collection-card {
@@ -460,4 +416,103 @@
     font-size: 12px;
     gap: 5px;
     color: #4b5563;
+}
+
+.buttons-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+    justify-content: flex-start;
+    padding: 0 210px;
+    box-sizing: border-box;
+}
+
+.pagination-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 25px;
+    justify-content: flex-start;
+    padding: 0 210px;
+    box-sizing: border-box;
+}
+
+.nothing-is-here {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 20px;
+    padding: 0 20px;
+}
+
+@media (max-width: 950px) {
+    .home-page-title {
+        padding: 0 125px;
+    }
+
+    .buttons-wrapper {
+        padding: 0 125px;
+    }
+
+    .collections-wrapper {
+        padding: 0 60px;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .collection-card {
+        width: 40%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 580px) {
+    .home-page-title {
+        padding: 0 100px;
+    }
+
+    .buttons-wrapper {
+        padding: 0 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-page-title {
+        padding: 0 18px;
+        margin-left: 0px;
+    }
+
+    .buttons-wrapper {
+        padding: 0 18px;
+    }
+
+    .collections-wrapper {
+        padding: 0 16px;
+        margin-right: 50px;
+        gap: 12px;
+    }
+
+    .collection-card {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .collection-title {
+        font-size: 16px;
+    }
+
+    .collection-author-name {
+        font-size: 13px;
+    }
+
+    .collection-category {
+        font-size: 11px;
+    }
+
+    .collection-items {
+        font-size: 12px;
+    }
+
+    .collection-stats {
+        font-size: 11px;
+    }
 }

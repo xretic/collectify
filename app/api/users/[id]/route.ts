@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     );
 }
 
-export async function PATCH(req: NextRequest, context: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     const token = req.cookies.get('token')?.value;
 
     if (!token) {
@@ -41,6 +41,11 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
 
     const { id: idStr } = await context.params;
     const id = Number(idStr);
+
+    if (isNaN(id)) {
+        return NextResponse.json({ user: null }, { status: 401 });
+    }
+
     const data = await req.json();
 
     const user = await prisma.user.findUnique({ where: { id } });

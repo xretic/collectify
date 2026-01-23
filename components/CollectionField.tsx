@@ -3,10 +3,12 @@ import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import { Avatar } from '@mui/material';
+import Link from 'next/link';
 
 export default function CollectionField({
     author,
     authorAvatarUrl,
+    authorId,
     bannerUrl,
     name,
     category,
@@ -23,10 +25,10 @@ export default function CollectionField({
             <div className="collection-content">
                 <h2 className="collection-title">{name}</h2>
 
-                <div className="collection-author">
+                <Link href={'/users/' + authorId} className="collection-author">
                     <Avatar src={authorAvatarUrl} alt={author} sx={{ width: 24, height: 24 }} />
                     <span className="collection-author-name">{author}</span>
-                </div>
+                </Link>
 
                 {category && <span className="collection-category">{category}</span>}
 
