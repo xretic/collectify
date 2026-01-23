@@ -2,9 +2,19 @@
 
 import CollectionField from '@/components/CollectionField';
 import { useUser } from '@/context/UserProvider';
-import { PAGE_SIZE } from '@/lib/constans';
+import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
-import { Alert, Avatar, Button, IconButton, Tooltip } from '@mui/material';
+import {
+    Alert,
+    Avatar,
+    Button,
+    FormControl,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    Tooltip,
+} from '@mui/material';
 import { Suspense, useEffect, useState } from 'react';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -14,10 +24,9 @@ export default function HomePage() {
 
     const [collections, setCollections] = useState<any[]>([]);
     const [pagination, setPagination] = useState(0);
-    const [sortedBy, setSortedBy] = useState('newest');
+    const [sortedBy, setSortedBy] = useState('popular');
     const [category, setCategory] = useState('');
-    const [pageIsEmpty, setPageIsEmpty] = useState(false);
-    const { startLoading, stopLoading, loadingCount } = useUIStore();
+    const { startLoading, stopLoading } = useUIStore();
 
     useEffect(() => {
         const loadCollections = async () => {
@@ -32,20 +41,13 @@ export default function HomePage() {
                     userPrompt,
             );
 
-            switch (response.status) {
-                case 404:
-                    setPagination(pagination - PAGE_SIZE);
-                    setPageIsEmpty(true);
-                    setTimeout(() => setPageIsEmpty(false), 2000);
-                    break;
+            if (response.status === 200) {
+                const data = await response.json();
 
-                case 200:
-                    const data = await response.json();
-
-                    setCollections([...data.data]);
-                    stopLoading();
-                    break;
+                setCollections([...data.data]);
             }
+
+            stopLoading();
         };
 
         loadCollections();
@@ -56,13 +58,6 @@ export default function HomePage() {
     return (
         <Suspense>
             <div>
-                {pageIsEmpty && (
-                    <div className={`toast ${pageIsEmpty ? 'show' : ''}`}>
-                        <Alert severity="warning" variant="filled">
-                            Next page is empty.
-                        </Alert>
-                    </div>
-                )}
                 <div>
                     <div className="home-page-title">
                         {user ? (
@@ -79,11 +74,50 @@ export default function HomePage() {
                         )}
                     </div>
                 </div>
+
                 <div className="buttons-wrapper">
-                    <Button variant="contained" sx={{ borderRadius: 5 }}>
+                    <Button
+                        onClick={() => setCategory('')}
+                        variant={category === '' ? 'contained' : 'outlined'}
+                        sx={{ borderRadius: 5 }}
+                    >
                         All
                     </Button>
+
+                    {CATEGORIES.map((x) => (
+                        <Button
+                            key={x}
+                            onClick={() => setCategory(x)}
+                            variant={category === x ? 'contained' : 'outlined'}
+                            sx={{ borderRadius: 5 }}
+                        >
+                            {x}
+                        </Button>
+                    ))}
+
+                    <FormControl sx={{ marginLeft: 'auto', transform: 'translateX(-80px)' }}>
+                        <InputLabel id="sort-select-label">Sorted by</InputLabel>
+                        <Select
+                            sx={{ width: 110, height: 40, borderRadius: 5 }}
+                            labelId="sort-select-label"
+                            id="sort-select"
+                            value={sortedBy}
+                            label="Sorted by"
+                            title="Sorted by"
+                        >
+                            <MenuItem onClick={() => setSortedBy('popular')} value="popular">
+                                Popular
+                            </MenuItem>
+                            <MenuItem onClick={() => setSortedBy('newest')} value="newest">
+                                Newest
+                            </MenuItem>
+                            <MenuItem onClick={() => setSortedBy('old')} value="old">
+                                Oldest
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
                 </div>
+
                 <div className="collections-wrapper">
                     {collections.length > 0 ? (
                         collections.map((x) => (
@@ -122,7 +156,7 @@ export default function HomePage() {
                         <IconButton
                             onClick={() => setPagination(pagination + 1)}
                             type="button"
-                            disabled={collections.length === 0}
+                            disabled={collections.length === 0 || collections.length < PAGE_SIZE}
                             sx={{ p: '6px' }}
                             aria-label="search"
                         >

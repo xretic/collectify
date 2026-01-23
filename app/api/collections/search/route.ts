@@ -1,5 +1,5 @@
 import { Prisma } from '@/generated/prisma/client';
-import { PAGE_SIZE } from '@/lib/constans';
+import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { CollectionFieldProps } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
@@ -52,12 +52,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (category) {
-        const exists = await prisma.category.findFirst({
-            where: { title: category },
-            select: { id: true },
-        });
-
-        if (!exists) {
+        if (!CATEGORIES.includes(category)) {
             return NextResponse.json(
                 { message: 'You should set a valid category name' },
                 { status: 404 },

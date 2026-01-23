@@ -383,6 +383,10 @@
     gap: 6px;
 }
 
+.collection-author-name:hover {
+    color: #000000;
+}
+
 .collection-author-name {
     font-size: 14px;
     color: #4b5563;
@@ -391,6 +395,7 @@
 .collection-category {
     font-size: 12px;
     color: #6b7280;
+    border-bottom: 1px solid #d1d5db;
 }
 
 .collection-footer {
@@ -433,7 +438,7 @@
     flex-wrap: wrap;
     gap: 16px;
     margin-top: 25px;
-    justify-content: flex-start;
+    justify-content: center;
     padding: 0 210px;
     box-sizing: border-box;
 }

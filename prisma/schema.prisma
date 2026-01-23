@@ -87,8 +87,3 @@ model Item {
     Collection   Collection? @relation(fields: [collectionId], references: [id])
     collectionId Int?
 }
-
-model Category {
-    id    Int    @id @default(autoincrement())
-    title String
-}
