@@ -4,6 +4,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import { Avatar } from '@mui/material';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function CollectionField({
     id,
@@ -17,6 +18,8 @@ export default function CollectionField({
     addedToFavorite,
     items,
 }: CollectionFieldProps) {
+    const router = useRouter();
+
     return (
         <Link href={'/collections/' + id} className="collection-card">
             <div className="collection-banner">
@@ -27,10 +30,15 @@ export default function CollectionField({
             <div className="collection-content">
                 <h2 className="collection-title">{name}</h2>
 
-                <Link href={'/users/' + authorId} className="collection-author">
+                <div
+                    onClick={() => {
+                        router.replace('/users/' + authorId);
+                    }}
+                    className="collection-author"
+                >
                     <Avatar src={authorAvatarUrl} alt={author} sx={{ width: 24, height: 24 }} />
                     <span className="collection-author-name">{author}</span>
-                </Link>
+                </div>
 
                 <div className="collection-border-line"></div>
 

@@ -354,10 +354,14 @@
     justify-content: center;
     width: 256px;
     background-color: #ffffff;
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-left: 13px;
     overflow: hidden;
+}
+
+.collection-card:hover {
+    box-shadow: 0 10px 11px rgba(0, 0, 0, 0.1);
 }
 
 .collection-banner {
@@ -472,4 +476,76 @@
     font-family: var(--font-google-sans), sans-serif;
     font-size: 20px;
     padding: 0 20px;
+}
+
+.collection-page-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.collection-page-container img {
+    z-index: 0;
+}
+
+.collection-page-title {
+    position: absolute;
+    bottom: 55px;
+    margin-left: 45px;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+    font-size: 50px;
+    font-weight: 500;
+    font-family: var(--font-google-sans), sans-serif;
+    color: #ffffff;
+}
+
+.collection-page-author {
+    position: absolute;
+    bottom: 26px;
+    margin-left: 45px;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+    gap: 7px;
+    font-weight: 400;
+    font-size: 14px;
+    color: #dfdfdf;
+}
+
+.collection-page-author:hover {
+    text-decoration: underline;
+}
+
+.collection-page-category {
+    position: absolute;
+    bottom: 120px;
+    margin-left: 45px;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 16px;
+    color: #ffffff;
+    background: rgba(32, 32, 32, 0.6);
+    padding: 3px 17px;
+    border-radius: 999px;
+    font-weight: 500;
+    backdrop-filter: blur(12px);
+}
+
+@media (max-width: 700px) {
+    .collection-page-title {
+        margin-left: 50px;
+    }
+
+    .collection-page-author {
+        margin-left: 50px;
+    }
+
+    .collection-page-category {
+        margin-left: 50px;
+    }
 }

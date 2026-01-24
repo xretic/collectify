@@ -171,7 +171,7 @@ export default function HomePage() {
                             disabled={pagination === 0}
                             type="button"
                             onClick={() => setPagination(pagination - 1)}
-                            sx={{ p: '6px' }}
+                            sx={{ p: '10px' }}
                             aria-label="search"
                         >
                             <KeyboardArrowLeftIcon sx={{ color: '#afafaf' }} />
@@ -182,7 +182,7 @@ export default function HomePage() {
                             onClick={() => setPagination(pagination + 1)}
                             type="button"
                             disabled={collections.length === 0 || collections.length < PAGE_SIZE}
-                            sx={{ p: '6px' }}
+                            sx={{ p: '10px' }}
                             aria-label="search"
                         >
                             <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
