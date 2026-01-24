@@ -15,6 +15,7 @@ export type CollectionPropsAdditional = {
     id: number;
     author: string;
     authorAvatarUrl: string;
+    description: string;
     authorId: number;
     bannerUrl: string;
     name: string;

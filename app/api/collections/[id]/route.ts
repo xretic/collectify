@@ -28,6 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         id: collection.id,
         author: collection.User.username,
         authorAvatarUrl: collection.User.avatarUrl,
+        description: collection.description,
         authorId: collection.User.id,
         bannerUrl: collection.bannerUrl,
         name: collection.name,

@@ -192,20 +192,20 @@ export default function ProfilePage() {
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
                                     placeholder="Full Name"
-                                    style={{ marginBottom: '8px' }}
+                                    style={{ bottom: 10, marginBottom: '6px' }}
                                 />
                                 <Input
                                     value={username}
                                     onChange={(e) => setUserName(e.target.value)}
                                     placeholder="@username"
-                                    style={{ marginBottom: '8px' }}
+                                    style={{ bottom: 10, marginBottom: '6px' }}
                                 />
                                 <Input.TextArea
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Description"
                                     autoSize={{ minRows: 2, maxRows: 4 }}
-                                    style={{ marginBottom: '8px' }}
+                                    style={{ bottom: 10, marginBottom: '6px' }}
                                 />
                             </>
                         ) : (
