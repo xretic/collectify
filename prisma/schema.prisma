@@ -73,6 +73,8 @@ model Collection {
 model Like {
     id           Int        @id @default(autoincrement())
     userId       Int
+    username     String
+    avatarUrl    String
     collectionId Int
     Collection   Collection @relation(fields: [collectionId], references: [id])
 }

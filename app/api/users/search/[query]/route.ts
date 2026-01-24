@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ quer
     const users = await prisma.user.findMany({
         where: {
             username: {
-                contains: query,
+                startsWith: query,
                 mode: 'insensitive',
             },
         },

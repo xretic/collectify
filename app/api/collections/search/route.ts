@@ -1,4 +1,4 @@
-import { Prisma } from '@/generated/prisma/client';
+import { Collection, Item, Like, Prisma, User } from '@/generated/prisma/client';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { CollectionFieldProps } from '@/types/CollectionField';
@@ -17,11 +17,18 @@ function isSortOption(value: unknown): value is SortOption {
     return typeof value === 'string' && SORT_OPTIONS.includes(value as SortOption);
 }
 
-function mapCollection(collection: any): CollectionFieldProps {
+function mapCollection(
+    collection: Collection & {
+        User?: { id: number; fullName?: string; avatarUrl?: string } | null;
+        items: Item[];
+        likes: Like[];
+        addedToFavorite: User[];
+    },
+): CollectionFieldProps {
     return {
         id: collection.id,
         author: collection.User?.fullName ?? 'Unknown',
-        authorId: collection.User?.id ?? null,
+        authorId: collection.User?.id ?? 0,
         authorAvatarUrl: collection.User?.avatarUrl ?? '',
         bannerUrl: collection.bannerUrl,
         name: collection.name,
@@ -39,6 +46,9 @@ export async function GET(req: NextRequest) {
     const userId = searchParams.get('userId');
     const sortedBy = searchParams.get('sortedBy');
     const skip = Number(searchParams.get('skip'));
+    const query = searchParams.get('query');
+
+    const excludedIds: number[] = [];
 
     if (!sortedBy || isNaN(skip)) {
         return NextResponse.json(
@@ -73,6 +83,9 @@ export async function GET(req: NextRequest) {
                 where: {
                     userId: { in: user.subscriptions },
                     ...(category && { category }),
+                    name: {
+                        startsWith: query ? query : '',
+                    },
                 },
                 include: {
                     User: true,
@@ -86,13 +99,18 @@ export async function GET(req: NextRequest) {
             });
 
             collections.push(...subscribedCollections.map(mapCollection));
+            excludedIds.push(...subscribedCollections.map((x) => x.id));
         }
     }
 
     if (collections.length < PAGE_SIZE) {
         const publicCollections = await prisma.collection.findMany({
             where: {
+                id: { notIn: excludedIds },
                 ...(category && { category }),
+                name: {
+                    startsWith: query ? query : '',
+                },
             },
             include: {
                 User: true,

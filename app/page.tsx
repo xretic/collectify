@@ -17,6 +17,8 @@ import {
 import { Suspense, useEffect, useState } from 'react';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import CollectionSearchBar from '@/components/CollectionSearchBar';
+import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 
 export default function HomePage() {
     const { user, loading } = useUser();
@@ -25,34 +27,47 @@ export default function HomePage() {
     const [pagination, setPagination] = useState(0);
     const [sortedBy, setSortedBy] = useState('popular');
     const [category, setCategory] = useState('');
+
+    const { query } = useCollectionSearchStore();
     const { startLoading, stopLoading } = useUIStore();
 
+    const loadCollections = async () => {
+        startLoading();
+
+        const userPrompt = user ? `&userId=${user.id}` : '';
+        const categoryPrompt = category !== '' ? `&category=${category}` : '';
+        const queryPrompt = query !== '' ? `&query=${query}` : '';
+
+        const response = await fetch(
+            `/api/collections/search/?sortedBy=${sortedBy}&skip=${pagination * PAGE_SIZE}` +
+                categoryPrompt +
+                userPrompt +
+                queryPrompt,
+        );
+
+        if (response.status === 200) {
+            const data = await response.json();
+
+            setCollections([...data.data]);
+        }
+
+        stopLoading();
+    };
+
     useEffect(() => {
-        const loadCollections = async () => {
-            startLoading();
-
-            const userPrompt = user ? `&userId=${user.id}` : '';
-            const categoryPrompt = category !== '' ? `&category=${category}` : '';
-
-            const response = await fetch(
-                `/api/collections/search/?sortedBy=${sortedBy}&skip=${pagination * PAGE_SIZE}` +
-                    categoryPrompt +
-                    userPrompt,
-            );
-
-            if (response.status === 200) {
-                const data = await response.json();
-
-                setCollections([...data.data]);
-            }
-
-            stopLoading();
-        };
-
         loadCollections();
     }, [user, pagination, sortedBy, category]);
 
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            loadCollections();
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [user, pagination, sortedBy, category, query]);
+
     if (loading) return null;
+
+    // TODO: make visible only those collections which have more than 1 item inside
 
     return (
         <Suspense>
@@ -124,6 +139,8 @@ export default function HomePage() {
                             </MenuItem>
                         </Select>
                     </FormControl>
+
+                    <CollectionSearchBar />
                 </div>
 
                 <div className="collections-wrapper">

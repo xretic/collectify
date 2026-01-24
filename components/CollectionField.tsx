@@ -6,6 +6,7 @@ import { Avatar } from '@mui/material';
 import Link from 'next/link';
 
 export default function CollectionField({
+    id,
     author,
     authorAvatarUrl,
     authorId,
@@ -17,7 +18,7 @@ export default function CollectionField({
     items,
 }: CollectionFieldProps) {
     return (
-        <div className="collection-card">
+        <Link href={'/collections/' + id} className="collection-card">
             <div className="collection-banner">
                 <span className="collection-category">{category}</span>
                 <img src={bannerUrl} alt={name} className="collection-banner-img" />
@@ -49,6 +50,6 @@ export default function CollectionField({
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
