@@ -8,7 +8,7 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { Input } from 'antd';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     DESCRPITION_MAX_LENGTH,
     FULLNAME_MAX_LENGTH,
@@ -24,106 +24,122 @@ import SortBy from '@/components/SortBy';
 import { IconButton, Tooltip, Button } from '@mui/material';
 import { useDebounce } from '@/lib/useDebounce';
 
+type State = {
+    copied: boolean;
+    editing: boolean;
+    fullName: string;
+    username: string;
+    description: string;
+    bannerUrl: string;
+    avatarUrl: string;
+    errorMessage: string;
+    tab: string;
+};
+
 export default function ProfilePage() {
     const { user, loading, setUser } = useUser();
-    const [copied, setCopied] = useState(false);
-    const [editing, setEditing] = useState(false);
-    const [fullName, setFullName] = useState('');
-    const [username, setUserName] = useState('');
-    const [description, setDescription] = useState('');
-    const [bannerUrl, setBannerUrl] = useState('');
-    const [avatarUrl, setAvatarUrl] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+
+    const [state, setState] = useState<State>({
+        copied: false,
+        editing: false,
+        fullName: '',
+        username: '',
+        description: '',
+        bannerUrl: '',
+        avatarUrl: '',
+        errorMessage: '',
+        tab: '',
+    });
+
+    const updateState = <K extends keyof State>(key: K, value: State[K]) => {
+        setState((prev) => ({ ...prev, [key]: value }));
+    };
+
     const [collections, setCollections] = useState<any[]>([]);
-    const [tab, setTab] = useState('');
     const { startLoading, stopLoading, sortedBy } = useUIStore();
     const { profilePagination } = usePaginationStore();
 
-    const debouncedPagination = useDebounce(profilePagination, 300);
-    const debouncedSortedBy = useDebounce(sortedBy, 300);
+    const debouncedPagination = useDebounce(profilePagination, 400);
+    const debouncedSortedBy = useDebounce(sortedBy, 400);
+
+    const authorTab = user ? `&authorId=${user.id}` : '';
+    const favoritesTab = user ? `&favoritesUserId=${user.id}` : '';
 
     useEffect(() => {
-        if (loading) return;
-
-        loadCollections();
-    }, [loading, tab, debouncedPagination, debouncedSortedBy]);
-
-    if (!user) return;
-
-    const authorTab = `&authorId=${user.id}`;
-    const favoritesTab = `&favoritesUserId=${user.id}`;
-
-    const handleTabChoice = (choice: 'authorTab' | 'favoritesTab') => {
-        setTab(choice === 'authorTab' ? authorTab : favoritesTab);
-    };
+        if (user && !state.tab) {
+            updateState('tab', authorTab);
+        }
+    }, [user, authorTab, state.tab]);
 
     const loadCollections = async () => {
+        if (!user || !state.tab) return;
+
         startLoading();
+        try {
+            const response = await fetch(
+                `/api/collections/search/?skip=${debouncedPagination * PAGE_SIZE}&sortedBy=${debouncedSortedBy}${state.tab}`,
+            );
 
-        if (tab === '') {
-            setTab(authorTab);
+            if (response.ok) {
+                const data = await response.json();
+                setCollections(data.data);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            stopLoading();
         }
-
-        const response = await fetch(
-            `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}` +
-                tab,
-        );
-
-        if (response.status === 200) {
-            const data = await response.json();
-
-            setCollections(data.data);
-        }
-
-        stopLoading();
     };
+
+    useEffect(() => {
+        if (!user || loading || !state.tab) return;
+        loadCollections();
+    }, [user, loading, state.tab, debouncedPagination, debouncedSortedBy]);
+
+    const handleTabChoice = (choice: 'authorTab' | 'favoritesTab') => {
+        updateState('tab', choice === 'authorTab' ? authorTab : favoritesTab);
+    };
+
+    if (!user) return null;
 
     const handleEdit = () => {
-        setFullName(user.fullName);
-        setDescription(user.description);
-        setBannerUrl(user.bannerUrl);
-        setAvatarUrl(user.avatarUrl);
-        setUserName(user.username);
-        setEditing(true);
+        updateState('fullName', user.fullName);
+        updateState('username', user.username);
+        updateState('description', user.description);
+        updateState('bannerUrl', user.bannerUrl);
+        updateState('avatarUrl', user.avatarUrl);
+        updateState('editing', true);
     };
+
+    const handleCancel = () => updateState('editing', false);
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(user.username);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        updateState('copied', true);
+        setTimeout(() => updateState('copied', false), 2000);
     };
 
-    const waitForUploadcare = (): Promise<any> => {
-        return new Promise((resolve, reject) => {
+    const waitForUploadcare = (): Promise<any> =>
+        new Promise((resolve, reject) => {
             let attempts = 0;
-            const maxAttempts = 10;
-
             const interval = setInterval(() => {
                 if ((window as any).uploadcare) {
                     clearInterval(interval);
                     resolve((window as any).uploadcare);
-                } else if (++attempts >= maxAttempts) {
+                } else if (++attempts >= 10) {
                     clearInterval(interval);
                     reject(new Error('Uploadcare failed to load.'));
                 }
             }, 10);
         });
-    };
 
     const handleUpload = async (setUrl: (url: string) => void) => {
         try {
             const uploadcare = await waitForUploadcare();
-
             uploadcare
-                .openDialog(null, {
-                    imagesOnly: true,
-                    multiple: false,
-                    crop: 'free',
-                })
+                .openDialog(null, { imagesOnly: true, multiple: false, crop: 'free' })
                 .done((file: any) => {
-                    file.done((info: any) => {
-                        setUrl(info.cdnUrl);
-                    });
+                    file.done((info: any) => setUrl(info.cdnUrl));
                 });
         } catch (err) {
             console.error(err);
@@ -133,59 +149,58 @@ export default function ProfilePage() {
     const handleSave = async () => {
         const res = await fetch('/api/users/' + user.id, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                fullName,
-                description,
-                username,
-                bannerUrl,
-                avatarUrl,
+                fullName: state.fullName,
+                username: state.username,
+                description: state.description,
+                bannerUrl: state.bannerUrl,
+                avatarUrl: state.avatarUrl,
             }),
         });
 
         if (res.status === 409) {
-            setErrorMessage('User with this username already exists.');
-            setTimeout(() => setErrorMessage(''), 2000);
+            updateState('errorMessage', 'User with this username already exists.');
+            setTimeout(() => updateState('errorMessage', ''), 2000);
             return;
         }
 
         if (!res.ok) return;
 
         const updatedUser = await res.json();
-
         setUser(updatedUser.user);
-        setEditing(false);
-    };
-
-    const handleCancel = () => {
-        setEditing(false);
+        updateState('editing', false);
     };
 
     return (
         <header className="profile">
-            {copied && (
-                <div className={`toast ${copied ? 'show' : ''}`}>
+            {state.copied && (
+                <div className={`toast ${state.copied ? 'show' : ''}`}>
                     <Alert severity="success" variant="filled">
                         Copied.
                     </Alert>
                 </div>
             )}
-            {errorMessage.length > 0 && (
-                <div className={`toast ${errorMessage.length > 0 ? 'show' : ''}`}>
+            {state.errorMessage.length > 0 && (
+                <div className={`toast ${state.errorMessage.length > 0 ? 'show' : ''}`}>
                     <Alert severity="error" variant="filled">
-                        {errorMessage}
+                        {state.errorMessage}
                     </Alert>
                 </div>
             )}
             <div
-                onClick={editing ? () => handleUpload(setBannerUrl) : () => {}}
-                className={editing ? 'profile-cover-editing' : 'profile-cover'}
-                style={{ backgroundImage: `url(${editing ? bannerUrl : user.bannerUrl})` }}
+                onClick={
+                    state.editing
+                        ? () => handleUpload((url) => updateState('bannerUrl', url))
+                        : undefined
+                }
+                className={state.editing ? 'profile-cover-editing' : 'profile-cover'}
+                style={{
+                    backgroundImage: `url(${state.editing ? state.bannerUrl : user.bannerUrl})`,
+                }}
             />
             <nav className="profile-nav-bar">
-                {!editing && (
+                {!state.editing && (
                     <Tooltip title="Edit">
                         <IconButton
                             onClick={handleEdit}
@@ -199,7 +214,7 @@ export default function ProfilePage() {
                     </Tooltip>
                 )}
 
-                {editing && (
+                {state.editing && (
                     <div className="profile-editing-buttons">
                         <Tooltip title="Accept">
                             <IconButton
@@ -209,11 +224,11 @@ export default function ProfilePage() {
                                 aria-label="Accept"
                                 className="confim-btn"
                                 disabled={
-                                    !fullName.trim() ||
-                                    !username.trim() ||
-                                    !isUsernameValid(username) ||
-                                    fullName.length > FULLNAME_MAX_LENGTH ||
-                                    description.length > DESCRPITION_MAX_LENGTH
+                                    !state.fullName.trim() ||
+                                    !state.username.trim() ||
+                                    !isUsernameValid(state.username) ||
+                                    state.fullName.length > FULLNAME_MAX_LENGTH ||
+                                    state.description.length > DESCRPITION_MAX_LENGTH
                                 }
                             >
                                 <CheckIcon sx={{ color: '#afafaf' }} />
@@ -236,29 +251,34 @@ export default function ProfilePage() {
 
                 <div className="profile-header">
                     <Avatar
-                        className={editing ? 'profile-avatar-editing' : 'profile-avatar'}
-                        src={editing ? avatarUrl : user.avatarUrl}
+                        className={state.editing ? 'profile-avatar-editing' : 'profile-avatar'}
+                        src={state.editing ? state.avatarUrl : user.avatarUrl}
                         alt={user.username}
-                        onClick={editing ? () => handleUpload(setAvatarUrl) : () => {}}
+                        onClick={
+                            state.editing
+                                ? () => handleUpload((url) => updateState('avatarUrl', url))
+                                : undefined
+                        }
                     />
                     <div className="profile-info">
-                        {editing ? (
+                        {state.editing ? (
                             <>
                                 <Input
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
+                                    value={state.fullName}
+                                    onChange={(e) => updateState('fullName', e.target.value)}
                                     placeholder="Full Name"
                                     style={{ bottom: 10, marginBottom: '6px' }}
                                 />
                                 <Input
-                                    value={username}
-                                    onChange={(e) => setUserName(e.target.value)}
+                                    value={state.username}
+                                    onChange={(e) => updateState('username', e.target.value)}
                                     placeholder="@username"
+                                    maxLength={USERNAME_MAX_LENGTH}
                                     style={{ bottom: 10, marginBottom: '6px' }}
                                 />
                                 <Input.TextArea
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
+                                    value={state.description}
+                                    onChange={(e) => updateState('description', e.target.value)}
                                     placeholder="Description"
                                     autoSize={{ minRows: 2, maxRows: 4 }}
                                     style={{ bottom: 10, marginBottom: '6px' }}
@@ -282,7 +302,7 @@ export default function ProfilePage() {
 
             <div className="profile-collections-category">
                 <Button
-                    variant={tab === authorTab ? 'contained' : 'outlined'}
+                    variant={state.tab === authorTab ? 'contained' : 'outlined'}
                     onClick={() => handleTabChoice('authorTab')}
                     sx={{ borderRadius: 10 }}
                 >
@@ -291,7 +311,7 @@ export default function ProfilePage() {
                 </Button>
 
                 <Button
-                    variant={tab === favoritesTab ? 'contained' : 'outlined'}
+                    variant={state.tab === favoritesTab ? 'contained' : 'outlined'}
                     onClick={() => handleTabChoice('favoritesTab')}
                     sx={{ borderRadius: 10 }}
                 >

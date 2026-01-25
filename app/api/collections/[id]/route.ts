@@ -173,7 +173,7 @@ function getResData(
 
     return {
         id: collection.id,
-        author: collection.User.username,
+        author: collection.User.fullName,
         authorAvatarUrl: collection.User.avatarUrl,
         description: collection.description,
         authorId: collection.User.id,

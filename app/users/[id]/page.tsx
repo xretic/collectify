@@ -6,14 +6,55 @@ import Avatar from '@mui/material/Avatar';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import { useParams, useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
+import CollectionsWrapper from '@/components/CollectionsWrapper';
+import SortBy from '@/components/SortBy';
+import CollectionSearchBar from '@/components/CollectionSearchBar';
+import { useDebounce } from '@/lib/useDebounce';
+import { useUIStore } from '@/stores/uiStore';
+import { PAGE_SIZE } from '@/lib/constans';
+import { usePaginationStore } from '@/stores/paginationStore';
+import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 
 export default function ProfilePage() {
     const params = useParams();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
+
+    const [collections, setCollections] = useState<any[]>([]);
     const { user, loading } = useUser();
     const [pageUser, setUser] = useState<any>(null);
     const [copied, setCopied] = useState(false);
+
+    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { profilePagination } = usePaginationStore();
+    const { query } = useCollectionSearchStore();
+
+    const debouncedSortedBy = useDebounce(sortedBy, 400);
+    const debouncedPagination = useDebounce(profilePagination, 400);
+    const debouncedQuery = useDebounce(query, 400);
+
+    const queryParam = debouncedQuery.trim() === '' ? '' : `&query=${debouncedQuery}`;
+
     const router = useRouter();
+
+    const loadCollections = async () => {
+        startLoading();
+
+        const response = await fetch(
+            `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}${queryParam}`,
+        );
+
+        if (response.status === 200) {
+            const data = await response.json();
+
+            setCollections(data.data);
+        }
+
+        stopLoading();
+    };
+
+    useEffect(() => {
+        loadCollections();
+    }, [loading, debouncedQuery, debouncedPagination, debouncedSortedBy]);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -78,6 +119,17 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </nav>
+
+            <div className="profile-collections-category">
+                <CollectionSearchBar />
+                <SortBy />
+            </div>
+
+            <div className="profile-before-collections-line" />
+
+            <div className="profile-collections-wrapper">
+                <CollectionsWrapper collections={collections} page="profile" />
+            </div>
         </header>
     );
 }
