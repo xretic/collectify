@@ -4,11 +4,15 @@ import { useUser } from '@/context/UserProvider';
 import { useUIStore } from '@/stores/uiStore';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { Avatar } from '@mui/material';
+import { Button } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import DescriptionIcon from '@mui/icons-material/Description';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 export default function CollectionPage() {
     const params = useParams();
@@ -16,8 +20,10 @@ export default function CollectionPage() {
     const { user, loading } = useUser();
     const { startLoading, stopLoading } = useUIStore();
     const router = useRouter();
-
     const [collection, setCollection] = useState<CollectionPropsAdditional | null>(null);
+
+    const [liked, setLiked] = useState(false);
+    const [favorited, setFavorited] = useState(false);
 
     const loadCollectionData = async () => {
         startLoading();
@@ -26,6 +32,10 @@ export default function CollectionPage() {
         if (response.status === 200) {
             const data = await response.json();
             setCollection(data.data);
+            setLiked(Boolean(user && collection && collection.likes.some((x) => x.id === user.id)));
+            setFavorited(
+                Boolean(collection && collection.addedToFavorite.some((x) => x.id === user.id)),
+            );
         } else {
             router.replace('/');
         }
@@ -67,11 +77,34 @@ export default function CollectionPage() {
                 <div>{collection.items.length}</div>
             </div>
             <div className="collection-page-description-container">
-                <h1 className="collection-page-header">
-                    <DescriptionIcon sx={{ width: 20, height: 20 }} />
-                    Description
-                </h1>
+                <h1 className="collection-page-header">Description</h1>
                 <span className="collection-page-description">{collection.description}</span>
+
+                <div className="collection-page-actions">
+                    <Button
+                        icon={
+                            liked ? (
+                                <FavoriteIcon sx={{ width: 17, height: 17 }} />
+                            ) : (
+                                <FavoriteBorderIcon sx={{ width: 17, height: 17 }} />
+                            )
+                        }
+                    >
+                        {liked ? 'Unlike' : 'Like'}
+                    </Button>
+
+                    <Button
+                        icon={
+                            favorited ? (
+                                <BookmarkIcon sx={{ width: 17, height: 17 }} />
+                            ) : (
+                                <BookmarkBorderIcon sx={{ width: 17, height: 17 }} />
+                            )
+                        }
+                    >
+                        {favorited ? 'Remove' : 'Add'}
+                    </Button>
+                </div>
             </div>
         </>
     ) : null;

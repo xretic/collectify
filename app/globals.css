@@ -583,3 +583,9 @@
     font-size: 14px;
     color: #505050;
 }
+
+.collection-page-actions {
+    display: flex;
+    margin-top: 25px;
+    gap: 7px;
+}
