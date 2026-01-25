@@ -31,7 +31,9 @@ export default function CollectionField({
                 <h2 className="collection-title">{name}</h2>
 
                 <div
-                    onClick={() => {
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         router.replace('/users/' + authorId);
                     }}
                     className="collection-author"

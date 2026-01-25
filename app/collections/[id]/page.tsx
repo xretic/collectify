@@ -25,17 +25,21 @@ export default function CollectionPage() {
     const [liked, setLiked] = useState(false);
     const [favorited, setFavorited] = useState(false);
 
-    const loadCollectionData = async () => {
+    const loadCollectionData = async (action?: 'like' | 'dislike' | 'favorite' | 'unfavorite') => {
         startLoading();
-        const response = await fetch('/api/collections/' + id);
 
+        const url = action
+            ? `/api/collections/${id}?actionType=${action}`
+            : `/api/collections/${id}`;
+
+        const response = await fetch(url, {
+            method: action ? 'PATCH' : 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+        });
         if (response.status === 200) {
             const data = await response.json();
             setCollection(data.data);
-            setLiked(Boolean(user && collection && collection.likes.some((x) => x.id === user.id)));
-            setFavorited(
-                Boolean(collection && collection.addedToFavorite.some((x) => x.id === user.id)),
-            );
         } else {
             router.replace('/');
         }
@@ -43,9 +47,41 @@ export default function CollectionPage() {
         stopLoading();
     };
 
+    const handleLike = async () => {
+        const nextAction = liked ? 'dislike' : 'like';
+
+        setLiked(!liked);
+
+        try {
+            await loadCollectionData(nextAction);
+        } catch {
+            setLiked(liked);
+        }
+    };
+
+    const handleFavorite = async () => {
+        const nextAction = favorited ? 'unfavorite' : 'favorite';
+
+        setFavorited(!favorited);
+
+        try {
+            await loadCollectionData(nextAction);
+        } catch {
+            setFavorited(favorited);
+        }
+    };
+
     useEffect(() => {
         loadCollectionData();
     }, [id]);
+
+    useEffect(() => {
+        if (loading) return;
+        if (!user || !collection) return;
+
+        setLiked(collection.likes.some((x) => x.id === user.id));
+        setFavorited(collection.addedToFavorite.some((x) => x.id === user.id));
+    }, [loading, user, collection]);
 
     if (loading) return null;
 
@@ -82,6 +118,7 @@ export default function CollectionPage() {
 
                 <div className="collection-page-actions">
                     <Button
+                        onClick={handleLike}
                         icon={
                             liked ? (
                                 <FavoriteIcon sx={{ width: 17, height: 17 }} />
@@ -94,6 +131,7 @@ export default function CollectionPage() {
                     </Button>
 
                     <Button
+                        onClick={handleFavorite}
                         icon={
                             favorited ? (
                                 <BookmarkIcon sx={{ width: 17, height: 17 }} />
