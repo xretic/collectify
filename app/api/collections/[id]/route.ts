@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     });
 
     if (!collection || !collection.User) {
-        return NextResponse.json({ user: null }, { status: 404 });
+        return NextResponse.json({ data: null }, { status: 404 });
     }
 
     const resData = getResData(collection);
@@ -44,7 +44,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const actions = new Set(['like', 'dislike', 'favorite', 'unfavorite']);
 
     if (!token || !actionType || !actions.has(actionType)) {
-        return NextResponse.json({ user: null }, { status: 401 });
+        return NextResponse.json({ data: null }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     });
 
     if (!user) {
-        return NextResponse.json({ user: null }, { status: 401 });
+        return NextResponse.json({ data: null }, { status: 401 });
     }
 
     const actionConfig: Record<string, any> = {
@@ -112,7 +112,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     });
 
     if (!collection || !collection.User) {
-        return NextResponse.json({ user: null }, { status: 404 });
+        return NextResponse.json({ data: null }, { status: 404 });
     }
 
     const resData = getResData(collection);

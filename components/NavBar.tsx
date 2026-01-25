@@ -68,7 +68,7 @@ export default function NavBar() {
                             ) : (
                                 <HomeOutlinedIcon sx={buttonStyle} />
                             )}
-                            <span className="nav-text">Home</span>
+                            <span className="nav-text ml-0.5">Home</span>
                         </Link>
 
                         {user && (
@@ -85,7 +85,7 @@ export default function NavBar() {
                                 ) : (
                                     <AccountCircleOutlinedIcon sx={buttonStyle} />
                                 )}
-                                <span className="nav-text">Profile</span>
+                                <span className="nav-text ml-0.5">Profile</span>
                             </Link>
                         )}
 
@@ -102,7 +102,7 @@ export default function NavBar() {
                             ) : (
                                 <NotificationsOutlinedIcon sx={buttonStyle} />
                             )}
-                            <span className="nav-text">Notifications</span>
+                            <span className="nav-text ml-0.5">Notifications</span>
                         </Link>
                     </nav>
                 )}

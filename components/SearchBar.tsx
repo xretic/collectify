@@ -86,7 +86,7 @@ export default function SearchBar() {
                     {...params}
                     autoFocus
                     onBlur={() => setSearchBarOpened()}
-                    placeholder="Search users"
+                    placeholder="Find a user"
                     variant="outlined"
                     size="small"
                     InputProps={{

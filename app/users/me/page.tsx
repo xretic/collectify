@@ -7,9 +7,22 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Input } from 'antd';
-import { useState } from 'react';
-import { DESCRPITION_MAX_LENGTH, FULLNAME_MAX_LENGTH, USERNAME_MAX_LENGTH } from '@/lib/constans';
+import { Input } from 'antd';
+import { use, useEffect, useState } from 'react';
+import {
+    DESCRPITION_MAX_LENGTH,
+    FULLNAME_MAX_LENGTH,
+    PAGE_SIZE,
+    USERNAME_MAX_LENGTH,
+} from '@/lib/constans';
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
+import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import { useUIStore } from '@/stores/uiStore';
+import { usePaginationStore } from '@/stores/paginationStore';
+import CollectionsWrapper from '@/components/CollectionsWrapper';
+import SortBy from '@/components/SortBy';
+import { IconButton, Tooltip, Button } from '@mui/material';
+import { useDebounce } from '@/lib/useDebounce';
 
 export default function ProfilePage() {
     const { user, loading, setUser } = useUser();
@@ -21,9 +34,49 @@ export default function ProfilePage() {
     const [bannerUrl, setBannerUrl] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [collections, setCollections] = useState<any[]>([]);
+    const [tab, setTab] = useState('');
+    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { profilePagination } = usePaginationStore();
 
-    if (loading) return null;
+    const debouncedPagination = useDebounce(profilePagination, 300);
+    const debouncedSortedBy = useDebounce(sortedBy, 300);
+
+    useEffect(() => {
+        if (loading) return;
+
+        loadCollections();
+    }, [loading, tab, debouncedPagination, debouncedSortedBy]);
+
     if (!user) return;
+
+    const authorTab = `&authorId=${user.id}`;
+    const favoritesTab = `&favoritesUserId=${user.id}`;
+
+    const handleTabChoice = (choice: 'authorTab' | 'favoritesTab') => {
+        setTab(choice === 'authorTab' ? authorTab : favoritesTab);
+    };
+
+    const loadCollections = async () => {
+        startLoading();
+
+        if (tab === '') {
+            setTab(authorTab);
+        }
+
+        const response = await fetch(
+            `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}` +
+                tab,
+        );
+
+        if (response.status === 200) {
+            const data = await response.json();
+
+            setCollections(data.data);
+        }
+
+        stopLoading();
+    };
 
     const handleEdit = () => {
         setFullName(user.fullName);
@@ -119,7 +172,6 @@ export default function ProfilePage() {
                     </Alert>
                 </div>
             )}
-
             {errorMessage.length > 0 && (
                 <div className={`toast ${errorMessage.length > 0 ? 'show' : ''}`}>
                     <Alert severity="error" variant="filled">
@@ -127,55 +179,59 @@ export default function ProfilePage() {
                     </Alert>
                 </div>
             )}
-
             <div
                 onClick={editing ? () => handleUpload(setBannerUrl) : () => {}}
                 className={editing ? 'profile-cover-editing' : 'profile-cover'}
                 style={{ backgroundImage: `url(${editing ? bannerUrl : user.bannerUrl})` }}
             />
-
             <nav className="profile-nav-bar">
                 {!editing && (
-                    <Button
-                        className="profile-action-btn"
-                        onClick={handleEdit}
-                        shape="circle"
-                        icon={<EditOutlinedIcon />}
-                    />
+                    <Tooltip title="Edit">
+                        <IconButton
+                            onClick={handleEdit}
+                            type="button"
+                            sx={{ p: '6px' }}
+                            aria-label="Edit"
+                            className="profile-action-btn"
+                        >
+                            <EditOutlinedIcon sx={{ color: '#afafaf' }} />
+                        </IconButton>
+                    </Tooltip>
                 )}
 
                 {editing && (
-                    <>
-                        <Button
-                            style={{
-                                backgroundColor: '#74f878',
-                                borderColor: '#74f878',
-                                color: 'black',
-                            }}
-                            shape="circle"
-                            icon={<CheckIcon />}
-                            className="confim-btn"
-                            onClick={handleSave}
-                            disabled={
-                                !fullName.trim() ||
-                                !username.trim() ||
-                                !isUsernameValid(username) ||
-                                fullName.length > FULLNAME_MAX_LENGTH ||
-                                description.length > DESCRPITION_MAX_LENGTH
-                            }
-                        />
-                        <Button
-                            style={{
-                                backgroundColor: '#f55b5d',
-                                borderColor: '#f55b5d',
-                                color: 'black',
-                            }}
-                            shape="circle"
-                            icon={<CloseIcon />}
-                            className="close-btn"
-                            onClick={handleCancel}
-                        />
-                    </>
+                    <div className="profile-editing-buttons">
+                        <Tooltip title="Accept">
+                            <IconButton
+                                onClick={handleSave}
+                                type="button"
+                                sx={{ p: '6px' }}
+                                aria-label="Accept"
+                                className="confim-btn"
+                                disabled={
+                                    !fullName.trim() ||
+                                    !username.trim() ||
+                                    !isUsernameValid(username) ||
+                                    fullName.length > FULLNAME_MAX_LENGTH ||
+                                    description.length > DESCRPITION_MAX_LENGTH
+                                }
+                            >
+                                <CheckIcon sx={{ color: '#afafaf' }} />
+                            </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Cancel changes">
+                            <IconButton
+                                onClick={handleCancel}
+                                type="button"
+                                sx={{ p: '6px' }}
+                                aria-label="Cancel"
+                                className="close-btn"
+                            >
+                                <CloseIcon sx={{ color: '#afafaf' }} />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 )}
 
                 <div className="profile-header">
@@ -223,6 +279,39 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </nav>
+
+            <div className="profile-collections-category">
+                <Button
+                    variant={tab === authorTab ? 'contained' : 'outlined'}
+                    onClick={() => handleTabChoice('authorTab')}
+                    sx={{ borderRadius: 10 }}
+                >
+                    <AutoAwesomeMosaicIcon sx={{ width: 18, height: 18 }} />
+                    <span className="ml-1">Created</span>
+                </Button>
+
+                <Button
+                    variant={tab === favoritesTab ? 'contained' : 'outlined'}
+                    onClick={() => handleTabChoice('favoritesTab')}
+                    sx={{ borderRadius: 10 }}
+                >
+                    <BookmarksIcon
+                        sx={{
+                            width: 18,
+                            height: 18,
+                        }}
+                    />
+                    <span className="ml-1">Favorites</span>
+                </Button>
+
+                <SortBy />
+            </div>
+
+            <div className="profile-before-collections-line" />
+
+            <div className="profile-collections-wrapper">
+                <CollectionsWrapper collections={collections} page="profile" />
+            </div>
         </header>
     );
 }

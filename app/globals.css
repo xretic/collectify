@@ -57,7 +57,7 @@
 
 .profile-nav-bar {
     background-color: #ffffff;
-    max-width: 1100px;
+    max-width: 1150px;
     margin: -80px auto 0;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -65,25 +65,28 @@
     position: relative;
 }
 
-.profile-action-btn {
+.profile-nav-bar .profile-action-btn,
+.profile-nav-bar .confim-btn,
+.profile-nav-bar .close-btn {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 10px;
+    right: 10px;
     text-transform: none;
 }
 
-.confim-btn {
-    position: absolute;
-    top: 50px;
-    right: 14px;
-    text-transform: none;
+.profile-nav-bar .profile-action-btn {
+    right: 10px;
 }
 
-.close-btn {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    text-transform: none;
+.profile-nav-bar .confim-btn {
+    right: 50px;
+}
+
+@media (max-width: 600px) {
+    .profile-nav-bar .confim-btn {
+        right: 10px;
+        top: 40px;
+    }
 }
 
 .profile-header {
@@ -360,6 +363,15 @@
     box-sizing: border-box;
 }
 
+.profile-collections-wrapper {
+    max-width: 1220px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 auto;
+    margin: 0px auto;
+    padding: 0px 32px;
+}
+
 .collection-card {
     display: flex;
     flex-direction: column;
@@ -550,15 +562,15 @@
 
 @media (max-width: 700px) {
     .collection-page-title {
-        margin-left: 50px;
+        margin-left: 20px;
     }
 
     .collection-page-author {
-        margin-left: 50px;
+        margin-left: 20px;
     }
 
     .collection-page-category {
-        margin-left: 50px;
+        margin-left: 20px;
     }
 }
 
@@ -572,7 +584,7 @@
 }
 
 .collection-page-header {
-    font-size: 17px;
+    font-size: 20px;
     font-family: var(--font-google-sans), sans-serif;
     font-weight: 500;
     color: #000000;
@@ -588,4 +600,35 @@
     display: flex;
     margin-top: 25px;
     gap: 7px;
+}
+
+.favorite-button-yellow-outline {
+    color: #faad14;
+    border: 1px solid #faad14;
+    background: transparent;
+}
+
+.favorite-button-yellow-outline:hover {
+    color: #d48806;
+    border-color: #d48806;
+}
+
+.favorite-button-yellow-outline:active {
+    color: #faad14;
+    border-color: #faad14;
+}
+
+.profile-collections-category {
+    display: flex;
+    left: 45px;
+    gap: 6px;
+    max-width: 1110px;
+    margin: 15px auto;
+}
+
+.profile-before-collections-line {
+    position: relative;
+    max-width: 1110px;
+    margin: 0 auto;
+    border-top: 1px solid #d1d5db;
 }

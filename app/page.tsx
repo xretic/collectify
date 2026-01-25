@@ -1,35 +1,25 @@
 'use client';
 
-import CollectionField from '@/components/CollectionField';
 import { useUser } from '@/context/UserProvider';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
-import {
-    Avatar,
-    Button,
-    FormControl,
-    IconButton,
-    InputLabel,
-    MenuItem,
-    Select,
-    Tooltip,
-} from '@mui/material';
+import { Avatar, Button } from '@mui/material';
 import { Suspense, useEffect, useState } from 'react';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import CollectionSearchBar from '@/components/CollectionSearchBar';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
+import { usePaginationStore } from '@/stores/paginationStore';
+import CollectionsWrapper from '@/components/CollectionsWrapper';
+import SortBy from '@/components/SortBy';
 
 export default function HomePage() {
     const { user, loading } = useUser();
 
     const [collections, setCollections] = useState<any[]>([]);
-    const [pagination, setPagination] = useState(0);
-    const [sortedBy, setSortedBy] = useState('popular');
     const [category, setCategory] = useState('');
 
     const { query } = useCollectionSearchStore();
-    const { startLoading, stopLoading } = useUIStore();
+    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { homePagination } = usePaginationStore();
 
     const loadCollections = async () => {
         startLoading();
@@ -39,7 +29,7 @@ export default function HomePage() {
         const queryPrompt = query !== '' ? `&query=${query}` : '';
 
         const response = await fetch(
-            `/api/collections/search/?sortedBy=${sortedBy}&skip=${pagination * PAGE_SIZE}` +
+            `/api/collections/search/?sortedBy=${sortedBy}&skip=${homePagination * PAGE_SIZE}` +
                 categoryPrompt +
                 userPrompt +
                 queryPrompt,
@@ -55,15 +45,11 @@ export default function HomePage() {
     };
 
     useEffect(() => {
-        loadCollections();
-    }, [user, pagination, sortedBy, category]);
+        if (loading) return;
 
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            loadCollections();
-        }, 400);
+        const handler = setTimeout(loadCollections, 400);
         return () => clearTimeout(handler);
-    }, [user, pagination, sortedBy, category, query]);
+    }, [loading, homePagination, sortedBy, category, query]);
 
     if (loading) return null;
 
@@ -109,86 +95,10 @@ export default function HomePage() {
                         </Button>
                     ))}
 
-                    <FormControl
-                        sx={{
-                            ml: { xs: 0, sm: 'auto' },
-                            mt: { xs: 2, sm: 0 },
-                            width: { xs: '100%', sm: '100%', lg: 110, xl: 110 },
-                        }}
-                    >
-                        <InputLabel id="sort-select-label">Sorted by</InputLabel>
-
-                        <Select
-                            labelId="sort-select-label"
-                            id="sort-select"
-                            value={sortedBy}
-                            label="Sorted by"
-                            sx={{
-                                height: 40,
-                                borderRadius: 5,
-                            }}
-                        >
-                            <MenuItem value="popular" onClick={() => setSortedBy('popular')}>
-                                Popular
-                            </MenuItem>
-                            <MenuItem value="newest" onClick={() => setSortedBy('newest')}>
-                                Newest
-                            </MenuItem>
-                            <MenuItem value="old" onClick={() => setSortedBy('old')}>
-                                Oldest
-                            </MenuItem>
-                        </Select>
-                    </FormControl>
-
+                    <SortBy />
                     <CollectionSearchBar />
                 </div>
-
-                <div className="collections-wrapper">
-                    {collections.length > 0 ? (
-                        collections.map((x) => (
-                            <CollectionField
-                                key={x.id}
-                                id={x.id}
-                                author={x.author}
-                                authorId={x.authorId}
-                                authorAvatarUrl={x.authorAvatarUrl}
-                                bannerUrl={x.bannerUrl}
-                                name={x.name}
-                                category={x.category}
-                                likes={x.likes}
-                                addedToFavorite={x.addedToFavorite}
-                                items={x.items}
-                            />
-                        ))
-                    ) : (
-                        <div className="nothing-is-here">We found nothing.</div>
-                    )}
-                </div>
-
-                <div className="pagination-wrapper">
-                    <Tooltip title="Previous page">
-                        <IconButton
-                            disabled={pagination === 0}
-                            type="button"
-                            onClick={() => setPagination(pagination - 1)}
-                            sx={{ p: '10px' }}
-                            aria-label="search"
-                        >
-                            <KeyboardArrowLeftIcon sx={{ color: '#afafaf' }} />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Next page">
-                        <IconButton
-                            onClick={() => setPagination(pagination + 1)}
-                            type="button"
-                            disabled={collections.length === 0 || collections.length < PAGE_SIZE}
-                            sx={{ p: '10px' }}
-                            aria-label="search"
-                        >
-                            <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
-                        </IconButton>
-                    </Tooltip>
-                </div>
+                <CollectionsWrapper collections={collections} page="home" />
             </div>
         </Suspense>
     );

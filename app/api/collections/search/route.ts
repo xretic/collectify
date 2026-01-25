@@ -48,13 +48,34 @@ export async function GET(req: NextRequest) {
     const skip = Number(searchParams.get('skip'));
     const query = searchParams.get('query');
 
+    const authorId = Number(searchParams.get('authorId'));
+    const favoritesUserId = Number(searchParams.get('favoritesUserId'));
+
     const excludedIds: number[] = [];
 
-    if (!sortedBy || isNaN(skip)) {
+    if (!sortedBy || isNaN(skip) || isNaN(authorId) || isNaN(favoritesUserId)) {
         return NextResponse.json(
             { message: 'You should set skip and sortedBy value' },
             { status: 400 },
         );
+    }
+
+    if (favoritesUserId) {
+        const token = req.cookies.get('token')?.value;
+
+        if (!token) {
+            return NextResponse.json({ data: null }, { status: 401 });
+        }
+
+        const user = await prisma.user.findUnique({
+            where: {
+                token,
+            },
+        });
+
+        if (!user || user?.id !== favoritesUserId) {
+            return NextResponse.json({ data: null }, { status: 401 });
+        }
     }
 
     if (!isSortOption(sortedBy)) {
@@ -107,7 +128,11 @@ export async function GET(req: NextRequest) {
         const publicCollections = await prisma.collection.findMany({
             where: {
                 id: { notIn: excludedIds },
+                ...(authorId && { userId: authorId }),
                 ...(category && { category }),
+                ...(favoritesUserId && {
+                    addedToFavorite: { some: { id: favoritesUserId } },
+                }),
                 name: {
                     startsWith: query ? query : '',
                 },

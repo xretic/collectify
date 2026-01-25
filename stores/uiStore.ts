@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+type SortType = 'popular' | 'newest' | 'old';
+
 interface UIState {
     anchorEl: HTMLElement | null;
     setAnchorEl: (el: HTMLElement | null) => void;
@@ -12,6 +14,9 @@ interface UIState {
     loadingCount: number;
     startLoading: () => void;
     stopLoading: () => void;
+
+    sortedBy: SortType;
+    setSortedBy: (value: SortType) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -29,4 +34,7 @@ export const useUIStore = create<UIState>((set) => ({
         set((state) => ({
             loadingCount: Math.max(0, state.loadingCount - 1),
         })),
+
+    sortedBy: 'popular',
+    setSortedBy: (value: SortType) => set(() => ({ sortedBy: value })),
 }));

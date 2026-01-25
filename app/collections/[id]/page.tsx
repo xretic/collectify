@@ -3,8 +3,8 @@
 import { useUser } from '@/context/UserProvider';
 import { useUIStore } from '@/stores/uiStore';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
-import { Avatar } from '@mui/material';
-import { Button } from 'antd';
+import { Alert, Avatar } from '@mui/material';
+import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -21,7 +21,7 @@ export default function CollectionPage() {
     const { startLoading, stopLoading } = useUIStore();
     const router = useRouter();
     const [collection, setCollection] = useState<CollectionPropsAdditional | null>(null);
-
+    const [unAuthorizedError, setUnAuthorized] = useState(false);
     const [liked, setLiked] = useState(false);
     const [favorited, setFavorited] = useState(false);
 
@@ -45,6 +45,11 @@ export default function CollectionPage() {
         }
 
         stopLoading();
+    };
+
+    const handleUnauthorized = () => {
+        setUnAuthorized(true);
+        setTimeout(() => setUnAuthorized(false), 2000);
     };
 
     const handleLike = async () => {
@@ -87,6 +92,14 @@ export default function CollectionPage() {
 
     return collection ? (
         <>
+            {unAuthorizedError && (
+                <div className={`toast ${unAuthorizedError ? 'show' : ''}`}>
+                    <Alert severity="warning" variant="filled">
+                        You must be authorized to do this.
+                    </Alert>
+                </div>
+            )}
+
             <div className="collection-page-title-container">
                 <span className="collection-page-title">{collection.name}</span>
                 <span className="collection-page-category">{collection.category}</span>
@@ -118,7 +131,8 @@ export default function CollectionPage() {
 
                 <div className="collection-page-actions">
                     <Button
-                        onClick={handleLike}
+                        danger
+                        onClick={user ? handleLike : handleUnauthorized}
                         icon={
                             liked ? (
                                 <FavoriteIcon sx={{ width: 17, height: 17 }} />
@@ -130,18 +144,30 @@ export default function CollectionPage() {
                         {liked ? 'Unlike' : 'Like'}
                     </Button>
 
-                    <Button
-                        onClick={handleFavorite}
-                        icon={
-                            favorited ? (
-                                <BookmarkIcon sx={{ width: 17, height: 17 }} />
-                            ) : (
-                                <BookmarkBorderIcon sx={{ width: 17, height: 17 }} />
-                            )
-                        }
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Button: {
+                                    colorBgTextHover: 'rgba(250, 173, 20, 0.10)',
+                                    colorPrimaryHover: '#ffc247',
+                                },
+                            },
+                        }}
                     >
-                        {favorited ? 'Remove' : 'Add'}
-                    </Button>
+                        <Button
+                            className="favorite-button-yellow-outline"
+                            onClick={user ? handleFavorite : handleUnauthorized}
+                            icon={
+                                favorited ? (
+                                    <BookmarkIcon sx={{ width: 17, height: 17 }} />
+                                ) : (
+                                    <BookmarkBorderIcon sx={{ width: 17, height: 17 }} />
+                                )
+                            }
+                        >
+                            {favorited ? 'Remove' : 'Add'}
+                        </Button>
+                    </ConfigProvider>
                 </div>
             </div>
         </>
