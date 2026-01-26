@@ -304,10 +304,12 @@ export default function ProfilePage() {
                 <Button
                     variant={state.tab === authorTab ? 'contained' : 'outlined'}
                     onClick={() => handleTabChoice('authorTab')}
-                    sx={{ borderRadius: 10 }}
+                    sx={{
+                        borderRadius: 10,
+                    }}
                 >
                     <AutoAwesomeMosaicIcon sx={{ width: 18, height: 18 }} />
-                    <span className="ml-1">Created</span>
+                    <span className="category-text ml-1">Created</span>
                 </Button>
 
                 <Button
@@ -321,10 +323,10 @@ export default function ProfilePage() {
                             height: 18,
                         }}
                     />
-                    <span className="ml-1">Favorites</span>
+                    <span className="category-text ml-1">Favorites</span>
                 </Button>
 
-                <SortBy />
+                <SortBy disabled={collections.length === 0} />
             </div>
 
             <div className="profile-before-collections-line" />

@@ -20,6 +20,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import { IconButton, Tooltip } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function NavBar() {
     const { user, loading } = useUser();
@@ -122,16 +123,28 @@ export default function NavBar() {
                             {searchBarOpened ? (
                                 <SearchBar />
                             ) : (
-                                <Tooltip title="Search">
-                                    <IconButton
-                                        onClick={setSearchBarOpened}
-                                        type="button"
-                                        sx={{ p: '6px' }}
-                                        aria-label="search"
-                                    >
-                                        <SearchIcon sx={{ color: '#afafaf' }} />
-                                    </IconButton>
-                                </Tooltip>
+                                <>
+                                    <Tooltip title="Create collection">
+                                        <IconButton
+                                            type="button"
+                                            sx={{ p: '6px' }}
+                                            aria-label="search"
+                                        >
+                                            <AddIcon sx={{ color: '#afafaf' }} />
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    <Tooltip title="Search">
+                                        <IconButton
+                                            onClick={setSearchBarOpened}
+                                            type="button"
+                                            sx={{ p: '6px' }}
+                                            aria-label="search"
+                                        >
+                                            <SearchIcon sx={{ color: '#afafaf' }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                </>
                             )}
                         </div>
                     )}
@@ -146,7 +159,10 @@ export default function NavBar() {
                             className="auth-panel"
                             style={{ display: 'flex', alignItems: 'center', gap: 8 }}
                         >
-                            <span ref={usernameRef} className="font-medium text-gray-800">
+                            <span
+                                ref={usernameRef}
+                                className="nav-right-username font-medium text-gray-800"
+                            >
                                 {user.username}
                             </span>
                             <Avatar

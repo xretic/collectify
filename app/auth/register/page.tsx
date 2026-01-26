@@ -93,7 +93,6 @@ export default function RegisterPage() {
             }
         >
             <Box
-                className="auth-page"
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -101,8 +100,10 @@ export default function RegisterPage() {
                     gap: 2,
                 }}
             >
-                <h1 className="auth-header">Registration</h1>
-                <p className="auth-paragraph">In order to use the site fully, you must register.</p>
+                <h1 className="auth-header text-black text-[50px] mt-[210px]">Registration</h1>
+                <p className="text-[rgb(90,90,90)]">
+                    In order to use the site fully, you must register.
+                </p>
 
                 <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 400 }}>
                     <Controller

@@ -81,12 +81,11 @@ export default function LoginPage() {
                 </Box>
             }
         >
-            <Box
-                className="auth-page"
-                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}
-            >
-                <h1 className="auth-header">Login</h1>
-                <p className="auth-paragraph">Enter your credentials to access your account.</p>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                <h1 className="auth-header text-black text-[50px] mt-[210px]">Login</h1>
+                <p className="text-[rgb(90,90,90)]">
+                    Enter your credentials to access your account.
+                </p>
 
                 <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 400 }}>
                     <Controller
@@ -108,7 +107,6 @@ export default function LoginPage() {
                                 placeholder="Write your email"
                                 fullWidth
                                 variant="standard"
-                                className="auth-textfield"
                                 error={!!fieldState.error}
                                 helperText={fieldState.error ? fieldState.error.message : ' '}
                                 onChange={(e) => {
@@ -135,7 +133,6 @@ export default function LoginPage() {
                                 placeholder="Write your password"
                                 fullWidth
                                 variant="standard"
-                                className="auth-textfield"
                                 error={!!fieldState.error}
                                 helperText={fieldState.error ? fieldState.error.message : ' '}
                                 sx={{ mt: 2 }}

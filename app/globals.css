@@ -82,13 +82,6 @@
     right: 50px;
 }
 
-@media (max-width: 600px) {
-    .profile-nav-bar .confim-btn {
-        right: 10px;
-        top: 40px;
-    }
-}
-
 .profile-header {
     display: flex;
     align-items: flex-start;
@@ -139,18 +132,6 @@
     gap: 0px;
 }
 
-@media (max-width: 420px) {
-    .profile-info {
-        width: 120;
-    }
-}
-
-@media (max-width: 340px) {
-    .profile-info {
-        width: 90;
-    }
-}
-
 .profile-name {
     font-size: 30px;
     font-weight: 600;
@@ -199,18 +180,6 @@
     transform: translateX(-50%);
 }
 
-@media (max-width: 1200px) {
-    .nav-bar-navigation .nav-text {
-        display: none;
-    }
-}
-
-@media (max-width: 750px) {
-    .nav-bar-navigation {
-        display: none;
-    }
-}
-
 .search-bar-form {
     display: flex;
     align-items: center;
@@ -221,26 +190,6 @@
     transition:
         width 0.3s,
         height 0.3s;
-}
-
-@media (max-width: 1000px) {
-    .search-bar-form {
-        width: 170px;
-        height: 40px;
-    }
-}
-
-@media (max-width: 600px) {
-    .search-bar-form {
-        width: 110px;
-        height: 40px;
-    }
-}
-
-@media (max-width: 200px) {
-    .search-bar-form {
-        display: none;
-    }
 }
 
 .navigation-button {
@@ -307,13 +256,6 @@
 
 .auth-header {
     font-family: var(--font-google-sans), sans-serif;
-    color: black;
-    font-size: 50px;
-    margin-top: 210px;
-}
-
-.auth-paragraph {
-    color: rgb(90, 90, 90);
 }
 
 .toast {
@@ -560,20 +502,6 @@
     backdrop-filter: blur(12px);
 }
 
-@media (max-width: 700px) {
-    .collection-page-title {
-        margin-left: 20px;
-    }
-
-    .collection-page-author {
-        margin-left: 20px;
-    }
-
-    .collection-page-category {
-        margin-left: 20px;
-    }
-}
-
 .collection-page-description-container {
     background-color: #ffffff;
     max-width: 1450px;
@@ -631,4 +559,79 @@
     max-width: 1110px;
     margin: 0 auto;
     border-top: 1px solid #d1d5db;
+}
+
+@media (max-width: 700px) {
+    .collection-page-title,
+    .collection-page-author,
+    .collection-page-category {
+        margin-left: 20px;
+    }
+
+    .nav-right .nav-right-username {
+        display: none;
+    }
+
+    .nav-right .auth-panel-search-btn {
+        transform: translateY(-50%) translateX(95px);
+    }
+}
+
+@media (max-width: 300px) {
+    .nav-right .auth-panel-search-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 1000px) {
+    .profile-collections-category .category-text {
+        display: none;
+    }
+
+    .search-bar-form {
+        width: 170px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .search-bar-form {
+        width: 110px;
+        height: 40px;
+    }
+
+    .profile-nav-bar .confim-btn {
+        right: 10px;
+        top: 40px;
+    }
+}
+
+@media (max-width: 200px) {
+    .search-bar-form {
+        display: none;
+    }
+}
+
+@media (max-width: 1200px) {
+    .nav-bar-navigation .nav-text {
+        display: none;
+    }
+}
+
+@media (max-width: 750px) {
+    .nav-bar-navigation {
+        display: none;
+    }
+}
+
+@media (max-width: 420px) {
+    .profile-info {
+        width: 120px;
+    }
+}
+
+@media (max-width: 340px) {
+    .profile-info {
+        width: 90px;
+    }
 }

@@ -3,11 +3,16 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function CollectionSearchBar() {
+interface CollectionSearchBarProps {
+    disabled: boolean;
+}
+
+export default function CollectionSearchBar({ disabled }: CollectionSearchBarProps) {
     const { query, setQuery, resetQuery } = useCollectionSearchStore();
 
     return (
         <TextField
+            disabled={disabled}
             placeholder="Search"
             variant="outlined"
             onChange={(x) => setQuery(x.target.value)}

@@ -1,11 +1,16 @@
 import { useUIStore } from '@/stores/uiStore';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
-export default function SortBy() {
+interface SortByProps {
+    disabled: boolean;
+}
+
+export default function SortBy({ disabled }: SortByProps) {
     const { sortedBy, setSortedBy } = useUIStore();
 
     return (
         <FormControl
+            disabled={disabled}
             sx={{
                 ml: { xs: 0, sm: 'auto' },
                 mt: { xs: 2, sm: 0 },

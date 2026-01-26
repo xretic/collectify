@@ -21,7 +21,6 @@ export default function CollectionPage() {
     const { startLoading, stopLoading } = useUIStore();
     const router = useRouter();
     const [collection, setCollection] = useState<CollectionPropsAdditional | null>(null);
-    const [unAuthorizedError, setUnAuthorized] = useState(false);
     const [liked, setLiked] = useState(false);
     const [favorited, setFavorited] = useState(false);
 
@@ -45,11 +44,6 @@ export default function CollectionPage() {
         }
 
         stopLoading();
-    };
-
-    const handleUnauthorized = () => {
-        setUnAuthorized(true);
-        setTimeout(() => setUnAuthorized(false), 2000);
     };
 
     const handleLike = async () => {
@@ -92,14 +86,6 @@ export default function CollectionPage() {
 
     return collection ? (
         <>
-            {unAuthorizedError && (
-                <div className={`toast ${unAuthorizedError ? 'show' : ''}`}>
-                    <Alert severity="warning" variant="filled">
-                        You must be authorized to do this.
-                    </Alert>
-                </div>
-            )}
-
             <div className="collection-page-title-container">
                 <span className="collection-page-title">{collection.name}</span>
                 <span className="collection-page-category">{collection.category}</span>
@@ -111,7 +97,9 @@ export default function CollectionPage() {
                     sizes="100vw"
                     className="object-cover"
                 />
-                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/50 to-transparent pointer-events-none"></div>
+
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/50 to-transparent pointer-events-none" />
+
                 <Link href={'/users/' + collection.authorId} className="collection-page-author">
                     <Avatar
                         alt={collection.author}
@@ -132,7 +120,8 @@ export default function CollectionPage() {
                 <div className="collection-page-actions">
                     <Button
                         danger
-                        onClick={user ? handleLike : handleUnauthorized}
+                        onClick={handleLike}
+                        disabled={!user}
                         icon={
                             liked ? (
                                 <FavoriteIcon sx={{ width: 17, height: 17 }} />
@@ -156,7 +145,8 @@ export default function CollectionPage() {
                     >
                         <Button
                             className="favorite-button-yellow-outline"
-                            onClick={user ? handleFavorite : handleUnauthorized}
+                            onClick={handleFavorite}
+                            disabled={!user}
                             icon={
                                 favorited ? (
                                     <BookmarkIcon sx={{ width: 17, height: 17 }} />

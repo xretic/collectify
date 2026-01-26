@@ -40,7 +40,7 @@ export default function ProfilePage() {
         startLoading();
 
         const response = await fetch(
-            `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}${queryParam}`,
+            `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}${queryParam}&authorId=${id}`,
         );
 
         if (response.status === 200) {
@@ -121,8 +121,8 @@ export default function ProfilePage() {
             </nav>
 
             <div className="profile-collections-category">
-                <CollectionSearchBar />
-                <SortBy />
+                <CollectionSearchBar disabled={debouncedQuery === '' && collections.length === 0} />
+                <SortBy disabled={collections.length === 0} />
             </div>
 
             <div className="profile-before-collections-line" />

@@ -95,8 +95,8 @@ export default function HomePage() {
                         </Button>
                     ))}
 
-                    <SortBy />
-                    <CollectionSearchBar />
+                    <SortBy disabled={collections.length === 0} />
+                    <CollectionSearchBar disabled={query === '' && collections.length === 0} />
                 </div>
                 <CollectionsWrapper collections={collections} page="home" />
             </div>
