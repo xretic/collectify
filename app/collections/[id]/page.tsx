@@ -3,7 +3,7 @@
 import { useUser } from '@/context/UserProvider';
 import { useUIStore } from '@/stores/uiStore';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
-import { Alert, Avatar } from '@mui/material';
+import { Avatar } from '@mui/material';
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,6 +13,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import styles from '../collections.module.css';
 
 export default function CollectionPage() {
     const params = useParams();
@@ -86,9 +87,9 @@ export default function CollectionPage() {
 
     return collection ? (
         <>
-            <div className="collection-page-title-container">
-                <span className="collection-page-title">{collection.name}</span>
-                <span className="collection-page-category">{collection.category}</span>
+            <div className={styles['container']}>
+                <span className={styles['title']}>{collection.name}</span>
+                <span className={styles['category']}>{collection.category}</span>
                 <Image
                     src={collection?.bannerUrl ?? '/'}
                     alt="Banner"
@@ -100,7 +101,7 @@ export default function CollectionPage() {
 
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/50 to-transparent pointer-events-none" />
 
-                <Link href={'/users/' + collection.authorId} className="collection-page-author">
+                <Link href={'/users/' + collection.authorId} className={styles['author']}>
                     <Avatar
                         alt={collection.author}
                         src={collection.authorAvatarUrl}
@@ -113,11 +114,11 @@ export default function CollectionPage() {
 
                 <div>{collection.items.length}</div>
             </div>
-            <div className="collection-page-description-container">
-                <h1 className="collection-page-header">Description</h1>
-                <span className="collection-page-description">{collection.description}</span>
+            <div className={styles['description-container']}>
+                <h1 className={styles['header']}>Description</h1>
+                <span className={styles['description']}>{collection.description}</span>
 
-                <div className="collection-page-actions">
+                <div className={styles['actions']}>
                     <Button
                         danger
                         onClick={handleLike}
@@ -144,7 +145,7 @@ export default function CollectionPage() {
                         }}
                     >
                         <Button
-                            className="favorite-button-yellow-outline"
+                            className={!user ? '' : styles['favorite-button-yellow-outline']}
                             onClick={handleFavorite}
                             disabled={!user}
                             icon={

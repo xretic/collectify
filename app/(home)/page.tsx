@@ -5,11 +5,12 @@ import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
 import { Avatar, Button } from '@mui/material';
 import { Suspense, useEffect, useState } from 'react';
-import CollectionSearchBar from '@/components/CollectionSearchBar';
+import CollectionSearchBar from '@/components/CollectionSearchBar/CollectionSearchBar';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import { usePaginationStore } from '@/stores/paginationStore';
-import CollectionsWrapper from '@/components/CollectionsWrapper';
-import SortBy from '@/components/SortBy';
+import CollectionsWrapper from '@/components/CollectionsWrapper/CollectionsWrapper';
+import SortBy from '@/components/SortBy/SortBy';
+import styles from './home.module.css';
 
 export default function HomePage() {
     const { user, loading } = useUser();
@@ -57,9 +58,9 @@ export default function HomePage() {
 
     return (
         <Suspense>
-            <div className="home-page-container">
+            <div className={styles['container']}>
                 <div>
-                    <div className="home-page-title">
+                    <div className={styles['title']}>
                         {user ? (
                             <>
                                 <Avatar
@@ -75,7 +76,7 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                <div className="buttons-wrapper">
+                <div className={styles['categories']}>
                     <Button
                         onClick={() => setCategory('')}
                         variant={category === '' ? 'contained' : 'outlined'}

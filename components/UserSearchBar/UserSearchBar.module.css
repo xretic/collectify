@@ -1,0 +1,24 @@
+.container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    bottom: 1;
+    width: 310px;
+    height: 45px;
+    transition:
+        width 0.3s,
+        height 0.3s;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 110px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 200px) {
+    .container {
+        display: none;
+    }
+}

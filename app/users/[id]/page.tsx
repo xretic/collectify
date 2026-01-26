@@ -6,14 +6,15 @@ import Avatar from '@mui/material/Avatar';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import { useParams, useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
-import CollectionsWrapper from '@/components/CollectionsWrapper';
-import SortBy from '@/components/SortBy';
-import CollectionSearchBar from '@/components/CollectionSearchBar';
+import CollectionsWrapper from '@/components/CollectionsWrapper/CollectionsWrapper';
+import SortBy from '@/components/SortBy/SortBy';
+import CollectionSearchBar from '@/components/CollectionSearchBar/CollectionSearchBar';
 import { useDebounce } from '@/lib/useDebounce';
 import { useUIStore } from '@/stores/uiStore';
 import { PAGE_SIZE } from '@/lib/constans';
 import { usePaginationStore } from '@/stores/paginationStore';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
+import styles from '../users.module.css';
 
 export default function ProfilePage() {
     const params = useParams();
@@ -82,7 +83,7 @@ export default function ProfilePage() {
     };
 
     return (
-        <header className="profile">
+        <header className={styles.profile}>
             {copied && (
                 <div className={`toast ${copied ? 'show' : ''}`}>
                     <Alert severity="success" variant="filled">
@@ -92,24 +93,24 @@ export default function ProfilePage() {
             )}
 
             <div
-                className={'profile-cover'}
+                className={styles.cover}
                 style={{ backgroundImage: `url(${pageUser.bannerUrl})` }}
             />
 
-            <nav className="profile-nav-bar">
-                <div className="profile-header">
+            <nav className={styles['nav-bar']}>
+                <div className={styles.header}>
                     <Avatar
-                        className={'profile-avatar'}
+                        className={styles.avatar}
                         src={pageUser.avatarUrl}
                         alt={pageUser.username}
                     />
-                    <div className="profile-info">
+                    <div className={styles.info}>
                         <>
-                            <h1 className="profile-name">{pageUser.fullName}</h1>
-                            <span onClick={handleCopy} className="profile-username">
+                            <h1 className={styles['name']}>{pageUser.fullName}</h1>
+                            <span onClick={handleCopy} className={styles['username']}>
                                 @{pageUser.username}
                             </span>
-                            <p className="profile-description">
+                            <p className={styles['description']}>
                                 <FormatQuoteIcon />
                                 {pageUser.description.length === 0
                                     ? 'No bio yet'
@@ -120,14 +121,14 @@ export default function ProfilePage() {
                 </div>
             </nav>
 
-            <div className="profile-collections-category">
+            <div className={styles['collections-category']}>
                 <CollectionSearchBar disabled={debouncedQuery === '' && collections.length === 0} />
-                <SortBy disabled={collections.length === 0} />
+                <SortBy className="collections-search" disabled={collections.length === 0} />
             </div>
 
-            <div className="profile-before-collections-line" />
+            <div className={styles['before-collections-line']} />
 
-            <div className="profile-collections-wrapper">
+            <div className={styles['collections-wrapper']}>
                 <CollectionsWrapper collections={collections} page="profile" />
             </div>
         </header>

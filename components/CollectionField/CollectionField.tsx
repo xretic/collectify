@@ -5,6 +5,7 @@ import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import { Avatar } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import styles from './CollectionField.module.css';
 
 export default function CollectionField({
     id,
@@ -21,14 +22,14 @@ export default function CollectionField({
     const router = useRouter();
 
     return (
-        <Link href={'/collections/' + id} className="collection-card">
-            <div className="collection-banner">
-                <span className="collection-category">{category}</span>
-                <img src={bannerUrl} alt={name} className="collection-banner-img" />
+        <Link href={'/collections/' + id} className={styles.card}>
+            <div className={styles.banner}>
+                <span className={styles.category}>{category}</span>
+                <img src={bannerUrl} alt={name} className={styles['banner-img']} />
             </div>
 
-            <div className="collection-content">
-                <h2 className="collection-title">{name}</h2>
+            <div className={styles.content}>
+                <h2 className={styles.title}>{name}</h2>
 
                 <div
                     onClick={(e) => {
@@ -36,21 +37,21 @@ export default function CollectionField({
                         e.stopPropagation();
                         router.replace('/users/' + authorId);
                     }}
-                    className="collection-author"
+                    className={styles.author}
                 >
                     <Avatar src={authorAvatarUrl} alt={author} sx={{ width: 24, height: 24 }} />
-                    <span className="collection-author-name">{author}</span>
+                    <span className={styles['author-name']}>{author}</span>
                 </div>
 
-                <div className="collection-border-line"></div>
+                <div className={styles.border} />
 
-                <div className="collection-footer">
-                    <span className="collection-items">
+                <div className={styles.footer}>
+                    <span className={styles.items}>
                         <FolderCopyIcon sx={{ width: 20, height: 20 }} />
                         {items} items
                     </span>
 
-                    <div className="collection-stats">
+                    <div className={styles.stats}>
                         <span>
                             <BookmarkAddIcon sx={{ width: 20, height: 20 }} /> {addedToFavorite}
                         </span>

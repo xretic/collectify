@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
 import { useUIStore } from '@/stores/uiStore';
 import { useDebounce } from '@/lib/useDebounce';
+import styles from './UserSearchBar.module.css';
 
 interface User {
     id: number;
@@ -21,7 +22,7 @@ interface User {
     avatarUrl: string;
 }
 
-export default function SearchBar() {
+export default function UserSearchBar() {
     const router = useRouter();
     const { setSearchBarOpened } = useUIStore();
     const [users, setUsers] = useState<User[]>([]);
@@ -53,7 +54,7 @@ export default function SearchBar() {
 
     return (
         <Autocomplete
-            className="search-bar-form"
+            className={styles['container']}
             freeSolo
             options={users}
             getOptionLabel={(option) => (typeof option === 'string' ? option : option.username)}

@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import { useUser } from '@/context/UserProvider';
 import { useUIStore } from '@/stores/uiStore';
 import CircularProgress from '@mui/material/CircularProgress';
+import styles from '../auth.module.css';
 
 type LoginFormData = {
     email: string;
@@ -82,10 +83,8 @@ export default function LoginPage() {
             }
         >
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                <h1 className="auth-header text-black text-[50px] mt-[210px]">Login</h1>
-                <p className="text-[rgb(90,90,90)]">
-                    Enter your credentials to access your account.
-                </p>
+                <h1 className={styles.header}>Login</h1>
+                <p className={styles.paragraph}>Enter your credentials to access your account.</p>
 
                 <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 400 }}>
                     <Controller

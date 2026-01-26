@@ -7,7 +7,7 @@ import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useUser } from '@/context/UserProvider';
 import Avatar from '@mui/material/Avatar';
 import { useUIStore } from '@/stores/uiStore';
-import HoverMenu from './HoverMenu';
+import HoverMenu from '../HoverMenu/HoverMenu';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { usePathname } from 'next/navigation';
 import HomeIcon from '@mui/icons-material/Home';
@@ -18,9 +18,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import SearchBar from './SearchBar';
+import UserSearchBar from '../UserSearchBar/UserSearchBar';
 import { IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import styles from './NavBar.module.css';
 
 export default function NavBar() {
     const { user, loading } = useUser();
@@ -41,10 +42,10 @@ export default function NavBar() {
 
     return (
         <header>
-            <nav className="nav-bar">
+            <nav className={styles['nav-bar']}>
                 <Link href="/">
                     <Image
-                        className="nav-bar-icon"
+                        className={styles['nav-bar-icon']}
                         src="/icon.svg"
                         alt="Collectify icon"
                         width={35}
@@ -52,15 +53,17 @@ export default function NavBar() {
                     />
                 </Link>
 
-                <Link className="nav-bar-title" href="/">
+                <Link className={styles['nav-bar-title']} href="/">
                     Collectify
                 </Link>
 
                 {user && (
-                    <nav className="nav-bar-navigation">
+                    <nav className={styles['nav-bar-navigation']}>
                         <Link
                             className={
-                                pathname === '/' ? 'navigation-button-in' : 'navigation-button'
+                                styles[
+                                    pathname === '/' ? 'navigation-button-in' : 'navigation-button'
+                                ]
                             }
                             href="/"
                         >
@@ -75,9 +78,11 @@ export default function NavBar() {
                         {user && (
                             <Link
                                 className={
-                                    pathname === '/users/me'
-                                        ? 'navigation-button-in'
-                                        : 'navigation-button'
+                                    styles[
+                                        pathname === '/users/me'
+                                            ? 'navigation-button-in'
+                                            : 'navigation-button'
+                                    ]
                                 }
                                 href="/users/me"
                             >
@@ -92,9 +97,11 @@ export default function NavBar() {
 
                         <Link
                             className={
-                                pathname === '/notifications' // TODO: refactor this shit
-                                    ? 'navigation-button-in'
-                                    : 'navigation-button'
+                                styles[
+                                    pathname === '/notifications'
+                                        ? 'navigation-button-in'
+                                        : 'navigation-button'
+                                ]
                             }
                             href="/notifications"
                         >
@@ -109,19 +116,19 @@ export default function NavBar() {
                 )}
 
                 <div
-                    className="nav-right"
+                    className={styles['nav-right']}
                     style={{ display: 'flex', alignItems: 'center', gap: 15 }}
                 >
                     {user && (
                         <div
-                            className="auth-panel-search-btn"
+                            className={styles['auth-panel-search-btn']}
                             style={{
                                 right: 65 + width,
                                 top: 17,
                             }}
                         >
                             {searchBarOpened ? (
-                                <SearchBar />
+                                <UserSearchBar />
                             ) : (
                                 <>
                                     <Tooltip title="Create collection">
@@ -156,13 +163,10 @@ export default function NavBar() {
                                     anchorEl === event.currentTarget ? null : event.currentTarget,
                                 )
                             }
-                            className="auth-panel"
+                            className={styles['auth-panel']}
                             style={{ display: 'flex', alignItems: 'center', gap: 8 }}
                         >
-                            <span
-                                ref={usernameRef}
-                                className="nav-right-username font-medium text-gray-800"
-                            >
+                            <span ref={usernameRef} className={styles['nav-right-username']}>
                                 {user.username}
                             </span>
                             <Avatar
@@ -175,9 +179,9 @@ export default function NavBar() {
                             <HoverMenu />
                         </div>
                     ) : (
-                        <div className="auth-panel" style={{ display: 'flex', gap: 10 }}>
+                        <div className={styles['auth-panel']}>
                             <Button
-                                className="login-btn"
+                                className={styles['login-btn']}
                                 color="primary"
                                 variant="solid"
                                 icon={<LoginRounded />}

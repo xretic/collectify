@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
-import NavBar from '@/components/NavBar';
+import NavBar from '@/components/NavBar/NavBar';
 import localFont from 'next/font/local';
 import './globals.css';
 import { UserProvider } from '@/context/UserProvider';
-import { GlobalLoader } from '@/components/GlobalLoader';
+import { GlobalLoader } from '@/components/GlobalLoader/GlobalLoader';
 import Script from 'next/script';
 
 const googleSans = localFont({

@@ -1,0 +1,210 @@
+.profile {
+    background-color: #f3f4f6;
+    min-height: 100vh;
+}
+
+.cover {
+    position: relative;
+    height: 260px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    overflow: hidden;
+}
+
+.cover-editing {
+    position: relative;
+    height: 260px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.cover-editing::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url('/images/BannerHover.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.cover-editing:hover::after {
+    opacity: 0.7;
+}
+
+.nav-bar {
+    background-color: #ffffff;
+    max-width: 1150px;
+    margin: -80px auto 0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 25px 30px;
+    position: relative;
+}
+
+.nav-bar .action-btn,
+.nav-bar .confim-btn,
+.nav-bar .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-transform: none;
+}
+
+.nav-bar .action-btn {
+    right: 10px;
+}
+
+.nav-bar .confim-btn {
+    right: 50px;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.avatar {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    margin-top: -50px;
+    background-color: #fff;
+}
+
+.avatar-editing {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    margin-top: -50px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.avatar-editing::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url('/images/AvatarHover.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.avatar-editing:hover::after {
+    opacity: 0.7;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.name {
+    font-size: 30px;
+    font-weight: 600;
+    font-family: 'Figtree', sans-serif;
+    transform: translateY(-20px);
+}
+
+.username {
+    color: #6b7280;
+    font-size: 14px;
+    font-family: 'Figtree', sans-serif;
+    transform: translateY(-26px);
+}
+
+.username:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.description {
+    color: #4b5563;
+    font-size: 15px;
+    max-width: 500px;
+    transform: translateY(-18px);
+}
+
+.collections-category {
+    display: flex;
+    left: 45px;
+    gap: 6px;
+    max-width: 1110px;
+    margin: 15px auto;
+}
+
+.category-text {
+    margin-left: 5px;
+}
+
+.before-collections-line {
+    position: relative;
+    max-width: 1110px;
+    margin: 0 auto;
+    border-top: 1px solid #d1d5db;
+}
+
+.collections-wrapper {
+    max-width: 1220px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 auto;
+    margin: 0px auto;
+    padding: 0px 32px;
+}
+
+@media (max-width: 1000px) {
+    .collections-category .category-text {
+        display: none;
+    }
+
+    .collections-category {
+        height: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav-bar .confim-btn {
+        right: 10px;
+        top: 40px;
+    }
+
+    .collections-search {
+        bottom: 15px;
+    }
+}
+
+@media (max-width: 420px) {
+    .info {
+        width: 120px;
+    }
+}
+
+@media (max-width: 340px) {
+    .info {
+        width: 90px;
+    }
+}

@@ -1,0 +1,23 @@
+.collections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 21px;
+    margin-top: 25px;
+    justify-content: flex-start;
+    box-sizing: border-box;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 25px;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.nothing {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 20px;
+    padding: 0 20px;
+}

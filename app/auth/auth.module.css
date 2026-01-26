@@ -1,0 +1,10 @@
+.header {
+    font-family: var(--font-google-sans), sans-serif;
+    color: #000;
+    font-size: 50px;
+    margin-top: 210px;
+}
+
+.paragraph {
+    color: #5a5a5a;
+}

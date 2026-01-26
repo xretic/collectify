@@ -19,10 +19,12 @@ import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { useUIStore } from '@/stores/uiStore';
 import { usePaginationStore } from '@/stores/paginationStore';
-import CollectionsWrapper from '@/components/CollectionsWrapper';
-import SortBy from '@/components/SortBy';
+import CollectionsWrapper from '@/components/CollectionsWrapper/CollectionsWrapper';
+import SortBy from '@/components/SortBy/SortBy';
 import { IconButton, Tooltip, Button } from '@mui/material';
 import { useDebounce } from '@/lib/useDebounce';
+import styles from '../users.module.css';
+import { useRouter } from 'next/navigation';
 
 type State = {
     copied: boolean;
@@ -65,6 +67,8 @@ export default function ProfilePage() {
     const authorTab = user ? `&authorId=${user.id}` : '';
     const favoritesTab = user ? `&favoritesUserId=${user.id}` : '';
 
+    const router = useRouter();
+
     useEffect(() => {
         if (user && !state.tab) {
             updateState('tab', authorTab);
@@ -75,6 +79,7 @@ export default function ProfilePage() {
         if (!user || !state.tab) return;
 
         startLoading();
+
         try {
             const response = await fetch(
                 `/api/collections/search/?skip=${debouncedPagination * PAGE_SIZE}&sortedBy=${debouncedSortedBy}${state.tab}`,
@@ -173,7 +178,7 @@ export default function ProfilePage() {
     };
 
     return (
-        <header className="profile">
+        <header className={styles.profile}>
             {state.copied && (
                 <div className={`toast ${state.copied ? 'show' : ''}`}>
                     <Alert severity="success" variant="filled">
@@ -181,6 +186,7 @@ export default function ProfilePage() {
                     </Alert>
                 </div>
             )}
+
             {state.errorMessage.length > 0 && (
                 <div className={`toast ${state.errorMessage.length > 0 ? 'show' : ''}`}>
                     <Alert severity="error" variant="filled">
@@ -188,18 +194,19 @@ export default function ProfilePage() {
                     </Alert>
                 </div>
             )}
+
             <div
                 onClick={
                     state.editing
                         ? () => handleUpload((url) => updateState('bannerUrl', url))
                         : undefined
                 }
-                className={state.editing ? 'profile-cover-editing' : 'profile-cover'}
+                className={styles[state.editing ? 'cover-editing' : 'cover']}
                 style={{
                     backgroundImage: `url(${state.editing ? state.bannerUrl : user.bannerUrl})`,
                 }}
             />
-            <nav className="profile-nav-bar">
+            <nav className={styles['nav-bar']}>
                 {!state.editing && (
                     <Tooltip title="Edit">
                         <IconButton
@@ -207,7 +214,7 @@ export default function ProfilePage() {
                             type="button"
                             sx={{ p: '6px' }}
                             aria-label="Edit"
-                            className="profile-action-btn"
+                            className={styles['action-btn']}
                         >
                             <EditOutlinedIcon sx={{ color: '#afafaf' }} />
                         </IconButton>
@@ -215,14 +222,14 @@ export default function ProfilePage() {
                 )}
 
                 {state.editing && (
-                    <div className="profile-editing-buttons">
+                    <div className={styles['editing-buttons']}>
                         <Tooltip title="Accept">
                             <IconButton
                                 onClick={handleSave}
                                 type="button"
                                 sx={{ p: '6px' }}
                                 aria-label="Accept"
-                                className="confim-btn"
+                                className={styles['confim-btn']}
                                 disabled={
                                     !state.fullName.trim() ||
                                     !state.username.trim() ||
@@ -241,7 +248,7 @@ export default function ProfilePage() {
                                 type="button"
                                 sx={{ p: '6px' }}
                                 aria-label="Cancel"
-                                className="close-btn"
+                                className={styles['close-btn']}
                             >
                                 <CloseIcon sx={{ color: '#afafaf' }} />
                             </IconButton>
@@ -249,9 +256,9 @@ export default function ProfilePage() {
                     </div>
                 )}
 
-                <div className="profile-header">
+                <div className={styles.header}>
                     <Avatar
-                        className={state.editing ? 'profile-avatar-editing' : 'profile-avatar'}
+                        className={styles[state.editing ? 'avatar-editing' : 'avatar']}
                         src={state.editing ? state.avatarUrl : user.avatarUrl}
                         alt={user.username}
                         onClick={
@@ -260,7 +267,7 @@ export default function ProfilePage() {
                                 : undefined
                         }
                     />
-                    <div className="profile-info">
+                    <div className={styles.info}>
                         {state.editing ? (
                             <>
                                 <Input
@@ -286,11 +293,11 @@ export default function ProfilePage() {
                             </>
                         ) : (
                             <>
-                                <h1 className="profile-name">{user.fullName}</h1>
-                                <span onClick={handleCopy} className="profile-username">
+                                <h1 className={styles.name}>{user.fullName}</h1>
+                                <span onClick={handleCopy} className={styles['username']}>
                                     @{user.username}
                                 </span>
-                                <p className="profile-description">
+                                <p className={styles.description}>
                                     <FormatQuoteIcon />
                                     {user.description.length > 0 ? user.description : 'No bio yet'}
                                 </p>
@@ -300,7 +307,7 @@ export default function ProfilePage() {
                 </div>
             </nav>
 
-            <div className="profile-collections-category">
+            <div className={styles['collections-category']}>
                 <Button
                     variant={state.tab === authorTab ? 'contained' : 'outlined'}
                     onClick={() => handleTabChoice('authorTab')}
@@ -309,7 +316,7 @@ export default function ProfilePage() {
                     }}
                 >
                     <AutoAwesomeMosaicIcon sx={{ width: 18, height: 18 }} />
-                    <span className="category-text ml-1">Created</span>
+                    <span className={styles['category-text']}>Created</span>
                 </Button>
 
                 <Button
@@ -323,15 +330,18 @@ export default function ProfilePage() {
                             height: 18,
                         }}
                     />
-                    <span className="category-text ml-1">Favorites</span>
+                    <span className={styles['category-text']}>Favorites</span>
                 </Button>
 
-                <SortBy disabled={collections.length === 0} />
+                <SortBy
+                    className={styles['collections-search']}
+                    disabled={collections.length === 0}
+                />
             </div>
 
-            <div className="profile-before-collections-line" />
+            <div className={styles['before-collections-line']} />
 
-            <div className="profile-collections-wrapper">
+            <div className={styles['collections-wrapper']}>
                 <CollectionsWrapper collections={collections} page="profile" />
             </div>
         </header>

@@ -1,0 +1,29 @@
+.container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 35px;
+    box-sizing: border-box;
+}
+
+.title {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 25px;
+    margin-left: 15px;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    font-family: var(--font-google-sans), sans-serif;
+    color: rgb(0, 0, 0);
+    font-size: 27px;
+}
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+    margin-left: 15px;
+    justify-content: flex-start;
+    box-sizing: border-box;
+}

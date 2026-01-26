@@ -16,6 +16,7 @@ import {
     USERNAME_MAX_LENGTH,
     USERNAME_MIN_LENGTH,
 } from '@/lib/constans';
+import styles from '../auth.module.css';
 
 type RegisterFormData = {
     email: string;
@@ -100,8 +101,8 @@ export default function RegisterPage() {
                     gap: 2,
                 }}
             >
-                <h1 className="auth-header text-black text-[50px] mt-[210px]">Registration</h1>
-                <p className="text-[rgb(90,90,90)]">
+                <h1 className={styles.header}>Registration</h1>
+                <p className={styles.paragraph}>
                     In order to use the site fully, you must register.
                 </p>
 

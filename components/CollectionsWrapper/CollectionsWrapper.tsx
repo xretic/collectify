@@ -1,10 +1,11 @@
-import CollectionField from './CollectionField';
-import { CollectionFieldProps } from '../types/CollectionField';
+import CollectionField from '../CollectionField/CollectionField';
+import { CollectionFieldProps } from '../../types/CollectionField';
 import { IconButton, Tooltip } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { PAGE_SIZE } from '@/lib/constans';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { usePaginationStore } from '@/stores/paginationStore';
+import styles from './CollectionsWrapper.module.css';
 
 type CollectionsWrapperProps = {
     collections: CollectionFieldProps[];
@@ -20,15 +21,15 @@ export default function CollectionsWrapper({ collections, page }: CollectionsWra
 
     return (
         <>
-            <div className="collections-wrapper">
+            <div className={styles.collections}>
                 {collections.length > 0 ? (
                     collections.map((x) => <CollectionField key={x.id} {...x} />)
                 ) : (
-                    <div className="nothing-is-here">We found nothing.</div>
+                    <div className={styles.nothing}>We found nothing.</div>
                 )}
             </div>
 
-            <div className="pagination-wrapper">
+            <div className={styles.pagination}>
                 <Tooltip title="Previous page">
                     <IconButton
                         disabled={pagination === 0}

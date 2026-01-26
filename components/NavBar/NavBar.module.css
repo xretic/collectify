@@ -1,0 +1,115 @@
+.nav-bar {
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+    align-items: flex-start;
+    margin-top: 11px;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #d1d5db;
+    box-sizing: border-box;
+}
+
+.nav-bar-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.navigation-button {
+    color: #afafaf;
+    font-family: var(--font-rubik-medium), rubik-medium;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.navigation-button-in {
+    color: #000000;
+    font-family: var(--font-rubik-medium), rubik-medium;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.nav-bar-title {
+    color: black;
+    font-size: 20px;
+    padding-left: 3px;
+    font-family: var(--font-google-sans), sans-serif;
+    margin: 2;
+    margin-top: 3px;
+}
+
+.nav-bar-icon {
+    margin-bottom: 7px;
+    margin-left: 6px;
+}
+
+.login-btn {
+    margin-right: 6;
+}
+
+.auth-panel {
+    position: absolute;
+    right: 10px;
+    bottom: calc(0px + 6px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.auth-panel:hover {
+    background-color: #f3f4f6;
+}
+
+.auth-panel-search {
+    position: relative;
+}
+
+.auth-panel-search-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.nav-right-username {
+    font-weight: 500;
+}
+
+@media (max-width: 700px) {
+    .nav-right .nav-right-username {
+        display: none;
+    }
+
+    .nav-right .auth-panel-search-btn {
+        transform: translateY(-50%) translateX(95px);
+    }
+}
+
+@media (max-width: 300px) {
+    .nav-right .auth-panel-search-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 1200px) {
+    .nav-bar-navigation .nav-text {
+        display: none;
+    }
+}
+
+@media (max-width: 750px) {
+    .nav-bar-navigation {
+        display: none;
+    }
+}
