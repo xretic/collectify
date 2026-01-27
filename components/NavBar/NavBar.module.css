@@ -57,7 +57,7 @@
 .auth-panel {
     position: absolute;
     right: 10px;
-    bottom: calc(0px + 6px);
+    bottom: calc(0px + 3px);
     display: flex;
     align-items: center;
     gap: 8px;

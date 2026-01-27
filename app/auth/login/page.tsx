@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
@@ -11,6 +11,10 @@ import { useUser } from '@/context/UserProvider';
 import { useUIStore } from '@/stores/uiStore';
 import CircularProgress from '@mui/material/CircularProgress';
 import styles from '../auth.module.css';
+import Image from 'next/image';
+import { Tooltip } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import { githubAuth, googleAuth } from '@/lib/authMethods';
 
 type LoginFormData = {
     email: string;
@@ -22,8 +26,12 @@ export default function LoginPage() {
     const router = useRouter();
     const [emailError, setEmailError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
-    const { setUser } = useUser();
+    const { user, setUser } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
+
+    useEffect(() => {
+        if (user) router.replace('/');
+    }, [user]);
 
     const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
         startLoading();
@@ -160,6 +168,55 @@ export default function LoginPage() {
                         {loadingCount > 0 ? 'Loading...' : 'Login'}
                     </Button>
                 </form>
+
+                <div className={styles['social-media']}>
+                    <Tooltip title="Register via GitHub">
+                        <Button
+                            onClick={githubAuth}
+                            variant="contained"
+                            sx={{
+                                p: '6px',
+                                borderRadius: 6,
+                                backgroundColor: 'black',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#333',
+                                },
+                            }}
+                            aria-label="GitHub"
+                        >
+                            <GitHubIcon />
+                            <span className={styles['social-media-btn']}>GitHub</span>
+                        </Button>
+                    </Tooltip>
+
+                    <Tooltip title="Register via Google">
+                        <Button
+                            onClick={googleAuth}
+                            variant="contained"
+                            sx={{
+                                p: '6px',
+                                borderRadius: 6,
+                                backgroundColor: 'white',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#fff',
+                                },
+                            }}
+                            aria-label="Google"
+                        >
+                            <Image
+                                src="/images/GoogleIcon.png"
+                                alt="google-icon"
+                                width={20}
+                                height={20}
+                            />
+                            <span className={styles['social-media-btn']} style={{ color: 'black' }}>
+                                Google
+                            </span>
+                        </Button>
+                    </Tooltip>
+                </div>
             </Box>
         </Suspense>
     );

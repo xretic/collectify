@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 
-export function generateRandomId(): Promise<number> {
+export function generateUniqueUserId(): Promise<number> {
     const generateId = (): number => {
         return Math.floor(100000000 + Math.random() * 900000000);
     };

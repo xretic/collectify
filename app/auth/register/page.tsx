@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
@@ -20,6 +20,7 @@ import styles from '../auth.module.css';
 import { Tooltip } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Image from 'next/image';
+import { githubAuth, googleAuth } from '@/lib/authMethods';
 
 type RegisterFormData = {
     email: string;
@@ -33,7 +34,11 @@ export default function RegisterPage() {
     const [emailError, setEmailError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const { startLoading, stopLoading, loadingCount } = useUIStore();
-    const { setUser } = useUser();
+    const { user, setUser } = useUser();
+
+    useEffect(() => {
+        if (user) router.replace('/');
+    }, [user]);
 
     const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
         startLoading();
@@ -76,12 +81,6 @@ export default function RegisterPage() {
         } finally {
             stopLoading();
         }
-    };
-    const githubAuth = () => {
-        const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
-        const redirectUri = `${window.location.origin}/api/auth/callback/github`;
-
-        window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user user:email`;
     };
 
     return (
@@ -251,7 +250,7 @@ export default function RegisterPage() {
 
                     <Tooltip title="Register via Google">
                         <Button
-                            onClick={() => {}}
+                            onClick={googleAuth}
                             variant="contained"
                             sx={{
                                 p: '6px',

@@ -1,9 +1,9 @@
 import { NextResponse, NextRequest } from 'next/server';
-import isPasswordValid from '@/helpers/isPasswordValid';
+import { isPasswordValid } from '@/helpers/isPasswordValid';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
-import { generateRandomId } from '@/helpers/generateRandomId';
+import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { generateAuthToken } from '@/helpers/generateAuthToken';
 
 export async function POST(req: NextRequest) {
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         }
 
         const passwordHash = await bcrypt.hash(password, 12);
-        const uniqueId = await generateRandomId();
+        const uniqueId = await generateUniqueUserId();
         const token = await generateAuthToken();
 
         const user = await prisma.user.create({

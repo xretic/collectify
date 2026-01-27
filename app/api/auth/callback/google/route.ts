@@ -15,56 +15,47 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'No code provided' }, { status: 400 });
         }
 
-        const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+        const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
             method: 'POST',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                client_id: process.env.GITHUB_CLIENT_ID,
-                client_secret: process.env.GITHUB_CLIENT_SECRET,
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
                 code,
+                grant_type: 'authorization_code',
+                redirect_uri: `${url.origin}/api/auth/callback/google`,
             }),
         });
 
         const tokenData = await tokenRes.json();
 
-        if (tokenData.error) {
-            return NextResponse.json(
-                { error: tokenData.error_description || 'Failed to get token' },
-                { status: 400 },
-            );
+        if (!tokenData.access_token) {
+            return NextResponse.json({ error: 'Failed to get token' }, { status: 400 });
         }
 
-        const accessToken = tokenData.access_token;
-
-        const userRes = await fetch('https://api.github.com/user', {
+        const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
             headers: {
-                Authorization: `token ${accessToken}`,
-                Accept: 'application/json',
+                Authorization: `Bearer ${tokenData.access_token}`,
             },
         });
 
-        const githubUser = await userRes.json();
+        const googleUser = await userRes.json();
 
-        if (!githubUser || !githubUser.id) {
-            return NextResponse.json({ error: 'Failed to fetch GitHub user' }, { status: 400 });
+        if (!googleUser?.id || !googleUser?.email) {
+            return NextResponse.json({ error: 'Invalid Google user' }, { status: 400 });
         }
 
         let user = await prisma.user.findFirst({
-            where: { githubId: githubUser.id.toString() },
+            where: {
+                OR: [{ googleId: googleUser.id }, { email: googleUser.email }],
+            },
         });
 
-        if (!user && githubUser.email) {
-            user = await prisma.user.findFirst({
-                where: { email: githubUser.email },
-            });
-        }
-
         if (!user) {
-            const username = githubUser.login.slice(0, USERNAME_MAX_LENGTH);
+            const splitedEmail = googleUser.email.split('@')[0];
+            const username = splitedEmail.slice(0, USERNAME_MAX_LENGTH);
 
-            const token = await generateAuthToken();
             const uniqueId = await generateUniqueUserId();
-
             const notAvailable = await prisma.user.findFirst({
                 where: {
                     username: username,
@@ -74,22 +65,23 @@ export async function GET(req: Request) {
             user = await prisma.user.create({
                 data: {
                     id: uniqueId,
-                    email: githubUser.email || `github_${githubUser.id}@example.com`,
+                    email: googleUser.email,
                     username:
                         notAvailable || !isUsernameValid(username) ? String(uniqueId) : username,
-                    fullName: githubUser.name || username,
-                    avatarUrl: githubUser.avatar_url,
-                    githubId: githubUser.id.toString(),
-                    token,
+                    fullName: googleUser.name,
+                    avatarUrl: googleUser.picture,
+                    googleId: googleUser.id,
+                    token: await generateAuthToken(),
                 },
             });
-        } else {
-            if (!user.githubId) {
-                user = await prisma.user.update({
-                    where: { id: user.id },
-                    data: { githubId: githubUser.id.toString(), avatarUrl: githubUser.avatar_url },
-                });
-            }
+        } else if (!user.googleId) {
+            user = await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    googleId: googleUser.id,
+                    avatarUrl: googleUser.picture,
+                },
+            });
         }
 
         const session = await prisma.session.create({

@@ -25,6 +25,7 @@ import { IconButton, Tooltip, Button } from '@mui/material';
 import { useDebounce } from '@/lib/useDebounce';
 import styles from '../users.module.css';
 import { useRouter } from 'next/navigation';
+import { isUsernameValid } from '@/helpers/isUsernameValid';
 
 type State = {
     copied: boolean;
@@ -347,10 +348,3 @@ export default function ProfilePage() {
         </header>
     );
 }
-
-const isUsernameValid = (username: string): boolean => {
-    if (username.length > USERNAME_MAX_LENGTH) return false;
-
-    const regex = /^[a-z0-9_.]+$/;
-    return regex.test(username);
-};
