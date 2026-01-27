@@ -12,26 +12,16 @@ export async function GET(req: NextRequest) {
     const session = await prisma.session.findUnique({
         where: { id: sessionId },
         include: {
-            user: {
-                include: {
-                    followers: {
-                        include: {
-                            follower: true,
-                        },
-                    },
-                    subscriptions: {
-                        include: {
-                            following: true,
-                        },
-                    },
-                },
-            },
+            user: true,
         },
     });
 
     if (!session || session.expiresAt < new Date()) {
         return NextResponse.json({ user: null }, { status: 401 });
     }
+
+    const followersCount = await prisma.follow.count({ where: { followingId: session.userId } });
+    const subscriptionsCount = await prisma.follow.count({ where: { followerId: session.userId } });
 
     const user: SessionUserInResponse = {
         id: session.user.id,
@@ -40,21 +30,9 @@ export async function GET(req: NextRequest) {
         username: session.user.username,
         fullName: session.user.fullName,
         description: session.user.description,
-        followers: session.user.followers.length,
-        subscriptions: session.user.subscriptions.length,
+        followers: followersCount,
+        subscriptions: subscriptionsCount,
     };
 
-    const response = NextResponse.json({ user: user }, { status: 200 });
-
-    response.cookies.set({
-        name: 'token',
-        value: session.user.token,
-        httpOnly: true,
-        path: '/',
-        sameSite: 'lax',
-        secure: true,
-        maxAge: 60 * 60 * 24 * 365,
-    });
-
-    return response;
+    return NextResponse.json({ user: user }, { status: 200 });
 }

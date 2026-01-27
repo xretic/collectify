@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { randomUUID } from 'crypto';
-import { generateAuthToken } from '@/helpers/generateAuthToken';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
@@ -71,7 +70,6 @@ export async function GET(req: Request) {
                     fullName: googleUser.name,
                     avatarUrl: googleUser.picture,
                     googleId: googleUser.id,
-                    token: await generateAuthToken(),
                 },
             });
         } else if (!user.googleId) {
@@ -102,16 +100,6 @@ export async function GET(req: Request) {
             sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24 * 7,
-        });
-
-        response.cookies.set({
-            name: 'token',
-            value: user.token,
-            httpOnly: true,
-            path: '/',
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 365,
         });
 
         return response;

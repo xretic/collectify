@@ -72,6 +72,12 @@ export default function ProfilePage() {
     const router = useRouter();
 
     useEffect(() => {
+        if (!loading && !user) {
+            router.replace('/');
+        }
+    }, [user, loading, router]);
+
+    useEffect(() => {
         if (user && !state.tab) {
             updateState('tab', authorTab);
         }

@@ -21,15 +21,21 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const followersCount = await prisma.follow.count({ where: { followingId: intId } });
     const subscriptionsCount = await prisma.follow.count({ where: { followerId: intId } });
 
+    const sessionId = req.cookies.get('sessionId')?.value;
     let isFollowed = false;
-    const token = req.cookies.get('token')?.value;
 
-    if (token) {
+    if (sessionId) {
+        const session = await prisma.session.findUnique({
+            where: { id: sessionId },
+        });
+
+        if (!session) {
+            return NextResponse.json({ data: null }, { status: 401 });
+        }
+
         const followCheck = await prisma.follow.findFirst({
             where: {
-                follower: {
-                    token,
-                },
+                followerId: session.userId,
                 followingId: user.id,
             },
         });
@@ -58,10 +64,21 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-    const token = req.cookies.get('token')?.value;
+    const sessionId = req.cookies.get('sessionId')?.value;
 
-    if (!token) {
-        return NextResponse.json({ message: 'Auth token is not found' }, { status: 401 });
+    if (!sessionId) {
+        return NextResponse.json({ status: 401 });
+    }
+
+    const session = await prisma.session.findUnique({
+        where: { id: sessionId },
+        include: {
+            user: true,
+        },
+    });
+
+    if (!session) {
+        return NextResponse.json({ status: 401 });
     }
 
     const { id: idStr } = await context.params;
@@ -77,8 +94,8 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 
     const user = await prisma.user.findUnique({ where: { id } });
 
-    if (!user || user.token !== token) {
-        return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+    if (!user || user.id !== session.userId) {
+        return NextResponse.json({ message: 'Invalid session' }, { status: 401 });
     }
 
     const safeData = filterAllowedFields(data);
@@ -195,7 +212,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     }
 }
 
-const BANNED_FIELDS = new Set(['id', 'email', 'passwordHash', 'token', 'sessions', 'followers']);
+const BANNED_FIELDS = new Set(['id', 'email', 'passwordHash', 'sessions', 'followers']);
 
 function filterAllowedFields<T extends Record<string, any>>(data: T) {
     return Object.fromEntries(Object.entries(data).filter(([key]) => !BANNED_FIELDS.has(key)));

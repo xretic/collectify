@@ -38,22 +38,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { searchParams } = new URL(req.url);
     const actionType = searchParams.get('actionType');
-
-    const token = req.cookies.get('token')?.value;
-
     const actions = new Set(['like', 'dislike', 'favorite', 'unfavorite']);
 
-    if (!token || !actionType || !actions.has(actionType)) {
+    if (!actionType || !actions.has(actionType)) {
         return NextResponse.json({ data: null }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-        where: {
-            token,
+    const sessionId = req.cookies.get('sessionId')?.value;
+
+    if (!sessionId) {
+        return NextResponse.json({ user: null }, { status: 401 });
+    }
+
+    const session = await prisma.session.findUnique({
+        where: { id: sessionId },
+        include: {
+            user: true,
         },
     });
 
-    if (!user) {
+    if (!session) {
         return NextResponse.json({ data: null }, { status: 401 });
     }
 
@@ -61,7 +65,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         like: {
             likes: {
                 create: {
-                    userId: user.id,
+                    userId: session.user.id,
                 },
             },
         },
@@ -69,7 +73,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         dislike: {
             likes: {
                 deleteMany: {
-                    userId: user.id,
+                    userId: session.user.id,
                 },
             },
         },
@@ -77,7 +81,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         favorite: {
             addedToFavorite: {
                 connect: {
-                    id: user.id,
+                    id: session.user.id,
                 },
             },
         },
@@ -85,7 +89,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         unfavorite: {
             addedToFavorite: {
                 disconnect: {
-                    id: user.id,
+                    id: session.user.id,
                 },
             },
         },
@@ -113,15 +117,18 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         return NextResponse.json({ data: null }, { status: 404 });
     }
 
-    if (user.id !== collection.User.id && ['like', 'favorite'].some((x) => x === actionType)) {
+    if (
+        session.user.id !== collection.User.id &&
+        ['like', 'favorite'].some((x) => x === actionType)
+    ) {
         const notificationType: Record<string, string> = {
             like: 'liked your collection named',
             favorite: 'added your collection to favorites',
         };
 
-        const message = `${user.username} ${notificationType[actionType]} ${collection.name}`;
+        const message = `${session.user.username} ${notificationType[actionType]} ${collection.name}`;
         const requestData = {
-            senderUserId: user.id,
+            senderUserId: session.user.id,
             recipientUserId: collection.User.id,
             message: message,
         };
@@ -158,7 +165,6 @@ function getResData(
             id: number;
             description: string;
             bannerUrl: string;
-            token: string;
             email: string;
             passwordHash: string | null;
             avatarUrl: string;
@@ -176,7 +182,6 @@ function getResData(
             id: number;
             description: string;
             bannerUrl: string;
-            token: string;
             email: string;
             passwordHash: string | null;
             avatarUrl: string;

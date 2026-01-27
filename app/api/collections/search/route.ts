@@ -61,19 +61,24 @@ export async function GET(req: NextRequest) {
     }
 
     if (favoritesUserId) {
-        const token = req.cookies.get('token')?.value;
+        const sessionId = req.cookies.get('sessionId')?.value;
 
-        if (!token) {
-            return NextResponse.json({ data: null }, { status: 401 });
+        if (!sessionId) {
+            return NextResponse.json({ user: null }, { status: 401 });
         }
 
-        const user = await prisma.user.findUnique({
-            where: {
-                token,
+        const session = await prisma.session.findUnique({
+            where: { id: sessionId },
+            include: {
+                user: true,
             },
         });
 
-        if (!user || user?.id !== favoritesUserId) {
+        if (!session) {
+            return NextResponse.json({ data: null }, { status: 401 });
+        }
+
+        if (session.user.id !== favoritesUserId) {
             return NextResponse.json({ data: null }, { status: 401 });
         }
     }

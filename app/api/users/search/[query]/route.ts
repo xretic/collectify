@@ -4,20 +4,21 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest, { params }: { params: Promise<{ query: string }> }) {
     const { query } = await params;
 
-    const token = req.cookies.get('token')?.value;
+    const sessionId = req.cookies.get('sessionId')?.value;
 
-    if (!token) {
-        return NextResponse.json({ user: null }, { status: 401 });
+    if (!sessionId) {
+        return NextResponse.json({ status: 401 });
     }
 
-    const sessionUser = await prisma.user.findUnique({
-        where: {
-            token,
+    const session = await prisma.session.findUnique({
+        where: { id: sessionId },
+        include: {
+            user: true,
         },
     });
 
-    if (!sessionUser) {
-        return NextResponse.json({ user: null }, { status: 401 });
+    if (!session) {
+        return NextResponse.json({ status: 401 });
     }
 
     const users = await prisma.user.findMany({

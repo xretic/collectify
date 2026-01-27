@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { randomUUID } from 'crypto';
-import { generateAuthToken } from '@/helpers/generateAuthToken';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
@@ -61,8 +60,6 @@ export async function GET(req: Request) {
 
         if (!user) {
             const username = githubUser.login.slice(0, USERNAME_MAX_LENGTH);
-
-            const token = await generateAuthToken();
             const uniqueId = await generateUniqueUserId();
 
             const notAvailable = await prisma.user.findFirst({
@@ -80,7 +77,6 @@ export async function GET(req: Request) {
                     fullName: githubUser.name || username,
                     avatarUrl: githubUser.avatar_url,
                     githubId: githubUser.id.toString(),
-                    token,
                 },
             });
         } else {
@@ -110,16 +106,6 @@ export async function GET(req: Request) {
             sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24 * 7,
-        });
-
-        response.cookies.set({
-            name: 'token',
-            value: user.token,
-            httpOnly: true,
-            path: '/',
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 365,
         });
 
         return response;

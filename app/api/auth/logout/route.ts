@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
     const res = NextResponse.json({ ok: true });
 
     res.cookies.delete('sessionId');
-    res.cookies.delete('token');
 
     return res;
 }

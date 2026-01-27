@@ -17,6 +17,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
         }
 
+        if (!user.passwordHash) {
+            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+        }
+
         const passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
         if (!passwordMatch) {
@@ -50,16 +54,6 @@ export async function POST(req: NextRequest) {
             sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24 * 7,
-        });
-
-        response.cookies.set({
-            name: 'token',
-            value: user.token,
-            httpOnly: true,
-            path: '/',
-            sameSite: 'lax',
-            secure: true,
-            maxAge: 60 * 60 * 24 * 365,
         });
 
         return response;
