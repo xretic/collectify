@@ -100,9 +100,11 @@ export async function GET(req: NextRequest) {
         });
 
         if (user?.subscriptions.length) {
+            const subscribedUserIds = user.subscriptions.map((x) => x.followingId);
+
             const subscribedCollections = await prisma.collection.findMany({
                 where: {
-                    userId: { in: user.subscriptions },
+                    userId: { in: subscribedUserIds },
                     ...(category && { category }),
                     name: {
                         startsWith: query ? query : '',

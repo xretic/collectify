@@ -10,13 +10,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ quer
         return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    const requestUser = await prisma.user.findUnique({
+    const sessionUser = await prisma.user.findUnique({
         where: {
             token,
         },
     });
 
-    if (!requestUser) {
+    if (!sessionUser) {
         return NextResponse.json({ user: null }, { status: 401 });
     }
 

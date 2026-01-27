@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { SessionUserInResponse } from '@/types/UserInResponse';
 import { NextResponse, NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -10,26 +11,40 @@ export async function GET(req: NextRequest) {
 
     const session = await prisma.session.findUnique({
         where: { id: sessionId },
-        include: { user: true },
+        include: {
+            user: {
+                include: {
+                    followers: {
+                        include: {
+                            follower: true,
+                        },
+                    },
+                    subscriptions: {
+                        include: {
+                            following: true,
+                        },
+                    },
+                },
+            },
+        },
     });
 
     if (!session || session.expiresAt < new Date()) {
         return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    const response = NextResponse.json(
-        {
-            user: {
-                id: session.user.id,
-                avatarUrl: session.user.avatarUrl,
-                bannerUrl: session.user.bannerUrl,
-                username: session.user.username,
-                fullName: session.user.fullName,
-                description: session.user.description,
-            },
-        },
-        { status: 200 },
-    );
+    const user: SessionUserInResponse = {
+        id: session.user.id,
+        avatarUrl: session.user.avatarUrl,
+        bannerUrl: session.user.bannerUrl,
+        username: session.user.username,
+        fullName: session.user.fullName,
+        description: session.user.description,
+        followers: session.user.followers.length,
+        subscriptions: session.user.subscriptions.length,
+    };
+
+    const response = NextResponse.json({ user: user }, { status: 200 });
 
     response.cookies.set({
         name: 'token',

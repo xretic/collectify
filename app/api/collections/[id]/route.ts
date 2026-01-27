@@ -1,4 +1,4 @@
-import { Collection } from '@/generated/prisma/client';
+import { Collection, Follow } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id } = await params;
     const intId = Number(id);
 
-    if (Number.isNaN(id)) {
+    if (isNaN(intId)) {
         return NextResponse.json({ error: 'Invalid collection id' }, { status: 400 });
     }
 
@@ -62,8 +62,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             likes: {
                 create: {
                     userId: user.id,
-                    username: user.username,
-                    avatarUrl: user.avatarUrl,
                 },
             },
         },
@@ -96,7 +94,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const { id } = await params;
     const intId = Number(id);
 
-    if (Number.isNaN(id)) {
+    if (isNaN(intId)) {
         return NextResponse.json({ error: 'Invalid collection id' }, { status: 400 });
     }
 
@@ -115,7 +113,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         return NextResponse.json({ data: null }, { status: 404 });
     }
 
-    if (user.id !== collection.User.id) {
+    if (user.id !== collection.User.id && ['like', 'favorite'].some((x) => x === actionType)) {
         const notificationType: Record<string, string> = {
             like: 'liked your collection named',
             favorite: 'added your collection to favorites',
@@ -154,8 +152,6 @@ function getResData(
         likes: {
             id: number;
             userId: number;
-            avatarUrl: string;
-            username: string;
             collectionId: number;
         }[];
         addedToFavorite: {
@@ -168,8 +164,6 @@ function getResData(
             avatarUrl: string;
             username: string;
             fullName: string;
-            subscribed: number[];
-            subscriptions: number[];
         }[];
         items: {
             id: number;
@@ -188,8 +182,6 @@ function getResData(
             avatarUrl: string;
             username: string;
             fullName: string;
-            subscribed: number[];
-            subscriptions: number[];
         } | null;
     },
 ): CollectionPropsAdditional | null {
@@ -206,14 +198,10 @@ function getResData(
         category: collection.category,
         likes: collection.likes.map((x) => ({
             id: x.userId,
-            username: x.username,
-            avatarUrl: x.avatarUrl,
         })),
 
         addedToFavorite: collection.addedToFavorite.map((x) => ({
             id: x.id,
-            username: x.username,
-            avatarUrl: x.avatarUrl,
         })),
 
         items: collection.items.map((x) => ({

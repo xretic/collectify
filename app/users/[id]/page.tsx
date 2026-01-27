@@ -15,6 +15,8 @@ import { PAGE_SIZE } from '@/lib/constans';
 import { usePaginationStore } from '@/stores/paginationStore';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import styles from '../users.module.css';
+import { Button } from '@mui/material';
+import { UserInResponse } from '@/types/UserInResponse';
 
 export default function ProfilePage() {
     const params = useParams();
@@ -22,8 +24,9 @@ export default function ProfilePage() {
 
     const [collections, setCollections] = useState<any[]>([]);
     const { user, loading } = useUser();
-    const [pageUser, setUser] = useState<any>(null);
+    const [pageUser, setPageUser] = useState<UserInResponse | null>(null);
     const [copied, setCopied] = useState(false);
+    const [followed, setFollowed] = useState(false);
 
     const { startLoading, stopLoading, sortedBy } = useUIStore();
     const { profilePagination } = usePaginationStore();
@@ -32,6 +35,7 @@ export default function ProfilePage() {
     const debouncedSortedBy = useDebounce(sortedBy, 400);
     const debouncedPagination = useDebounce(profilePagination, 400);
     const debouncedQuery = useDebounce(query, 400);
+    const debouncedFollowed = useDebounce(followed, 600);
 
     const queryParam = debouncedQuery.trim() === '' ? '' : `&query=${debouncedQuery}`;
 
@@ -55,13 +59,16 @@ export default function ProfilePage() {
 
     useEffect(() => {
         loadCollections();
-    }, [loading, debouncedQuery, debouncedPagination, debouncedSortedBy]);
+    }, [debouncedQuery, debouncedPagination, debouncedSortedBy]);
 
     useEffect(() => {
         const loadUser = async () => {
             const res = await fetch('/api/users/' + id);
             const data = await res.json();
-            setUser(data.user);
+            const responseUser: UserInResponse = data.user;
+
+            setFollowed(responseUser.sessionUserIsFollowed);
+            setPageUser(responseUser);
         };
 
         loadUser();
@@ -75,6 +82,18 @@ export default function ProfilePage() {
 
     if (loading) return null;
     if (!pageUser) return null;
+
+    const handleFollow = async () => {
+        if (!user || !pageUser) return;
+
+        const action = debouncedFollowed ? 'unfollow' : 'follow';
+
+        await fetch(`/api/users/${user.id}?followUserId=${pageUser.id}&followAction=${action}`, {
+            method: 'PATCH',
+        });
+
+        setFollowed(!debouncedFollowed);
+    };
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(pageUser.username);
@@ -98,6 +117,21 @@ export default function ProfilePage() {
             />
 
             <nav className={styles['nav-bar']}>
+                <Button
+                    onClick={handleFollow}
+                    variant={followed ? 'text' : 'contained'}
+                    size="small"
+                    disabled={!user || debouncedFollowed !== followed}
+                    sx={{
+                        marginTop: '5px',
+                        marginRight: '5px',
+                        borderRadius: '20px',
+                    }}
+                    className={styles['action-btn']}
+                >
+                    {followed ? 'Unfollow' : 'Follow'}
+                </Button>
+
                 <div className={styles.header}>
                     <Avatar
                         className={styles.avatar}
@@ -123,7 +157,7 @@ export default function ProfilePage() {
 
             <div className={styles['collections-category']}>
                 <CollectionSearchBar disabled={debouncedQuery === '' && collections.length === 0} />
-                <SortBy className="collections-search" disabled={collections.length === 0} />
+                <SortBy className="" disabled={collections.length === 0} />
             </div>
 
             <div className={styles['before-collections-line']} />

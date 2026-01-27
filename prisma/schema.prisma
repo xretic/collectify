@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-    id       Int     @id @unique
+    id       Int     @id
     token    String  @unique
     githubId String? @unique
     googleId String? @unique
@@ -32,10 +32,20 @@ model User {
     collections Collection[]
     favorites   Collection[] @relation("FavoriteCollections")
 
-    subscribed    Int[]
-    subscriptions Int[]
+    followers     Follow[] @relation("Followers")
+    subscriptions Follow[] @relation("Subscriptions")
 
     sessions Session[]
+}
+
+model Follow {
+    followerId  Int
+    followingId Int
+
+    follower  User @relation("Subscriptions", fields: [followerId], references: [id])
+    following User @relation("Followers", fields: [followingId], references: [id])
+
+    @@id([followerId, followingId])
 }
 
 model Session {
@@ -75,8 +85,6 @@ model Collection {
 model Like {
     id           Int        @id @default(autoincrement())
     userId       Int
-    username     String
-    avatarUrl    String
     collectionId Int
     Collection   Collection @relation(fields: [collectionId], references: [id])
 }

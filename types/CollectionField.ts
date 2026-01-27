@@ -22,13 +22,9 @@ export type CollectionPropsAdditional = {
     category: string;
     likes: {
         id: number;
-        username: string;
-        avatarUrl: string;
     }[];
     addedToFavorite: {
         id: number;
-        username: string;
-        avatarUrl: string;
     }[];
     items: {
         title: string;

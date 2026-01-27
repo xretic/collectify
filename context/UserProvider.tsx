@@ -1,26 +1,18 @@
 'use client';
 
+import { SessionUserInResponse, UserInResponse } from '@/types/UserInResponse';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface User {
-    id: number;
-    avatarUrl: string;
-    bannerUrl: string;
-    username: string;
-    fullName: string;
-    description: string;
-}
-
 interface UserContextType {
-    user: User | null;
-    setUser: (user: User | null) => void;
+    user: SessionUserInResponse | UserInResponse | null;
+    setUser: (user: SessionUserInResponse | UserInResponse | null) => void;
     loading: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<SessionUserInResponse | UserInResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

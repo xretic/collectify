@@ -26,6 +26,7 @@ import { useDebounce } from '@/lib/useDebounce';
 import styles from '../users.module.css';
 import { useRouter } from 'next/navigation';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
+import { SessionUserInResponse } from '@/types/UserInResponse';
 
 type State = {
     copied: boolean;
@@ -174,7 +175,9 @@ export default function ProfilePage() {
         if (!res.ok) return;
 
         const updatedUser = await res.json();
-        setUser(updatedUser.user);
+        const responseUser: SessionUserInResponse = updatedUser.user;
+
+        setUser(responseUser);
         updateState('editing', false);
     };
 
