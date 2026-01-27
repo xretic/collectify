@@ -14,11 +14,12 @@ datasource db {
 }
 
 model User {
-    id    Int    @id @unique
-    token String @unique
+    id       Int     @id @unique
+    token    String  @unique
+    githubId String? @unique
 
-    email        String @unique
-    passwordHash String
+    email        String  @unique
+    passwordHash String?
 
     avatarUrl String @default("")
     bannerUrl String @default("")

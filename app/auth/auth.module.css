@@ -8,3 +8,16 @@
 .paragraph {
     color: #5a5a5a;
 }
+
+.social-media {
+    display: flex;
+    margin-top: 15px;
+    gap: 7px;
+}
+
+.social-media-btn {
+    color: #fff;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 11px;
+    margin-left: 5px;
+}

@@ -17,6 +17,9 @@ import {
     USERNAME_MIN_LENGTH,
 } from '@/lib/constans';
 import styles from '../auth.module.css';
+import { Tooltip } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import Image from 'next/image';
 
 type RegisterFormData = {
     email: string;
@@ -73,6 +76,12 @@ export default function RegisterPage() {
         } finally {
             stopLoading();
         }
+    };
+    const githubAuth = () => {
+        const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+        const redirectUri = `${window.location.origin}/api/auth/callback/github`;
+
+        window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user user:email`;
     };
 
     return (
@@ -218,6 +227,55 @@ export default function RegisterPage() {
                         {loadingCount > 0 ? 'Loading...' : 'Submit'}
                     </Button>
                 </form>
+
+                <div className={styles['social-media']}>
+                    <Tooltip title="Register via GitHub">
+                        <Button
+                            onClick={githubAuth}
+                            variant="contained"
+                            sx={{
+                                p: '6px',
+                                borderRadius: 6,
+                                backgroundColor: 'black',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#333',
+                                },
+                            }}
+                            aria-label="GitHub"
+                        >
+                            <GitHubIcon />
+                            <span className={styles['social-media-btn']}>GitHub</span>
+                        </Button>
+                    </Tooltip>
+
+                    <Tooltip title="Register via Google">
+                        <Button
+                            onClick={() => {}}
+                            variant="contained"
+                            sx={{
+                                p: '6px',
+                                borderRadius: 6,
+                                backgroundColor: 'white',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#fff',
+                                },
+                            }}
+                            aria-label="Google"
+                        >
+                            <Image
+                                src="/images/GoogleIcon.png"
+                                alt="google-icon"
+                                width={20}
+                                height={20}
+                            />
+                            <span className={styles['social-media-btn']} style={{ color: 'black' }}>
+                                Google
+                            </span>
+                        </Button>
+                    </Tooltip>
+                </div>
             </Box>
         </Suspense>
     );
