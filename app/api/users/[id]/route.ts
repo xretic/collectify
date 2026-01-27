@@ -1,3 +1,4 @@
+import { upsertNotification } from '@/helpers/upsertNotification';
 import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse, UserInResponse } from '@/types/UserInResponse';
 import { NextRequest, NextResponse } from 'next/server';
@@ -162,6 +163,8 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
                         followingId: Number(followUserId),
                     },
                 });
+
+                await upsertNotification(user.id, Number(followUserId), 'FOLLOW');
 
                 return NextResponse.json({ message: 'User followed.' }, { status: 200 });
 

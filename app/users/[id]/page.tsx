@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -15,8 +15,9 @@ import { PAGE_SIZE } from '@/lib/constans';
 import { usePaginationStore } from '@/stores/paginationStore';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import styles from '../users.module.css';
-import { Button } from '@mui/material';
+import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import { UserInResponse } from '@/types/UserInResponse';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function ProfilePage() {
     const params = useParams();
@@ -98,19 +99,26 @@ export default function ProfilePage() {
     const handleCopy = async () => {
         await navigator.clipboard.writeText(pageUser.username);
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
     };
+
+    const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setCopied(false);
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
     return (
         <header className={styles.profile}>
-            {copied && (
-                <div className={`toast ${copied ? 'show' : ''}`}>
-                    <Alert severity="success" variant="filled">
-                        Copied.
-                    </Alert>
-                </div>
-            )}
-
             <div
                 className={styles.cover}
                 style={{ backgroundImage: `url(${pageUser.bannerUrl})` }}
@@ -144,6 +152,14 @@ export default function ProfilePage() {
                             <span onClick={handleCopy} className={styles['username']}>
                                 @{pageUser.username}
                             </span>
+                            <Snackbar
+                                open={copied}
+                                autoHideDuration={2000}
+                                onClose={handleClose}
+                                message="Username copied."
+                                action={action}
+                            />
+
                             <p className={styles['description']}>
                                 <FormatQuoteIcon />
                                 {pageUser.description.length === 0

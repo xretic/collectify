@@ -1,4 +1,5 @@
-import { Collection, Follow } from '@/generated/prisma/client';
+import { Collection, Follow, NotificationType } from '@/generated/prisma/client';
+import { upsertNotification } from '@/helpers/upsertNotification';
 import { prisma } from '@/lib/prisma';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
@@ -121,27 +122,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         session.user.id !== collection.User.id &&
         ['like', 'favorite'].some((x) => x === actionType)
     ) {
-        const notificationType: Record<string, string> = {
-            like: 'liked your collection named',
-            favorite: 'added your collection to favorites',
+        const notificationType: Record<'like' | 'favorite', NotificationType> = {
+            like: NotificationType.LIKE,
+            favorite: NotificationType.FAVORITE,
         };
 
-        const message = `${session.user.username} ${notificationType[actionType]} ${collection.name}`;
-        const requestData = {
-            senderUserId: session.user.id,
-            recipientUserId: collection.User.id,
-            message: message,
-        };
-
-        const notification = await prisma.notification.findFirst({
-            where: requestData,
-        });
-
-        if (!notification) {
-            await prisma.notification.create({
-                data: requestData,
-            });
-        }
+        await upsertNotification(
+            session.user.id,
+            collection.User.id,
+            notificationType[actionType as 'like' | 'favorite'],
+        );
     }
 
     const resData = getResData(collection);

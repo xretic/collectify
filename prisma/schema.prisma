@@ -34,7 +34,32 @@ model User {
     followers     Follow[] @relation("Followers")
     subscriptions Follow[] @relation("Subscriptions")
 
-    sessions Session[]
+    notifications Notification[] @relation("ReceivedNotifications")
+
+    sessions     Session[]
+    Notification Notification[]
+}
+
+enum NotificationType {
+    FOLLOW
+    LIKE
+    COMMENT
+    FAVORITE
+}
+
+model Notification {
+    id Int @id @default(autoincrement())
+
+    type NotificationType
+
+    recipientUserId Int
+    recipientUser   User @relation("ReceivedNotifications", fields: [recipientUserId], references: [id])
+
+    senderUserId Int?
+    senderUser   User? @relation(fields: [senderUserId], references: [id])
+
+    isRead    Boolean  @default(false)
+    createdAt DateTime @default(now())
 }
 
 model Follow {
@@ -54,14 +79,6 @@ model Session {
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
-}
-
-model Notification {
-    id              Int      @id @default(autoincrement())
-    senderUserId    Int
-    recipientUserId Int
-    message         String
-    createdAt       DateTime @default(now())
 }
 
 model Collection {

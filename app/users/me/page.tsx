@@ -8,7 +8,7 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { Input } from 'antd';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     DESCRPITION_MAX_LENGTH,
     FULLNAME_MAX_LENGTH,
@@ -21,7 +21,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { usePaginationStore } from '@/stores/paginationStore';
 import CollectionsWrapper from '@/components/CollectionsWrapper/CollectionsWrapper';
 import SortBy from '@/components/SortBy/SortBy';
-import { IconButton, Tooltip, Button } from '@mui/material';
+import { IconButton, Tooltip, Button, SnackbarCloseReason, Snackbar } from '@mui/material';
 import { useDebounce } from '@/lib/useDebounce';
 import styles from '../users.module.css';
 import { useRouter } from 'next/navigation';
@@ -38,6 +38,7 @@ type State = {
     avatarUrl: string;
     errorMessage: string;
     tab: string;
+    cooldown: boolean;
 };
 
 export default function ProfilePage() {
@@ -53,6 +54,7 @@ export default function ProfilePage() {
         avatarUrl: '',
         errorMessage: '',
         tab: '',
+        cooldown: false,
     });
 
     const updateState = <K extends keyof State>(key: K, value: State[K]) => {
@@ -129,8 +131,23 @@ export default function ProfilePage() {
     const handleCopy = async () => {
         await navigator.clipboard.writeText(user.username);
         updateState('copied', true);
-        setTimeout(() => updateState('copied', false), 2000);
     };
+
+    const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        updateState('copied', false);
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
     const waitForUploadcare = (): Promise<any> =>
         new Promise((resolve, reject) => {
@@ -160,6 +177,8 @@ export default function ProfilePage() {
     };
 
     const handleSave = async () => {
+        updateState('cooldown', true);
+
         const res = await fetch('/api/users/' + user.id, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
@@ -171,6 +190,8 @@ export default function ProfilePage() {
                 avatarUrl: state.avatarUrl,
             }),
         });
+
+        setTimeout(() => updateState('cooldown', false), 1000);
 
         if (res.status === 409) {
             updateState('errorMessage', 'User with this username already exists.');
@@ -189,21 +210,13 @@ export default function ProfilePage() {
 
     return (
         <header className={styles.profile}>
-            {state.copied && (
-                <div className={`toast ${state.copied ? 'show' : ''}`}>
-                    <Alert severity="success" variant="filled">
-                        Copied.
-                    </Alert>
-                </div>
-            )}
-
-            {state.errorMessage.length > 0 && (
-                <div className={`toast ${state.errorMessage.length > 0 ? 'show' : ''}`}>
-                    <Alert severity="error" variant="filled">
-                        {state.errorMessage}
-                    </Alert>
-                </div>
-            )}
+            <Snackbar
+                open={state.errorMessage.length > 0}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                message={state.errorMessage}
+                action={action}
+            />
 
             <div
                 onClick={
@@ -245,7 +258,8 @@ export default function ProfilePage() {
                                     !state.username.trim() ||
                                     !isUsernameValid(state.username) ||
                                     state.fullName.length > FULLNAME_MAX_LENGTH ||
-                                    state.description.length > DESCRPITION_MAX_LENGTH
+                                    state.description.length > DESCRPITION_MAX_LENGTH ||
+                                    state.cooldown
                                 }
                             >
                                 <CheckIcon sx={{ color: '#afafaf' }} />
@@ -307,6 +321,15 @@ export default function ProfilePage() {
                                 <span onClick={handleCopy} className={styles['username']}>
                                     @{user.username}
                                 </span>
+
+                                <Snackbar
+                                    open={state.copied}
+                                    autoHideDuration={2000}
+                                    onClose={handleClose}
+                                    message="Username copied."
+                                    action={action}
+                                />
+
                                 <p className={styles.description}>
                                     <FormatQuoteIcon />
                                     {user.description.length > 0 ? user.description : 'No bio yet'}
