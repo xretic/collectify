@@ -115,6 +115,30 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         return NextResponse.json({ data: null }, { status: 404 });
     }
 
+    if (user.id !== collection.User.id) {
+        const notificationType: Record<string, string> = {
+            like: 'liked your collection named',
+            favorite: 'added your collection to favorites',
+        };
+
+        const message = `${user.username} ${notificationType[actionType]} ${collection.name}`;
+        const requestData = {
+            senderUserId: user.id,
+            recipientUserId: collection.User.id,
+            message: message,
+        };
+
+        const notification = await prisma.notification.findFirst({
+            where: requestData,
+        });
+
+        if (!notification) {
+            await prisma.notification.create({
+                data: requestData,
+            });
+        }
+    }
+
     const resData = getResData(collection);
 
     return NextResponse.json(
@@ -140,7 +164,7 @@ function getResData(
             bannerUrl: string;
             token: string;
             email: string;
-            passwordHash: string;
+            passwordHash: string | null;
             avatarUrl: string;
             username: string;
             fullName: string;
@@ -160,7 +184,7 @@ function getResData(
             bannerUrl: string;
             token: string;
             email: string;
-            passwordHash: string;
+            passwordHash: string | null;
             avatarUrl: string;
             username: string;
             fullName: string;
