@@ -62,11 +62,6 @@ export async function GET(req: NextRequest) {
 
     if (favoritesUserId) {
         const sessionId = req.cookies.get('sessionId')?.value;
-
-        if (!sessionId) {
-            return NextResponse.json({ user: null }, { status: 401 });
-        }
-
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
             include: {
@@ -74,11 +69,9 @@ export async function GET(req: NextRequest) {
             },
         });
 
-        if (!session) {
-            return NextResponse.json({ data: null }, { status: 401 });
-        }
+        const sessionUser = session!.user;
 
-        if (session.user.id !== favoritesUserId) {
+        if (sessionUser.id !== favoritesUserId) {
             return NextResponse.json({ data: null }, { status: 401 });
         }
     }

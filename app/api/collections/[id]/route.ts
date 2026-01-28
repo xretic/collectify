@@ -46,11 +46,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const sessionId = req.cookies.get('sessionId')?.value;
-
-    if (!sessionId) {
-        return NextResponse.json({ user: null }, { status: 401 });
-    }
-
     const session = await prisma.session.findUnique({
         where: { id: sessionId },
         include: {
@@ -58,15 +53,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         },
     });
 
-    if (!session) {
-        return NextResponse.json({ data: null }, { status: 401 });
-    }
+    const sessionUser = session!.user;
 
     const actionConfig: Record<string, any> = {
         like: {
             likes: {
                 create: {
-                    userId: session.user.id,
+                    userId: sessionUser.id,
                 },
             },
         },
@@ -74,7 +67,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         dislike: {
             likes: {
                 deleteMany: {
-                    userId: session.user.id,
+                    userId: sessionUser.id,
                 },
             },
         },
@@ -82,7 +75,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         favorite: {
             addedToFavorite: {
                 connect: {
-                    id: session.user.id,
+                    id: sessionUser.id,
                 },
             },
         },
@@ -90,7 +83,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         unfavorite: {
             addedToFavorite: {
                 disconnect: {
-                    id: session.user.id,
+                    id: sessionUser.id,
                 },
             },
         },
@@ -119,7 +112,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     if (
-        session.user.id !== collection.User.id &&
+        sessionUser.id !== collection.User.id &&
         ['like', 'favorite'].some((x) => x === actionType)
     ) {
         const notificationType: Record<'like' | 'favorite', NotificationType> = {
@@ -128,7 +121,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         };
 
         await upsertNotification(
-            session.user.id,
+            sessionUser.id,
             collection.User.id,
             notificationType[actionType as 'like' | 'favorite'],
         );

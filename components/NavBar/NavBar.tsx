@@ -24,13 +24,6 @@ import AddIcon from '@mui/icons-material/Add';
 import styles from './NavBar.module.css';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 
-interface NavBarProps {
-    user: SessionUserInResponse | null;
-    pathname: string;
-    styles: Record<string, string>;
-    buttonStyle?: SxProps<Theme>;
-}
-
 interface NavItem {
     label: string;
     href: string;
@@ -40,7 +33,7 @@ interface NavItem {
     hide?: boolean;
 }
 
-const navItems = (user: SessionUserInResponse | null, pathname: string): NavItem[] => [
+const navItems = (user: SessionUserInResponse | null): NavItem[] => [
     {
         label: 'Home',
         href: '/',
@@ -65,11 +58,11 @@ const navItems = (user: SessionUserInResponse | null, pathname: string): NavItem
 
 const badgeSx: SxProps<Theme> = {
     '.MuiBadge-badge': {
-        minWidth: 14,
-        height: 14,
+        minWidth: 13,
+        height: 13,
         fontSize: 10,
         padding: 0,
-        transform: 'translate(35%, -35%)',
+        transform: 'translate(20%, -20%)',
     },
 };
 
@@ -109,7 +102,7 @@ export default function NavBar() {
 
                 {user && (
                     <nav className={styles['nav-bar-navigation']}>
-                        {navItems(user, pathname)
+                        {navItems(user)
                             .filter((item) => !item.hide)
                             .map(
                                 ({
@@ -158,11 +151,7 @@ export default function NavBar() {
                                             }
                                         >
                                             {content}
-                                            <span
-                                                className={`nav-text ml-${badge && badge > 0 ? 1 : 0}`}
-                                            >
-                                                {label}
-                                            </span>
+                                            <span className="nav-text ml-1">{label}</span>
                                         </Link>
                                     );
                                 },

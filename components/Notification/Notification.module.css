@@ -1,0 +1,53 @@
+.notification {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.unread {
+    background-color: #f0f5ff;
+}
+
+.notification:hover {
+    background-color: #f3f3f3;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+    flex-grow: 1;
+}
+
+.username {
+    font-family: var(--font-google-sans), sans-serif;
+    color: #000;
+}
+
+.text {
+    font-size: 14px;
+    color: #929292;
+}
+
+.time {
+    font-size: 12px;
+    color: #929292;
+    margin-left: auto;
+}

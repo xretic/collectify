@@ -1,0 +1,23 @@
+.header {
+    background-color: #ffffff;
+    max-width: 1150px;
+    margin: 20px auto 0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 20px 25px;
+    position: relative;
+}
+
+.notifications {
+    background-color: #ffffff;
+    max-width: 800px;
+    margin: 20px auto 0;
+    border-radius: 20px;
+    padding: 20px 25px;
+    position: relative;
+}
+
+.mark-as-read-text {
+    font-family: var(--font-google-sans), sans-serif;
+    margin-left: 5px;
+}

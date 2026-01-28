@@ -5,21 +5,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ quer
     const { query } = await params;
 
     const sessionId = req.cookies.get('sessionId')?.value;
-
-    if (!sessionId) {
-        return NextResponse.json({ status: 401 });
-    }
-
     const session = await prisma.session.findUnique({
         where: { id: sessionId },
         include: {
             user: true,
         },
     });
-
-    if (!session) {
-        return NextResponse.json({ status: 401 });
-    }
 
     const users = await prisma.user.findMany({
         where: {

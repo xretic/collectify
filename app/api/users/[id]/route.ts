@@ -66,11 +66,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     const sessionId = req.cookies.get('sessionId')?.value;
-
-    if (!sessionId) {
-        return NextResponse.json({ status: 401 });
-    }
-
     const session = await prisma.session.findUnique({
         where: { id: sessionId },
         include: {
@@ -78,9 +73,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
         },
     });
 
-    if (!session) {
-        return NextResponse.json({ status: 401 });
-    }
+    const sessionUser = session!.user;
 
     const { id: idStr } = await context.params;
     const id = Number(idStr);
@@ -95,7 +88,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 
     const user = await prisma.user.findUnique({ where: { id } });
 
-    if (!user || user.id !== session.userId) {
+    if (!user || user.id !== sessionUser.id) {
         return NextResponse.json({ message: 'Invalid session' }, { status: 401 });
     }
 
@@ -192,7 +185,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
         const followersCount = await prisma.follow.count({ where: { followingId: id } });
         const subscriptionsCount = await prisma.follow.count({ where: { followerId: id } });
         const notificationsCount = await prisma.notification.count({
-            where: { recipientUserId: id },
+            where: { recipientUserId: id, isRead: false },
         });
 
         const responseData: SessionUserInResponse = {

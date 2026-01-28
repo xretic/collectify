@@ -13,3 +13,12 @@ export const DEFAULT_DEBOUNCE_DELAY = 400;
 export const PAGE_SIZE = 10;
 
 export const CATEGORIES = ['Books', 'Movies', 'Games', 'Recipes', 'Apps', 'Travel', 'Custom'];
+
+export enum NOTIFICATION_TEXTS {
+    FOLLOW = 'started following you',
+    LIKE = 'liked your post',
+    FAVORITE = 'added your post to favorites',
+    COMMENT = 'commented on your post',
+}
+
+export const NOTIFICATIONS_PER_LOAD = 30;

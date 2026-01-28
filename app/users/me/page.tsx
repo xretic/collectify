@@ -346,6 +346,7 @@ export default function ProfilePage() {
                     onClick={() => handleTabChoice('authorTab')}
                     sx={{
                         borderRadius: 10,
+                        textTransform: 'none',
                     }}
                 >
                     <AutoAwesomeMosaicIcon sx={{ width: 18, height: 18 }} />
@@ -355,7 +356,7 @@ export default function ProfilePage() {
                 <Button
                     variant={state.tab === favoritesTab ? 'contained' : 'outlined'}
                     onClick={() => handleTabChoice('favoritesTab')}
-                    sx={{ borderRadius: 10 }}
+                    sx={{ borderRadius: 10, textTransform: 'none' }}
                 >
                     <BookmarksIcon
                         sx={{
