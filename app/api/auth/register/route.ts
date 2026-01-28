@@ -10,11 +10,11 @@ export async function POST(req: NextRequest) {
         const { email, password, username } = await req.json();
 
         if (!email || !password || !username || password.length < 8) {
-            return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+            return NextResponse.json({ message: 'Invalid data.' }, { status: 400 });
         }
 
         if (!isPasswordValid(password)) {
-            return NextResponse.json({ error: 'Invalid data' }, { status: 405 });
+            return NextResponse.json({ message: 'Invalid data.' }, { status: 405 });
         }
 
         const userExistence = await prisma.user.findFirst({
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         });
 
         if (userExistence) {
-            return NextResponse.json({ error: 'This user already exists!' }, { status: 409 });
+            return NextResponse.json({ message: 'This user already exists.' }, { status: 409 });
         }
 
         const usernameExistence = await prisma.user.findFirst({
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
         if (usernameExistence) {
             return NextResponse.json(
-                { message: 'User with this username already exists!' },
+                { message: 'User with this username already exists.' },
                 { status: 409 },
             );
         }
@@ -81,6 +81,6 @@ export async function POST(req: NextRequest) {
         return response;
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+        return NextResponse.json({ error: 'Something went wrong.' }, { status: 500 });
     }
 }

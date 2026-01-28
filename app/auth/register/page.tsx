@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
@@ -17,10 +17,11 @@ import {
     USERNAME_MIN_LENGTH,
 } from '@/lib/constans';
 import styles from '../auth.module.css';
-import { Tooltip } from '@mui/material';
+import { IconButton, Snackbar, SnackbarCloseReason, Tooltip } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Image from 'next/image';
 import { githubAuth, googleAuth } from '@/lib/authMethods';
+import CloseIcon from '@mui/icons-material/Close';
 
 type RegisterFormData = {
     email: string;
@@ -82,6 +83,22 @@ export default function RegisterPage() {
             stopLoading();
         }
     };
+
+    const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setErrorMsg('');
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
     return (
         <Suspense
@@ -205,17 +222,6 @@ export default function RegisterPage() {
                         )}
                     />
 
-                    {emailError && (
-                        <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
-                            Your email is invalid!
-                        </Alert>
-                    )}
-                    {!emailError && errorMsg && (
-                        <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
-                            {errorMsg}
-                        </Alert>
-                    )}
-
                     <Button
                         type="submit"
                         variant="contained"
@@ -276,6 +282,13 @@ export default function RegisterPage() {
                     </Tooltip>
                 </div>
             </Box>
+            <Snackbar
+                open={errorMsg !== ''}
+                autoHideDuration={5000}
+                onClose={handleClose}
+                message={errorMsg}
+                action={action}
+            />
         </Suspense>
     );
 }

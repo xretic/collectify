@@ -4,15 +4,15 @@ import { SessionUserInResponse, UserInResponse } from '@/types/UserInResponse';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface UserContextType {
-    user: SessionUserInResponse | UserInResponse | null;
-    setUser: (user: SessionUserInResponse | UserInResponse | null) => void;
+    user: SessionUserInResponse | null;
+    setUser: (user: SessionUserInResponse | null) => void;
     loading: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<SessionUserInResponse | UserInResponse | null>(null);
+    const [user, setUser] = useState<SessionUserInResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

@@ -191,6 +191,9 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 
         const followersCount = await prisma.follow.count({ where: { followingId: id } });
         const subscriptionsCount = await prisma.follow.count({ where: { followerId: id } });
+        const notificationsCount = await prisma.notification.count({
+            where: { recipientUserId: id },
+        });
 
         const responseData: SessionUserInResponse = {
             id: updatedUser.id,
@@ -201,6 +204,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
             description: updatedUser.description,
             followers: followersCount,
             subscriptions: subscriptionsCount,
+            notifications: notificationsCount,
         };
 
         return NextResponse.json(

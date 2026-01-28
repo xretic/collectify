@@ -9,6 +9,7 @@ export type SessionUserInResponse = {
     description: string;
     followers: number;
     subscriptions: number;
+    notifications: number;
 };
 
 export type UserInResponse = {

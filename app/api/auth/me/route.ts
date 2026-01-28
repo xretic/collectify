@@ -22,6 +22,9 @@ export async function GET(req: NextRequest) {
 
     const followersCount = await prisma.follow.count({ where: { followingId: session.userId } });
     const subscriptionsCount = await prisma.follow.count({ where: { followerId: session.userId } });
+    const notificationsCount = await prisma.notification.count({
+        where: { recipientUserId: session.userId },
+    });
 
     const user: SessionUserInResponse = {
         id: session.user.id,
@@ -32,6 +35,7 @@ export async function GET(req: NextRequest) {
         description: session.user.description,
         followers: followersCount,
         subscriptions: subscriptionsCount,
+        notifications: notificationsCount,
     };
 
     return NextResponse.json({ user: user }, { status: 200 });

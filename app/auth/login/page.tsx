@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
@@ -12,9 +12,10 @@ import { useUIStore } from '@/stores/uiStore';
 import CircularProgress from '@mui/material/CircularProgress';
 import styles from '../auth.module.css';
 import Image from 'next/image';
-import { Tooltip } from '@mui/material';
+import { IconButton, Snackbar, SnackbarCloseReason, Tooltip } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { githubAuth, googleAuth } from '@/lib/authMethods';
+import CloseIcon from '@mui/icons-material/Close';
 
 type LoginFormData = {
     email: string;
@@ -71,6 +72,22 @@ export default function LoginPage() {
             stopLoading();
         }
     };
+
+    const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setErrorMsg('');
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
     return (
         <Suspense
@@ -147,17 +164,6 @@ export default function LoginPage() {
                         )}
                     />
 
-                    {emailError && (
-                        <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
-                            Your email is invalid!
-                        </Alert>
-                    )}
-                    {!emailError && errorMsg && (
-                        <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
-                            {errorMsg}
-                        </Alert>
-                    )}
-
                     <Button
                         type="submit"
                         variant="contained"
@@ -218,6 +224,13 @@ export default function LoginPage() {
                     </Tooltip>
                 </div>
             </Box>
+            <Snackbar
+                open={errorMsg !== ''}
+                autoHideDuration={5000}
+                onClose={handleClose}
+                message={errorMsg}
+                action={action}
+            />
         </Suspense>
     );
 }

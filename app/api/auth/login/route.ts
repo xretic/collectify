@@ -8,23 +8,23 @@ export async function POST(req: NextRequest) {
         const { email, password } = await req.json();
 
         if (!email || !password) {
-            return NextResponse.json({ error: 'Missing data' }, { status: 400 });
+            return NextResponse.json({ message: 'Missing data.' }, { status: 400 });
         }
 
         const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+            return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
         }
 
         if (!user.passwordHash) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+            return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
         if (!passwordMatch) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+            return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
         }
 
         const session = await prisma.session.create({
@@ -59,6 +59,6 @@ export async function POST(req: NextRequest) {
         return response;
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+        return NextResponse.json({ error: 'Something went wrong.' }, { status: 500 });
     }
 }

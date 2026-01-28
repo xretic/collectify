@@ -92,7 +92,7 @@
     }
 
     .nav-right .auth-panel-search-btn {
-        transform: translateY(-50%) translateX(95px);
+        transform: translateY(-50%) translateX(70px);
     }
 }
 
@@ -103,12 +103,6 @@
 }
 
 @media (max-width: 1200px) {
-    .nav-bar-navigation .nav-text {
-        display: none;
-    }
-}
-
-@media (max-width: 750px) {
     .nav-bar-navigation {
         display: none;
     }
