@@ -79,20 +79,20 @@
     position: absolute;
     right: 0;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) translateX(0px);
 }
 
 .nav-right-username {
     font-weight: 500;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1000px) {
     .nav-right .nav-right-username {
         display: none;
     }
 
     .nav-right .auth-panel-search-btn {
-        transform: translateY(-50%) translateX(50px);
+        transform: translateY(-50%) translateX(40px);
     }
 }
 

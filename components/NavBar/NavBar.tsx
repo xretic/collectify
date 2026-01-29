@@ -19,10 +19,25 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import UserSearchBar from '../UserSearchBar/UserSearchBar';
-import { Badge, IconButton, SxProps, Theme, Tooltip } from '@mui/material';
+import {
+    Badge,
+    Box,
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    SxProps,
+    Theme,
+    Tooltip,
+    useMediaQuery,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import styles from './NavBar.module.css';
 import { SessionUserInResponse } from '@/types/UserInResponse';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface NavItem {
     label: string;
@@ -75,6 +90,10 @@ export default function NavBar() {
     const usernameRef = useRef<HTMLSpanElement>(null);
     const [width, setWidth] = useState(0);
 
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const navigation = navItems(user).filter((i) => !i.hide);
+    const isMobile = useMediaQuery('(max-width:1200px)');
+
     useEffect(() => {
         if (usernameRef.current) {
             setWidth(usernameRef.current.offsetWidth);
@@ -86,6 +105,16 @@ export default function NavBar() {
     return (
         <header>
             <nav className={styles['nav-bar']}>
+                {isMobile && user && (
+                    <IconButton
+                        onClick={() => setDrawerOpen(true)}
+                        sx={{ ml: 1 }}
+                        aria-label="open menu"
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                )}
+
                 <Link href="/">
                     <Image
                         className={styles['nav-bar-icon']}
@@ -247,6 +276,36 @@ export default function NavBar() {
                     )}
                 </div>
             </nav>
+            <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+                <Box sx={{ width: 260 }}>
+                    <List>
+                        {navigation.map(
+                            ({ label, href, icon: Icon, iconOutlined: IconOutlined, badge }) => {
+                                const isActive = pathname === href;
+
+                                return (
+                                    <ListItem key={href} disablePadding>
+                                        <ListItemButton component={Link} href={href}>
+                                            <ListItemIcon>
+                                                {badge !== undefined ? (
+                                                    <Badge badgeContent={badge} color="error">
+                                                        {isActive ? <Icon /> : <IconOutlined />}
+                                                    </Badge>
+                                                ) : isActive ? (
+                                                    <Icon />
+                                                ) : (
+                                                    <IconOutlined />
+                                                )}
+                                            </ListItemIcon>
+                                            <ListItemText primary={label} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                );
+                            },
+                        )}
+                    </List>
+                </Box>
+            </Drawer>
         </header>
     );
 }
