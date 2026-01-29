@@ -58,6 +58,9 @@ model Notification {
     senderUserId Int?
     senderUser   User? @relation(fields: [senderUserId], references: [id])
 
+    collectionId Int?
+    collection   Collection? @relation(fields: [collectionId], references: [id])
+
     isRead    Boolean  @default(false)
     createdAt DateTime @default(now())
 }
@@ -95,7 +98,8 @@ model Collection {
     User   User? @relation(fields: [userId], references: [id])
     userId Int?
 
-    createdAt DateTime @default(now())
+    createdAt    DateTime       @default(now())
+    Notification Notification[]
 }
 
 model Like {

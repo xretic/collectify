@@ -106,13 +106,24 @@ export default function NavBar() {
         <header>
             <nav className={styles['nav-bar']}>
                 {isMobile && user && (
-                    <IconButton
-                        onClick={() => setDrawerOpen(true)}
-                        sx={{ ml: 1 }}
-                        aria-label="open menu"
+                    <Badge
+                        badgeContent={user?.notifications}
+                        max={99}
+                        color="error"
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        sx={badgeSx}
                     >
-                        <MenuIcon />
-                    </IconButton>
+                        <IconButton
+                            onClick={() => setDrawerOpen(true)}
+                            sx={{ ml: 1 }}
+                            aria-label="open menu"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    </Badge>
                 )}
 
                 <Link href="/">
@@ -196,7 +207,7 @@ export default function NavBar() {
                         <div
                             className={styles['auth-panel-search-btn']}
                             style={{
-                                right: 65 + width,
+                                right: isMobile ? 65 : 65 + width,
                                 top: 17,
                             }}
                         >

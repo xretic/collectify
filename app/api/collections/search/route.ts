@@ -1,4 +1,5 @@
 import { Collection, Item, Like, Prisma, User } from '@/generated/prisma/client';
+import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
@@ -54,16 +55,18 @@ export async function GET(req: NextRequest) {
 
     const excludedIds: number[] = [];
 
-    if (
-        !sortedBy ||
-        !isProperInteger(Number(skip)) ||
-        !isProperInteger(Number(authorId)) ||
-        !isProperInteger(Number(favoritesUserId))
-    ) {
+    if (!sortedBy || isNaN(skip)) {
         return NextResponse.json(
             { message: 'You should set skip and sortedBy value' },
             { status: 400 },
         );
+    }
+
+    if (
+        (authorId && !isProperInteger(authorId)) ||
+        (favoritesUserId && !isProperInteger(favoritesUserId))
+    ) {
+        return NextResponse.json({ message: 'You should set proper users id' }, { status: 400 });
     }
 
     if (favoritesUserId) {

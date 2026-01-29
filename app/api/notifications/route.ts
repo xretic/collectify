@@ -30,10 +30,11 @@ export async function GET(req: NextRequest) {
     const notifications = await prisma.notification.findMany({
         where: {
             recipientUserId: sessionUser.id,
-            ...(onlyUnreadBool && { isRead: false }),
+            ...(onlyUnreadBool ? { isRead: false } : {}),
         },
         include: {
             senderUser: true,
+            collection: true,
         },
         orderBy: {
             createdAt: 'desc',
@@ -41,18 +42,15 @@ export async function GET(req: NextRequest) {
         take: NOTIFICATIONS_PER_LOAD,
     });
 
-    const totalAmount = await prisma.notification.count({
-        where: {
-            recipientUserId: sessionUser.id,
-        },
-    });
+    const [totalAmount, unreadAmount] = await prisma.$transaction([
+        prisma.notification.count({
+            where: { recipientUserId: sessionUser.id },
+        }),
 
-    const unreadAmount = await prisma.notification.count({
-        where: {
-            recipientUserId: sessionUser.id,
-            isRead: false,
-        },
-    });
+        prisma.notification.count({
+            where: { recipientUserId: sessionUser.id, isRead: false },
+        }),
+    ]);
 
     const data: NotificationInResponse[] = notifications.map((x) => ({
         user: {
@@ -66,6 +64,8 @@ export async function GET(req: NextRequest) {
             senderUserId: x.senderUserId,
             isRead: x.isRead,
             createdAt: x.createdAt,
+            collectionId: x.collectionId,
+            collectionName: x.collection?.name ?? null,
         },
     }));
 
@@ -101,6 +101,7 @@ export async function PATCH(req: NextRequest) {
         },
         include: {
             senderUser: true,
+            collection: true,
         },
         orderBy: {
             createdAt: 'desc',
@@ -120,6 +121,8 @@ export async function PATCH(req: NextRequest) {
             senderUserId: x.senderUserId,
             isRead: x.isRead,
             createdAt: x.createdAt,
+            collectionId: x.collectionId,
+            collectionName: x.collection?.name ?? null,
         },
     }));
 

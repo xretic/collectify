@@ -125,6 +125,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             sessionUser.id,
             collection.User.id,
             notificationType[actionType as 'like' | 'favorite'],
+            collection.id,
         );
     }
 

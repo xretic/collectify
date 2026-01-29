@@ -86,13 +86,9 @@
     font-weight: 500;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
     .nav-right .nav-right-username {
         display: none;
-    }
-
-    .nav-right .auth-panel-search-btn {
-        transform: translateY(-50%) translateX(40px);
     }
 }
 

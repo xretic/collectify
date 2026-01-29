@@ -20,8 +20,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         return NextResponse.json({ user: null }, { status: 404 });
     }
 
-    const followersCount = await prisma.follow.count({ where: { followingId: intId } });
-    const subscriptionsCount = await prisma.follow.count({ where: { followerId: intId } });
+    const [followersCount, subscriptionsCount] = await prisma.$transaction([
+        prisma.follow.count({
+            where: { followingId: intId },
+        }),
+        prisma.follow.count({
+            where: { followerId: intId },
+        }),
+    ]);
 
     const sessionId = req.cookies.get('sessionId')?.value;
     let isFollowed = false;
@@ -185,11 +191,20 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
             data: safeData,
         });
 
-        const followersCount = await prisma.follow.count({ where: { followingId: id } });
-        const subscriptionsCount = await prisma.follow.count({ where: { followerId: id } });
-        const notificationsCount = await prisma.notification.count({
-            where: { recipientUserId: id, isRead: false },
-        });
+        const [followersCount, subscriptionsCount, notificationsCount] = await prisma.$transaction([
+            prisma.follow.count({
+                where: { followingId: id },
+            }),
+            prisma.follow.count({
+                where: { followerId: id },
+            }),
+            prisma.notification.count({
+                where: {
+                    recipientUserId: id,
+                    isRead: false,
+                },
+            }),
+        ]);
 
         const responseData: SessionUserInResponse = {
             id: updatedUser.id,

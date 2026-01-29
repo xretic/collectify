@@ -5,7 +5,6 @@
     gap: 10px;
     border-radius: 8px;
     transition: background 0.2s;
-    cursor: pointer;
 }
 
 .unread {
@@ -16,12 +15,13 @@
     background-color: #f3f3f3;
 }
 
-.link {
+.button {
     display: flex;
     align-items: center;
     width: 100%;
     text-decoration: none;
     color: inherit;
+    cursor: pointer;
 }
 
 .avatar {
@@ -31,7 +31,6 @@
 
 .content {
     display: flex;
-    flex-direction: column;
     margin-left: 8px;
     flex-grow: 1;
 }
@@ -39,11 +38,20 @@
 .username {
     font-family: var(--font-google-sans), sans-serif;
     color: #000;
+    font-size: 15px;
 }
 
 .text {
     font-size: 14px;
+    margin-left: 4px;
     color: #929292;
+}
+
+.collection {
+    font-family: var(--font-google-sans), sans-serif;
+    color: #000;
+    font-size: 15px;
+    margin-left: 4px;
 }
 
 .time {

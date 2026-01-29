@@ -12,5 +12,7 @@ export type NotificationInResponse = {
         senderUserId: number | null;
         isRead: boolean;
         createdAt: Date;
+        collectionId: number | null;
+        collectionName: string | null;
     };
 };

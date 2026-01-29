@@ -1,12 +1,13 @@
 'use client';
 
-import { SessionUserInResponse, UserInResponse } from '@/types/UserInResponse';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { SessionUserInResponse } from '@/types/UserInResponse';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
 interface UserContextType {
     user: SessionUserInResponse | null;
     setUser: (user: SessionUserInResponse | null) => void;
     loading: boolean;
+    refreshUser: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -15,27 +16,42 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<SessionUserInResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await fetch('/api/auth/me', { credentials: 'include' });
-                if (!res.ok) {
-                    setUser(null);
-                } else {
-                    const data = await res.json();
-                    setUser(data.user);
-                }
-            } catch {
+    const fetchUser = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/auth/me', {
+                credentials: 'include',
+            });
+
+            if (!res.ok) {
                 setUser(null);
-            } finally {
-                setLoading(false);
+                return;
             }
-        };
-        fetchUser();
+
+            const data = await res.json();
+            setUser(data.user ?? null);
+        } catch (e) {
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
+    useEffect(() => {
+        fetchUser();
+    }, [fetchUser]);
+
     return (
-        <UserContext.Provider value={{ user, setUser, loading }}>{children}</UserContext.Provider>
+        <UserContext.Provider
+            value={{
+                user,
+                setUser,
+                loading,
+                refreshUser: fetchUser,
+            }}
+        >
+            {children}
+        </UserContext.Provider>
     );
 };
 

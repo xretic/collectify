@@ -80,7 +80,7 @@ export default function HomePage() {
                     <Button
                         onClick={() => setCategory('')}
                         variant={category === '' ? 'contained' : 'outlined'}
-                        sx={{ borderRadius: 5 }}
+                        sx={{ borderRadius: 6, height: 35, textTransform: 'none' }}
                     >
                         All
                     </Button>
@@ -90,7 +90,7 @@ export default function HomePage() {
                             key={x}
                             onClick={() => setCategory(x)}
                             variant={category === x ? 'contained' : 'outlined'}
-                            sx={{ borderRadius: 5 }}
+                            sx={{ borderRadius: 6, height: 35, textTransform: 'none' }}
                         >
                             {x}
                         </Button>

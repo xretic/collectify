@@ -15,11 +15,20 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    const followersCount = await prisma.follow.count({ where: { followingId: session.userId } });
-    const subscriptionsCount = await prisma.follow.count({ where: { followerId: session.userId } });
-    const notificationsCount = await prisma.notification.count({
-        where: { recipientUserId: session.userId, isRead: false },
-    });
+    const [followersCount, subscriptionsCount, notificationsCount] = await prisma.$transaction([
+        prisma.follow.count({
+            where: { followingId: session.userId },
+        }),
+        prisma.follow.count({
+            where: { followerId: session.userId },
+        }),
+        prisma.notification.count({
+            where: {
+                recipientUserId: session.userId,
+                isRead: false,
+            },
+        }),
+    ]);
 
     const user: SessionUserInResponse = {
         id: session.user.id,

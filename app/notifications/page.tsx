@@ -43,7 +43,7 @@ const counterSx = (active: boolean): SxProps<Theme> => ({
 });
 
 export default function NotificationsPage() {
-    const { loading } = useUser();
+    const { loading, refreshUser } = useUser();
     const [active, setActive] = useState<Tab>('all');
     const [totalAmount, setTotalAmount] = useState(0);
     const [unreadCount, setUnreadCount] = useState(0);
@@ -78,6 +78,8 @@ export default function NotificationsPage() {
         });
 
         if (!response.ok) return;
+
+        await refreshUser();
 
         const data = await response.json();
         const responseNotifications: NotificationInResponse[] = data.data;
@@ -165,15 +167,18 @@ export default function NotificationsPage() {
                         </Typography>
                     </Box>
                 ) : (
-                    notifications.map((x) => (
+                    notifications.map((x, i) => (
                         <Notification
-                            key={x.user.id}
+                            key={i}
                             id={x.user.id}
                             username={x.user.username}
                             avatarUrl={x.user.avatarUrl}
                             isRead={x.notification.isRead}
                             type={x.notification.type}
                             createdAt={x.notification.createdAt}
+                            collectionId={x.notification.collectionId}
+                            collectionName={x.notification.collectionName}
+                            unreadCount={unreadCount}
                         />
                     ))
                 )}
