@@ -1,5 +1,3 @@
-// TODO: field for the number of all user collections
-
 export type SessionUserInResponse = {
     id: number;
     avatarUrl: string;

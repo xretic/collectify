@@ -1,3 +1,4 @@
+import { isProperInteger } from '@/helpers/isProperInteger';
 import { upsertNotification } from '@/helpers/upsertNotification';
 import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse, UserInResponse } from '@/types/UserInResponse';
@@ -7,8 +8,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id } = await params;
     const intId = Number(id);
 
-    if (isNaN(intId)) {
-        return NextResponse.json({ error: 'Invalid user id' }, { status: 400 });
+    if (!isProperInteger(intId)) {
+        return NextResponse.json({ message: 'Invalid user id' }, { status: 400 });
     }
 
     const user = await prisma.user.findUnique({
@@ -78,8 +79,10 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     const { id: idStr } = await context.params;
     const id = Number(idStr);
 
-    if (isNaN(id)) {
-        return NextResponse.json({ message: 'User id is not correct' }, { status: 400 });
+    const intId = Number(id);
+
+    if (!Number.isInteger(intId) || intId > 2147483647) {
+        return NextResponse.json({ message: 'Invalid user id' }, { status: 400 });
     }
 
     const hasBody = req.headers.get('content-type')?.includes('application/json');

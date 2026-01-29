@@ -17,20 +17,28 @@ const protectedRoutes: Rule[] = [
     { method: 'POST', pattern: /^\/api\/notifications\/?$/ },
 ];
 
+const publicPages: RegExp[] = [/^\/$/, /^\/users\/[^/]+$/, /^\/collections\/[^/]+$/];
+
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const { method } = request;
 
-    const isProtected = protectedRoutes.some(
+    const sessionId = request.cookies.get('sessionId')?.value;
+    const isApiProtected = protectedRoutes.some(
         (rule) => rule.method === method && rule.pattern.test(pathname),
     );
 
-    if (isProtected) {
+    if (pathname.startsWith('/api') && isApiProtected) {
         const valid = await isSessionValid(request);
 
         if (!valid) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
         }
+    }
+    const isPublicPage = publicPages.some((x) => x.test(pathname));
+
+    if (!pathname.startsWith('/api') && !isPublicPage && !sessionId) {
+        return NextResponse.redirect(new URL('/', request.url));
     }
 
     return NextResponse.next();
@@ -45,9 +53,7 @@ async function isSessionValid(request: NextRequest): Promise<boolean> {
         include: { user: true },
     });
 
-    if (!session) return false;
-
-    return true;
+    return !!session;
 }
 
 export const config = {
@@ -56,5 +62,9 @@ export const config = {
         '/api/collections/:path*',
         '/api/auth/:path*',
         '/api/notifications/:path*',
+        '/users/:path*',
+        '/collections/:path*',
+        '/notifications',
+        '/',
     ],
 };

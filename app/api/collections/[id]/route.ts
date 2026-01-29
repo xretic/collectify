@@ -1,4 +1,5 @@
 import { Collection, Follow, NotificationType } from '@/generated/prisma/client';
+import { isProperInteger } from '@/helpers/isProperInteger';
 import { upsertNotification } from '@/helpers/upsertNotification';
 import { prisma } from '@/lib/prisma';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
@@ -8,8 +9,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id } = await params;
     const intId = Number(id);
 
-    if (isNaN(intId)) {
-        return NextResponse.json({ error: 'Invalid collection id' }, { status: 400 });
+    if (!isProperInteger(intId)) {
+        return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
     }
 
     const collection = await prisma.collection.findUnique({
@@ -92,8 +93,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const { id } = await params;
     const intId = Number(id);
 
-    if (isNaN(intId)) {
-        return NextResponse.json({ error: 'Invalid collection id' }, { status: 400 });
+    if (!isProperInteger(intId)) {
+        return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
     }
 
     const collection = await prisma.collection.update({

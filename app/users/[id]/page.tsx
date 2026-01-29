@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
-import { useParams, useRouter } from 'next/navigation';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
 import CollectionsWrapper from '@/components/CollectionsWrapper/CollectionsWrapper';
 import SortBy from '@/components/SortBy/SortBy';
@@ -18,16 +18,19 @@ import styles from '../users.module.css';
 import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import { UserInResponse } from '@/types/UserInResponse';
 import CloseIcon from '@mui/icons-material/Close';
+import { isProperInteger } from '@/helpers/isProperInteger';
 
 export default function ProfilePage() {
     const params = useParams();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
     const [collections, setCollections] = useState<any[]>([]);
-    const { user, loading } = useUser();
+    const { user } = useUser();
     const [pageUser, setPageUser] = useState<UserInResponse | null>(null);
     const [copied, setCopied] = useState(false);
     const [followed, setFollowed] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [emptyPage, setEmptyPage] = useState(true);
 
     const { startLoading, stopLoading, sortedBy } = useUIStore();
     const { profilePagination } = usePaginationStore();
@@ -45,14 +48,16 @@ export default function ProfilePage() {
     const loadCollections = async () => {
         startLoading();
 
-        const response = await fetch(
-            `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}${queryParam}&authorId=${id}`,
-        );
+        if (isProperInteger(Number(id))) {
+            const response = await fetch(
+                `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}${queryParam}&authorId=${id}`,
+            );
 
-        if (response.status === 200) {
-            const data = await response.json();
+            if (response.status === 200) {
+                const data = await response.json();
 
-            setCollections(data.data);
+                setCollections(data.data);
+            }
         }
 
         stopLoading();
@@ -65,11 +70,18 @@ export default function ProfilePage() {
     useEffect(() => {
         const loadUser = async () => {
             const res = await fetch('/api/users/' + id);
-            const data = await res.json();
-            const responseUser: UserInResponse = data.user;
 
-            setFollowed(responseUser.sessionUserIsFollowed);
-            setPageUser(responseUser);
+            if (res.ok) {
+                const data = await res.json();
+                const responseUser: UserInResponse = data.user;
+                setFollowed(responseUser.sessionUserIsFollowed);
+                setPageUser(responseUser);
+                setEmptyPage(false);
+            } else {
+                setEmptyPage(true);
+            }
+
+            setLoading(false);
         };
 
         loadUser();
@@ -81,8 +93,13 @@ export default function ProfilePage() {
         }
     }, [user, pageUser, router]);
 
-    if (loading) return null;
-    if (!pageUser) return null;
+    if (emptyPage && !loading) {
+        notFound();
+    }
+
+    if (loading || !pageUser) {
+        return null;
+    }
 
     const handleFollow = async () => {
         if (!user || !pageUser) return;

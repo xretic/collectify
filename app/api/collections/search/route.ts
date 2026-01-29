@@ -1,4 +1,5 @@
 import { Collection, Item, Like, Prisma, User } from '@/generated/prisma/client';
+import { isProperInteger } from '@/helpers/isProperInteger';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { CollectionFieldProps } from '@/types/CollectionField';
@@ -53,7 +54,12 @@ export async function GET(req: NextRequest) {
 
     const excludedIds: number[] = [];
 
-    if (!sortedBy || isNaN(skip) || isNaN(authorId) || isNaN(favoritesUserId)) {
+    if (
+        !sortedBy ||
+        !isProperInteger(Number(skip)) ||
+        !isProperInteger(Number(authorId)) ||
+        !isProperInteger(Number(favoritesUserId))
+    ) {
         return NextResponse.json(
             { message: 'You should set skip and sortedBy value' },
             { status: 400 },
