@@ -1,11 +1,15 @@
 import { NotificationType } from '@/generated/prisma/enums';
-import { Avatar } from '@mui/material';
-import Link from 'next/link';
+import { Avatar, Badge } from '@mui/material';
 import styles from './Notification.module.css';
 import { NOTIFICATION_TEXTS } from '@/lib/constans';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
+import { SvgIconComponent } from '@mui/icons-material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import CommentIcon from '@mui/icons-material/Comment';
 
 interface NotificationProps {
     id: number | null;
@@ -15,8 +19,33 @@ interface NotificationProps {
     type: NotificationType;
     createdAt: Date;
     collectionName: string | null;
+    collectionId: number | null;
     unreadCount: number;
 }
+
+type NotificationIconConfig = {
+    Icon: SvgIconComponent;
+    color: string;
+};
+
+const typeIcons: Record<NotificationType, NotificationIconConfig> = {
+    LIKE: {
+        Icon: FavoriteIcon,
+        color: '#ff4747',
+    },
+    FAVORITE: {
+        Icon: BookmarkIcon,
+        color: '#ffce5d',
+    },
+    COMMENT: {
+        Icon: CommentIcon,
+        color: '#208fff',
+    },
+    FOLLOW: {
+        Icon: PersonAddAlt1Icon,
+        color: '#208fff',
+    },
+};
 
 export default function Notification({
     id,
@@ -26,6 +55,7 @@ export default function Notification({
     type,
     createdAt,
     collectionName,
+    collectionId,
     unreadCount,
 }: NotificationProps) {
     const router = useRouter();
@@ -43,14 +73,33 @@ export default function Notification({
         router.replace('/users/' + id);
     };
 
+    const { Icon, color } = typeIcons[type];
+
     return (
         <div className={`${styles.notification} ${!isRead ? styles.unread : ''}`}>
             <button onClick={handleClick} className={styles.button}>
-                <Avatar className={styles.avatar} src={avatarUrl} alt={username} />
+                <Badge
+                    badgeContent={<Icon fontSize="small" sx={{ color, width: 20, height: 20 }} />}
+                    color="default"
+                    overlap="circular"
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                >
+                    <Avatar className={styles.avatar} src={avatarUrl} alt={username} />
+                </Badge>
                 <div className={styles.content}>
                     <span className={styles.username}>{username}</span>
                     <span className={styles.text}>{NOTIFICATION_TEXTS[type]}</span>
-                    <span className={styles.collection}>
+                    <span
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            router.replace('/collections/' + collectionId);
+                        }}
+                        className={styles.collection}
+                    >
                         {collectionName ? collectionName : ''}
                     </span>
                 </div>
