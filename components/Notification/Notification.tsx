@@ -14,7 +14,6 @@ interface NotificationProps {
     isRead: boolean;
     type: NotificationType;
     createdAt: Date;
-    collectionId: number | null;
     collectionName: string | null;
     unreadCount: number;
 }
@@ -26,7 +25,6 @@ export default function Notification({
     isRead,
     type,
     createdAt,
-    collectionId,
     collectionName,
     unreadCount,
 }: NotificationProps) {

@@ -176,7 +176,6 @@ export default function NotificationsPage() {
                             isRead={x.notification.isRead}
                             type={x.notification.type}
                             createdAt={x.notification.createdAt}
-                            collectionId={x.notification.collectionId}
                             collectionName={x.notification.collectionName}
                             unreadCount={unreadCount}
                         />
