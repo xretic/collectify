@@ -73,7 +73,6 @@ export default function ProfilePage() {
     const favoritesTab = user ? `&favoritesUserId=${user.id}` : '';
     const disabled =
         !state.fullName.trim() ||
-        !state.username.trim() ||
         !isUsernameValid(state.username) ||
         state.fullName.length > FULLNAME_MAX_LENGTH ||
         state.description.length > DESCRPITION_MAX_LENGTH ||
@@ -261,7 +260,12 @@ export default function ProfilePage() {
                                 sx={{ p: '6px' }}
                                 aria-label="Accept"
                                 className={styles['confim-btn']}
-                                disabled={disabled}
+                                disabled={
+                                    disabled ||
+                                    (state.fullName === user.fullName &&
+                                        state.username === user.username &&
+                                        state.description === user.description)
+                                }
                             >
                                 <CheckIcon sx={{ color: '#afafaf' }} />
                             </IconButton>
@@ -309,9 +313,7 @@ export default function ProfilePage() {
                                 <Input
                                     value={state.username}
                                     onChange={(e) => updateState('username', e.target.value)}
-                                    status={
-                                        state.username === '' || disabled ? 'error' : 'validating'
-                                    }
+                                    status={state.username === '' ? 'error' : 'validating'}
                                     placeholder="@username"
                                     maxLength={USERNAME_MAX_LENGTH}
                                     minLength={USERNAME_MIN_LENGTH}

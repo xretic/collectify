@@ -8,6 +8,7 @@ export type SessionUserInResponse = {
     followers: number;
     subscriptions: number;
     notifications: number;
+    protected: boolean;
 };
 
 export type UserInResponse = {

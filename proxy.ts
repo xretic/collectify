@@ -13,6 +13,7 @@ const protectedRoutes: Rule[] = [
     { method: 'GET', pattern: /^\/api\/users\/search\/[^/]+$/ },
     { method: 'POST', pattern: /^\/api\/auth\/logout$/ },
     { method: 'GET', pattern: /^\/api\/auth\/me$/ },
+    { method: 'DELETE', pattern: /^\/api\/users$/ },
     { method: 'GET', pattern: /^\/api\/notifications\/?$/ },
     { method: 'POST', pattern: /^\/api\/notifications\/?$/ },
 ];

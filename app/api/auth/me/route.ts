@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
         followers: followersCount,
         subscriptions: subscriptionsCount,
         notifications: notificationsCount,
+        protected: session.user.passwordHash ? true : false,
     };
 
     return NextResponse.json({ user: user }, { status: 200 });

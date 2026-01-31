@@ -16,3 +16,9 @@
 .password {
     margin-top: 10px;
 }
+
+.wrongPassword {
+    color: #ff4a4d;
+    font-size: 14px;
+    margin-top: 10px;
+}

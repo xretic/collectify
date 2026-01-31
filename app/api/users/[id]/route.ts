@@ -1,5 +1,7 @@
 import { isProperInteger } from '@/helpers/isProperInteger';
+import { isUsernameValid } from '@/helpers/isUsernameValid';
 import { upsertNotification } from '@/helpers/upsertNotification';
+import { FULLNAME_MAX_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse, UserInResponse } from '@/types/UserInResponse';
 import { NextRequest, NextResponse } from 'next/server';
@@ -93,7 +95,11 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 
     const hasBody = req.headers.get('content-type')?.includes('application/json');
 
-    const data = hasBody ? await req.json() : {};
+    if (!hasBody) {
+        return NextResponse.json({ status: 400 });
+    }
+
+    const data = await req.json();
 
     const user = await prisma.user.findUnique({ where: { id } });
 
@@ -113,11 +119,15 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
         return NextResponse.json({ message: 'No allowed fields to update' }, { status: 400 });
     }
 
-    if (safeData.username?.length === 0) {
+    if (safeData.fullName?.length === 0 || !isUsernameValid(safeData.username)) {
         return NextResponse.json({ message: 'Username not set' }, { status: 400 });
     }
 
-    if (safeData.fullName?.length === 0) {
+    if (
+        safeData.fullName?.length === 0 ||
+        !safeData.fullName.trim() ||
+        safeData.fullName.length > FULLNAME_MAX_LENGTH
+    ) {
         return NextResponse.json({ message: 'Fullname not set' }, { status: 400 });
     }
 
@@ -216,6 +226,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
             followers: followersCount,
             subscriptions: subscriptionsCount,
             notifications: notificationsCount,
+            protected: updatedUser.passwordHash ? true : false,
         };
 
         return NextResponse.json(
