@@ -65,6 +65,7 @@ export const config = {
         '/users/:path*',
         '/collections/:path*',
         '/notifications',
+        '/settings',
         '/',
     ],
 };

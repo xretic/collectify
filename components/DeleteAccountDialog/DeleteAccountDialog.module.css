@@ -1,0 +1,18 @@
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 19px;
+}
+
+.description {
+    font-size: 14px;
+}
+
+.confirmText {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+.password {
+    margin-top: 10px;
+}

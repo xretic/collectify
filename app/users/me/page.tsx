@@ -14,6 +14,7 @@ import {
     FULLNAME_MAX_LENGTH,
     PAGE_SIZE,
     USERNAME_MAX_LENGTH,
+    USERNAME_MIN_LENGTH,
 } from '@/lib/constans';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
@@ -70,6 +71,13 @@ export default function ProfilePage() {
 
     const authorTab = user ? `&authorId=${user.id}` : '';
     const favoritesTab = user ? `&favoritesUserId=${user.id}` : '';
+    const disabled =
+        !state.fullName.trim() ||
+        !state.username.trim() ||
+        !isUsernameValid(state.username) ||
+        state.fullName.length > FULLNAME_MAX_LENGTH ||
+        state.description.length > DESCRPITION_MAX_LENGTH ||
+        state.cooldown;
 
     const router = useRouter();
 
@@ -253,14 +261,7 @@ export default function ProfilePage() {
                                 sx={{ p: '6px' }}
                                 aria-label="Accept"
                                 className={styles['confim-btn']}
-                                disabled={
-                                    !state.fullName.trim() ||
-                                    !state.username.trim() ||
-                                    !isUsernameValid(state.username) ||
-                                    state.fullName.length > FULLNAME_MAX_LENGTH ||
-                                    state.description.length > DESCRPITION_MAX_LENGTH ||
-                                    state.cooldown
-                                }
+                                disabled={disabled}
                             >
                                 <CheckIcon sx={{ color: '#afafaf' }} />
                             </IconButton>
@@ -296,23 +297,39 @@ export default function ProfilePage() {
                             <>
                                 <Input
                                     value={state.fullName}
+                                    status={state.fullName === '' ? 'error' : 'validating'}
                                     onChange={(e) => updateState('fullName', e.target.value)}
                                     placeholder="Full Name"
+                                    maxLength={FULLNAME_MAX_LENGTH}
                                     style={{ bottom: 10, marginBottom: '6px' }}
+                                    count={{
+                                        show: true,
+                                    }}
                                 />
                                 <Input
                                     value={state.username}
                                     onChange={(e) => updateState('username', e.target.value)}
+                                    status={
+                                        state.username === '' || disabled ? 'error' : 'validating'
+                                    }
                                     placeholder="@username"
                                     maxLength={USERNAME_MAX_LENGTH}
+                                    minLength={USERNAME_MIN_LENGTH}
                                     style={{ bottom: 10, marginBottom: '6px' }}
+                                    count={{
+                                        show: true,
+                                    }}
                                 />
                                 <Input.TextArea
                                     value={state.description}
                                     onChange={(e) => updateState('description', e.target.value)}
                                     placeholder="Description"
                                     autoSize={{ minRows: 2, maxRows: 4 }}
+                                    maxLength={DESCRPITION_MAX_LENGTH}
                                     style={{ bottom: 10, marginBottom: '6px' }}
+                                    count={{
+                                        show: true,
+                                    }}
                                 />
                             </>
                         ) : (
