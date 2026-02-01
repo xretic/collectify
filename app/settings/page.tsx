@@ -10,12 +10,16 @@ import {
     PASSWORD_MAX_LENGTH,
     USERNAME_MAX_LENGTH,
 } from '@/lib/constans';
-import { useEffect, useState } from 'react';
-import { Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { useDialogStore } from '@/stores/dialogStore';
 import DeleteAccountDialog from '@/components/DeleteAccountDialog/DeleteAccountDialog';
+import { useUIStore } from '@/stores/uiStore';
+import { SessionUserInResponse } from '@/types/UserInResponse';
+import CloseIcon from '@mui/icons-material/Close';
+import { isUsernameValid } from '@/helpers/isUsernameValid';
 
 type GlobalState = {
     fullName: string;
@@ -30,7 +34,8 @@ type PrivateState = {
 };
 
 export default function SettingsPage() {
-    const { user, loading, refreshUser } = useUser();
+    const { user, loading, setUser } = useUser();
+    const { startLoading, stopLoading, loadingCount } = useUIStore();
 
     const [state, setState] = useState<GlobalState>({
         fullName: '',
@@ -44,7 +49,7 @@ export default function SettingsPage() {
         confirmPassoword: '',
     });
 
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const { setOpen } = useDialogStore();
 
@@ -60,6 +65,32 @@ export default function SettingsPage() {
         setOpen(true);
     };
 
+    const handleProfileUpdate = async () => {
+        startLoading();
+
+        const response = await fetch('/api/users/' + user!.id, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                fullName: state.fullName,
+                username: state.username,
+                description: state.description,
+            }),
+        });
+
+        const responseJson = await response.json();
+        stopLoading();
+
+        if (!response.ok) {
+            setErrorMessage(responseJson.message);
+            return;
+        }
+
+        const responseUser: SessionUserInResponse = responseJson.user;
+
+        setUser(responseUser);
+    };
+
     useEffect(() => {
         if (user) {
             setState((prev) => ({
@@ -71,10 +102,34 @@ export default function SettingsPage() {
         }
     }, [user]);
 
+    const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setErrorMessage('');
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
+
     if (loading) return null;
 
     return (
         <>
+            <Snackbar
+                open={errorMessage.length > 0}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                message={errorMessage}
+                action={action}
+            />
+
             <header className={styles.header}>
                 <h1 className={styles.settings}>Settings</h1>
                 <p className={styles.description}>Manage your account settings and preferences</p>
@@ -124,12 +179,16 @@ export default function SettingsPage() {
                 </div>
 
                 <Button
+                    onClick={handleProfileUpdate}
                     variant="contained"
                     size="small"
                     disabled={
-                        state.fullName === user?.fullName &&
-                        state.username === user.username &&
-                        state.description === user.description
+                        !state.fullName.trim() ||
+                        !isUsernameValid(state.username) ||
+                        (state.fullName === user?.fullName &&
+                            state.username === user.username &&
+                            state.description === user.description) ||
+                        loadingCount > 0
                     }
                     sx={{ marginTop: 3, borderRadius: 6, textTransform: 'none' }}
                 >

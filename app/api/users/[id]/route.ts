@@ -120,7 +120,10 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     }
 
     if (safeData.fullName?.length === 0 || !isUsernameValid(safeData.username)) {
-        return NextResponse.json({ message: 'Username not set' }, { status: 400 });
+        return NextResponse.json(
+            { message: 'The username is not set or contains prohibited characters.' },
+            { status: 400 },
+        );
     }
 
     if (
@@ -128,7 +131,10 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
         !safeData.fullName.trim() ||
         safeData.fullName.length > FULLNAME_MAX_LENGTH
     ) {
-        return NextResponse.json({ message: 'Fullname not set' }, { status: 400 });
+        return NextResponse.json(
+            { message: 'Full name is not set or contains prohibited characters' },
+            { status: 400 },
+        );
     }
 
     if (safeData.username) {
