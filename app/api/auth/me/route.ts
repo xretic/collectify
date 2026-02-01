@@ -4,19 +4,20 @@ import { SessionUserInResponse } from '@/types/UserInResponse';
 import { NextResponse, NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
-    const sessionId = req.cookies.get('sessionId')?.value;
-    const session = await prisma.session.findUnique({
-        where: { id: sessionId },
-        include: {
-            user: true,
-        },
-    });
+    try {
+        const sessionId = req.cookies.get('sessionId')?.value;
+        const session = await prisma.session.findUnique({
+            where: { id: sessionId },
+            include: {
+                user: true,
+            },
+        });
 
-    if (!session || session.expiresAt < new Date()) {
-        return NextResponse.json({ user: null }, { status: 401 });
+        const userInResponse: SessionUserInResponse = await getSessionUserResponse(session!.user);
+
+        return NextResponse.json({ user: userInResponse }, { status: 200 });
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
-
-    const userInResponse: SessionUserInResponse = await getSessionUserResponse(session.user);
-
-    return NextResponse.json({ user: userInResponse }, { status: 200 });
 }

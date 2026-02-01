@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     try {
         const { email, password, username } = await req.json();
 
-        if (!email || !password || !username || password.length < 8) {
+        if (!email || !password || !username) {
             return NextResponse.json({ message: 'Invalid data.' }, { status: 400 });
         }
 
@@ -76,8 +76,8 @@ export async function POST(req: NextRequest) {
         });
 
         return response;
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Something went wrong.' }, { status: 500 });
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
 }

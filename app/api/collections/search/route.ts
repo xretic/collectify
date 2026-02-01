@@ -42,77 +42,114 @@ function mapCollection(
 }
 
 export async function GET(req: NextRequest) {
-    const { searchParams } = new URL(req.url);
+    try {
+        const { searchParams } = new URL(req.url);
 
-    const category = searchParams.get('category');
-    const userId = searchParams.get('userId');
-    const sortedBy = searchParams.get('sortedBy');
-    const skip = Number(searchParams.get('skip'));
-    const query = searchParams.get('query');
+        const category = searchParams.get('category');
+        const userId = searchParams.get('userId');
+        const sortedBy = searchParams.get('sortedBy');
+        const skip = Number(searchParams.get('skip'));
+        const query = searchParams.get('query');
 
-    const authorId = Number(searchParams.get('authorId'));
-    const favoritesUserId = Number(searchParams.get('favoritesUserId'));
+        const authorId = Number(searchParams.get('authorId'));
+        const favoritesUserId = Number(searchParams.get('favoritesUserId'));
 
-    const excludedIds: number[] = [];
+        const excludedIds: number[] = [];
 
-    if (!sortedBy || isNaN(skip)) {
-        return NextResponse.json(
-            { message: 'You should set skip and sortedBy value' },
-            { status: 400 },
-        );
-    }
-
-    if (
-        (authorId && !isProperInteger(authorId)) ||
-        (favoritesUserId && !isProperInteger(favoritesUserId))
-    ) {
-        return NextResponse.json({ message: 'You should set proper users id' }, { status: 400 });
-    }
-
-    if (favoritesUserId) {
-        const sessionId = req.cookies.get('sessionId')?.value;
-        const session = await prisma.session.findUnique({
-            where: { id: sessionId },
-            include: {
-                user: true,
-            },
-        });
-
-        const sessionUser = session!.user;
-
-        if (sessionUser.id !== favoritesUserId) {
-            return NextResponse.json({ data: null }, { status: 401 });
-        }
-    }
-
-    if (!isSortOption(sortedBy)) {
-        return NextResponse.json({ message: 'Invalid sortedBy value' }, { status: 400 });
-    }
-
-    if (category) {
-        if (!CATEGORIES.includes(category)) {
+        if (!sortedBy || isNaN(skip)) {
             return NextResponse.json(
-                { message: 'You should set a valid category name' },
-                { status: 404 },
+                { message: 'You should set skip and sortedBy value' },
+                { status: 400 },
             );
         }
-    }
 
-    const collections: CollectionFieldProps[] = [];
+        if (
+            (authorId && !isProperInteger(authorId)) ||
+            (favoritesUserId && !isProperInteger(favoritesUserId))
+        ) {
+            return NextResponse.json(
+                { message: 'You should set proper users id' },
+                { status: 400 },
+            );
+        }
 
-    if (userId) {
-        const user = await prisma.user.findUnique({
-            where: { id: Number(userId) },
-            select: { subscriptions: true },
-        });
+        if (favoritesUserId) {
+            const sessionId = req.cookies.get('sessionId')?.value;
+            const session = await prisma.session.findUnique({
+                where: { id: sessionId },
+                include: {
+                    user: true,
+                },
+            });
 
-        if (user?.subscriptions.length) {
-            const subscribedUserIds = user.subscriptions.map((x) => x.followingId);
+            if (!session) {
+                return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            }
 
-            const subscribedCollections = await prisma.collection.findMany({
+            const sessionUser = session.user;
+
+            if (sessionUser.id !== favoritesUserId) {
+                return NextResponse.json({ data: null }, { status: 401 });
+            }
+        }
+
+        if (!isSortOption(sortedBy)) {
+            return NextResponse.json({ message: 'Invalid sortedBy value' }, { status: 400 });
+        }
+
+        if (category) {
+            if (!CATEGORIES.includes(category)) {
+                return NextResponse.json(
+                    { message: 'You should set a valid category name' },
+                    { status: 404 },
+                );
+            }
+        }
+
+        const collections: CollectionFieldProps[] = [];
+
+        if (userId) {
+            const user = await prisma.user.findUnique({
+                where: { id: Number(userId) },
+                select: { subscriptions: true },
+            });
+
+            if (user?.subscriptions.length) {
+                const subscribedUserIds = user.subscriptions.map((x) => x.followingId);
+
+                const subscribedCollections = await prisma.collection.findMany({
+                    where: {
+                        userId: { in: subscribedUserIds },
+                        ...(category && { category }),
+                        name: {
+                            startsWith: query ? query : '',
+                        },
+                    },
+                    include: {
+                        User: true,
+                        items: true,
+                        likes: true,
+                        addedToFavorite: true,
+                    },
+                    orderBy: ORDER_BY_MAP[sortedBy],
+                    take: PAGE_SIZE,
+                    skip,
+                });
+
+                collections.push(...subscribedCollections.map(mapCollection));
+                excludedIds.push(...subscribedCollections.map((x) => x.id));
+            }
+        }
+
+        if (collections.length < PAGE_SIZE) {
+            const publicCollections = await prisma.collection.findMany({
                 where: {
-                    userId: { in: subscribedUserIds },
+                    id: { notIn: excludedIds },
+                    ...(authorId && { userId: authorId }),
                     ...(category && { category }),
+                    ...(favoritesUserId && {
+                        addedToFavorite: { some: { id: favoritesUserId } },
+                    }),
                     name: {
                         startsWith: query ? query : '',
                     },
@@ -124,41 +161,16 @@ export async function GET(req: NextRequest) {
                     addedToFavorite: true,
                 },
                 orderBy: ORDER_BY_MAP[sortedBy],
-                take: PAGE_SIZE,
+                take: PAGE_SIZE - collections.length,
                 skip,
             });
 
-            collections.push(...subscribedCollections.map(mapCollection));
-            excludedIds.push(...subscribedCollections.map((x) => x.id));
+            collections.push(...publicCollections.map(mapCollection));
         }
+
+        return NextResponse.json({ data: collections }, { status: 200 });
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
-
-    if (collections.length < PAGE_SIZE) {
-        const publicCollections = await prisma.collection.findMany({
-            where: {
-                id: { notIn: excludedIds },
-                ...(authorId && { userId: authorId }),
-                ...(category && { category }),
-                ...(favoritesUserId && {
-                    addedToFavorite: { some: { id: favoritesUserId } },
-                }),
-                name: {
-                    startsWith: query ? query : '',
-                },
-            },
-            include: {
-                User: true,
-                items: true,
-                likes: true,
-                addedToFavorite: true,
-            },
-            orderBy: ORDER_BY_MAP[sortedBy],
-            take: PAGE_SIZE - collections.length,
-            skip,
-        });
-
-        collections.push(...publicCollections.map(mapCollection));
-    }
-
-    return NextResponse.json({ data: collections }, { status: 200 });
 }

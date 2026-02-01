@@ -109,8 +109,8 @@ export async function GET(req: Request) {
         });
 
         return response;
-    } catch (err) {
-        console.error(err);
-        return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
 }

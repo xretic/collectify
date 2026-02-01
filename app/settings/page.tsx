@@ -20,6 +20,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import CloseIcon from '@mui/icons-material/Close';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
+import { isPasswordValid } from '@/helpers/isPasswordValid';
 
 type GlobalState = {
     fullName: string;
@@ -28,9 +29,9 @@ type GlobalState = {
 };
 
 type PrivateState = {
-    oldPassword: string;
+    currentPassword: string;
     newPassword: string;
-    confirmPassoword: string;
+    confirmPassword: string;
 };
 
 export default function SettingsPage() {
@@ -45,13 +46,12 @@ export default function SettingsPage() {
     });
 
     const [privateState, setPrivate] = useState<PrivateState>({
-        oldPassword: '',
+        currentPassword: '',
         newPassword: '',
-        confirmPassoword: '',
+        confirmPassword: '',
     });
 
     const [errorMessage, setErrorMessage] = useState('');
-
     const { setOpen } = useDialogStore();
 
     const updateState = <K extends keyof GlobalState>(key: K, value: GlobalState[K]) => {
@@ -88,6 +88,39 @@ export default function SettingsPage() {
         }
 
         const responseUser: SessionUserInResponse = responseJson.user;
+
+        setUser(responseUser);
+    };
+
+    const handlePasswordChange = async () => {
+        startLoading();
+
+        const response = await fetch('/api/users/auth', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                currentPassword: privateState.currentPassword,
+                newPassword: privateState.newPassword,
+                confirmPassword: privateState.confirmPassword,
+            }),
+        });
+
+        const responseJson = await response.json();
+        stopLoading();
+
+        if (!response.ok) {
+            setErrorMessage(responseJson.message);
+            return;
+        }
+
+        const responseUser: SessionUserInResponse = responseJson.user;
+
+        setPrivate((prev) => ({
+            ...prev,
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+        }));
 
         setUser(responseUser);
     };
@@ -210,8 +243,9 @@ export default function SettingsPage() {
 
                     {userProtected && (
                         <Input.Password
-                            onChange={(x) => updatePrivateState('oldPassword', x.target.value)}
+                            onChange={(x) => updatePrivateState('currentPassword', x.target.value)}
                             className={styles.profileInput}
+                            value={privateState.currentPassword}
                             placeholder="Current password"
                             maxLength={PASSWORD_MAX_LENGTH}
                             showCount
@@ -221,13 +255,15 @@ export default function SettingsPage() {
                     <Input.Password
                         onChange={(x) => updatePrivateState('newPassword', x.target.value)}
                         className={styles.profileInput}
+                        value={privateState.newPassword}
                         placeholder="New password"
                         maxLength={PASSWORD_MAX_LENGTH}
                         showCount
                     />
                     <Input.Password
-                        onChange={(x) => updatePrivateState('confirmPassoword', x.target.value)}
+                        onChange={(x) => updatePrivateState('confirmPassword', x.target.value)}
                         className={styles.profileInput}
+                        value={privateState.confirmPassword}
                         placeholder="Confirm new password"
                         maxLength={PASSWORD_MAX_LENGTH}
                         showCount
@@ -235,16 +271,17 @@ export default function SettingsPage() {
                 </div>
 
                 <Button
+                    onClick={handlePasswordChange}
                     variant="contained"
                     size="small"
                     disabled={
-                        privateState.confirmPassoword === '' ||
-                        privateState.newPassword === '' ||
-                        privateState.oldPassword === ''
+                        !isPasswordValid(privateState.confirmPassword) ||
+                        !isPasswordValid(privateState.newPassword) ||
+                        (!isPasswordValid(privateState.currentPassword) && userProtected)
                     }
                     sx={{ marginTop: 3, borderRadius: 6, textTransform: 'none' }}
                 >
-                    Update changes
+                    Change password
                 </Button>
             </div>
 

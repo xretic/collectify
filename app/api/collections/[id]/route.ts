@@ -38,105 +38,114 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { searchParams } = new URL(req.url);
-    const actionType = searchParams.get('actionType');
-    const actions = new Set(['like', 'dislike', 'favorite', 'unfavorite']);
+    try {
+        const { searchParams } = new URL(req.url);
+        const actionType = searchParams.get('actionType');
+        const actions = new Set(['like', 'dislike', 'favorite', 'unfavorite']);
 
-    if (!actionType || !actions.has(actionType)) {
-        return NextResponse.json({ data: null }, { status: 401 });
-    }
+        if (!actionType || !actions.has(actionType)) {
+            return NextResponse.json({ data: null }, { status: 401 });
+        }
 
-    const sessionId = req.cookies.get('sessionId')?.value;
-    const session = await prisma.session.findUnique({
-        where: { id: sessionId },
-        include: {
-            user: true,
-        },
-    });
+        const sessionId = req.cookies.get('sessionId')?.value;
+        const session = await prisma.session.findUnique({
+            where: { id: sessionId },
+            include: {
+                user: true,
+            },
+        });
 
-    const sessionUser = session!.user;
+        if (!session) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
 
-    const actionConfig: Record<string, any> = {
-        like: {
-            likes: {
-                create: {
-                    userId: sessionUser.id,
+        const sessionUser = session.user;
+
+        const actionConfig: Record<string, any> = {
+            like: {
+                likes: {
+                    create: {
+                        userId: sessionUser.id,
+                    },
                 },
             },
-        },
 
-        dislike: {
-            likes: {
-                deleteMany: {
-                    userId: sessionUser.id,
+            dislike: {
+                likes: {
+                    deleteMany: {
+                        userId: sessionUser.id,
+                    },
                 },
             },
-        },
 
-        favorite: {
-            addedToFavorite: {
-                connect: {
-                    id: sessionUser.id,
+            favorite: {
+                addedToFavorite: {
+                    connect: {
+                        id: sessionUser.id,
+                    },
                 },
             },
-        },
 
-        unfavorite: {
-            addedToFavorite: {
-                disconnect: {
-                    id: sessionUser.id,
+            unfavorite: {
+                addedToFavorite: {
+                    disconnect: {
+                        id: sessionUser.id,
+                    },
                 },
             },
-        },
-    };
-
-    const { id } = await params;
-    const intId = Number(id);
-
-    if (!isProperInteger(intId)) {
-        return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
-    }
-
-    const collection = await prisma.collection.update({
-        where: { id: intId },
-        data: actionConfig[actionType],
-        include: {
-            likes: true,
-            addedToFavorite: true,
-            items: true,
-            User: true,
-        },
-    });
-
-    if (!collection || !collection.User) {
-        return NextResponse.json({ data: null }, { status: 404 });
-    }
-
-    if (
-        sessionUser.id !== collection.User.id &&
-        ['like', 'favorite'].some((x) => x === actionType)
-    ) {
-        const notificationType: Record<'like' | 'favorite', NotificationType> = {
-            like: NotificationType.LIKE,
-            favorite: NotificationType.FAVORITE,
         };
 
-        await upsertNotification(
-            sessionUser.id,
-            collection.User.id,
-            notificationType[actionType as 'like' | 'favorite'],
-            collection.id,
+        const { id } = await params;
+        const intId = Number(id);
+
+        if (!isProperInteger(intId)) {
+            return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
+        }
+
+        const collection = await prisma.collection.update({
+            where: { id: intId },
+            data: actionConfig[actionType],
+            include: {
+                likes: true,
+                addedToFavorite: true,
+                items: true,
+                User: true,
+            },
+        });
+
+        if (!collection || !collection.User) {
+            return NextResponse.json({ data: null }, { status: 404 });
+        }
+
+        if (
+            sessionUser.id !== collection.User.id &&
+            ['like', 'favorite'].some((x) => x === actionType)
+        ) {
+            const notificationType: Record<'like' | 'favorite', NotificationType> = {
+                like: NotificationType.LIKE,
+                favorite: NotificationType.FAVORITE,
+            };
+
+            await upsertNotification(
+                sessionUser.id,
+                collection.User.id,
+                notificationType[actionType as 'like' | 'favorite'],
+                collection.id,
+            );
+        }
+
+        const resData = getResData(collection);
+
+        return NextResponse.json(
+            {
+                data: resData,
+            },
+            { status: 200 },
         );
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
-
-    const resData = getResData(collection);
-
-    return NextResponse.json(
-        {
-            data: resData,
-        },
-        { status: 200 },
-    );
 }
 
 function getResData(

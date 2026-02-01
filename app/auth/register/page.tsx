@@ -32,7 +32,6 @@ type RegisterFormData = {
 export default function RegisterPage() {
     const { control, handleSubmit } = useForm<RegisterFormData>();
     const router = useRouter();
-    const [emailError, setEmailError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const { startLoading, stopLoading, loadingCount } = useUIStore();
     const { user, setUser } = useUser();
@@ -160,7 +159,6 @@ export default function RegisterPage() {
                                 helperText={fieldState.error ? fieldState.error.message : ' '}
                                 onChange={(e) => {
                                     field.onChange(e);
-                                    setEmailError(!e.target.validity.valid);
                                 }}
                             />
                         )}
