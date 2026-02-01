@@ -31,6 +31,8 @@ export default function HoverMenu() {
             handleClose();
             await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
             setUser(null);
+
+            router.replace('/');
         } catch {
             stopLoading();
             return (

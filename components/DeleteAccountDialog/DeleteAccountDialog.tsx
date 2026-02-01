@@ -19,15 +19,18 @@ import { useEffect, useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
-export default function DeleteAccountDialog() {
+interface Props {
+    userProtected: boolean;
+}
+
+export default function DeleteAccountDialog({ userProtected }: Props) {
     const router = useRouter();
     const { open, setOpen } = useDialogStore();
-    const { user, refreshUser, loading } = useUser();
+    const { refreshUser } = useUser();
     const { loadingCount, startLoading, stopLoading } = useUIStore();
 
     const [password, setPassword] = useState('');
     const [wrongPassword, setWrongPassword] = useState(false);
-    const [userProtected, setUserProtected] = useState(true);
 
     const handleClose = () => {
         setOpen(false);
@@ -54,10 +57,6 @@ export default function DeleteAccountDialog() {
 
         stopLoading();
     };
-
-    useEffect(() => {
-        setUserProtected(user?.protected ?? true);
-    }, [user]);
 
     return (
         <Dialog open={open} onClose={handleClose}>

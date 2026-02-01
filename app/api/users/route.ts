@@ -5,6 +5,7 @@ import { SessionUserInResponse } from '@/types/UserInResponse';
 import { upsertNotification } from '@/helpers/upsertNotification';
 import { FULLNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
+import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
 
 export async function DELETE(req: NextRequest) {
     const hasBody = req.headers.get('content-type')?.includes('application/json');
@@ -165,38 +166,12 @@ export async function PATCH(req: NextRequest) {
             data: safeData,
         });
 
-        const [followersCount, subscriptionsCount, notificationsCount] = await prisma.$transaction([
-            prisma.follow.count({
-                where: { followingId: sessionUser.id },
-            }),
-            prisma.follow.count({
-                where: { followerId: sessionUser.id },
-            }),
-            prisma.notification.count({
-                where: {
-                    recipientUserId: sessionUser.id,
-                    isRead: false,
-                },
-            }),
-        ]);
-
-        const responseData: SessionUserInResponse = {
-            id: updatedUser.id,
-            avatarUrl: updatedUser.avatarUrl,
-            bannerUrl: updatedUser.bannerUrl,
-            username: updatedUser.username,
-            fullName: updatedUser.fullName,
-            description: updatedUser.description,
-            followers: followersCount,
-            subscriptions: subscriptionsCount,
-            notifications: notificationsCount,
-            protected: updatedUser.passwordHash ? true : false,
-        };
+        const userInResponse: SessionUserInResponse = await getSessionUserResponse(updatedUser);
 
         return NextResponse.json(
             {
                 message: `Session user updated.`,
-                user: responseData,
+                user: userInResponse,
             },
             { status: 200 },
         );

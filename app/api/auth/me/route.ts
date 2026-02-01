@@ -1,3 +1,4 @@
+import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
 import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import { NextResponse, NextRequest } from 'next/server';
@@ -15,33 +16,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    const [followersCount, subscriptionsCount, notificationsCount] = await prisma.$transaction([
-        prisma.follow.count({
-            where: { followingId: session.userId },
-        }),
-        prisma.follow.count({
-            where: { followerId: session.userId },
-        }),
-        prisma.notification.count({
-            where: {
-                recipientUserId: session.userId,
-                isRead: false,
-            },
-        }),
-    ]);
+    const userInResponse: SessionUserInResponse = await getSessionUserResponse(session.user);
 
-    const user: SessionUserInResponse = {
-        id: session.user.id,
-        avatarUrl: session.user.avatarUrl,
-        bannerUrl: session.user.bannerUrl,
-        username: session.user.username,
-        fullName: session.user.fullName,
-        description: session.user.description,
-        followers: followersCount,
-        subscriptions: subscriptionsCount,
-        notifications: notificationsCount,
-        protected: session.user.passwordHash ? true : false,
-    };
-
-    return NextResponse.json({ user: user }, { status: 200 });
+    return NextResponse.json({ user: userInResponse }, { status: 200 });
 }

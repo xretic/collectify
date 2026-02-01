@@ -2,6 +2,8 @@ import { NextResponse, NextRequest } from 'next/server';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
+import { SessionUserInResponse } from '@/types/UserInResponse';
+import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
 
 export async function POST(req: NextRequest) {
     try {
@@ -35,15 +37,10 @@ export async function POST(req: NextRequest) {
             },
         });
 
+        const userInResponse: SessionUserInResponse = await getSessionUserResponse(user);
+
         const response = NextResponse.json({
-            user: {
-                id: user.id,
-                avatarUrl: user.avatarUrl,
-                bannerUrl: user.bannerUrl,
-                username: user.username,
-                fullName: user.fullName,
-                description: user.description,
-            },
+            user: userInResponse,
         });
 
         response.cookies.set({

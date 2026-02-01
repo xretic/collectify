@@ -36,6 +36,7 @@ type PrivateState = {
 export default function SettingsPage() {
     const { user, loading, setUser } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
+    const [userProtected, setUserProtected] = useState(true);
 
     const [state, setState] = useState<GlobalState>({
         fullName: '',
@@ -99,6 +100,8 @@ export default function SettingsPage() {
                 username: user.username,
                 description: user.description,
             }));
+
+            setUserProtected(user.protected);
         }
     }, [user]);
 
@@ -204,13 +207,17 @@ export default function SettingsPage() {
 
                 <div className={styles.option}>
                     <span>Change password</span>
-                    <Input.Password
-                        onChange={(x) => updatePrivateState('oldPassword', x.target.value)}
-                        className={styles.profileInput}
-                        placeholder="Current password"
-                        maxLength={PASSWORD_MAX_LENGTH}
-                        showCount
-                    />
+
+                    {userProtected && (
+                        <Input.Password
+                            onChange={(x) => updatePrivateState('oldPassword', x.target.value)}
+                            className={styles.profileInput}
+                            placeholder="Current password"
+                            maxLength={PASSWORD_MAX_LENGTH}
+                            showCount
+                        />
+                    )}
+
                     <Input.Password
                         onChange={(x) => updatePrivateState('newPassword', x.target.value)}
                         className={styles.profileInput}
@@ -272,7 +279,7 @@ export default function SettingsPage() {
                 </Button>
             </div>
 
-            <DeleteAccountDialog />
+            <DeleteAccountDialog userProtected={userProtected} />
         </>
     );
 }
