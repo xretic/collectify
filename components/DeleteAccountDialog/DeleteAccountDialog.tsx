@@ -70,7 +70,9 @@ export default function DeleteAccountDialog({ userProtected }: Props) {
                     your collections, and remove your data from our servers.
                 </DialogContentText>
 
-                <p className={styles.confirmText}>Type your password to confirm</p>
+                {userProtected && (
+                    <p className={styles.confirmText}>Type your password to confirm</p>
+                )}
 
                 <Input.Password
                     onChange={(e) => setPassword(e.target.value)}
