@@ -106,7 +106,7 @@ export default function ProfilePage() {
 
         const action = debouncedFollowed ? 'unfollow' : 'follow';
 
-        await fetch(`/api/users/${user.id}?followUserId=${pageUser.id}&followAction=${action}`, {
+        await fetch(`/api/users?followUserId=${pageUser.id}&followAction=${action}`, {
             method: 'PATCH',
         });
 

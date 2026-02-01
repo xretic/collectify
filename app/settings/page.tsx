@@ -68,7 +68,7 @@ export default function SettingsPage() {
     const handleProfileUpdate = async () => {
         startLoading();
 
-        const response = await fetch('/api/users/' + user!.id, {
+        const response = await fetch('/api/users/', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

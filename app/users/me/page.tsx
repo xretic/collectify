@@ -186,7 +186,7 @@ export default function ProfilePage() {
     const handleSave = async () => {
         updateState('cooldown', true);
 
-        const res = await fetch('/api/users/' + user.id, {
+        const res = await fetch('/api/users/', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
