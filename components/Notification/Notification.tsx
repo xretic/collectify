@@ -1,5 +1,5 @@
 import { NotificationType } from '@/generated/prisma/enums';
-import { Avatar, Badge } from '@mui/material';
+import { Avatar, Badge, Box } from '@mui/material';
 import styles from './Notification.module.css';
 import { NOTIFICATION_TEXTS } from '@/lib/constans';
 import moment from 'moment';
@@ -61,7 +61,7 @@ export default function Notification({
     const router = useRouter();
     const { refreshUser } = useUser();
 
-    const handleClick = async () => {
+    const markAsRead = async () => {
         if (unreadCount > 0) {
             fetch('/api/notifications', {
                 method: 'PATCH',
@@ -69,7 +69,10 @@ export default function Notification({
         }
 
         await refreshUser();
+    };
 
+    const handleClick = async () => {
+        await markAsRead();
         router.replace('/users/' + id);
     };
 
@@ -79,7 +82,20 @@ export default function Notification({
         <div className={`${styles.notification} ${!isRead ? styles.unread : ''}`}>
             <button onClick={handleClick} className={styles.button}>
                 <Badge
-                    badgeContent={<Icon fontSize="small" sx={{ color, width: 20, height: 20 }} />}
+                    badgeContent={
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width={19}
+                            height={19}
+                            borderRadius="50%"
+                            bgcolor="#fff"
+                            boxShadow="0 2px 4px rgba(0,0,0,0.1)"
+                        >
+                            <Icon fontSize="small" sx={{ color, width: 14, height: 14 }} />
+                        </Box>
+                    }
                     color="default"
                     overlap="circular"
                     anchorOrigin={{
@@ -93,9 +109,12 @@ export default function Notification({
                     <span className={styles.username}>{username}</span>
                     <span className={styles.text}>{NOTIFICATION_TEXTS[type]}</span>
                     <span
-                        onClick={(e) => {
+                        onClick={async (e) => {
                             e.preventDefault();
                             e.stopPropagation();
+
+                            await markAsRead();
+
                             router.replace('/collections/' + collectionId);
                         }}
                         className={styles.collection}
