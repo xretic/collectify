@@ -47,3 +47,44 @@
 .profileInput {
     margin-top: 5px;
 }
+
+@media (max-width: 1200px) {
+    .container {
+        max-width: 900px;
+    }
+
+    .header {
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 900px) {
+    .container {
+        max-width: 550px;
+    }
+
+    .header {
+        max-width: 550px;
+        padding: 25px 10px;
+    }
+}
+
+@media (max-width: 550px) {
+    .container {
+        max-width: 450px;
+    }
+
+    .header {
+        max-width: 450px;
+    }
+}
+
+@media (max-width: 450px) {
+    .container {
+        max-width: 350px;
+    }
+
+    .header {
+        max-width: 350px;
+    }
+}
