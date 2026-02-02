@@ -195,11 +195,19 @@
     .collections-search {
         bottom: 15px;
     }
+
+    .name {
+        font-size: 22px;
+    }
 }
 
 @media (max-width: 420px) {
     .info {
         width: 120px;
+    }
+
+    .name {
+        font-size: 18px;
     }
 }
 

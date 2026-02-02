@@ -102,3 +102,9 @@
     gap: 6px;
     color: #4b5563;
 }
+
+@media (max-width: 1000px) {
+    .card {
+        width: 356px;
+    }
+}

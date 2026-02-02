@@ -21,3 +21,9 @@
     font-size: 20px;
     padding: 0 20px;
 }
+
+@media (max-width: 830px) {
+    .collections {
+        justify-content: center;
+    }
+}

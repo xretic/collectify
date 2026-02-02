@@ -264,7 +264,9 @@ export default function ProfilePage() {
                                     disabled ||
                                     (state.fullName === user.fullName &&
                                         state.username === user.username &&
-                                        state.description === user.description)
+                                        state.description === user.description &&
+                                        state.avatarUrl === user.avatarUrl &&
+                                        state.bannerUrl === user.bannerUrl)
                                 }
                             >
                                 <CheckIcon sx={{ color: '#afafaf' }} />
