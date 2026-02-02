@@ -190,7 +190,10 @@ export default function ProfilePage() {
 
             <div className={styles['collections-category']}>
                 <CollectionSearchBar disabled={debouncedQuery === '' && collections.length === 0} />
-                <SortBy className="" disabled={collections.length === 0} />
+                <SortBy
+                    className={styles['collections-search']}
+                    disabled={collections.length === 0}
+                />
             </div>
 
             <div className={styles['before-collections-line']} />

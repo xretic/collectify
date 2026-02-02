@@ -207,7 +207,7 @@ export default function NavBar() {
                         <div
                             className={styles['auth-panel-search-btn']}
                             style={{
-                                right: isMobile ? 65 : 65 + width,
+                                right: isMobile ? 50 : 65 + width,
                                 top: 17,
                             }}
                         >
