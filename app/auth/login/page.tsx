@@ -12,7 +12,7 @@ import { useUIStore } from '@/stores/uiStore';
 import CircularProgress from '@mui/material/CircularProgress';
 import styles from '../auth.module.css';
 import Image from 'next/image';
-import { IconButton, Snackbar, SnackbarCloseReason, Tooltip } from '@mui/material';
+import { IconButton, Snackbar, SnackbarCloseReason, Tooltip, useMediaQuery } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { githubAuth, googleAuth } from '@/lib/authMethods';
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,10 +25,11 @@ type LoginFormData = {
 export default function LoginPage() {
     const { control, handleSubmit } = useForm<LoginFormData>();
     const router = useRouter();
-    const [emailError, setEmailError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const { user, setUser } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
+
+    const isMobile = useMediaQuery('(max-width:1000px)');
 
     useEffect(() => {
         if (user) router.replace('/');
@@ -111,7 +112,10 @@ export default function LoginPage() {
                 <h1 className={styles.header}>Login</h1>
                 <p className={styles.paragraph}>Enter your credentials to access your account.</p>
 
-                <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 400 }}>
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    style={{ width: '100%', maxWidth: isMobile ? 300 : 400 }}
+                >
                     <Controller
                         name="email"
                         control={control}
@@ -135,7 +139,6 @@ export default function LoginPage() {
                                 helperText={fieldState.error ? fieldState.error.message : ' '}
                                 onChange={(e) => {
                                     field.onChange(e);
-                                    setEmailError(!e.target.validity.valid);
                                 }}
                             />
                         )}

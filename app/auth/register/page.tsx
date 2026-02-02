@@ -17,7 +17,7 @@ import {
     USERNAME_MIN_LENGTH,
 } from '@/lib/constans';
 import styles from '../auth.module.css';
-import { IconButton, Snackbar, SnackbarCloseReason, Tooltip } from '@mui/material';
+import { IconButton, Snackbar, SnackbarCloseReason, Tooltip, useMediaQuery } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Image from 'next/image';
 import { githubAuth, googleAuth } from '@/lib/authMethods';
@@ -39,6 +39,8 @@ export default function RegisterPage() {
     useEffect(() => {
         if (user) router.replace('/');
     }, [user]);
+
+    const isMobile = useMediaQuery('(max-width:1000px)');
 
     const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
         startLoading();
@@ -130,7 +132,10 @@ export default function RegisterPage() {
                     In order to use the site fully, you must register.
                 </p>
 
-                <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 400 }}>
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    style={{ width: '100%', maxWidth: isMobile ? 300 : 400 }}
+                >
                     <Controller
                         name="email"
                         control={control}

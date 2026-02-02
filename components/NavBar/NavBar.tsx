@@ -268,7 +268,7 @@ export default function NavBar() {
                                 className={styles['login-btn']}
                                 color="primary"
                                 variant="solid"
-                                icon={<LoginRounded />}
+                                icon={isMobile ? null : <LoginRounded />}
                                 size="large"
                                 href="/auth/login"
                             >
@@ -277,7 +277,7 @@ export default function NavBar() {
                             <Button
                                 color="primary"
                                 variant="outlined"
-                                icon={<ExitToAppOutlinedIcon />}
+                                icon={isMobile ? null : <ExitToAppOutlinedIcon />}
                                 size="large"
                                 href="/auth/register"
                             >
