@@ -5,6 +5,7 @@ import './globals.css';
 import { UserProvider } from '@/context/UserProvider';
 import { GlobalLoader } from '@/components/GlobalLoader/GlobalLoader';
 import Script from 'next/script';
+import ClientThemeProvider from '@/components/ClientThemeProvider/ClientThemeProvider';
 
 const googleSans = localFont({
     src: [
@@ -35,22 +36,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en" className={`${googleSans.variable} ${rubikMedium.variable}`}>
+        <html className={`${googleSans.variable} ${rubikMedium.variable}`} lang="en">
             <body>
                 <Script id="uploadcare-key" strategy="beforeInteractive">
                     {`UPLOADCARE_PUBLIC_KEY = '${process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY}';`}
                 </Script>
-
                 <Script
                     src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js"
                     strategy="beforeInteractive"
                 />
 
-                <UserProvider>
-                    <NavBar />
-                    <GlobalLoader />
-                    {children}
-                </UserProvider>
+                <ClientThemeProvider>
+                    <UserProvider>
+                        <NavBar />
+                        <GlobalLoader />
+                        {children}
+                    </UserProvider>
+                </ClientThemeProvider>
             </body>
         </html>
     );

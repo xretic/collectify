@@ -63,7 +63,7 @@ export default function Notification({
 
     const markAsRead = async () => {
         if (unreadCount > 0) {
-            fetch('/api/notifications', {
+            await fetch('/api/notifications', {
                 method: 'PATCH',
             });
         }
@@ -90,8 +90,8 @@ export default function Notification({
                             width={19}
                             height={19}
                             borderRadius="50%"
-                            bgcolor="#fff"
-                            boxShadow="0 2px 4px rgba(0,0,0,0.1)"
+                            bgcolor="var(--bg-color)"
+                            boxShadow="0 2px 2px rgba(0,0,0,0.1)"
                         >
                             <Icon fontSize="small" sx={{ color, width: 14, height: 14 }} />
                         </Box>

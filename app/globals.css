@@ -1,6 +1,32 @@
 @import 'tailwindcss';
 
-:root {
-    --background: #fafafa;
-    --foreground: #fafafa;
+:root[data-theme='dark'] {
+    --bg-color: #2b303b;
+    --container-color: #343a43;
+    --border-color: rgb(90, 90, 90);
+    --text-color: #ffffff;
+    --soft-text: #c0c0c0;
+    --accent: #208fff;
+}
+
+:root[data-theme='light'] {
+    --bg-color: #ffffff;
+    --container-color: #ffffff;
+    --border-color: #d1d5db;
+    --text-color: #343a43;
+    --soft-text: #505050;
+    --accent: #208fff;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.ant-input-show-count-suffix {
+    color: var(--text-color) !important;
+}
+
+.ant-input-textarea-show-count .ant-input-data-count {
+    color: var(--text-color) !important;
 }

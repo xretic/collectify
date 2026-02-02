@@ -8,11 +8,11 @@
 }
 
 .unread {
-    background-color: #f0f5ff;
+    background-color: var(--accent);
 }
 
 .notification:hover {
-    background-color: #f3f3f3;
+    background-color: var(--accent);
 }
 
 .button {
@@ -37,21 +37,23 @@
 
 .username {
     font-family: var(--font-google-sans), sans-serif;
-    color: #000;
-    font-size: 15px;
+    color: var(--text-color);
+    font-size: 14px;
+    margin-top: 1px;
 }
 
 .text {
     font-size: 14px;
     margin-left: 4px;
-    color: #929292;
+    color: var(--soft-text);
 }
 
 .collection {
     font-family: var(--font-google-sans), sans-serif;
-    color: #000;
-    font-size: 15px;
+    color: var(--text-color);
+    font-size: 14px;
     margin-left: 4px;
+    margin-top: 1px;
 }
 
 .collection:hover {
@@ -60,6 +62,6 @@
 
 .time {
     font-size: 12px;
-    color: #929292;
+    color: var(--soft-text);
     margin-left: auto;
 }

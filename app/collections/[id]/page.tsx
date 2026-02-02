@@ -130,6 +130,7 @@ export default function CollectionPage() {
                                 <FavoriteBorderIcon sx={{ width: 17, height: 17 }} />
                             )
                         }
+                        style={{ backgroundColor: 'var(--container-color)' }}
                     >
                         {liked ? 'Unlike' : 'Like'}
                     </Button>
@@ -138,8 +139,8 @@ export default function CollectionPage() {
                         theme={{
                             components: {
                                 Button: {
-                                    colorBgTextHover: 'rgba(250, 173, 20, 0.10)',
                                     colorPrimaryHover: '#ffc247',
+                                    colorPrimaryActive: '#ffc247',
                                 },
                             },
                         }}
@@ -155,6 +156,7 @@ export default function CollectionPage() {
                                     <BookmarkBorderIcon sx={{ width: 17, height: 17 }} />
                                 )
                             }
+                            style={{ backgroundColor: 'var(--container-color)' }}
                         >
                             {favorited ? 'Remove' : 'Add'}
                         </Button>

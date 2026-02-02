@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     width: 256px;
-    background-color: #ffffff;
+    background-color: var(--container-color);
     border-radius: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-left: 13px;
@@ -47,12 +47,12 @@
 }
 
 .author-name:hover {
-    color: #000000;
+    color: var(--accent);
 }
 
 .author-name {
     font-size: 14px;
-    color: #4b5563;
+    color: var(--text-color);
 }
 
 .category {
@@ -81,7 +81,7 @@
 }
 
 .border {
-    border-top: 1px solid #d1d5db;
+    border-top: 1px solid var(--border-color);
     margin-top: 6px;
 }
 
@@ -91,7 +91,7 @@
     font-family: var(--font-google-sans), sans-serif;
     font-size: 13px;
     gap: 3px;
-    color: #4b5563;
+    color: var(--text-color);
 }
 
 .stats {
@@ -100,7 +100,7 @@
     font-family: var(--font-google-sans), sans-serif;
     font-size: 12px;
     gap: 6px;
-    color: #4b5563;
+    color: var(--text-color);
 }
 
 @media (max-width: 1000px) {

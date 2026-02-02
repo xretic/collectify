@@ -1,12 +1,12 @@
 .header {
     font-family: var(--font-google-sans), sans-serif;
-    color: #000;
+    color: var(--text-color);
     font-size: 50px;
     margin-top: 210px;
 }
 
 .paragraph {
-    color: #5a5a5a;
+    color: var(--soft-text);
 }
 
 .social-media {

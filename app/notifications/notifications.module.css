@@ -1,5 +1,5 @@
 .header {
-    background-color: #ffffff;
+    background-color: var(--container-color);
     max-width: 1150px;
     margin: 20px auto 0;
     border-radius: 20px;
@@ -9,7 +9,7 @@
 }
 
 .notifications {
-    background-color: #ffffff;
+    background-color: var(--container-color);
     max-width: 800px;
     margin: 20px auto 0;
     border-radius: 20px;

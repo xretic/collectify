@@ -63,18 +63,34 @@ export default function UserSearchBar() {
             onInputChange={(_, newValue) => setInputValue(newValue)}
             disableClearable={true}
             slots={{
-                paper: (props) => <Paper {...props} sx={{ mt: 1 }} />,
+                paper: (props) => (
+                    <Paper {...props} sx={{ mt: 1, backgroundColor: 'var(--container-color)' }} />
+                ),
             }}
             renderOption={(props, option) => {
-                if (typeof option === 'string') {
-                    return (
-                        <ListItem {...props} key={option}>
-                            <ListItemText primary={option} />
-                        </ListItem>
-                    );
-                }
                 return (
-                    <ListItem {...props} key={option.username}>
+                    <ListItem
+                        sx={{
+                            color: 'var(--text-color) !important',
+                            backgroundColor: 'var(--container-color) !important',
+                            '&:hover': {
+                                backgroundColor: 'var(--accent) !important',
+                                color: 'var(--text-color) !important',
+                            },
+                            '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
+                                backgroundColor: 'var(--container-color) !important',
+                                color: 'var(--text-color) !important',
+                            },
+                            '&.Mui-focusVisible': {
+                                backgroundColor: 'var(--container-color) !important',
+                            },
+                            '& .MuiListItemText-primary': {
+                                color: 'var(--text-color) !important',
+                            },
+                        }}
+                        {...props}
+                        key={option.username}
+                    >
                         <ListItemAvatar key={option.avatarUrl}>
                             <Avatar src={option.avatarUrl} alt={option.username} />
                         </ListItemAvatar>
@@ -87,6 +103,7 @@ export default function UserSearchBar() {
                     {...params}
                     autoFocus
                     onBlur={() => setSearchBarOpened()}
+                    className={styles.placeholder}
                     placeholder="Find a user"
                     variant="outlined"
                     size="small"

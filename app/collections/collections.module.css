@@ -36,6 +36,7 @@
 }
 
 .author:hover {
+    color: var(--accent);
     text-decoration: underline;
 }
 
@@ -57,12 +58,12 @@
 }
 
 .description-container {
-    background-color: #ffffff;
+    background-color: var(--container-color);
     max-width: 1450px;
     margin: 21px auto 0;
     border-radius: 12px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color);
     padding: 25px 30px;
 }
 
@@ -70,13 +71,13 @@
     font-size: 20px;
     font-family: var(--font-google-sans), sans-serif;
     font-weight: 500;
-    color: #000000;
+    color: var(--text-color);
     margin-bottom: 6px;
 }
 
 .description {
     font-size: 14px;
-    color: #505050;
+    color: var(--soft-text);
 }
 
 .actions {
@@ -89,16 +90,19 @@
     color: #faad14;
     border: 1px solid #faad14;
     background: transparent;
+    background-color: var(--container-color);
 }
 
 .favorite-button-yellow-outline:hover {
     color: #d48806;
     border-color: #d48806;
+    background-color: var(--container-color);
 }
 
 .favorite-button-yellow-outline:active {
     color: #faad14;
     border-color: #faad14;
+    background-color: var(--container-color);
 }
 
 @media (max-width: 700px) {

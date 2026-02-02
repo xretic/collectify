@@ -29,6 +29,42 @@ export default function LoginPage() {
     const { user, setUser } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
 
+    const inputStyle = {
+        '& .MuiInputBase-input': {
+            color: 'var(--text-color)',
+        },
+
+        '& .MuiInputBase-input::placeholder': {
+            color: 'var(--soft-text)',
+            opacity: 1,
+        },
+        '& .MuiInputLabel-root': {
+            color: 'var(--text-color)',
+        },
+
+        '& .MuiInput-underline:before': {
+            borderBottomColor: 'var(--border-color) !important',
+        },
+
+        '& .MuiInput-underline:hover:before': {
+            borderBottomColor: 'var(--border-color) !important',
+        },
+
+        '& .MuiInput-underline:after': {
+            borderBottomColor: 'var(--border-color) !important',
+        },
+
+        '& .MuiInputBase-input:not(:focus)': {
+            color: 'var(--text-color)',
+        },
+
+        '& input:-webkit-autofill': {
+            WebkitBoxShadow: '0 0 0 1000px var(--background-color) inset',
+            WebkitTextFillColor: 'var(--text-color)',
+            transition: 'background-color 5000s ease-in-out 0s',
+        },
+    };
+
     const isMobile = useMediaQuery('(max-width:1000px)');
 
     useEffect(() => {
@@ -140,6 +176,7 @@ export default function LoginPage() {
                                 onChange={(e) => {
                                     field.onChange(e);
                                 }}
+                                sx={inputStyle}
                             />
                         )}
                     />
@@ -162,7 +199,7 @@ export default function LoginPage() {
                                 variant="standard"
                                 error={!!fieldState.error}
                                 helperText={fieldState.error ? fieldState.error.message : ' '}
-                                sx={{ mt: 2 }}
+                                sx={{ mt: 2, ...inputStyle }}
                             />
                         )}
                     />

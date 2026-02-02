@@ -2,12 +2,37 @@
     display: flex;
     align-items: center;
     position: relative;
-    bottom: 1;
+    bottom: 0;
     width: 310px;
     height: 45px;
     transition:
         width 0.3s,
         height 0.3s;
+}
+
+.placeholder {
+    color: var(--text-color);
+}
+
+.placeholder input {
+    color: var(--text-color);
+}
+
+.placeholder input::placeholder {
+    color: var(--text-color);
+    opacity: 1;
+}
+
+.placeholder .MuiOutlinedInput-root {
+    background-color: var(--bg-color);
+}
+
+.placeholder .MuiOutlinedInput-notchedOutline {
+    border-color: var(--text-color);
+}
+
+.placeholder .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--text-color);
 }
 
 @media (max-width: 600px) {

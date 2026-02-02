@@ -114,12 +114,19 @@ export default function NavBar() {
                             vertical: 'top',
                             horizontal: 'right',
                         }}
-                        sx={badgeSx}
+                        sx={{
+                            '.MuiBadge-badge': {
+                                minWidth: 13,
+                                height: 13,
+                                fontSize: 10,
+                                padding: 0,
+                                transform: 'translate(0%, 50%)',
+                            },
+                        }}
                     >
                         <IconButton
                             onClick={() => setDrawerOpen(true)}
-                            sx={{ ml: 1 }}
-                            aria-label="open menu"
+                            sx={{ ml: 1, mt: 0.7, color: 'var(--text-color)' }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -208,7 +215,7 @@ export default function NavBar() {
                             className={styles['auth-panel-search-btn']}
                             style={{
                                 right: isMobile ? 50 : 65 + width,
-                                top: 17,
+                                top: 25,
                             }}
                         >
                             {searchBarOpened ? (
@@ -247,7 +254,7 @@ export default function NavBar() {
                                     anchorEl === event.currentTarget ? null : event.currentTarget,
                                 )
                             }
-                            className={styles['auth-panel']}
+                            className={styles['username-panel']}
                             style={{ display: 'flex', alignItems: 'center', gap: 8 }}
                         >
                             <span ref={usernameRef} className={styles['nav-right-username']}>
@@ -280,6 +287,11 @@ export default function NavBar() {
                                 icon={isMobile ? null : <ExitToAppOutlinedIcon />}
                                 size="large"
                                 href="/auth/register"
+                                style={{
+                                    backgroundColor: 'var(--container-color)',
+                                    color: 'var(--text-color)',
+                                    borderColor: 'var(--text-color)',
+                                }}
                             >
                                 Register
                             </Button>
@@ -287,7 +299,19 @@ export default function NavBar() {
                     )}
                 </div>
             </nav>
-            <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+            <Drawer
+                slotProps={{
+                    paper: {
+                        sx: {
+                            backgroundColor: 'var(--bg-color)',
+                            color: 'var(--text-color)',
+                            borderRight: '1px solid rgba(255,255,255,0.08)',
+                        },
+                    },
+                }}
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+            >
                 <Box sx={{ width: 260 }}>
                     <List>
                         {navigation.map(
@@ -297,7 +321,7 @@ export default function NavBar() {
                                 return (
                                     <ListItem key={href} disablePadding>
                                         <ListItemButton component={Link} href={href}>
-                                            <ListItemIcon>
+                                            <ListItemIcon style={{ color: 'var(--text-color)' }}>
                                                 {badge !== undefined ? (
                                                     <Badge badgeContent={badge} color="error">
                                                         {isActive ? <Icon /> : <IconOutlined />}

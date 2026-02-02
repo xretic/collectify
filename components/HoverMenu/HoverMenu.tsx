@@ -58,16 +58,23 @@ export default function HoverMenu() {
                 vertical: 'top',
                 horizontal: 'right',
             }}
+            slotProps={{
+                paper: {
+                    sx: {
+                        bgcolor: 'var(--container-color)',
+                    },
+                },
+            }}
         >
-            <MenuItem onClick={() => handleClose('/users/me')}>
-                <ListItemIcon>
+            <MenuItem sx={{ color: 'var(--text-color)' }} onClick={() => handleClose('/users/me')}>
+                <ListItemIcon sx={{ color: 'var(--text-color)' }}>
                     <AccountCircleOutlinedIcon fontSize="small" />
                 </ListItemIcon>
                 Profile
             </MenuItem>
 
-            <MenuItem onClick={() => handleClose('/settings')}>
-                <ListItemIcon>
+            <MenuItem sx={{ color: 'var(--text-color)' }} onClick={() => handleClose('/settings')}>
+                <ListItemIcon sx={{ color: 'var(--text-color)' }}>
                     <SettingsOutlined fontSize="small" />
                 </ListItemIcon>
                 Settings

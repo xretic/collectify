@@ -26,8 +26,8 @@ const baseButton: SxProps<Theme> = {
 
 const buttonSx = (active: boolean): SxProps<Theme> => ({
     ...baseButton,
-    borderColor: '#e5e7eb',
-    color: active ? '#fff' : '#000',
+    borderColor: 'var(--border-color)',
+    color: active ? '#fff' : 'var(--text-color)',
 });
 
 const counterSx = (active: boolean): SxProps<Theme> => ({
@@ -39,7 +39,7 @@ const counterSx = (active: boolean): SxProps<Theme> => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: active ? 'rgba(255,255,255,0.2)' : '#e5e7eb',
+    backgroundColor: active ? 'rgba(255,255,255,0.2)' : 'var(--border-color)',
 });
 
 export default function NotificationsPage() {
@@ -152,10 +152,10 @@ export default function NotificationsPage() {
                             padding: 4,
                             width: '100%',
                             height: '300px',
-                            backgroundColor: '#f9fafb',
+                            backgroundColor: 'var(--container-color)',
                             borderRadius: 6,
                             textAlign: 'center',
-                            color: '#6b7280',
+                            color: 'var(--soft-text)',
                         }}
                     >
                         <NotificationsNoneIcon sx={{ fontSize: 60, color: '#9ca3af' }} />

@@ -14,7 +14,7 @@
     justify-content: flex-start;
     box-sizing: border-box;
     font-family: var(--font-google-sans), sans-serif;
-    color: rgb(0, 0, 0);
+    color: var(--text-color);
     font-size: 27px;
 }
 

@@ -10,6 +10,7 @@
 .confirmText {
     font-family: var(--font-google-sans), sans-serif;
     font-size: 15px;
+    color: var(--text-color);
     margin-top: 20px;
 }
 
