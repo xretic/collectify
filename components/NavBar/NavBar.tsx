@@ -9,7 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import { useUIStore } from '@/stores/uiStore';
 import HoverMenu from '../HoverMenu/HoverMenu';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -93,6 +93,16 @@ export default function NavBar() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigation = navItems(user).filter((i) => !i.hide);
     const isMobile = useMediaQuery('(max-width:1200px)');
+    const router = useRouter();
+
+    const drawerIcon = (
+        <IconButton
+            onClick={() => setDrawerOpen(true)}
+            sx={{ ml: 1, mt: 0.7, color: 'var(--text-color)' }}
+        >
+            <MenuIcon />
+        </IconButton>
+    );
 
     useEffect(() => {
         if (usernameRef.current) {
@@ -105,33 +115,32 @@ export default function NavBar() {
     return (
         <header>
             <nav className={styles['nav-bar']}>
-                {isMobile && user && (
-                    <Badge
-                        badgeContent={user?.notifications}
-                        max={99}
-                        color="error"
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        sx={{
-                            '.MuiBadge-badge': {
-                                minWidth: 13,
-                                height: 13,
-                                fontSize: 10,
-                                padding: 0,
-                                transform: 'translate(0%, 50%)',
-                            },
-                        }}
-                    >
-                        <IconButton
-                            onClick={() => setDrawerOpen(true)}
-                            sx={{ ml: 1, mt: 0.7, color: 'var(--text-color)' }}
+                {isMobile &&
+                    user &&
+                    (user?.notifications > 0 ? (
+                        <Badge
+                            badgeContent={user?.notifications}
+                            max={99}
+                            color="error"
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            sx={{
+                                '.MuiBadge-badge': {
+                                    minWidth: 13,
+                                    height: 13,
+                                    fontSize: 10,
+                                    padding: 0,
+                                    transform: 'translate(0%, 50%)',
+                                },
+                            }}
                         >
-                            <MenuIcon />
-                        </IconButton>
-                    </Badge>
-                )}
+                            {drawerIcon}
+                        </Badge>
+                    ) : (
+                        drawerIcon
+                    ))}
 
                 <Link href="/">
                     <Image
@@ -214,7 +223,7 @@ export default function NavBar() {
                         <div
                             className={styles['auth-panel-search-btn']}
                             style={{
-                                right: isMobile ? 50 : 65 + width,
+                                right: isMobile ? 55 : 65 + width,
                                 top: 25,
                             }}
                         >
@@ -225,6 +234,7 @@ export default function NavBar() {
                                     <Tooltip title="Create collection">
                                         <IconButton
                                             type="button"
+                                            onClick={() => router.replace('/collections/create')}
                                             sx={{ p: '6px' }}
                                             aria-label="search"
                                         >

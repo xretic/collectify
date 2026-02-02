@@ -38,6 +38,8 @@ model User {
 
     sessions     Session[]
     Notification Notification[]
+
+    createdAt DateTime @default(now())
 }
 
 enum NotificationType {
