@@ -5,8 +5,8 @@
     overflow: hidden;
 }
 
-.container img {
-    z-index: 0;
+.banner {
+    object-fit: cover;
 }
 
 .title {
@@ -188,6 +188,15 @@
 
 .bannerWrapper:hover::after {
     opacity: 0.5;
+}
+
+.itemsGrid {
+    max-width: 1470px;
+    margin: 20px auto 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+    padding: 0 10px;
 }
 
 @media (max-width: 700px) {

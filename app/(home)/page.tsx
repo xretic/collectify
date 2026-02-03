@@ -54,8 +54,6 @@ export default function HomePage() {
 
     if (loading) return null;
 
-    // TODO: make visible only those collections which have more than 1 item inside
-
     return (
         <Suspense>
             <div className={styles['container']}>

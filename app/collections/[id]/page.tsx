@@ -14,6 +14,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import styles from '../collections.module.css';
+import { ItemCard } from '@/components/ItemCard/ItemCard';
 
 export default function CollectionPage() {
     const params = useParams();
@@ -96,7 +97,7 @@ export default function CollectionPage() {
                     fill
                     priority
                     sizes="100vw"
-                    className="object-cover"
+                    className={styles.banner}
                 />
 
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/50 to-transparent pointer-events-none" />
@@ -162,6 +163,18 @@ export default function CollectionPage() {
                         </Button>
                     </ConfigProvider>
                 </div>
+            </div>
+
+            <div className={styles.itemsGrid}>
+                {collection.items.map((x, i) => (
+                    <ItemCard
+                        key={i}
+                        title={x.title}
+                        description={x.description}
+                        sourceUrl={x.sourceUrl}
+                        imageUrl={x.imageUrl}
+                    />
+                ))}
             </div>
         </>
     ) : null;
