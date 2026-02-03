@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const intId = Number(id);
 
