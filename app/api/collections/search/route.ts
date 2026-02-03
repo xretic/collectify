@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
 
         const excludedIds: number[] = [];
 
-        if (!sortedBy || isNaN(skip)) {
+        if (!sortedBy || !isProperInteger(skip)) {
             return NextResponse.json(
                 { message: 'You should set skip and sortedBy value' },
                 { status: 400 },
