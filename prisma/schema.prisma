@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
     provider = "prisma-client"
     output   = "../generated/prisma"
@@ -14,65 +8,44 @@ datasource db {
 }
 
 model User {
-    id       Int     @id
-    githubId String? @unique
-    googleId String? @unique
-
-    email        String  @unique
-    passwordHash String?
-
-    avatarUrl String @default("")
-    bannerUrl String @default("")
-
-    username String
-    fullName String
-
-    description String       @default("")
-    collections Collection[]
-    favorites   Collection[] @relation("FavoriteCollections")
-
-    followers     Follow[] @relation("Followers")
-    subscriptions Follow[] @relation("Subscriptions")
-
+    id            Int            @id
+    email         String         @unique
+    passwordHash  String?
+    avatarUrl     String         @default("")
+    bannerUrl     String         @default("")
+    username      String
+    fullName      String
+    description   String         @default("")
+    githubId      String?        @unique
+    googleId      String?        @unique
+    createdAt     DateTime       @default(now())
+    collections   Collection[]
+    subscriptions Follow[]       @relation("Subscriptions")
+    followers     Follow[]       @relation("Followers")
     notifications Notification[] @relation("ReceivedNotifications")
-
-    sessions     Session[]
-    Notification Notification[]
-
-    createdAt DateTime @default(now())
-}
-
-enum NotificationType {
-    FOLLOW
-    LIKE
-    COMMENT
-    FAVORITE
+    Notification  Notification[]
+    sessions      Session[]
+    favorites     Collection[]   @relation("FavoriteCollections")
 }
 
 model Notification {
-    id Int @id @default(autoincrement())
-
-    type NotificationType
-
+    id              Int              @id @default(autoincrement())
+    senderUserId    Int?
     recipientUserId Int
-    recipientUser   User @relation("ReceivedNotifications", fields: [recipientUserId], references: [id], onDelete: Cascade)
-
-    senderUserId Int?
-    senderUser   User? @relation(fields: [senderUserId], references: [id], onDelete: Cascade)
-
-    collectionId Int?
-    collection   Collection? @relation(fields: [collectionId], references: [id])
-
-    isRead    Boolean  @default(false)
-    createdAt DateTime @default(now())
+    createdAt       DateTime         @default(now())
+    isRead          Boolean          @default(false)
+    type            NotificationType
+    collectionId    Int?
+    collection      Collection?      @relation(fields: [collectionId], references: [id])
+    recipientUser   User             @relation("ReceivedNotifications", fields: [recipientUserId], references: [id], onDelete: Cascade)
+    senderUser      User?            @relation(fields: [senderUserId], references: [id], onDelete: Cascade)
 }
 
 model Follow {
     followerId  Int
     followingId Int
-
-    follower  User @relation("Subscriptions", fields: [followerId], references: [id], onDelete: Cascade)
-    following User @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
+    follower    User @relation("Subscriptions", fields: [followerId], references: [id], onDelete: Cascade)
+    following   User @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
 
     @@id([followerId, followingId])
 }
@@ -87,21 +60,18 @@ model Session {
 }
 
 model Collection {
-    id Int @id @unique
-
+    id              Int            @id @default(autoincrement())
     name            String
-    description     String @default("")
+    description     String         @default("")
     bannerUrl       String
     category        String
-    likes           Like[]
-    addedToFavorite User[] @relation("FavoriteCollections")
+    userId          Int?
+    createdAt       DateTime       @default(now())
+    User            User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
     items           Item[]
-
-    User   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId Int?
-
-    createdAt    DateTime       @default(now())
-    Notification Notification[]
+    likes           Like[]
+    Notification    Notification[]
+    addedToFavorite User[]         @relation("FavoriteCollections")
 }
 
 model Like {
@@ -112,12 +82,18 @@ model Like {
 }
 
 model Item {
-    id Int @id @unique
-
-    title       String
-    description String
-    tags        String[]
-
-    Collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    id           Int         @id @default(autoincrement())
+    title        String
+    description  String
     collectionId Int?
+    imageUrl     String?
+    sourceUrl    String?
+    Collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+}
+
+enum NotificationType {
+    FOLLOW
+    LIKE
+    COMMENT
+    FAVORITE
 }

@@ -29,6 +29,7 @@ export type CollectionPropsAdditional = {
     items: {
         title: string;
         description: string;
-        tags: string[];
+        sourceUrl: string | null;
+        imageUrl: string | null;
     }[];
 };

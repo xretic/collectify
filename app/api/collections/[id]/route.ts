@@ -170,7 +170,8 @@ function getResData(
             description: string;
             collectionId: number | null;
             title: string;
-            tags: string[];
+            sourceUrl: string | null;
+            imageUrl: string | null;
         }[];
         User: {
             id: number;
@@ -206,7 +207,8 @@ function getResData(
         items: collection.items.map((x) => ({
             title: x.title,
             description: x.description,
-            tags: x.tags,
+            sourceUrl: x.sourceUrl,
+            imageUrl: x.imageUrl,
         })),
     };
 }

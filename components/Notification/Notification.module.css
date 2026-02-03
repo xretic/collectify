@@ -8,11 +8,11 @@
 }
 
 .unread {
-    background-color: var(--accent);
+    background-color: color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .notification:hover {
-    background-color: var(--accent);
+    background-color: color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .button {
