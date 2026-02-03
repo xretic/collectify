@@ -60,6 +60,10 @@
     text-decoration: underline;
 }
 
+.username:hover {
+    text-decoration: underline;
+}
+
 .time {
     font-size: 12px;
     color: var(--soft-text);
