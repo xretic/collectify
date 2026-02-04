@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import styles from './ItemCard.module.css';
+import styles from './index.module.css';
 import LaunchIcon from '@mui/icons-material/Launch';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 

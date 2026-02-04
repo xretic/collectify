@@ -1,11 +1,11 @@
-import CollectionField from '../CollectionField/CollectionField';
-import { CollectionFieldProps } from '../../types/CollectionField';
+import { CollectionFieldProps } from '../../../../types/CollectionField';
 import { IconButton, Tooltip } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { PAGE_SIZE } from '@/lib/constans';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { usePaginationStore } from '@/stores/paginationStore';
-import styles from './CollectionsWrapper.module.css';
+import styles from './index.module.css';
+import CollectionField from '../CollectionField';
 
 type CollectionsWrapperProps = {
     collections: CollectionFieldProps[];

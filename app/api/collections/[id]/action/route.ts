@@ -1,8 +1,8 @@
-import { Collection, NotificationType } from '@/generated/prisma/client';
+import { NotificationType } from '@/generated/prisma/client';
+import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { upsertNotification } from '@/helpers/upsertNotification';
 import { prisma } from '@/lib/prisma';
-import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -26,15 +26,6 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     if (!collection || !collection.User) {
         return NextResponse.json({ data: null }, { status: 404 });
     }
-
-    const items = await prisma.item.findMany({
-        where: {
-            collectionId: collection.id,
-        },
-        orderBy: {
-            order: 'asc',
-        },
-    });
 
     const resData = getResData(collection);
 
@@ -155,70 +146,4 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         console.error(e);
         return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
-}
-
-function getResData(
-    collection: Collection & {
-        likes: {
-            id: number;
-            userId: number;
-            collectionId: number;
-        }[];
-        addedToFavorite: {
-            id: number;
-            description: string;
-            bannerUrl: string;
-            email: string;
-            passwordHash: string | null;
-            avatarUrl: string;
-            username: string;
-            fullName: string;
-        }[];
-        items: {
-            id: number;
-            description: string;
-            collectionId: number | null;
-            title: string;
-            sourceUrl: string | null;
-            imageUrl: string | null;
-        }[];
-        User: {
-            id: number;
-            description: string;
-            bannerUrl: string;
-            email: string;
-            passwordHash: string | null;
-            avatarUrl: string;
-            username: string;
-            fullName: string;
-        } | null;
-    },
-): CollectionPropsAdditional | null {
-    if (!collection.User) return null;
-
-    return {
-        id: collection.id,
-        author: collection.User.fullName,
-        authorAvatarUrl: collection.User.avatarUrl,
-        description: collection.description,
-        authorId: collection.User.id,
-        bannerUrl: collection.bannerUrl,
-        name: collection.name,
-        category: collection.category,
-        likes: collection.likes.map((x) => ({
-            id: x.userId,
-        })),
-
-        addedToFavorite: collection.addedToFavorite.map((x) => ({
-            id: x.id,
-        })),
-
-        items: collection.items.map((x) => ({
-            id: x.id,
-            title: x.title,
-            description: x.description,
-            sourceUrl: x.sourceUrl,
-            imageUrl: x.imageUrl,
-        })),
-    };
 }

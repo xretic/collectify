@@ -5,7 +5,7 @@ import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import { Avatar } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import styles from './CollectionField.module.css';
+import styles from './index.module.css';
 
 export default function CollectionField({
     id,

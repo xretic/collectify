@@ -7,7 +7,7 @@ import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useUser } from '@/context/UserProvider';
 import Avatar from '@mui/material/Avatar';
 import { useUIStore } from '@/stores/uiStore';
-import HoverMenu from '../HoverMenu/HoverMenu';
+import HoverMenu from '../../ui/HoverMenu';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { usePathname, useRouter } from 'next/navigation';
 import HomeIcon from '@mui/icons-material/Home';
@@ -18,7 +18,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import UserSearchBar from '../UserSearchBar/UserSearchBar';
+import UserSearchBar from '../../ui/UserSearchBar';
 import {
     Badge,
     Box,
@@ -35,7 +35,7 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import styles from './NavBar.module.css';
+import styles from './index.module.css';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import MenuIcon from '@mui/icons-material/Menu';
 

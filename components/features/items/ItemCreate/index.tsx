@@ -1,11 +1,11 @@
 'use client';
 
 import { Box, Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
-import styles from '../../app/collections/collections.module.css';
+import styles from '../../../../app/collections/collections.module.css';
 import { useCollectionCreateStore } from '@/stores/collectionCreateStore';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { ConfigProvider, Input } from 'antd';
-import { COLLECTION_ITEM_DESCRIPTION_MAX_LENGTH, COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
+import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
@@ -203,7 +203,7 @@ export function ItemCreate() {
                         onChange={(x) => setField('itemTitle', x.target.value)}
                         placeholder="Enter item title"
                         defaultValue={itemTitle}
-                        maxLength={COLLECTION_NAME_MAX_LENGTH}
+                        maxLength={ITEM_TITLE_MAX_LENGTH}
                         style={inputStyle}
                         showCount
                     />
@@ -213,7 +213,7 @@ export function ItemCreate() {
                         onChange={(x) => setField('itemDescription', x.target.value)}
                         placeholder="Add a description for your collection"
                         defaultValue={itemDescription}
-                        maxLength={COLLECTION_ITEM_DESCRIPTION_MAX_LENGTH}
+                        maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                         style={{ height: 80, resize: 'none', ...inputStyle }}
                         showCount
                     />

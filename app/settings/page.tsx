@@ -15,7 +15,7 @@ import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { useDialogStore } from '@/stores/dialogStore';
-import DeleteAccountDialog from '@/components/DeleteAccountDialog/DeleteAccountDialog';
+import DeleteAccountDialog from '@/components/features/settings/DeleteAccountDialog';
 import { useUIStore } from '@/stores/uiStore';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import CloseIcon from '@mui/icons-material/Close';

@@ -30,3 +30,21 @@ body {
 .ant-input-textarea-show-count .ant-input-data-count {
     color: var(--text-color) !important;
 }
+
+.MuiDialogContent-root {
+    scrollbar-width: thin;
+    scrollbar-color: var(--container-color) transparent;
+}
+
+.MuiDialogContent-root::-webkit-scrollbar {
+    width: 8px;
+}
+
+.MuiDialogContent-root::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.MuiDialogContent-root::-webkit-scrollbar-thumb {
+    background-color: var(--container-color);
+    border-radius: 8px;
+}

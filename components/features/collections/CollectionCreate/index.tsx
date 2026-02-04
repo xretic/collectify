@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Button } from '@mui/material';
-import styles from '../../app/collections/collections.module.css';
+import styles from '../../../../app/collections/collections.module.css';
 import { useCollectionCreateStore } from '@/stores/collectionCreateStore';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { ConfigProvider, Input } from 'antd';

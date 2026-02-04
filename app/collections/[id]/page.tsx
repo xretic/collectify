@@ -14,11 +14,15 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import styles from '../collections.module.css';
-import { ItemCard } from '@/components/ItemCard/ItemCard';
+import { ItemCard } from '@/components/features/items/ItemCard';
 import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableItemCard } from '@/components/SortableItemCard/SortableItemCard';
+import { SortableItemCard } from '@/components/features/items/SortableItemCard';
 import { useDebounce } from '@/lib/useDebounce';
+import AddIcon from '@mui/icons-material/Add';
+import { ItemDialog } from '@/components/features/items/ItemDialog';
+import { useDialogStore } from '@/stores/dialogStore';
+import { useCollectionStore } from '@/stores/collectionStore';
 
 export default function CollectionPage() {
     const params = useParams();
@@ -26,10 +30,11 @@ export default function CollectionPage() {
     const { user, loading } = useUser();
     const { startLoading, stopLoading } = useUIStore();
     const router = useRouter();
-    const [collection, setCollection] = useState<CollectionPropsAdditional | null>(null);
+    const { collection, setCollection } = useCollectionStore();
     const [liked, setLiked] = useState(false);
     const [favorited, setFavorited] = useState(false);
     const [pendingOrder, setPendingOrder] = useState<{ id: number; order: number }[] | null>(null);
+    const { setOpen } = useDialogStore();
     const debouncedOrder = useDebounce(pendingOrder, 800);
 
     const loadCollectionData = async (action?: 'like' | 'dislike' | 'favorite' | 'unfavorite') => {
@@ -79,7 +84,6 @@ export default function CollectionPage() {
     };
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
-
     const isOwner = user && collection && user.id === collection.authorId;
 
     const handleDragEnd = ({ active, over }: any) => {
@@ -241,7 +245,15 @@ export default function CollectionPage() {
                         ))}
                     </SortableContext>
                 </DndContext>
+
+                {isOwner && (
+                    <button onClick={() => setOpen(true)} className={styles.addItem}>
+                        <AddIcon sx={{ width: 25, height: 25 }} />
+                    </button>
+                )}
             </div>
+
+            <ItemDialog />
         </>
     ) : null;
 }

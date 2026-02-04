@@ -5,11 +5,11 @@ import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
 import { Avatar, Button } from '@mui/material';
 import { Suspense, useEffect, useState } from 'react';
-import CollectionSearchBar from '@/components/CollectionSearchBar/CollectionSearchBar';
+import CollectionSearchBar from '@/components/features/collections/CollectionSearchBar';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import { usePaginationStore } from '@/stores/paginationStore';
-import CollectionsWrapper from '@/components/CollectionsWrapper/CollectionsWrapper';
-import SortBy from '@/components/SortBy/SortBy';
+import CollectionsWrapper from '@/components/features/collections/CollectionsWrapper';
+import SortBy from '@/components/ui/SortBy';
 import styles from './home.module.css';
 
 export default function HomePage() {

@@ -8,7 +8,7 @@ import { NotificationInResponse } from '@/types/NotificationInResponse';
 import { useUIStore } from '@/stores/uiStore';
 import { useUser } from '@/context/UserProvider';
 import { useDebounce } from '@/lib/useDebounce';
-import Notification from '@/components/Notification/Notification';
+import Notification from '@/components/ui/Notification';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { Typography } from '@mui/material';
 

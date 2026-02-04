@@ -21,7 +21,9 @@ function createRule(path: string, methods: string[]): RouteRule {
 }
 
 const protectedRoutes: RouteRule[] = [
-    createRule('/api/collections/:id', ['PATCH']),
+    createRule('/api/collections/:id/action', ['PATCH']),
+    createRule('/api/collections/:id/items', ['POST']),
+    createRule('/api/collections/:id/order', ['PATCH']),
     createRule('/api/collections', ['POST']),
     createRule('/api/users/search/:query', ['GET']),
     createRule('/api/users/auth', ['PATCH']),

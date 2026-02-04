@@ -31,11 +31,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                 id: collectionId,
                 userId: session.user.id,
             },
-            select: { id: true },
         });
 
         if (!collection) {
             return NextResponse.json({ message: 'Collection not found.' }, { status: 404 });
+        }
+
+        if (session.userId !== collection.userId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
         }
 
         let body: Body;

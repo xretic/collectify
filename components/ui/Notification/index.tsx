@@ -1,6 +1,6 @@
 import { NotificationType } from '@/generated/prisma/enums';
 import { Avatar, Badge, Box } from '@mui/material';
-import styles from './Notification.module.css';
+import styles from './index.module.css';
 import { NOTIFICATION_TEXTS } from '@/lib/constans';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';

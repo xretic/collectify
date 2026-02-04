@@ -199,6 +199,23 @@
     padding: 0 10px;
 }
 
+.addItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 89;
+    color: var(--text-color);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px dashed var(--border-color);
+}
+
+.addItem:hover {
+    border: 1px dashed var(--accent);
+    color: var(--accent);
+    cursor: pointer;
+}
+
 @media (max-width: 700px) {
     .title,
     .author,

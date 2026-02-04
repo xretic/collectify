@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
 import { useUIStore } from '@/stores/uiStore';
 import { useDebounce } from '@/lib/useDebounce';
-import styles from './UserSearchBar.module.css';
+import styles from './index.module.css';
 
 interface User {
     id: number;
