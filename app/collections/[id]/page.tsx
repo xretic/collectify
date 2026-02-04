@@ -15,6 +15,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import styles from '../collections.module.css';
 import { ItemCard } from '@/components/ItemCard/ItemCard';
+import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableItemCard } from '@/components/SortableItemCard/SortableItemCard';
+import { useDebounce } from '@/lib/useDebounce';
 
 export default function CollectionPage() {
     const params = useParams();
@@ -25,13 +29,15 @@ export default function CollectionPage() {
     const [collection, setCollection] = useState<CollectionPropsAdditional | null>(null);
     const [liked, setLiked] = useState(false);
     const [favorited, setFavorited] = useState(false);
+    const [pendingOrder, setPendingOrder] = useState<{ id: number; order: number }[] | null>(null);
+    const debouncedOrder = useDebounce(pendingOrder, 800);
 
     const loadCollectionData = async (action?: 'like' | 'dislike' | 'favorite' | 'unfavorite') => {
         startLoading();
 
         const url = action
-            ? `/api/collections/${id}?actionType=${action}`
-            : `/api/collections/${id}`;
+            ? `/api/collections/${id}/action?actionType=${action}`
+            : `/api/collections/${id}/action`;
 
         const response = await fetch(url, {
             method: action ? 'PATCH' : 'GET',
@@ -71,6 +77,48 @@ export default function CollectionPage() {
             setFavorited(favorited);
         }
     };
+
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+
+    const isOwner = user && collection && user.id === collection.authorId;
+
+    const handleDragEnd = ({ active, over }: any) => {
+        if (!over || active.id === over.id) return;
+
+        setCollection((prev) => {
+            if (!prev) return prev;
+
+            const oldIndex = prev.items.findIndex((it) => it.id === active.id);
+            const newIndex = prev.items.findIndex((it) => it.id === over.id);
+            if (oldIndex === -1 || newIndex === -1) return prev;
+
+            const moved = arrayMove(prev.items, oldIndex, newIndex);
+            const next = moved.map((it, idx) => ({ ...it, order: idx }));
+
+            const nextPayload = next.map((it) => ({ id: it.id, order: it.order }));
+            setPendingOrder(nextPayload);
+
+            return { ...prev, items: next };
+        });
+    };
+
+    useEffect(() => {
+        if (!debouncedOrder) return;
+        if (!collection) return;
+
+        if (!isOwner) return;
+
+        const save = async () => {
+            await fetch(`/api/collections/${id}/order`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ items: debouncedOrder }),
+            });
+        };
+
+        save().catch(console.error);
+    }, [debouncedOrder, id, collection]);
 
     useEffect(() => {
         loadCollectionData();
@@ -166,15 +214,33 @@ export default function CollectionPage() {
             </div>
 
             <div className={styles.itemsGrid}>
-                {collection.items.map((x, i) => (
-                    <ItemCard
-                        key={i}
-                        title={x.title}
-                        description={x.description}
-                        sourceUrl={x.sourceUrl}
-                        imageUrl={x.imageUrl}
-                    />
-                ))}
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                >
+                    <SortableContext
+                        items={collection.items.map((it) => it.id)}
+                        strategy={rectSortingStrategy}
+                    >
+                        {collection.items.map((x) => (
+                            <SortableItemCard key={x.id} id={x.id} disabled={!isOwner}>
+                                {({ setNodeRef, style, attributes, listeners }) => (
+                                    <div ref={setNodeRef} style={style} {...attributes}>
+                                        <ItemCard
+                                            title={x.title}
+                                            description={x.description}
+                                            sourceUrl={x.sourceUrl}
+                                            imageUrl={x.imageUrl}
+                                            draggable={!!isOwner}
+                                            dragHandleProps={listeners}
+                                        />
+                                    </div>
+                                )}
+                            </SortableItemCard>
+                        ))}
+                    </SortableContext>
+                </DndContext>
             </div>
         </>
     ) : null;

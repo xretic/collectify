@@ -59,12 +59,10 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        console.log({
-            collectionId: collection.id,
-            title: itemTitle,
-            description: itemDescription,
-            ...(itemSourceUrl && { sourceUrl: itemSourceUrl }),
-            ...(itemImage && { imageUrl: itemImage }),
+        const itemsCount = await prisma.item.count({
+            where: {
+                collectionId: collection.id,
+            },
         });
 
         await prisma.item.create({
@@ -72,6 +70,7 @@ export async function POST(req: NextRequest) {
                 collectionId: collection.id,
                 title: itemTitle,
                 description: itemDescription,
+                order: itemsCount,
                 ...(itemSourceUrl && { sourceUrl: itemSourceUrl }),
                 ...(itemImage && { imageUrl: itemImage }),
             },

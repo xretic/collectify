@@ -22,6 +22,7 @@ function createRule(path: string, methods: string[]): RouteRule {
 
 const protectedRoutes: RouteRule[] = [
     createRule('/api/collections/:id', ['PATCH']),
+    createRule('/api/collections', ['POST']),
     createRule('/api/users/search/:query', ['GET']),
     createRule('/api/users/auth', ['PATCH']),
     createRule('/api/users', ['DELETE', 'PATCH']),
@@ -36,7 +37,7 @@ function isProtected(pathname: string, method: string): boolean {
     );
 }
 
-const publicPages: RegExp[] = [/^\/$/, compilePath('/users/:id'), compilePath('/collections/:id')];
+const publicPages: RegExp[] = [/^\/$/, /^\/users\/[^/]+$/, /^\/collections\/(?!create$)[^/]+$/];
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;

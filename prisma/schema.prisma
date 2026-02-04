@@ -88,7 +88,10 @@ model Item {
     collectionId Int?
     imageUrl     String?
     sourceUrl    String?
+    order        Int
     Collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+    @@index([collectionId, order])
 }
 
 enum NotificationType {

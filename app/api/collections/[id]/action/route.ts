@@ -1,4 +1,4 @@
-import { Collection, Follow, NotificationType } from '@/generated/prisma/client';
+import { Collection, NotificationType } from '@/generated/prisma/client';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { upsertNotification } from '@/helpers/upsertNotification';
 import { prisma } from '@/lib/prisma';
@@ -26,6 +26,15 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     if (!collection || !collection.User) {
         return NextResponse.json({ data: null }, { status: 404 });
     }
+
+    const items = await prisma.item.findMany({
+        where: {
+            collectionId: collection.id,
+        },
+        orderBy: {
+            order: 'asc',
+        },
+    });
 
     const resData = getResData(collection);
 
@@ -205,6 +214,7 @@ function getResData(
         })),
 
         items: collection.items.map((x) => ({
+            id: x.id,
             title: x.title,
             description: x.description,
             sourceUrl: x.sourceUrl,
