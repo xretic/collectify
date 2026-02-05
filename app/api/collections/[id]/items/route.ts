@@ -1,5 +1,3 @@
-export const runtime = 'nodejs';
-
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { isValidUrl } from '@/helpers/isValidUrl';
