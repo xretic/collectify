@@ -27,6 +27,7 @@ export function ItemCreate() {
     } = useCollectionCreateStore();
 
     const [errorMessage, setErrorMessage] = useState('');
+    const [disabled, setDisabled] = useState(false);
     const { refreshUser } = useUser();
     const router = useRouter();
 
@@ -36,6 +37,8 @@ export function ItemCreate() {
     };
 
     const handleCreate = async () => {
+        setDisabled(true);
+
         if (itemSourceUrl && !isValidUrl(itemSourceUrl)) {
             setErrorMessage('Source URL must be either a URL or empty.');
             return;
@@ -66,6 +69,8 @@ export function ItemCreate() {
 
         router.replace('/collections/' + data.id);
         await refreshUser();
+
+        setDisabled(false);
     };
 
     const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
@@ -157,7 +162,7 @@ export function ItemCreate() {
                     <Button
                         onClick={handleCreate}
                         variant="contained"
-                        disabled={[itemTitle, itemDescription].some((x) => x === '')}
+                        disabled={disabled || [itemTitle, itemDescription].some((x) => x === '')}
                         sx={{ borderRadius: 3, height: 35, textTransform: 'none' }}
                     >
                         Create

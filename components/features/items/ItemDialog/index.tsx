@@ -30,6 +30,7 @@ export function ItemDialog() {
     });
     const { collection, setCollection } = useCollectionStore();
     const [errorMessage, setErrorMessage] = useState('');
+    const [disabled, setDisabled] = useState(false);
 
     const buttonsStyle: SxProps<Theme> = {
         borderRadius: 6,
@@ -46,6 +47,8 @@ export function ItemDialog() {
     };
 
     const handleSubmit = async () => {
+        setDisabled(true);
+
         const res = await fetch('/api/collections/' + collection?.id + '/items', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -66,6 +69,7 @@ export function ItemDialog() {
         setState({ title: '', description: '', sourceUrl: '' });
         handleClose();
         setCollection(data.data);
+        setDisabled(false);
     };
 
     const handleSnackClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
@@ -177,6 +181,7 @@ export function ItemDialog() {
                     onClick={handleSubmit}
                     variant="contained"
                     disabled={
+                        disabled ||
                         state.title === '' ||
                         state.description === '' ||
                         (state.sourceUrl !== '' && !isValidUrl(state.sourceUrl))
