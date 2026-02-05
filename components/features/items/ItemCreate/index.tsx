@@ -16,7 +16,6 @@ import { useUser } from '@/context/UserProvider';
 export function ItemCreate() {
     const {
         name,
-        itemImage,
         itemTitle,
         itemDescription,
         itemSourceUrl,
@@ -36,33 +35,6 @@ export function ItemCreate() {
         color: 'var(--text-color)',
     };
 
-    const waitForUploadcare = (): Promise<any> =>
-        new Promise((resolve, reject) => {
-            let attempts = 0;
-            const interval = setInterval(() => {
-                if ((window as any).uploadcare) {
-                    clearInterval(interval);
-                    resolve((window as any).uploadcare);
-                } else if (++attempts >= 10) {
-                    clearInterval(interval);
-                    reject(new Error('Uploadcare failed to load.'));
-                }
-            }, 10);
-        });
-
-    const handleUpload = async (setUrl: (url: string) => void) => {
-        try {
-            const uploadcare = await waitForUploadcare();
-            uploadcare
-                .openDialog(null, { imagesOnly: true, multiple: false, crop: 'free' })
-                .done((file: any) => {
-                    file.done((info: any) => setUrl(info.cdnUrl));
-                });
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
     const handleCreate = async () => {
         if (itemSourceUrl && !isValidUrl(itemSourceUrl)) {
             setErrorMessage('Source URL must be either a URL or empty.');
@@ -79,7 +51,6 @@ export function ItemCreate() {
                 banner,
                 itemTitle,
                 itemDescription,
-                itemImage: itemImage === '' ? null : itemImage,
                 itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
             }),
         });
@@ -131,43 +102,6 @@ export function ItemCreate() {
             </header>
 
             <div className={styles.createContainer}>
-                <p className={styles.column}>Item Image (optional)</p>
-                <Box
-                    onClick={() => handleUpload((url) => setField('itemImage', url))}
-                    sx={{
-                        border: '2px dashed var(--text-color)',
-                        borderRadius: 2,
-                        height: 220,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        transition: '0.2s',
-                        marginBottom: 3,
-
-                        '&:hover': {
-                            borderColor: 'var(--accent)',
-                            backgroundColor: 'rgba(99,102,241,0.04)',
-                        },
-                    }}
-                >
-                    {itemImage ? (
-                        <div className={styles.bannerWrapper}>
-                            <img className={styles.banner} src={itemImage} alt="cover" />
-                        </div>
-                    ) : (
-                        <>
-                            <AddPhotoAlternateOutlinedIcon
-                                sx={{ fontSize: 40, color: '#98A2B3', mb: 1 }}
-                            />
-
-                            <p className={styles.clickToUpload}>Click to upload cover image</p>
-                            <p className={styles.secondary}>PNG, JPG up to 10MB</p>
-                        </>
-                    )}
-                </Box>
-
                 <ConfigProvider
                     theme={{
                         token: {

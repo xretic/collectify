@@ -34,16 +34,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'Bad request.' }, { status: 400 });
         }
 
-        const {
-            name,
-            description,
-            category,
-            banner,
-            itemImage,
-            itemTitle,
-            itemDescription,
-            itemSourceUrl,
-        } = requestData;
+        const { name, description, category, banner, itemTitle, itemDescription, itemSourceUrl } =
+            requestData;
 
         if (
             [name, description, category, itemTitle, itemDescription, banner].some(
@@ -115,7 +107,6 @@ export async function POST(req: NextRequest) {
                 description: itemDescription,
                 order: itemsCount,
                 ...(itemSourceUrl && { sourceUrl: itemSourceUrl }),
-                ...(itemImage && { imageUrl: itemImage }),
             },
         });
 

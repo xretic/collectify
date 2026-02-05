@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             return NextResponse.json({ message: 'Bad request.' }, { status: 400 });
         }
 
-        const { title, description, sourceUrl, imageUrl } = requestData;
+        const { title, description, sourceUrl } = requestData;
 
         if ([title, description].some((x) => typeof x !== 'string' || x.trim().length === 0)) {
             return NextResponse.json(
@@ -95,7 +95,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 description,
                 order: itemsCount,
                 ...(sourceUrl && { sourceUrl }),
-                ...(imageUrl && { imageUrl }),
             },
         });
 

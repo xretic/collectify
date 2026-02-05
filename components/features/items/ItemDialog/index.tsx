@@ -9,18 +9,15 @@ import { ConfigProvider, Input } from 'antd';
 import styles from './index.module.css';
 import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
 import TextArea from 'antd/es/input/TextArea';
-import { Box, IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import { IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
 import React, { useState } from 'react';
 import { isValidUrl } from '@/helpers/isValidUrl';
-import { useRouter } from 'next/navigation';
 import { useCollectionStore } from '@/stores/collectionStore';
 import CloseIcon from '@mui/icons-material/Close';
 
 type State = {
     title: string;
     description: string;
-    imageUrl: string;
     sourceUrl: string;
 };
 
@@ -29,7 +26,6 @@ export function ItemDialog() {
     const [state, setState] = useState<State>({
         title: '',
         description: '',
-        imageUrl: '',
         sourceUrl: '',
     });
     const { collection, setCollection } = useCollectionStore();
@@ -57,7 +53,6 @@ export function ItemDialog() {
                 title: state.title,
                 description: state.description,
                 sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
-                imageUrl: state.imageUrl === '' ? null : state.imageUrl,
             }),
         });
 
@@ -68,36 +63,9 @@ export function ItemDialog() {
             return;
         }
 
-        setState({ title: '', description: '', imageUrl: '', sourceUrl: '' });
+        setState({ title: '', description: '', sourceUrl: '' });
         handleClose();
         setCollection(data.data);
-    };
-
-    const waitForUploadcare = (): Promise<any> =>
-        new Promise((resolve, reject) => {
-            let attempts = 0;
-            const interval = setInterval(() => {
-                if ((window as any).uploadcare) {
-                    clearInterval(interval);
-                    resolve((window as any).uploadcare);
-                } else if (++attempts >= 10) {
-                    clearInterval(interval);
-                    reject(new Error('Uploadcare failed to load.'));
-                }
-            }, 10);
-        });
-
-    const handleUpload = async (setUrl: (url: string) => void) => {
-        try {
-            const uploadcare = await waitForUploadcare();
-            uploadcare
-                .openDialog(null, { imagesOnly: true, multiple: false, crop: 'free' })
-                .done((file: any) => {
-                    file.done((info: any) => setUrl(info.cdnUrl));
-                });
-        } catch (err) {
-            console.error(err);
-        }
     };
 
     const handleSnackClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
@@ -159,43 +127,6 @@ export function ItemDialog() {
                         },
                     }}
                 >
-                    <p className={styles.paragraph}>Cover image (optional)</p>
-                    <Box
-                        onClick={() => handleUpload((url) => updateState('imageUrl', url))}
-                        sx={{
-                            border: '2px dashed var(--text-color)',
-                            borderRadius: 2,
-                            height: 220,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            transition: '0.2s',
-                            marginBottom: 3,
-
-                            '&:hover': {
-                                borderColor: 'var(--accent)',
-                                backgroundColor: 'rgba(99,102,241,0.04)',
-                            },
-                        }}
-                    >
-                        {state.imageUrl ? (
-                            <div className={styles.bannerWrapper}>
-                                <img className={styles.banner} src={state.imageUrl} alt="cover" />
-                            </div>
-                        ) : (
-                            <>
-                                <AddPhotoAlternateOutlinedIcon
-                                    sx={{ fontSize: 40, color: '#98A2B3', mb: 1 }}
-                                />
-
-                                <p className={styles.clickToUpload}>Click to upload cover image</p>
-                                <p className={styles.secondary}>PNG, JPG up to 10MB</p>
-                            </>
-                        )}
-                    </Box>
-
                     <p className={styles.paragraph}>Source URL (optional)</p>
                     <Input
                         onChange={(e) => updateState('sourceUrl', e.target.value)}

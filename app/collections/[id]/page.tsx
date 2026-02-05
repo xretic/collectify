@@ -164,8 +164,6 @@ export default function CollectionPage() {
                     </Avatar>
                     <span>{collection.author}</span>
                 </Link>
-
-                <div>{collection.items.length}</div>
             </div>
             <div className={styles['description-container']}>
                 <h1 className={styles['header']}>Description</h1>
@@ -235,7 +233,6 @@ export default function CollectionPage() {
                                             title={x.title}
                                             description={x.description}
                                             sourceUrl={x.sourceUrl}
-                                            imageUrl={x.imageUrl}
                                             draggable={!!isOwner}
                                             dragHandleProps={listeners}
                                         />

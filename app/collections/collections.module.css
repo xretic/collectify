@@ -77,6 +77,8 @@
 .description {
     font-size: 14px;
     color: var(--soft-text);
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .actions {

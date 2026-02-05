@@ -24,7 +24,6 @@ export function getResData(
             collectionId: number | null;
             title: string;
             sourceUrl: string | null;
-            imageUrl: string | null;
         }[];
         User: {
             id: number;
@@ -62,7 +61,6 @@ export function getResData(
             title: x.title,
             description: x.description,
             sourceUrl: x.sourceUrl,
-            imageUrl: x.imageUrl,
         })),
     };
 }

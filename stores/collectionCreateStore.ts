@@ -6,7 +6,6 @@ interface CollectionCreateState {
     category: string;
     banner: string;
     step: number;
-    itemImage: string;
     itemTitle: string;
     itemDescription: string;
     itemSourceUrl: string;
@@ -25,7 +24,6 @@ const initialState = {
     category: '',
     banner: '',
     step: 0,
-    itemImage: '',
     itemTitle: '',
     itemDescription: '',
     itemSourceUrl: '',
