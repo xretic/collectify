@@ -38,7 +38,7 @@ Collectify is a full-stack web application for creating, managing, and sharing c
 
 ![Collection Page](docs/screenshots/1-collection-page.png)
 
-### Notifications
+### Collection Create
 
 ![Collection Create](docs/screenshots/4-create-collection.png)
 
