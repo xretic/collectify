@@ -3,6 +3,7 @@ import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
+import { redis } from '@/lib/redis';
 import { CollectionFieldProps } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -107,6 +108,24 @@ export async function GET(req: NextRequest) {
         }
 
         const collections: CollectionFieldProps[] = [];
+        const cacheRequired = !userId && !favoritesUserId;
+
+        const paramsForKey = {
+            category,
+            userId,
+            sortedBy,
+            skip: String(skip),
+            query,
+            authorId: String(authorId || ''),
+            favoritesUserId: String(favoritesUserId || ''),
+        };
+
+        const key = `collections:${JSON.stringify(paramsForKey)}`;
+
+        if (cacheRequired) {
+            const cached = await redis.getJson<{ data: CollectionFieldProps[] }>(key);
+            if (cached) return NextResponse.json(cached, { status: 200 });
+        }
 
         if (userId) {
             const user = await prisma.user.findUnique({
@@ -166,6 +185,11 @@ export async function GET(req: NextRequest) {
             });
 
             collections.push(...publicCollections.map(mapCollection));
+        }
+
+        if (cacheRequired) {
+            const payload = { data: collections };
+            await redis.setJson(key, payload, { ex: 30 });
         }
 
         return NextResponse.json({ data: collections }, { status: 200 });

@@ -14,6 +14,7 @@ declare global {
             GITHUB_CLIENT_SECRET: string;
 
             NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY: string;
+            REDIS_URL: string;
         }
     }
 }
