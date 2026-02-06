@@ -2,8 +2,7 @@
 
 import { useUser } from '@/context/UserProvider';
 import { useUIStore } from '@/stores/uiStore';
-import { CollectionPropsAdditional } from '@/types/CollectionField';
-import { Avatar } from '@mui/material';
+import { Avatar, IconButton } from '@mui/material';
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,6 +22,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { ItemDialog } from '@/components/features/items/ItemDialog';
 import { useDialogStore } from '@/stores/dialogStore';
 import { useCollectionStore } from '@/stores/collectionStore';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { CollectionDeleteDialog } from '@/components/features/collections/CollectionDeleteDialog';
+import { useDeleteDialogStore } from '@/stores/deleteDialogStore';
 
 export default function CollectionPage() {
     const params = useParams();
@@ -35,6 +37,7 @@ export default function CollectionPage() {
     const [favorited, setFavorited] = useState(false);
     const [pendingOrder, setPendingOrder] = useState<{ id: number; order: number }[] | null>(null);
     const { setOpen } = useDialogStore();
+    const { setOpenDialog } = useDeleteDialogStore();
     const debouncedOrder = useDebounce(pendingOrder, 800);
 
     const loadCollectionData = async (action?: 'like' | 'dislike' | 'favorite' | 'unfavorite') => {
@@ -166,7 +169,15 @@ export default function CollectionPage() {
                 </Link>
             </div>
             <div className={styles['description-container']}>
-                <h1 className={styles['header']}>Description</h1>
+                <h1 className={styles['header']}>
+                    <span>Description</span>
+
+                    {user?.id === collection.authorId && (
+                        <IconButton onClick={() => setOpenDialog(true)} color="error">
+                            <DeleteOutlineOutlinedIcon />
+                        </IconButton>
+                    )}
+                </h1>
                 <span className={styles['description']}>{collection.description}</span>
 
                 <div className={styles['actions']}>
@@ -251,6 +262,7 @@ export default function CollectionPage() {
             </div>
 
             <ItemDialog />
+            <CollectionDeleteDialog />
         </>
     ) : null;
 }

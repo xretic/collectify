@@ -72,6 +72,9 @@
     font-weight: 500;
     color: var(--text-color);
     margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .description {
