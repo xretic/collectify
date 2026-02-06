@@ -14,11 +14,6 @@ const useUpstash = !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH
 
 let redis: RedisKV;
 
-console.log('UPSTASH URL exists?', !!process.env.UPSTASH_REDIS_REST_URL);
-console.log('UPSTASH TOKEN exists?', !!process.env.UPSTASH_REDIS_REST_TOKEN);
-console.log('REDIS_URL exists?', !!process.env.REDIS_URL);
-console.log('NODE_ENV', process.env.NODE_ENV);
-
 if (useUpstash) {
     const upstash = new UpstashRedis({
         url: process.env.UPSTASH_REDIS_REST_URL!,
