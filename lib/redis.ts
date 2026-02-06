@@ -10,11 +10,16 @@ export type RedisKV = {
     setJson(key: string, value: unknown, opts?: { ex?: number }): Promise<void>;
 };
 
-const isProd = process.env.NODE_ENV === 'production';
+const useUpstash = !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN;
 
 let redis: RedisKV;
 
-if (isProd) {
+console.log('UPSTASH URL exists?', !!process.env.UPSTASH_REDIS_REST_URL);
+console.log('UPSTASH TOKEN exists?', !!process.env.UPSTASH_REDIS_REST_TOKEN);
+console.log('REDIS_URL exists?', !!process.env.REDIS_URL);
+console.log('NODE_ENV', process.env.NODE_ENV);
+
+if (useUpstash) {
     const upstash = new UpstashRedis({
         url: process.env.UPSTASH_REDIS_REST_URL!,
         token: process.env.UPSTASH_REDIS_REST_TOKEN!,
