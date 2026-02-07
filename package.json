@@ -22,7 +22,6 @@
     "@prisma/adapter-ppg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "@prisma/extension-accelerate": "^3.0.1",
-    "@shadcn/ui": "^0.0.4",
     "@types/bcrypt": "^6.0.0",
     "@upstash/redis": "^1.36.2",
     "antd": "^6.2.0",
