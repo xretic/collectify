@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useCollectionStore } from '@/stores/collectionStore';
 import { SxProps } from '@mui/material';
 import { Theme } from '@mui/system';
-import { useDeleteDialogStore } from '@/stores/deleteDialogStore';
+import { useDeleteDialogStore } from '@/stores/dialogs/deleteDialogStore';
 import { useRouter } from 'next/navigation';
 
 export function CollectionDeleteDialog() {

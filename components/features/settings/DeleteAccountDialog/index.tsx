@@ -1,6 +1,6 @@
 'use client';
 
-import { useDialogStore } from '@/stores/dialogStore';
+import { useDialogStore } from '@/stores/dialogs/dialogStore';
 import {
     Dialog,
     DialogContent,

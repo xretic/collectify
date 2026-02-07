@@ -92,6 +92,29 @@
     font-weight: 500;
 }
 
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navIcon svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.8;
+}
+
+.navText {
+    line-height: 1;
+    white-space: nowrap;
+}
+
 @media (max-width: 1200px) {
     .nav-right .nav-right-username {
         display: none;

@@ -20,11 +20,14 @@ import { SortableItemCard } from '@/components/features/items/SortableItemCard';
 import { useDebounce } from '@/lib/useDebounce';
 import AddIcon from '@mui/icons-material/Add';
 import { ItemDialog } from '@/components/features/items/ItemDialog';
-import { useDialogStore } from '@/stores/dialogStore';
+import { useDialogStore } from '@/stores/dialogs/dialogStore';
 import { useCollectionStore } from '@/stores/collectionStore';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { CollectionDeleteDialog } from '@/components/features/collections/CollectionDeleteDialog';
-import { useDeleteDialogStore } from '@/stores/deleteDialogStore';
+import { useDeleteDialogStore } from '@/stores/dialogs/deleteDialogStore';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { CollectionEditingDialog } from '@/components/features/collections/CollectionEditingDialog';
+import { useEditingDialogStore } from '@/stores/dialogs/editCollectionDialogStore';
 
 export default function CollectionPage() {
     const params = useParams();
@@ -38,6 +41,7 @@ export default function CollectionPage() {
     const [pendingOrder, setPendingOrder] = useState<{ id: number; order: number }[] | null>(null);
     const { setOpen } = useDialogStore();
     const { setOpenDialog } = useDeleteDialogStore();
+    const { setOpenEditing } = useEditingDialogStore();
     const debouncedOrder = useDebounce(pendingOrder, 800);
 
     const loadCollectionData = async (action?: 'like' | 'dislike' | 'favorite' | 'unfavorite') => {
@@ -171,13 +175,22 @@ export default function CollectionPage() {
             <div className={styles['description-container']}>
                 <h1 className={styles['header']}>
                     <span>Description</span>
-
                     {user?.id === collection.authorId && (
-                        <IconButton onClick={() => setOpenDialog(true)} color="error">
-                            <DeleteOutlineOutlinedIcon />
-                        </IconButton>
+                        <div>
+                            <IconButton onClick={() => setOpenDialog(true)} color="error">
+                                <DeleteOutlineOutlinedIcon />
+                            </IconButton>
+
+                            <IconButton
+                                onClick={() => setOpenEditing(true)}
+                                sx={{ color: 'var(--text-color)' }}
+                            >
+                                <EditOutlinedIcon />
+                            </IconButton>
+                        </div>
                     )}
                 </h1>
+
                 <span className={styles['description']}>{collection.description}</span>
 
                 <div className={styles['actions']}>
@@ -263,6 +276,7 @@ export default function CollectionPage() {
 
             <ItemDialog />
             <CollectionDeleteDialog />
+            <CollectionEditingDialog />
         </>
     ) : null;
 }

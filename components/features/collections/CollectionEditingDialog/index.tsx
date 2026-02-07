@@ -4,29 +4,29 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useDialogStore } from '@/stores/dialogs/dialogStore';
 import { ConfigProvider, Input } from 'antd';
 import styles from './index.module.css';
 import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
 import TextArea from 'antd/es/input/TextArea';
-import { IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
-import React, { useState } from 'react';
-import { isValidUrl } from '@/helpers/isValidUrl';
+import { Box, IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useCollectionStore } from '@/stores/collectionStore';
 import CloseIcon from '@mui/icons-material/Close';
+import { useEditingDialogStore } from '@/stores/dialogs/editCollectionDialogStore';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 
 type State = {
     title: string;
     description: string;
-    sourceUrl: string;
+    bannerUrl: string;
 };
 
-export function ItemDialog() {
-    const { open, setOpen } = useDialogStore();
+export function CollectionEditingDialog() {
+    const { open, setOpenEditing } = useEditingDialogStore();
     const [state, setState] = useState<State>({
         title: '',
         description: '',
-        sourceUrl: '',
+        bannerUrl: '',
     });
     const { collection, setCollection } = useCollectionStore();
     const [errorMessage, setErrorMessage] = useState('');
@@ -42,20 +42,30 @@ export function ItemDialog() {
         setState((prev) => ({ ...prev, [key]: value }));
     };
 
+    const resetState = () => setState({ title: '', description: '', bannerUrl: '' });
+
     const handleClose = () => {
-        setOpen(false);
+        setOpenEditing(false);
+
+        if (!collection) return;
+
+        setState({
+            title: collection.name,
+            description: collection.description,
+            bannerUrl: collection.bannerUrl,
+        });
     };
 
     const handleSubmit = async () => {
         setDisabled(true);
 
-        const res = await fetch('/api/collections/' + collection?.id + '/items', {
-            method: 'POST',
+        const res = await fetch('/api/collections/' + collection?.id + '/edit', {
+            method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 title: state.title,
                 description: state.description,
-                sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
+                bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
             }),
         });
 
@@ -66,7 +76,7 @@ export function ItemDialog() {
             return;
         }
 
-        setState({ title: '', description: '', sourceUrl: '' });
+        resetState();
         handleClose();
         setCollection(data.data);
         setDisabled(false);
@@ -79,6 +89,43 @@ export function ItemDialog() {
 
         setErrorMessage('');
     };
+
+    const waitForUploadcare = (): Promise<any> =>
+        new Promise((resolve, reject) => {
+            let attempts = 0;
+            const interval = setInterval(() => {
+                if ((window as any).uploadcare) {
+                    clearInterval(interval);
+                    resolve((window as any).uploadcare);
+                } else if (++attempts >= 10) {
+                    clearInterval(interval);
+                    reject(new Error('Uploadcare failed to load.'));
+                }
+            }, 10);
+        });
+
+    const handleUpload = async (setUrl: (url: string) => void) => {
+        try {
+            const uploadcare = await waitForUploadcare();
+            uploadcare
+                .openDialog(null, { imagesOnly: true, multiple: false, crop: 'free' })
+                .done((file: any) => {
+                    file.done((info: any) => setUrl(info.cdnUrl));
+                });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        if (!collection) return;
+
+        setState({
+            title: collection.name,
+            description: collection.description,
+            bannerUrl: collection.bannerUrl,
+        });
+    }, [collection]);
 
     const action = (
         <React.Fragment>
@@ -111,7 +158,7 @@ export function ItemDialog() {
             />
 
             <DialogTitle className={styles.title} sx={{ color: 'var(--text-color)' }}>
-                Add item
+                Edit collection
             </DialogTitle>
 
             <DialogContent>
@@ -119,8 +166,8 @@ export function ItemDialog() {
                     className={styles.description}
                     sx={{ color: 'var(--soft-text)' }}
                 >
-                    Add a new item to your collection. Fill in the required fields and save to keep
-                    everything organized.
+                    Update your collection details below. Changes will be saved immediately and
+                    visible to other users.
                 </DialogContentText>
 
                 <ConfigProvider
@@ -131,17 +178,43 @@ export function ItemDialog() {
                         },
                     }}
                 >
-                    <p className={styles.paragraph}>Source URL (optional)</p>
-                    <Input
-                        onChange={(e) => updateState('sourceUrl', e.target.value)}
-                        placeholder="Enter URL"
-                        className={styles.input}
-                        style={{
-                            backgroundColor: 'var(--container-color)',
-                            color: 'var(--text-color)',
+                    <p className={styles.paragraph}>Cover image</p>
+
+                    <Box
+                        onClick={() => handleUpload((url) => updateState('bannerUrl', url))}
+                        sx={{
+                            border: '2px dashed var(--text-color)',
+                            borderRadius: 2,
+                            height: 220,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: '0.2s',
+                            marginBottom: 3,
+
+                            '&:hover': {
+                                borderColor: 'var(--accent)',
+                                backgroundColor: 'rgba(99,102,241,0.04)',
+                            },
                         }}
-                        type="url"
-                    />
+                    >
+                        {state.bannerUrl ? (
+                            <div className={styles.bannerWrapper}>
+                                <img className={styles.banner} src={state.bannerUrl} alt="cover" />
+                            </div>
+                        ) : (
+                            <>
+                                <AddPhotoAlternateOutlinedIcon
+                                    sx={{ fontSize: 40, color: '#98A2B3', mb: 1 }}
+                                />
+
+                                <p className={styles.clickToUpload}>Click to upload cover image</p>
+                                <p className={styles.secondary}>PNG, JPG up to 10MB</p>
+                            </>
+                        )}
+                    </Box>
 
                     <p className={styles.paragraph}>Title</p>
                     <Input
@@ -152,6 +225,7 @@ export function ItemDialog() {
                             backgroundColor: 'var(--container-color)',
                             color: 'var(--text-color)',
                         }}
+                        value={state.title}
                         maxLength={ITEM_TITLE_MAX_LENGTH}
                         showCount
                     />
@@ -167,6 +241,7 @@ export function ItemDialog() {
                             height: 70,
                             resize: 'none',
                         }}
+                        value={state.description}
                         maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                         showCount
                     />
@@ -180,15 +255,10 @@ export function ItemDialog() {
                 <Button
                     onClick={handleSubmit}
                     variant="contained"
-                    disabled={
-                        disabled ||
-                        state.title === '' ||
-                        state.description === '' ||
-                        (state.sourceUrl !== '' && !isValidUrl(state.sourceUrl))
-                    }
+                    disabled={disabled || state.title === '' || state.description === ''}
                     sx={buttonsStyle}
                 >
-                    Submit
+                    Edit
                 </Button>
             </DialogActions>
         </Dialog>

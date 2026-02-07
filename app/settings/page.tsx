@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
-import { useDialogStore } from '@/stores/dialogStore';
+import { useDialogStore } from '@/stores/dialogs/dialogStore';
 import DeleteAccountDialog from '@/components/features/settings/DeleteAccountDialog';
 import { useUIStore } from '@/stores/uiStore';
 import { SessionUserInResponse } from '@/types/UserInResponse';
