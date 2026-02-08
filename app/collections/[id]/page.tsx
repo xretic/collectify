@@ -1,7 +1,6 @@
 'use client';
 
-import { useUser } from '@/context/UserProvider';
-import { useUIStore } from '@/stores/uiStore';
+import { useUser } from '@/context/UserProvider'; 
 import { Avatar, IconButton } from '@mui/material';
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
