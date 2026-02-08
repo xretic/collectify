@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Autocomplete,
     TextField,
@@ -16,6 +16,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useUIStore } from '@/stores/uiStore';
 import { useDebounce } from '@/lib/useDebounce';
 import styles from './index.module.css';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 
 interface User {
     id: number;
@@ -26,7 +28,6 @@ interface User {
 export default function UserSearchBar() {
     const router = useRouter();
     const { setSearchBarOpened } = useUIStore();
-    const [users, setUsers] = useState<User[]>([]);
     const [inputValue, setInputValue] = useState('');
     const debouncedQuery = useDebounce(inputValue, 400);
 
@@ -37,25 +38,15 @@ export default function UserSearchBar() {
             router.push(`/users/${value.id.toString()}`);
         }
     };
+    const { data } = useQuery({
+        queryKey: ['users-search', debouncedQuery],
+        enabled: !!debouncedQuery,
+        staleTime: 60_000,
+        refetchOnWindowFocus: false,
+        queryFn: () => api.get(`api/users/search/${debouncedQuery}`).json<{ users: User[] }>(),
+    });
 
-    useEffect(() => {
-        const loadUsers = async () => {
-            if (!debouncedQuery) {
-                setUsers([]);
-                return;
-            }
-
-            const res = await fetch('/api/users/search/' + debouncedQuery, {
-                method: 'GET',
-                credentials: 'include',
-            });
-
-            const data = await res.json();
-            setUsers(data.users ?? []);
-        };
-
-        loadUsers();
-    }, [debouncedQuery]);
+    const users = data?.users ?? [];
 
     return (
         <Autocomplete
@@ -120,7 +111,7 @@ export default function UserSearchBar() {
                     <ListItemAvatar key={option.id}>
                         <Avatar src={option.avatarUrl} alt={option.username} />
                     </ListItemAvatar>
-                    <ListItemText primary={option.username} />
+                    <ListItemText key={option.username} primary={option.username} />
                 </ListItem>
             )}
             renderInput={(params) => (

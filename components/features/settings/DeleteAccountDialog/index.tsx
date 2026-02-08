@@ -18,6 +18,7 @@ import { useUser } from '@/context/UserProvider';
 import { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { api } from '@/lib/api';
 
 interface Props {
     userProtected: boolean;
@@ -39,23 +40,20 @@ export default function DeleteAccountDialog({ userProtected }: Props) {
     const handleConfirm = async () => {
         startLoading();
 
-        const res = await fetch('/api/users/', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                password: userProtected ? password : '0',
-            }),
-        });
+        try {
+            await api.delete('api/users/', {
+                json: {
+                    password: userProtected ? password : '0',
+                },
+            });
 
-        if (res.ok) {
             await refreshUser();
-
             router.replace('/');
-        } else {
+        } catch {
             setWrongPassword(true);
+        } finally {
+            stopLoading();
         }
-
-        stopLoading();
     };
 
     return (

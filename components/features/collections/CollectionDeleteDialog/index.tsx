@@ -9,12 +9,15 @@ import { SxProps } from '@mui/material';
 import { Theme } from '@mui/system';
 import { useDeleteDialogStore } from '@/stores/dialogs/deleteDialogStore';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 
 export function CollectionDeleteDialog() {
     const { open, setOpenDialog } = useDeleteDialogStore();
     const { collection, setCollection } = useCollectionStore();
     const [disabled, setDisabled] = useState(false);
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const buttonsStyle: SxProps<Theme> = {
         borderRadius: 6,
@@ -29,17 +32,20 @@ export function CollectionDeleteDialog() {
     const handleSubmit = async () => {
         setDisabled(true);
 
-        const res = await fetch('/api/collections/' + collection?.id + '/delete', {
-            method: 'DELETE',
-        });
+        try {
+            await api.delete(`api/collections/${collection?.id}/delete`);
 
-        if (!res.ok) return;
+            setCollection(null);
+            handleClose();
 
-        setCollection(null);
-        handleClose();
-        setDisabled(false);
+            queryClient.removeQueries({
+                queryKey: ['collections-search'],
+            });
 
-        router.replace('/');
+            router.replace('/');
+        } finally {
+            setDisabled(false);
+        }
     };
 
     return (

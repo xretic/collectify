@@ -16,6 +16,8 @@ import { IconButton, Snackbar, SnackbarCloseReason, Tooltip, useMediaQuery } fro
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { githubAuth, googleAuth } from '@/lib/authMethods';
 import CloseIcon from '@mui/icons-material/Close';
+import { api } from '@/lib/api';
+import { SessionUserInResponse } from '@/types/UserInResponse';
 
 type LoginFormData = {
     email: string;
@@ -72,30 +74,26 @@ export default function LoginPage() {
     }, [user]);
 
     const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-        startLoading();
-
-        setErrorMsg('');
-
         try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-                credentials: 'include',
+            startLoading();
+            setErrorMsg('');
+
+            const response = await api.post('api/auth/login', {
+                json: data,
+                throwHttpErrors: false,
             });
 
             switch (response.status) {
-                case 200:
-                    const result = await response.json();
+                case 200: {
+                    const result = await response.json<{ user: SessionUserInResponse }>();
                     setUser(result.user);
                     router.push('/');
                     break;
-
+                }
                 case 400:
                 case 401:
                     setErrorMsg('Invalid email or password.');
                     break;
-
                 case 500:
                     setErrorMsg('Something went wrong.');
                     break;
@@ -103,7 +101,7 @@ export default function LoginPage() {
                 default:
                     setErrorMsg('Unknown error occurred.');
             }
-        } catch (err) {
+        } catch {
             setErrorMsg('Something went wrong.');
         } finally {
             stopLoading();

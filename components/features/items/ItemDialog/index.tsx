@@ -14,6 +14,8 @@ import React, { useState } from 'react';
 import { isValidUrl } from '@/helpers/isValidUrl';
 import { useCollectionStore } from '@/stores/collectionStore';
 import CloseIcon from '@mui/icons-material/Close';
+import { api } from '@/lib/api';
+import { CollectionFieldProps, CollectionPropsAdditional } from '@/types/CollectionField';
 
 type State = {
     title: string;
@@ -49,27 +51,26 @@ export function ItemDialog() {
     const handleSubmit = async () => {
         setDisabled(true);
 
-        const res = await fetch('/api/collections/' + collection?.id + '/items', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                title: state.title,
-                description: state.description,
-                sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
-            }),
-        });
+        try {
+            const data = await api
+                .post(`api/collections/${collection?.id}/items`, {
+                    json: {
+                        title: state.title,
+                        description: state.description,
+                        sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
+                    },
+                })
+                .json<{ data: CollectionPropsAdditional }>();
 
-        const data = await res.json();
-
-        if (!res.ok) {
-            setErrorMessage(data.message);
-            return;
+            setState({ title: '', description: '', sourceUrl: '' });
+            handleClose();
+            setCollection(data.data);
+        } catch (err: any) {
+            const message = err?.response?.message;
+            if (message) setErrorMessage(message);
+        } finally {
+            setDisabled(false);
         }
-
-        setState({ title: '', description: '', sourceUrl: '' });
-        handleClose();
-        setCollection(data.data);
-        setDisabled(false);
     };
 
     const handleSnackClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {

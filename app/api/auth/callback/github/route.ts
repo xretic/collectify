@@ -4,27 +4,45 @@ import { randomUUID } from 'crypto';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
+import { api } from '@/lib/api';
+import { Prisma } from '@/generated/prisma/client';
+
+interface GithubUser {
+    id: number;
+    login: string;
+    name?: string | null;
+    email?: string | null;
+    avatar_url?: string | null;
+}
+
+interface GithubEmail {
+    email: string;
+    primary: boolean;
+    verified: boolean;
+    visibility?: string | null;
+}
 
 export async function GET(req: Request) {
     try {
         const url = new URL(req.url);
         const code = url.searchParams.get('code');
+        const state = url.searchParams.get('state');
 
         if (!code) {
             return NextResponse.json({ error: 'No code provided' }, { status: 400 });
         }
 
-        const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
-            method: 'POST',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                client_id: process.env.GITHUB_CLIENT_ID,
-                client_secret: process.env.GITHUB_CLIENT_SECRET,
-                code,
-            }),
-        });
-
-        const tokenData = await tokenRes.json();
+        const tokenData = await api
+            .post('https://github.com/login/oauth/access_token', {
+                headers: { Accept: 'application/json' },
+                json: {
+                    client_id: process.env.GITHUB_CLIENT_ID,
+                    client_secret: process.env.GITHUB_CLIENT_SECRET,
+                    code,
+                    ...(state ? { state } : {}),
+                },
+            })
+            .json<{ access_token?: string; error?: string; error_description?: string }>();
 
         if (tokenData.error) {
             return NextResponse.json(
@@ -34,58 +52,79 @@ export async function GET(req: Request) {
         }
 
         const accessToken = tokenData.access_token;
+        if (!accessToken) {
+            return NextResponse.json({ error: 'No access token' }, { status: 400 });
+        }
 
-        const userRes = await fetch('https://api.github.com/user', {
-            headers: {
-                Authorization: `token ${accessToken}`,
-                Accept: 'application/json',
-            },
-        });
+        const githubUser = await api
+            .get('https://api.github.com/user', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: 'application/vnd.github+json',
+                },
+            })
+            .json<GithubUser>();
 
-        const githubUser = await userRes.json();
-
-        if (!githubUser || !githubUser.id) {
+        if (!githubUser?.id || !githubUser?.login) {
             return NextResponse.json({ error: 'Failed to fetch GitHub user' }, { status: 400 });
         }
 
-        let user = await prisma.user.findFirst({
-            where: { githubId: githubUser.id.toString() },
-        });
+        let email: string | null = githubUser.email ?? null;
 
-        if (!user && githubUser.email) {
-            user = await prisma.user.findFirst({
-                where: { email: githubUser.email },
-            });
+        if (!email) {
+            const emails = await api
+                .get('https://api.github.com/user/emails', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        Accept: 'application/vnd.github+json',
+                    },
+                })
+                .json<GithubEmail[]>();
+
+            email =
+                emails.find((e) => e.primary && e.verified)?.email ??
+                emails.find((e) => e.verified)?.email ??
+                null;
         }
 
+        const githubId = String(githubUser.id);
+
+        let user =
+            (await prisma.user.findUnique({ where: { githubId } })) ??
+            (email ? await prisma.user.findUnique({ where: { email } }) : null);
+
         if (!user) {
-            const username = githubUser.login.slice(0, USERNAME_MAX_LENGTH);
             const uniqueId = await generateUniqueUserId();
+            const base = githubUser.login.slice(0, USERNAME_MAX_LENGTH);
+            const baseUsername = isUsernameValid(base) ? base : String(uniqueId);
 
-            const notAvailable = await prisma.user.findFirst({
-                where: {
-                    username: username,
-                },
-            });
-
-            user = await prisma.user.create({
-                data: {
-                    id: uniqueId,
-                    email: githubUser.email || `github_${githubUser.id}@example.com`,
-                    username:
-                        notAvailable || !isUsernameValid(username) ? String(uniqueId) : username,
-                    fullName: githubUser.name || username,
-                    avatarUrl: githubUser.avatar_url,
-                    githubId: githubUser.id.toString(),
-                },
-            });
-        } else {
-            if (!user.githubId) {
-                user = await prisma.user.update({
-                    where: { id: user.id },
-                    data: { githubId: githubUser.id.toString(), avatarUrl: githubUser.avatar_url },
+            const createUser = async (username: string) => {
+                return prisma.user.create({
+                    data: {
+                        id: uniqueId,
+                        email: email ?? `github_${githubId}@no-email.local`,
+                        username,
+                        fullName: githubUser.name || base,
+                        avatarUrl: githubUser.avatar_url || '',
+                        githubId,
+                    },
                 });
+            };
+
+            try {
+                user = await createUser(baseUsername);
+            } catch (e: any) {
+                if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+                    user = await createUser(String(uniqueId));
+                } else {
+                    throw e;
+                }
             }
+        } else if (!user.githubId) {
+            user = await prisma.user.update({
+                where: { id: user.id },
+                data: { githubId, avatarUrl: githubUser.avatar_url || user.avatarUrl },
+            });
         }
 
         const session = await prisma.session.create({

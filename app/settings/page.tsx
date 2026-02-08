@@ -23,6 +23,7 @@ import { isUsernameValid } from '@/helpers/isUsernameValid';
 import { isPasswordValid } from '@/helpers/isPasswordValid';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import { useTheme } from '@/lib/useTheme';
+import { api } from '@/lib/api';
 
 type GlobalState = {
     fullName: string;
@@ -78,60 +79,57 @@ export default function SettingsPage() {
     const handleProfileUpdate = async () => {
         startLoading();
 
-        const response = await fetch('/api/users/', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                fullName: state.fullName,
-                username: state.username,
-                description: state.description,
-            }),
-        });
+        try {
+            const data = await api
+                .patch('api/users/', {
+                    json: {
+                        fullName: state.fullName,
+                        username: state.username,
+                        description: state.description,
+                    },
+                })
+                .json<{ user: SessionUserInResponse }>();
 
-        const responseJson = await response.json();
-        stopLoading();
-
-        if (!response.ok) {
-            setErrorMessage(responseJson.message);
+            setUser(data.user);
+        } catch (err: any) {
+            const data = await err.response.json();
+            setErrorMessage(data.message);
             return;
+        } finally {
+            stopLoading();
         }
-
-        const responseUser: SessionUserInResponse = responseJson.user;
-
-        setUser(responseUser);
     };
 
     const handlePasswordChange = async () => {
         startLoading();
+        setErrorMessage('');
 
-        const response = await fetch('/api/users/auth', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                currentPassword: privateState.currentPassword,
-                newPassword: privateState.newPassword,
-                confirmPassword: privateState.confirmPassword,
-            }),
-        });
+        try {
+            const data = await api
+                .patch('api/users/auth', {
+                    json: {
+                        currentPassword: privateState.currentPassword,
+                        newPassword: privateState.newPassword,
+                        confirmPassword: privateState.confirmPassword,
+                    },
+                })
+                .json<{ user: SessionUserInResponse }>();
 
-        const responseJson = await response.json();
-        stopLoading();
+            setPrivate((prev) => ({
+                ...prev,
+                currentPassword: '',
+                newPassword: '',
+                confirmPassword: '',
+            }));
 
-        if (!response.ok) {
-            setErrorMessage(responseJson.message);
+            setUser(data.user);
+        } catch (err: any) {
+            const data = await err.response.json();
+            setErrorMessage(data.message);
             return;
+        } finally {
+            stopLoading();
         }
-
-        const responseUser: SessionUserInResponse = responseJson.user;
-
-        setPrivate((prev) => ({
-            ...prev,
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: '',
-        }));
-
-        setUser(responseUser);
     };
 
     useEffect(() => {

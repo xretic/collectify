@@ -12,6 +12,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { isValidUrl } from '@/helpers/isValidUrl';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
+import { useQueryClient } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 
 export function ItemCreate() {
     const {
@@ -30,6 +32,7 @@ export function ItemCreate() {
     const [disabled, setDisabled] = useState(false);
     const { refreshUser } = useUser();
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const inputStyle: Record<string, string> = {
         backgroundColor: 'var(--container-color)',
@@ -41,36 +44,40 @@ export function ItemCreate() {
 
         if (itemSourceUrl && !isValidUrl(itemSourceUrl)) {
             setErrorMessage('Source URL must be either a URL or empty.');
+            setDisabled(false);
             return;
         }
 
-        const res = await fetch('/api/collections', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name,
-                description,
-                category,
-                banner,
-                itemTitle,
-                itemDescription,
-                itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
-            }),
-        });
+        try {
+            const data = await api
+                .post('api/collections', {
+                    json: {
+                        name,
+                        description,
+                        category,
+                        banner,
+                        itemTitle,
+                        itemDescription,
+                        itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
+                    },
+                })
+                .json<{ id: number }>();
 
-        const data = await res.json();
+            reset();
 
-        reset();
+            queryClient.removeQueries({
+                queryKey: ['collections-search'],
+            });
 
-        if (!res.ok) {
-            setErrorMessage(data.message);
-            return;
+            router.replace('/collections/' + data.id);
+
+            await refreshUser();
+        } catch (err: any) {
+            const message = err?.response?.message;
+            if (message) setErrorMessage(message);
+        } finally {
+            setDisabled(false);
         }
-
-        router.replace('/collections/' + data.id);
-        await refreshUser();
-
-        setDisabled(false);
     };
 
     const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {

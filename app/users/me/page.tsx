@@ -7,7 +7,7 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { ConfigProvider, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     DESCRPITION_MAX_LENGTH,
     FULLNAME_MAX_LENGTH,
@@ -22,11 +22,14 @@ import { usePaginationStore } from '@/stores/paginationStore';
 import CollectionsWrapper from '@/components/features/collections/CollectionsWrapper';
 import SortBy from '@/components/ui/SortBy';
 import { IconButton, Tooltip, Button, SnackbarCloseReason, Snackbar } from '@mui/material';
-import { useDebounce } from '@/lib/useDebounce';
 import styles from '../users.module.css';
 import { useRouter } from 'next/navigation';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
 import { SessionUserInResponse } from '@/types/UserInResponse';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
+import { Loader } from '@/components/ui/Loader';
+import { CollectionFieldProps } from '@/types/CollectionField';
 
 type State = {
     copied: boolean;
@@ -41,6 +44,8 @@ type State = {
     cooldown: boolean;
 };
 
+type Tab = '' | 'author' | 'favorites';
+
 export default function ProfilePage() {
     const { user, loading, setUser } = useUser();
 
@@ -53,7 +58,7 @@ export default function ProfilePage() {
         bannerUrl: '',
         avatarUrl: '',
         errorMessage: '',
-        tab: '',
+        tab: '' as Tab,
         cooldown: false,
     });
 
@@ -61,13 +66,8 @@ export default function ProfilePage() {
         setState((prev) => ({ ...prev, [key]: value }));
     };
 
-    const [collections, setCollections] = useState<any[]>([]);
-    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { sortedBy } = useUIStore();
     const { profilePagination } = usePaginationStore();
-
-    const debouncedPagination = useDebounce(profilePagination, 400);
-    const debouncedSortedBy = useDebounce(sortedBy, 400);
-
     const authorTab = user ? `&authorId=${user.id}` : '';
     const favoritesTab = user ? `&favoritesUserId=${user.id}` : '';
     const disabled =
@@ -91,31 +91,40 @@ export default function ProfilePage() {
         }
     }, [user, authorTab, state.tab]);
 
-    const loadCollections = async () => {
-        if (!user || !state.tab) return;
+    const params = useMemo(() => {
+        return {
+            sortedBy: String(sortedBy),
+            skip: profilePagination * PAGE_SIZE,
+            tab: state.tab,
+            userId: user?.id ?? null,
+        };
+    }, [sortedBy, profilePagination, state.tab, user?.id]);
 
-        startLoading();
+    const { data, isFetching } = useQuery({
+        queryKey: ['me-collections-search', params],
+        enabled: !loading && params.userId != null && params.tab !== '',
+        staleTime: 10_000,
+        queryFn: async () => {
+            const searchParams = new URLSearchParams({
+                sortedBy: params.sortedBy,
+                skip: String(params.skip),
+            });
 
-        try {
-            const response = await fetch(
-                `/api/collections/search/?skip=${debouncedPagination * PAGE_SIZE}&sortedBy=${debouncedSortedBy}${state.tab}`,
-            );
-
-            if (response.ok) {
-                const data = await response.json();
-                setCollections(data.data);
+            if (params.tab === 'author') {
+                searchParams.set('authorId', String(params.userId));
             }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            stopLoading();
-        }
-    };
 
-    useEffect(() => {
-        if (!user || loading || !state.tab) return;
-        loadCollections();
-    }, [user, loading, state.tab, debouncedPagination, debouncedSortedBy]);
+            if (params.tab === 'favorites') {
+                searchParams.set('favoritesUserId', String(params.userId));
+            }
+
+            return api
+                .get(`api/collections/search/?${searchParams.toString()}`)
+                .json<{ data: CollectionFieldProps[] }>();
+        },
+    });
+
+    const collections = data?.data ?? [];
 
     const handleTabChoice = (choice: 'authorTab' | 'favoritesTab') => {
         updateState('tab', choice === 'authorTab' ? authorTab : favoritesTab);
@@ -185,34 +194,35 @@ export default function ProfilePage() {
     const handleSave = async () => {
         updateState('cooldown', true);
 
-        const res = await fetch('/api/users/', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                fullName: state.fullName,
-                username: state.username,
-                description: state.description,
-                bannerUrl: state.bannerUrl,
-                avatarUrl: state.avatarUrl,
-            }),
-        });
+        try {
+            const updatedUser = await api
+                .patch('api/users/', {
+                    json: {
+                        fullName: state.fullName,
+                        username: state.username,
+                        description: state.description,
+                        bannerUrl: state.bannerUrl,
+                        avatarUrl: state.avatarUrl,
+                    },
+                })
+                .json<{ user: SessionUserInResponse }>();
 
-        setTimeout(() => updateState('cooldown', false), 1000);
+            setUser(updatedUser.user);
+            updateState('editing', false);
+        } catch (err: any) {
+            const status = err?.response?.status;
 
-        if (res.status === 409) {
-            updateState('errorMessage', 'User with this username already exists.');
-            setTimeout(() => updateState('errorMessage', ''), 2000);
-            return;
+            if (status === 409) {
+                updateState('errorMessage', 'User with this username already exists.');
+                setTimeout(() => updateState('errorMessage', ''), 2000);
+                return;
+            }
+        } finally {
+            setTimeout(() => updateState('cooldown', false), 1000);
         }
-
-        if (!res.ok) return;
-
-        const updatedUser = await res.json();
-        const responseUser: SessionUserInResponse = updatedUser.user;
-
-        setUser(responseUser);
-        updateState('editing', false);
     };
+
+    if (isFetching) return <Loader />;
 
     return (
         <ConfigProvider

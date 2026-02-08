@@ -4,55 +4,66 @@ import { useUser } from '@/context/UserProvider';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
 import { Avatar, Button } from '@mui/material';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import CollectionSearchBar from '@/components/features/collections/CollectionSearchBar';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import { usePaginationStore } from '@/stores/paginationStore';
 import CollectionsWrapper from '@/components/features/collections/CollectionsWrapper';
 import SortBy from '@/components/ui/SortBy';
 import styles from './home.module.css';
+import { useQuery } from '@tanstack/react-query';
+import { useDebounce } from '@/lib/useDebounce';
+import { api } from '@/lib/api';
+import { Loader } from '@/components/ui/Loader';
+import { CollectionFieldProps } from '@/types/CollectionField';
 
 export default function HomePage() {
     const { user, loading } = useUser();
 
-    const [collections, setCollections] = useState<any[]>([]);
     const [category, setCategory] = useState('');
 
     const { query } = useCollectionSearchStore();
-    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { sortedBy } = useUIStore();
     const { homePagination } = usePaginationStore();
 
-    const loadCollections = async () => {
-        startLoading();
+    const debouncedQuery = useDebounce(query, 400);
 
-        const userPrompt = user ? `&userId=${user.id}` : '';
-        const categoryPrompt = category !== '' ? `&category=${category}` : '';
-        const queryPrompt = query !== '' ? `&query=${query}` : '';
+    const params = useMemo(() => {
+        const query = (debouncedQuery ?? '').trim();
 
-        const response = await fetch(
-            `/api/collections/search/?sortedBy=${sortedBy}&skip=${homePagination * PAGE_SIZE}` +
-                categoryPrompt +
-                userPrompt +
-                queryPrompt,
-        );
+        return {
+            sortedBy: String(sortedBy),
+            skip: homePagination * PAGE_SIZE,
+            category: category || '',
+            userId: user?.id ?? null,
+            query: query,
+        };
+    }, [sortedBy, homePagination, category, user?.id, debouncedQuery]);
 
-        if (response.status === 200) {
-            const data = await response.json();
+    const { data, isFetching } = useQuery({
+        queryKey: ['collections-search', params],
+        enabled: !loading,
+        staleTime: 30_000,
+        queryFn: async () => {
+            const searchParams = new URLSearchParams({
+                sortedBy: params.sortedBy,
+                skip: String(params.skip),
+            });
 
-            setCollections([...data.data]);
-        }
+            if (params.category) searchParams.set('category', params.category);
+            if (params.userId != null) searchParams.set('userId', String(params.userId));
+            if (params.query) searchParams.set('query', params.query);
 
-        stopLoading();
-    };
+            return api
+                .get(`api/collections/search/?${searchParams.toString()}`)
+                .json<{ data: CollectionFieldProps[] }>();
+        },
+    });
 
-    useEffect(() => {
-        if (loading) return;
-
-        const handler = setTimeout(loadCollections, 400);
-        return () => clearTimeout(handler);
-    }, [loading, homePagination, sortedBy, category, query]);
+    const collections = data?.data ?? [];
 
     if (loading) return null;
+    if (isFetching) return <Loader />;
 
     return (
         <Suspense>

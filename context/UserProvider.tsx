@@ -1,5 +1,6 @@
 'use client';
 
+import { api } from '@/lib/api';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
@@ -18,19 +19,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchUser = useCallback(async () => {
         setLoading(true);
+
         try {
-            const res = await fetch('/api/auth/me', {
-                credentials: 'include',
-            });
+            const data = await api.get('api/auth/me').json<{ user: SessionUserInResponse }>();
 
-            if (!res.ok) {
-                setUser(null);
-                return;
-            }
-
-            const data = await res.json();
             setUser(data.user ?? null);
-        } catch (e) {
+        } catch {
             setUser(null);
         } finally {
             setLoading(false);

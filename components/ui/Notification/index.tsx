@@ -10,6 +10,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import CommentIcon from '@mui/icons-material/Comment';
+import { api } from '@/lib/api';
 
 interface NotificationProps {
     id: number | null;
@@ -63,9 +64,7 @@ export default function Notification({
 
     const markAsRead = async () => {
         if (unreadCount > 0) {
-            await fetch('/api/notifications', {
-                method: 'PATCH',
-            });
+            await api.patch('api/notifications');
         }
 
         await refreshUser();

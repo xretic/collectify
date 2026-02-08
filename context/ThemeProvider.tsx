@@ -5,7 +5,7 @@ import { useTheme } from '@/lib/useTheme';
 
 type Props = { children: ReactNode };
 
-export default function ClientThemeProvider({ children }: Props) {
+export default function ThemeProvider({ children }: Props) {
     const { theme } = useTheme();
     const [mounted, setMounted] = useState(false);
 

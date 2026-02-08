@@ -9,6 +9,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { useUser } from '@/context/UserProvider';
 import Alert from '@mui/material/Alert';
 import { useRouter } from 'next/navigation';
+import { api } from '@/lib/api';
 
 export default function HoverMenu() {
     const { setUser } = useUser();
@@ -26,20 +27,17 @@ export default function HoverMenu() {
     const router = useRouter();
 
     const handleLogout = async () => {
-        try {
-            startLoading();
-            handleClose();
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-            setUser(null);
+        startLoading();
 
+        try {
+            handleClose();
+
+            await api.post('api/auth/logout');
+
+            setUser(null);
             router.replace('/');
         } catch {
-            stopLoading();
-            return (
-                <Alert variant="filled" severity="error" sx={{ mt: 2 }}>
-                    Something went wrong.
-                </Alert>
-            );
+            return;
         } finally {
             stopLoading();
         }

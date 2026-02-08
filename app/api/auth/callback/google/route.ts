@@ -4,6 +4,30 @@ import { randomUUID } from 'crypto';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
+import { api } from '@/lib/api';
+import { Prisma } from '@/generated/prisma/client';
+
+type GoogleTokenResponse = {
+    access_token?: string;
+    id_token?: string;
+    refresh_token?: string;
+    expires_in?: number;
+    scope?: string;
+    token_type?: string;
+    error?: string;
+    error_description?: string;
+};
+
+type GoogleUserInfo = {
+    id?: string;
+    email?: string;
+    verified_email?: boolean;
+    name?: string;
+    given_name?: string;
+    family_name?: string;
+    picture?: string;
+    locale?: string;
+};
 
 export async function GET(req: Request) {
     try {
@@ -14,70 +38,77 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'No code provided' }, { status: 400 });
         }
 
-        const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                client_id: process.env.GOOGLE_CLIENT_ID,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                code,
-                grant_type: 'authorization_code',
-                redirect_uri: `${url.origin}/api/auth/callback/google`,
-            }),
-        });
+        const tokenData = await api
+            .post('https://oauth2.googleapis.com/token', {
+                headers: { 'Content-Type': 'application/json' },
+                json: {
+                    client_id: process.env.GOOGLE_CLIENT_ID,
+                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                    code,
+                    grant_type: 'authorization_code',
+                    redirect_uri: `${url.origin}/api/auth/callback/google`,
+                },
+            })
+            .json<GoogleTokenResponse>();
 
-        const tokenData = await tokenRes.json();
-
-        if (!tokenData.access_token) {
-            return NextResponse.json({ error: 'Failed to get token' }, { status: 400 });
+        if (tokenData.error || !tokenData.access_token) {
+            return NextResponse.json(
+                { error: tokenData.error_description || 'Failed to get token' },
+                { status: 400 },
+            );
         }
 
-        const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-            headers: {
-                Authorization: `Bearer ${tokenData.access_token}`,
-            },
-        });
-
-        const googleUser = await userRes.json();
+        const googleUser = await api
+            .get('https://www.googleapis.com/oauth2/v2/userinfo', {
+                headers: { Authorization: `Bearer ${tokenData.access_token}` },
+            })
+            .json<GoogleUserInfo>();
 
         if (!googleUser?.id || !googleUser?.email) {
             return NextResponse.json({ error: 'Invalid Google user' }, { status: 400 });
         }
 
-        let user = await prisma.user.findFirst({
-            where: {
-                OR: [{ googleId: googleUser.id }, { email: googleUser.email }],
-            },
-        });
+        const googleId = String(googleUser.id);
+        const email = String(googleUser.email);
+
+        let user =
+            (await prisma.user.findUnique({ where: { googleId } })) ??
+            (await prisma.user.findUnique({ where: { email } }));
 
         if (!user) {
-            const splitedEmail = googleUser.email.split('@')[0];
-            const username = splitedEmail.slice(0, USERNAME_MAX_LENGTH);
-
+            const localPart = email.split('@')[0] || 'user';
+            const base = localPart.slice(0, USERNAME_MAX_LENGTH);
             const uniqueId = await generateUniqueUserId();
-            const notAvailable = await prisma.user.findFirst({
-                where: {
-                    username: username,
-                },
-            });
+            const baseUsername = isUsernameValid(base) ? base : String(uniqueId);
 
-            user = await prisma.user.create({
-                data: {
-                    id: uniqueId,
-                    email: googleUser.email,
-                    username:
-                        notAvailable || !isUsernameValid(username) ? String(uniqueId) : username,
-                    fullName: googleUser.name,
-                    avatarUrl: googleUser.picture,
-                    googleId: googleUser.id,
-                },
-            });
+            const createUser = async (username: string) => {
+                return prisma.user.create({
+                    data: {
+                        id: uniqueId,
+                        email,
+                        username,
+                        fullName: googleUser.name || base,
+                        avatarUrl: googleUser.picture || '',
+                        googleId,
+                    },
+                });
+            };
+
+            try {
+                user = await createUser(baseUsername);
+            } catch (e: any) {
+                if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+                    user = await createUser(String(uniqueId));
+                } else {
+                    throw e;
+                }
+            }
         } else if (!user.googleId) {
             user = await prisma.user.update({
                 where: { id: user.id },
                 data: {
-                    googleId: googleUser.id,
-                    avatarUrl: googleUser.picture,
+                    googleId,
+                    avatarUrl: googleUser.picture || user.avatarUrl,
                 },
             });
         }

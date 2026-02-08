@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Alert from '@mui/material/Alert';
+import React, { useEffect, useMemo, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import { notFound, useParams, useRouter } from 'next/navigation';
@@ -18,70 +17,97 @@ import styles from '../users.module.css';
 import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import { UserInResponse } from '@/types/UserInResponse';
 import CloseIcon from '@mui/icons-material/Close';
-import { isProperInteger } from '@/helpers/isProperInteger';
+import { api } from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
+import { Loader } from '@/components/ui/Loader';
+import { CollectionFieldProps } from '@/types/CollectionField';
 
 export default function ProfilePage() {
-    const params = useParams();
-    const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    const componentParams = useParams();
+    const id = Array.isArray(componentParams.id) ? componentParams.id[0] : componentParams.id;
 
-    const [collections, setCollections] = useState<any[]>([]);
     const { user } = useUser();
     const [pageUser, setPageUser] = useState<UserInResponse | null>(null);
     const [copied, setCopied] = useState(false);
     const [followed, setFollowed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [emptyPage, setEmptyPage] = useState(true);
-
-    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { sortedBy } = useUIStore();
     const { profilePagination } = usePaginationStore();
     const { query } = useCollectionSearchStore();
-
-    const debouncedSortedBy = useDebounce(sortedBy, 400);
-    const debouncedPagination = useDebounce(profilePagination, 400);
     const debouncedQuery = useDebounce(query, 400);
     const debouncedFollowed = useDebounce(followed, 600);
 
-    const queryParam = debouncedQuery.trim() === '' ? '' : `&query=${debouncedQuery}`;
-
     const router = useRouter();
 
-    const loadCollections = async () => {
-        startLoading();
+    const params = useMemo(() => {
+        const q = (debouncedQuery ?? '').trim();
+        const authorId = Number(id);
 
-        if (isProperInteger(Number(id))) {
-            const response = await fetch(
-                `/api/collections/search/?skip=${profilePagination * PAGE_SIZE}&sortedBy=${sortedBy}${queryParam}&authorId=${id}`,
-            );
+        return {
+            sortedBy: String(sortedBy),
+            skip: profilePagination * PAGE_SIZE,
+            authorId: Number.isFinite(authorId) ? authorId : null,
+            query: q,
+            followed: debouncedFollowed,
+        };
+    }, [sortedBy, profilePagination, debouncedQuery, debouncedFollowed, id]);
 
-            if (response.status === 200) {
-                const data = await response.json();
+    const { data, isFetching } = useQuery({
+        queryKey: ['profile-collections-search', params],
+        enabled: params.authorId != null,
+        staleTime: 10_000,
+        queryFn: async () => {
+            const searchParams = new URLSearchParams({
+                sortedBy: params.sortedBy,
+                skip: String(params.skip),
+                authorId: String(params.authorId),
+            });
 
-                setCollections(data.data);
-            }
+            if (params.query) searchParams.set('query', params.query);
+            if (params.followed) searchParams.set('followed', 'true');
+
+            return api
+                .get(`api/collections/search/?${searchParams.toString()}`)
+                .json<{ data: CollectionFieldProps[] }>();
+        },
+    });
+
+    const collections = data?.data ?? [];
+
+    const toggleFollow = async () => {
+        if (!user || !pageUser) return;
+
+        const action = debouncedFollowed ? 'unfollow' : 'follow';
+
+        try {
+            await api.patch('api/users', {
+                searchParams: {
+                    followUserId: pageUser.id,
+                    followAction: action,
+                },
+            });
+
+            setFollowed(!debouncedFollowed);
+        } catch {
+            return;
         }
-
-        stopLoading();
     };
 
     useEffect(() => {
-        loadCollections();
-    }, [debouncedQuery, debouncedPagination, debouncedSortedBy]);
-
-    useEffect(() => {
         const loadUser = async () => {
-            const res = await fetch('/api/users/' + id);
+            try {
+                const data = await api.get('api/users/' + id).json<{ user: UserInResponse }>();
 
-            if (res.ok) {
-                const data = await res.json();
-                const responseUser: UserInResponse = data.user;
-                setFollowed(responseUser.sessionUserIsFollowed);
-                setPageUser(responseUser);
+                setFollowed(data.user.sessionUserIsFollowed);
+                setPageUser(data.user);
                 setEmptyPage(false);
-            } else {
+            } catch {
                 setEmptyPage(true);
+                return;
+            } finally {
+                setLoading(false);
             }
-
-            setLoading(false);
         };
 
         loadUser();
@@ -100,18 +126,6 @@ export default function ProfilePage() {
     if (loading || !pageUser) {
         return null;
     }
-
-    const handleFollow = async () => {
-        if (!user || !pageUser) return;
-
-        const action = debouncedFollowed ? 'unfollow' : 'follow';
-
-        await fetch(`/api/users?followUserId=${pageUser.id}&followAction=${action}`, {
-            method: 'PATCH',
-        });
-
-        setFollowed(!debouncedFollowed);
-    };
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(pageUser.username);
@@ -134,6 +148,8 @@ export default function ProfilePage() {
         </React.Fragment>
     );
 
+    if (isFetching) return <Loader />;
+
     return (
         <header className={styles.profile}>
             <div
@@ -143,7 +159,7 @@ export default function ProfilePage() {
 
             <nav className={styles['nav-bar']}>
                 <Button
-                    onClick={handleFollow}
+                    onClick={toggleFollow}
                     variant={followed ? 'text' : 'contained'}
                     size="small"
                     disabled={!user || debouncedFollowed !== followed}

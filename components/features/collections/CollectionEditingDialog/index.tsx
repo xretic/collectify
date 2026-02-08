@@ -14,6 +14,8 @@ import { useCollectionStore } from '@/stores/collectionStore';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEditingDialogStore } from '@/stores/dialogs/editCollectionDialogStore';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import { api } from '@/lib/api';
+import { CollectionPropsAdditional } from '@/types/CollectionField';
 
 type State = {
     title: string;
@@ -55,31 +57,29 @@ export function CollectionEditingDialog() {
             bannerUrl: collection.bannerUrl,
         });
     };
-
     const handleSubmit = async () => {
         setDisabled(true);
 
-        const res = await fetch('/api/collections/' + collection?.id + '/edit', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                title: state.title,
-                description: state.description,
-                bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
-            }),
-        });
+        try {
+            const data = await api
+                .patch(`api/collections/${collection?.id}/edit`, {
+                    json: {
+                        title: state.title,
+                        description: state.description,
+                        bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
+                    },
+                })
+                .json<{ data: CollectionPropsAdditional }>();
 
-        const data = await res.json();
-
-        if (!res.ok) {
-            setErrorMessage(data.message);
-            return;
+            resetState();
+            handleClose();
+            setCollection(data.data);
+        } catch (err: any) {
+            const message = err?.response?.message;
+            if (message) setErrorMessage(message);
+        } finally {
+            setDisabled(false);
         }
-
-        resetState();
-        handleClose();
-        setCollection(data.data);
-        setDisabled(false);
     };
 
     const handleSnackClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {

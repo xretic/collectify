@@ -3,9 +3,10 @@ import NavBar from '@/components/layout/NavBar';
 import localFont from 'next/font/local';
 import './globals.css';
 import { UserProvider } from '@/context/UserProvider';
-import { GlobalLoader } from '@/components/ui/GlobalLoader';
+import { GlobalLoader } from '@/components/layout/GlobalLoader';
 import Script from 'next/script';
-import ClientThemeProvider from '@/components/layout/ClientThemeProvider';
+import ThemeProvider from '@/context/ThemeProvider';
+import { QueryProvider } from '@/context/QueryProvider';
 
 const googleSans = localFont({
     src: [
@@ -46,13 +47,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     strategy="beforeInteractive"
                 />
 
-                <ClientThemeProvider>
-                    <UserProvider>
-                        <NavBar />
-                        <GlobalLoader />
-                        {children}
-                    </UserProvider>
-                </ClientThemeProvider>
+                <QueryProvider>
+                    <ThemeProvider>
+                        <UserProvider>
+                            <NavBar />
+                            <GlobalLoader />
+                            {children}
+                        </UserProvider>
+                    </ThemeProvider>
+                </QueryProvider>
             </body>
         </html>
     );

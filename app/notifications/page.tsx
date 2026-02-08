@@ -11,6 +11,7 @@ import { useDebounce } from '@/lib/useDebounce';
 import Notification from '@/components/ui/Notification';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { Typography } from '@mui/material';
+import { api } from '@/lib/api';
 
 type Tab = 'all' | 'unread';
 
@@ -52,41 +53,49 @@ export default function NotificationsPage() {
 
     const debouncedTab = useDebounce(active, 500);
 
-    const getNotifications = async () => {
+    const getNotifications = async (tab: Tab) => {
         startLoading();
 
-        const response = await fetch(
-            `/api/notifications?onlyUnread=${active === 'all' ? 'false' : 'true'}`,
-        );
+        try {
+            const onlyUnread = tab === 'unread';
 
-        if (!response.ok) return;
+            const data = await api
+                .get('api/notifications', {
+                    searchParams: { onlyUnread: String(onlyUnread) },
+                })
+                .json<{
+                    data: NotificationInResponse[];
+                    totalAmount: number;
+                    unreadAmount: number;
+                }>();
 
-        const data = await response.json();
-        const responseNotifications: NotificationInResponse[] = data.data;
-
-        setNotifications(responseNotifications);
-        setTotalAmount(data.totalAmount);
-        setUnreadCount(data.unreadAmount);
-        stopLoading();
+            setNotifications(data.data);
+            setTotalAmount(data.totalAmount);
+            setUnreadCount(data.unreadAmount);
+        } catch {
+            return;
+        } finally {
+            stopLoading();
+        }
     };
 
     const markAllAsRead = async () => {
         startLoading();
+        try {
+            const data = await api.patch('api/notifications').json<{
+                data: NotificationInResponse[];
+                totalAmount: number;
+                unreadAmount: number;
+            }>();
 
-        const response = await fetch('/api/notifications', {
-            method: 'PATCH',
-        });
-
-        if (!response.ok) return;
-
-        await refreshUser();
-
-        const data = await response.json();
-        const responseNotifications: NotificationInResponse[] = data.data;
-
-        setNotifications(responseNotifications);
-        setUnreadCount(0);
-        stopLoading();
+            await refreshUser();
+            setNotifications(data.data);
+            setUnreadCount(0);
+        } catch {
+            return;
+        } finally {
+            stopLoading();
+        }
     };
 
     const tabs: Array<{ id: Tab; label: string; count: number; disabled: boolean }> = [
@@ -97,8 +106,7 @@ export default function NotificationsPage() {
     useEffect(() => {
         if (loading) return;
 
-        const handler = setTimeout(getNotifications, 400);
-        return () => clearTimeout(handler);
+        getNotifications(debouncedTab);
     }, [loading, debouncedTab]);
 
     if (loading) return null;

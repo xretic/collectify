@@ -22,6 +22,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import Image from 'next/image';
 import { githubAuth, googleAuth } from '@/lib/authMethods';
 import CloseIcon from '@mui/icons-material/Close';
+import { api } from '@/lib/api';
 
 type RegisterFormData = {
     email: string;
@@ -80,41 +81,44 @@ export default function RegisterPage() {
 
     const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
         startLoading();
+        setErrorMsg('');
 
         try {
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-                credentials: 'include',
+            const response = await api.post('api/auth/register', {
+                json: data,
+                throwHttpErrors: false,
             });
 
             switch (response.status) {
                 case 200: {
-                    const resData = await response.json();
+                    const resData = await response.json<{ user: any }>();
                     setUser(resData.user);
                     router.push('/');
                     break;
                 }
 
                 case 400:
-                    setErrorMsg('Password is too short.');
+                    setErrorMsg('Invalid data.');
                     break;
 
                 case 405:
                     setErrorMsg('The password contains prohibited characters.');
                     break;
 
-                case 409:
-                    const resData = await response.json();
-                    setErrorMsg(resData.message);
+                case 409: {
+                    const resData = await response.json<{ message?: string }>();
+                    setErrorMsg(resData.message || 'Conflict.');
                     break;
+                }
 
                 case 500:
                     setErrorMsg('Something went wrong.');
                     break;
+
+                default:
+                    setErrorMsg('Unknown error occurred.');
             }
-        } catch (error) {
+        } catch {
             setErrorMsg('Network error. Please try again.');
         } finally {
             stopLoading();
