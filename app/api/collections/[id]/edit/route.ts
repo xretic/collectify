@@ -92,6 +92,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
             data: {
                 name: title,
+                lowerCaseName: title.toLowerCase(),
                 description,
                 ...(bannerUrl && { bannerUrl }),
             },

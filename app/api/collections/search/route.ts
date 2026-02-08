@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
         const userId = searchParams.get('userId');
         const sortedBy = searchParams.get('sortedBy');
         const skip = Number(searchParams.get('skip'));
-        const query = searchParams.get('query');
+        const query = searchParams.get('query')?.toLowerCase();
 
         const authorId = Number(searchParams.get('authorId'));
         const favoritesUserId = Number(searchParams.get('favoritesUserId'));
@@ -140,7 +140,7 @@ export async function GET(req: NextRequest) {
                     where: {
                         userId: { in: subscribedUserIds },
                         ...(category && { category }),
-                        name: {
+                        lowerCaseName: {
                             startsWith: query ? query : '',
                         },
                     },

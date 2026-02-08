@@ -62,6 +62,7 @@ model Session {
 model Collection {
     id              Int            @id @default(autoincrement())
     name            String
+    lowerCaseName   String
     description     String         @default("")
     bannerUrl       String
     category        String

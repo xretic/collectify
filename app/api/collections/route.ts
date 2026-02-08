@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
             data: {
                 userId: session.userId,
                 name,
+                lowerCaseName: name.toLowerCase(),
                 description,
                 category,
                 bannerUrl: banner,
