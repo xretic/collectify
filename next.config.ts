@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const securityHeaders = [
     {
-        key: 'Content-Security-Policy',
+        key: 'Content-Security-Policy-Report-Only',
         value: [
             "default-src 'self'",
             "script-src 'self' 'unsafe-eval'",
@@ -15,33 +15,16 @@ const securityHeaders = [
             "form-action 'self'",
         ].join('; '),
     },
-    {
-        key: 'Referrer-Policy',
-        value: 'strict-origin-when-cross-origin',
-    },
-    {
-        key: 'X-Content-Type-Options',
-        value: 'nosniff',
-    },
+    { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+    { key: 'X-Content-Type-Options', value: 'nosniff' },
 ];
 
 const nextConfig: NextConfig = {
     images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: '**',
-            },
-        ],
+        remotePatterns: [{ protocol: 'https', hostname: '**' }],
     },
-
     async headers() {
-        return [
-            {
-                source: '/(.*)',
-                headers: securityHeaders,
-            },
-        ];
+        return [{ source: '/(.*)', headers: securityHeaders }];
     },
 };
 
