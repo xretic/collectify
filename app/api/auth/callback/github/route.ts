@@ -4,8 +4,8 @@ import { randomUUID } from 'crypto';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
-import { api } from '@/lib/api';
 import { Prisma } from '@/generated/prisma/client';
+import ky from 'ky';
 
 interface GithubUser {
     id: number;
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'No code provided' }, { status: 400 });
         }
 
-        const tokenData = await api
+        const tokenData = await ky
             .post('https://github.com/login/oauth/access_token', {
                 headers: { Accept: 'application/json' },
                 json: {
@@ -56,7 +56,7 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'No access token' }, { status: 400 });
         }
 
-        const githubUser = await api
+        const githubUser = await ky
             .get('https://api.github.com/user', {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -72,7 +72,7 @@ export async function GET(req: Request) {
         let email: string | null = githubUser.email ?? null;
 
         if (!email) {
-            const emails = await api
+            const emails = await ky
                 .get('https://api.github.com/user/emails', {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
