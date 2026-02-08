@@ -8,8 +8,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ query:
         const users = await prisma.user.findMany({
             where: {
                 username: {
-                    startsWith: query,
-                    mode: 'insensitive',
+                    startsWith: query.toLowerCase(),
                 },
             },
             take: 5,
@@ -21,7 +20,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ query:
         });
 
         if (users.length === 0) {
-            return NextResponse.json({ users: [] }, { status: 404 });
+            return NextResponse.json({ users: [] }, { status: 200 });
         }
 
         return NextResponse.json(

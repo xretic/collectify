@@ -9,6 +9,7 @@ import {
     ListItemAvatar,
     ListItemText,
     Paper,
+    Box,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
@@ -39,16 +40,20 @@ export default function UserSearchBar() {
 
     useEffect(() => {
         const loadUsers = async () => {
-            if (!debouncedQuery) return;
+            if (!debouncedQuery) {
+                setUsers([]);
+                return;
+            }
 
-            const res = await fetch('/api/users/search/' + inputValue, {
+            const res = await fetch('/api/users/search/' + debouncedQuery, {
                 method: 'GET',
                 credentials: 'include',
             });
 
             const data = await res.json();
-            setUsers(data.users);
+            setUsers(data.users ?? []);
         };
+
         loadUsers();
     }, [debouncedQuery]);
 
@@ -61,43 +66,63 @@ export default function UserSearchBar() {
             inputValue={inputValue}
             onChange={handleSelect}
             onInputChange={(_, newValue) => setInputValue(newValue)}
-            disableClearable={true}
+            disableClearable
             slots={{
                 paper: (props) => (
-                    <Paper {...props} sx={{ mt: 1, backgroundColor: 'var(--container-color)' }} />
+                    <Paper
+                        {...props}
+                        sx={{
+                            mt: 1,
+                            backgroundColor: 'var(--container-color)',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        {props.children}
+                        {debouncedQuery && users.length === 0 && (
+                            <Box
+                                sx={{
+                                    px: 2,
+                                    py: 1.5,
+                                    color: 'var(--soft-text)',
+                                    textAlign: 'center',
+                                    borderTop: '1px solid rgba(255,255,255,0.06)',
+                                }}
+                            >
+                                Nothing found
+                            </Box>
+                        )}
+                    </Paper>
                 ),
             }}
-            renderOption={(props, option) => {
-                return (
-                    <ListItem
-                        sx={{
+            renderOption={(props, option) => (
+                <ListItem
+                    sx={{
+                        color: 'var(--text-color) !important',
+                        backgroundColor: 'var(--container-color) !important',
+                        '&:hover': {
+                            backgroundColor: 'var(--accent) !important',
                             color: 'var(--text-color) !important',
+                        },
+                        '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
                             backgroundColor: 'var(--container-color) !important',
-                            '&:hover': {
-                                backgroundColor: 'var(--accent) !important',
-                                color: 'var(--text-color) !important',
-                            },
-                            '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-                                backgroundColor: 'var(--container-color) !important',
-                                color: 'var(--text-color) !important',
-                            },
-                            '&.Mui-focusVisible': {
-                                backgroundColor: 'var(--container-color) !important',
-                            },
-                            '& .MuiListItemText-primary': {
-                                color: 'var(--text-color) !important',
-                            },
-                        }}
-                        {...props}
-                        key={option.username}
-                    >
-                        <ListItemAvatar key={option.avatarUrl}>
-                            <Avatar src={option.avatarUrl} alt={option.username} />
-                        </ListItemAvatar>
-                        <ListItemText key={option.username} primary={option.username} />
-                    </ListItem>
-                );
-            }}
+                            color: 'var(--text-color) !important',
+                        },
+                        '&.Mui-focusVisible': {
+                            backgroundColor: 'var(--container-color) !important',
+                        },
+                        '& .MuiListItemText-primary': {
+                            color: 'var(--text-color) !important',
+                        },
+                    }}
+                    {...props}
+                    key={option.username}
+                >
+                    <ListItemAvatar key={option.id}>
+                        <Avatar src={option.avatarUrl} alt={option.username} />
+                    </ListItemAvatar>
+                    <ListItemText primary={option.username} />
+                </ListItem>
+            )}
             renderInput={(params) => (
                 <TextField
                     {...params}
@@ -107,17 +132,19 @@ export default function UserSearchBar() {
                     placeholder="Find a user"
                     variant="outlined"
                     size="small"
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                            <>
-                                {params.InputProps.endAdornment}
-                                <CloseIcon
-                                    onClick={() => setSearchBarOpened()}
-                                    sx={{ color: '#afafaf', cursor: 'pointer', ml: 1 }}
-                                />
-                            </>
-                        ),
+                    slotProps={{
+                        input: {
+                            ...params.InputProps,
+                            endAdornment: (
+                                <>
+                                    {params.InputProps.endAdornment}
+                                    <CloseIcon
+                                        onClick={() => setSearchBarOpened()}
+                                        sx={{ color: '#afafaf', cursor: 'pointer', ml: 1 }}
+                                    />
+                                </>
+                            ),
+                        },
                     }}
                 />
             )}

@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
                 id: uniqueId,
                 email,
                 passwordHash,
-                username: username,
+                username: username.toLowerCase(),
                 fullName: username,
             },
         });
