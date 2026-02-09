@@ -16,6 +16,7 @@ import { useEditingDialogStore } from '@/stores/dialogs/editCollectionDialogStor
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { api } from '@/lib/api';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
+import { ItemField } from '../../items/ItemField';
 
 type State = {
     title: string;
@@ -245,6 +246,11 @@ export function CollectionEditingDialog() {
                         maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                         showCount
                     />
+
+                    <p className={styles.paragraph}>Items</p>
+                    {collection?.items.map((x) => (
+                        <ItemField key={x.id} item={x} collection={collection} />
+                    ))}
                 </ConfigProvider>
             </DialogContent>
 
@@ -258,7 +264,7 @@ export function CollectionEditingDialog() {
                     disabled={disabled || state.title === '' || state.description === ''}
                     sx={buttonsStyle}
                 >
-                    Edit
+                    Confirm
                 </Button>
             </DialogActions>
         </Dialog>

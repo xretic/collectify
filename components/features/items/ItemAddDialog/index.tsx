@@ -15,7 +15,8 @@ import { isValidUrl } from '@/helpers/isValidUrl';
 import { useCollectionStore } from '@/stores/collectionStore';
 import CloseIcon from '@mui/icons-material/Close';
 import { api } from '@/lib/api';
-import { CollectionFieldProps, CollectionPropsAdditional } from '@/types/CollectionField';
+import { CollectionPropsAdditional } from '@/types/CollectionField';
+import { useQueryClient } from '@tanstack/react-query';
 
 type State = {
     title: string;
@@ -23,7 +24,7 @@ type State = {
     sourceUrl: string;
 };
 
-export function ItemDialog() {
+export function ItemAddDialog() {
     const { open, setOpen } = useDialogStore();
     const [state, setState] = useState<State>({
         title: '',
@@ -33,6 +34,7 @@ export function ItemDialog() {
     const { collection, setCollection } = useCollectionStore();
     const [errorMessage, setErrorMessage] = useState('');
     const [disabled, setDisabled] = useState(false);
+    const queryClient = useQueryClient();
 
     const buttonsStyle: SxProps<Theme> = {
         borderRadius: 6,
@@ -65,6 +67,12 @@ export function ItemDialog() {
             setState({ title: '', description: '', sourceUrl: '' });
             handleClose();
             setCollection(data.data);
+
+            queryClient.removeQueries({
+                predicate: (query) =>
+                    query.queryKey.includes('collection') ||
+                    query.queryKey.includes('collections-search'),
+            });
         } catch (err: any) {
             const message = err?.response?.message;
             if (message) setErrorMessage(message);

@@ -22,7 +22,7 @@ function createRule(path: string, methods: string[]): RouteRule {
 
 const protectedRoutes: RouteRule[] = [
     createRule('/api/collections/:id/action', ['PATCH']),
-    createRule('/api/collections/:id/items', ['POST']),
+    createRule('/api/collections/:id/items', ['POST', 'DELETE']),
     createRule('/api/collections/:id/order', ['PATCH']),
     createRule('api/collection/:id/edit', ['PATCH']),
     createRule('/api/collections/:id/delete', ['DELETE']),

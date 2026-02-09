@@ -1,7 +1,7 @@
 'use client';
 
-import { useUser } from '@/context/UserProvider'; 
-import { Avatar, IconButton } from '@mui/material';
+import { useUser } from '@/context/UserProvider';
+import { Avatar, IconButton, Tooltip } from '@mui/material';
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,7 +18,7 @@ import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from 
 import { SortableItemCard } from '@/components/features/items/SortableItemCard';
 import { useDebounce } from '@/lib/useDebounce';
 import AddIcon from '@mui/icons-material/Add';
-import { ItemDialog } from '@/components/features/items/ItemDialog';
+import { ItemAddDialog } from '@/components/features/items/ItemAddDialog';
 import { useDialogStore } from '@/stores/dialogs/dialogStore';
 import { useCollectionStore } from '@/stores/collectionStore';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -270,16 +270,20 @@ export default function CollectionPage() {
                     <span>Description</span>
                     {user?.id === collection.authorId && (
                         <div>
-                            <IconButton onClick={() => setOpenDialog(true)} color="error">
-                                <DeleteOutlineOutlinedIcon />
-                            </IconButton>
+                            <Tooltip title="Delete collection">
+                                <IconButton onClick={() => setOpenDialog(true)} color="error">
+                                    <DeleteOutlineOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
 
-                            <IconButton
-                                onClick={() => setOpenEditing(true)}
-                                sx={{ color: 'var(--text-color)' }}
-                            >
-                                <EditOutlinedIcon />
-                            </IconButton>
+                            <Tooltip title="Edit collection">
+                                <IconButton
+                                    onClick={() => setOpenEditing(true)}
+                                    sx={{ color: 'var(--text-color)' }}
+                                >
+                                    <EditOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
                         </div>
                     )}
                 </h1>
@@ -367,7 +371,7 @@ export default function CollectionPage() {
                 )}
             </div>
 
-            <ItemDialog />
+            <ItemAddDialog />
             <CollectionDeleteDialog />
             <CollectionEditingDialog />
         </>

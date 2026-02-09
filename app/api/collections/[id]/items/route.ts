@@ -122,3 +122,97 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const itemId = Number(searchParams.get('itemId'));
+
+        if (!isProperInteger(itemId)) {
+            return NextResponse.json({ message: 'Invalid item id.' }, { status: 400 });
+        }
+
+        const sessionId = req.cookies.get('sessionId')?.value;
+        const session = await prisma.session.findUnique({
+            where: { id: sessionId },
+        });
+
+        if (!session) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
+        const { id } = await params;
+        const intId = Number(id);
+
+        if (!isProperInteger(intId)) {
+            return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
+        }
+
+        const collection = await prisma.collection.findUnique({
+            where: {
+                id: intId,
+            },
+        });
+
+        if (!collection) {
+            return NextResponse.json({ message: 'Collection not found.' }, { status: 404 });
+        }
+
+        if (session.userId !== collection.userId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
+        const item = await prisma.item.findUnique({
+            where: { collectionId: collection.id, id: itemId },
+        });
+
+        if (!item) {
+            return NextResponse.json({ message: 'Item not found.' }, { status: 404 });
+        }
+
+        const itemsCount = await prisma.item.count({
+            where: {
+                collectionId: collection.id,
+            },
+        });
+
+        if (itemsCount === 1) {
+            return NextResponse.json(
+                { message: 'You cannot delete the last item.' },
+                { status: 403 },
+            );
+        }
+
+        await prisma.item.delete({
+            where: {
+                id: item.id,
+            },
+        });
+
+        const updatedCollection = await prisma.collection.findUnique({
+            where: { id: collection.id },
+            include: {
+                likes: true,
+                addedToFavorite: true,
+                items: true,
+                User: true,
+            },
+        });
+
+        if (!updatedCollection) {
+            return NextResponse.json({ message: 'Something went wrong!' }, { status: 500 });
+        }
+
+        const resData = getResData(updatedCollection);
+
+        return NextResponse.json(
+            {
+                data: resData,
+            },
+            { status: 200 },
+        );
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
+    }
+}

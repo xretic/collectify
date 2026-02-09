@@ -17,6 +17,9 @@ interface UIState {
 
     sortedBy: SortType;
     setSortedBy: (value: SortType) => void;
+
+    itemDeletionId: number;
+    setItemDeletionId: (value: number) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -37,4 +40,7 @@ export const useUIStore = create<UIState>((set) => ({
 
     sortedBy: 'popular',
     setSortedBy: (value: SortType) => set(() => ({ sortedBy: value })),
+
+    itemDeletionId: 0,
+    setItemDeletionId: (value) => set(() => ({ itemDeletionId: value })),
 }));
