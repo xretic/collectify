@@ -88,6 +88,7 @@ model Item {
     description  String
     collectionId Int?
     sourceUrl    String?
+    imageUrl     String?
     order        Int
     Collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
 

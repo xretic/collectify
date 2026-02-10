@@ -354,6 +354,7 @@ export default function CollectionPage() {
                                             title={x.title}
                                             description={x.description}
                                             sourceUrl={x.sourceUrl}
+                                            imageUrl={x.imageUrl}
                                             draggable={!!isOwner}
                                             dragHandleProps={listeners}
                                         />

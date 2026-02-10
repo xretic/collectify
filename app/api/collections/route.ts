@@ -34,8 +34,16 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'Bad request.' }, { status: 400 });
         }
 
-        const { name, description, category, banner, itemTitle, itemDescription, itemSourceUrl } =
-            requestData;
+        const {
+            name,
+            description,
+            category,
+            banner,
+            itemTitle,
+            itemDescription,
+            itemSourceUrl,
+            itemImageUrl,
+        } = requestData;
 
         if (
             [name, description, category, itemTitle, itemDescription, banner].some(
@@ -78,6 +86,10 @@ export async function POST(req: NextRequest) {
                 ok: !itemSourceUrl || isValidUrl(itemSourceUrl),
                 message: `Item source URL must be a valid URL.`,
             },
+            {
+                ok: !itemImageUrl || isValidUrl(itemImageUrl),
+                message: `Image URL must be a valid URL.`,
+            },
         ];
 
         const failed = rules.find((x) => !x.ok);
@@ -107,6 +119,7 @@ export async function POST(req: NextRequest) {
                 title: itemTitle,
                 description: itemDescription,
                 order: itemsCount,
+                ...(itemImageUrl && { imageUrl: itemImageUrl }),
                 ...(itemSourceUrl && { sourceUrl: itemSourceUrl }),
             },
         });

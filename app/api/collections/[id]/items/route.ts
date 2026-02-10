@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             return NextResponse.json({ message: 'Bad request.' }, { status: 400 });
         }
 
-        const { title, description, sourceUrl } = requestData;
+        const { title, description, sourceUrl, imageUrl } = requestData;
 
         if ([title, description].some((x) => typeof x !== 'string' || x.trim().length === 0)) {
             return NextResponse.json(
@@ -76,6 +76,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 ok: !sourceUrl || isValidUrl(sourceUrl),
                 message: `Item source URL must be a valid URL.`,
             },
+            {
+                ok: !imageUrl || isValidUrl(imageUrl),
+                message: `Image URL must be a valid URL.`,
+            },
         ];
 
         const failed = rules.find((x) => !x.ok);
@@ -95,6 +99,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 description,
                 order: itemsCount,
                 ...(sourceUrl && { sourceUrl }),
+                ...(imageUrl && { imageUrl }),
             },
         });
 

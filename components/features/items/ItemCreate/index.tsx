@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { handleUpload } from '@/helpers/handleUpload';
 
 export function ItemCreate() {
     const {
@@ -21,6 +22,7 @@ export function ItemCreate() {
         itemTitle,
         itemDescription,
         itemSourceUrl,
+        itemImageUrl,
         description,
         category,
         banner,
@@ -58,6 +60,7 @@ export function ItemCreate() {
                         banner,
                         itemTitle,
                         itemDescription,
+                        itemImageUrl: itemImageUrl === '' ? null : itemImageUrl,
                         itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
                     },
                 })
@@ -134,6 +137,44 @@ export function ItemCreate() {
                         },
                     }}
                 >
+                    <p className={styles.paragraph}>Cover image (Optional)</p>
+
+                    <Box
+                        onClick={() => handleUpload((url) => setField('itemImageUrl', url))}
+                        sx={{
+                            border: '2px dashed var(--text-color)',
+                            borderRadius: 2,
+                            height: 220,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: '0.2s',
+                            marginBottom: 3,
+
+                            '&:hover': {
+                                borderColor: 'var(--accent)',
+                                backgroundColor: 'rgba(99,102,241,0.04)',
+                            },
+                        }}
+                    >
+                        {itemImageUrl ? (
+                            <div className={styles.bannerWrapper}>
+                                <img className={styles.banner} src={itemImageUrl} alt="cover" />
+                            </div>
+                        ) : (
+                            <>
+                                <AddPhotoAlternateOutlinedIcon
+                                    sx={{ fontSize: 40, color: '#98A2B3', mb: 1 }}
+                                />
+
+                                <p className={styles.clickToUpload}>Click to upload cover image</p>
+                                <p className={styles.secondary}>PNG, JPG up to 10MB</p>
+                            </>
+                        )}
+                    </Box>
+
                     <p className={styles.column}>Source URL (optional)</p>
                     <Input
                         onChange={(x) => setField('itemSourceUrl', x.target.value)}

@@ -9,6 +9,7 @@ interface CollectionCreateState {
     itemTitle: string;
     itemDescription: string;
     itemSourceUrl: string;
+    itemImageUrl: string;
 
     setField: <K extends keyof Omit<CollectionCreateState, 'setField' | 'reset'>>(
         key: K,
@@ -27,6 +28,7 @@ const initialState = {
     itemTitle: '',
     itemDescription: '',
     itemSourceUrl: '',
+    itemImageUrl: '',
 };
 
 export const useCollectionCreateStore = create<CollectionCreateState>((set) => ({

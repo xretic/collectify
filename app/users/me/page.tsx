@@ -30,6 +30,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Loader } from '@/components/ui/Loader';
 import { CollectionFieldProps } from '@/types/CollectionField';
+import { handleUpload } from '@/helpers/handleUpload';
 
 type State = {
     copied: boolean;
@@ -163,33 +164,6 @@ export default function ProfilePage() {
             </IconButton>
         </React.Fragment>
     );
-
-    const waitForUploadcare = (): Promise<any> =>
-        new Promise((resolve, reject) => {
-            let attempts = 0;
-            const interval = setInterval(() => {
-                if ((window as any).uploadcare) {
-                    clearInterval(interval);
-                    resolve((window as any).uploadcare);
-                } else if (++attempts >= 10) {
-                    clearInterval(interval);
-                    reject(new Error('Uploadcare failed to load.'));
-                }
-            }, 10);
-        });
-
-    const handleUpload = async (setUrl: (url: string) => void) => {
-        try {
-            const uploadcare = await waitForUploadcare();
-            uploadcare
-                .openDialog(null, { imagesOnly: true, multiple: false, crop: 'free' })
-                .done((file: any) => {
-                    file.done((info: any) => setUrl(info.cdnUrl));
-                });
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
     const handleSave = async () => {
         updateState('cooldown', true);

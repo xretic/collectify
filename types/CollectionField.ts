@@ -31,5 +31,6 @@ export type CollectionPropsAdditional = {
         title: string;
         description: string;
         sourceUrl: string | null;
+        imageUrl: string | null;
     }[];
 };

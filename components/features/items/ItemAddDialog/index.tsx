@@ -9,7 +9,7 @@ import { ConfigProvider, Input } from 'antd';
 import styles from './index.module.css';
 import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
 import TextArea from 'antd/es/input/TextArea';
-import { IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
+import { Box, IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
 import React, { useState } from 'react';
 import { isValidUrl } from '@/helpers/isValidUrl';
 import { useCollectionStore } from '@/stores/collectionStore';
@@ -17,11 +17,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import { api } from '@/lib/api';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { useQueryClient } from '@tanstack/react-query';
+import { handleUpload } from '@/helpers/handleUpload';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 
 type State = {
     title: string;
     description: string;
     sourceUrl: string;
+    imageUrl: string;
 };
 
 export function ItemAddDialog() {
@@ -30,6 +33,7 @@ export function ItemAddDialog() {
         title: '',
         description: '',
         sourceUrl: '',
+        imageUrl: '',
     });
     const { collection, setCollection } = useCollectionStore();
     const [errorMessage, setErrorMessage] = useState('');
@@ -46,7 +50,10 @@ export function ItemAddDialog() {
         setState((prev) => ({ ...prev, [key]: value }));
     };
 
+    const resetState = () => setState({ title: '', description: '', sourceUrl: '', imageUrl: '' });
+
     const handleClose = () => {
+        resetState();
         setOpen(false);
     };
 
@@ -60,11 +67,12 @@ export function ItemAddDialog() {
                         title: state.title,
                         description: state.description,
                         sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
+                        imageUrl: state.imageUrl === '' ? null : state.imageUrl,
                     },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
 
-            setState({ title: '', description: '', sourceUrl: '' });
+            resetState();
             handleClose();
             setCollection(data.data);
 
@@ -140,6 +148,44 @@ export function ItemAddDialog() {
                         },
                     }}
                 >
+                    <p className={styles.paragraph}>Cover image (Optional)</p>
+
+                    <Box
+                        onClick={() => handleUpload((url) => updateState('imageUrl', url))}
+                        sx={{
+                            border: '2px dashed var(--text-color)',
+                            borderRadius: 2,
+                            height: 220,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: '0.2s',
+                            marginBottom: 3,
+
+                            '&:hover': {
+                                borderColor: 'var(--accent)',
+                                backgroundColor: 'rgba(99,102,241,0.04)',
+                            },
+                        }}
+                    >
+                        {state.imageUrl ? (
+                            <div className={styles.bannerWrapper}>
+                                <img className={styles.banner} src={state.imageUrl} alt="cover" />
+                            </div>
+                        ) : (
+                            <>
+                                <AddPhotoAlternateOutlinedIcon
+                                    sx={{ fontSize: 40, color: '#98A2B3', mb: 1 }}
+                                />
+
+                                <p className={styles.clickToUpload}>Click to upload cover image</p>
+                                <p className={styles.secondary}>PNG, JPG up to 10MB</p>
+                            </>
+                        )}
+                    </Box>
+
                     <p className={styles.paragraph}>Source URL (optional)</p>
                     <Input
                         onChange={(e) => updateState('sourceUrl', e.target.value)}
