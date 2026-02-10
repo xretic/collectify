@@ -9,6 +9,7 @@ export type CollectionFieldProps = {
     likes: number;
     addedToFavorite: number;
     items: number;
+    comments: number;
 };
 
 export type CollectionPropsAdditional = {
@@ -20,17 +21,22 @@ export type CollectionPropsAdditional = {
     bannerUrl: string;
     name: string;
     category: string;
-    likes: {
-        id: number;
-    }[];
-    addedToFavorite: {
-        id: number;
-    }[];
+    liked: boolean;
+    favorited: boolean;
     items: {
         id: number;
         title: string;
         description: string;
         sourceUrl: string | null;
         imageUrl: string | null;
+    }[];
+    comments: number;
+    commentsRes: {
+        id: number;
+        userId: number;
+        username: string;
+        avatarUrl: string;
+        createdAt: Date;
+        text: string;
     }[];
 };

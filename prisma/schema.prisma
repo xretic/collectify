@@ -26,6 +26,7 @@ model User {
     Notification  Notification[]
     sessions      Session[]
     favorites     Collection[]   @relation("FavoriteCollections")
+    Comment       Comment[]
 }
 
 model Notification {
@@ -71,8 +72,19 @@ model Collection {
     User            User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
     items           Item[]
     likes           Like[]
-    Notification    Notification[]
+    comments        Comment[]
     addedToFavorite User[]         @relation("FavoriteCollections")
+    Notification    Notification[]
+}
+
+model Comment {
+    id           Int        @id @default(autoincrement())
+    User         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId       Int
+    collectionId Int
+    text         String
+    Collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    createdAt    DateTime   @default(now())
 }
 
 model Like {

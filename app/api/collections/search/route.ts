@@ -1,5 +1,4 @@
-import { Collection, Item, Like, Prisma, User } from '@/generated/prisma/client';
-import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
+import { Prisma } from '@/generated/prisma/client';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
@@ -20,14 +19,32 @@ function isSortOption(value: unknown): value is SortOption {
     return typeof value === 'string' && SORT_OPTIONS.includes(value as SortOption);
 }
 
-function mapCollection(
-    collection: Collection & {
-        User?: { id: number; fullName?: string; avatarUrl?: string } | null;
-        items: Item[];
-        likes: Like[];
-        addedToFavorite: User[];
-    },
-): CollectionFieldProps {
+type CollectionListRow = Prisma.CollectionGetPayload<{
+    select: {
+        id: true;
+        name: true;
+        bannerUrl: true;
+        category: true;
+        userId: true;
+        User: {
+            select: {
+                id: true;
+                fullName: true;
+                avatarUrl: true;
+            };
+        };
+        _count: {
+            select: {
+                likes: true;
+                addedToFavorite: true;
+                items: true;
+                comments: true;
+            };
+        };
+    };
+}>;
+
+function mapCollection(collection: CollectionListRow): CollectionFieldProps {
     return {
         id: collection.id,
         author: collection.User?.fullName ?? 'Unknown',
@@ -36,9 +53,10 @@ function mapCollection(
         bannerUrl: collection.bannerUrl,
         name: collection.name,
         category: collection.category,
-        likes: collection.likes.length,
-        addedToFavorite: collection.addedToFavorite.length,
-        items: collection.items.length,
+        likes: collection._count.likes,
+        addedToFavorite: collection._count.addedToFavorite,
+        items: collection._count.items,
+        comments: collection._count.comments,
     };
 }
 
@@ -127,6 +145,29 @@ export async function GET(req: NextRequest) {
             if (cached) return NextResponse.json(cached, { status: 200 });
         }
 
+        const selectForList = {
+            id: true,
+            name: true,
+            bannerUrl: true,
+            category: true,
+            userId: true,
+            User: {
+                select: {
+                    id: true,
+                    fullName: true,
+                    avatarUrl: true,
+                },
+            },
+            _count: {
+                select: {
+                    likes: true,
+                    addedToFavorite: true,
+                    items: true,
+                    comments: true,
+                },
+            },
+        } satisfies Prisma.CollectionSelect;
+
         if (userId) {
             const user = await prisma.user.findUnique({
                 where: { id: Number(userId) },
@@ -140,16 +181,9 @@ export async function GET(req: NextRequest) {
                     where: {
                         userId: { in: subscribedUserIds },
                         ...(category && { category }),
-                        lowerCaseName: {
-                            startsWith: query ? query : '',
-                        },
+                        lowerCaseName: { startsWith: query ?? '' },
                     },
-                    include: {
-                        User: true,
-                        items: true,
-                        likes: true,
-                        addedToFavorite: true,
-                    },
+                    select: selectForList,
                     orderBy: ORDER_BY_MAP[sortedBy],
                     take: PAGE_SIZE,
                     skip,
@@ -166,19 +200,10 @@ export async function GET(req: NextRequest) {
                     id: { notIn: excludedIds },
                     ...(authorId && { userId: authorId }),
                     ...(category && { category }),
-                    ...(favoritesUserId && {
-                        addedToFavorite: { some: { id: favoritesUserId } },
-                    }),
-                    name: {
-                        startsWith: query ? query : '',
-                    },
+                    ...(favoritesUserId && { addedToFavorite: { some: { id: favoritesUserId } } }),
+                    lowerCaseName: { startsWith: query ?? '' },
                 },
-                include: {
-                    User: true,
-                    items: true,
-                    likes: true,
-                    addedToFavorite: true,
-                },
+                select: selectForList,
                 orderBy: ORDER_BY_MAP[sortedBy],
                 take: PAGE_SIZE - collections.length,
                 skip,

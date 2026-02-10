@@ -1,3 +1,4 @@
+import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { isValidUrl } from '@/helpers/isValidUrl';
@@ -26,6 +27,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
         if (!isProperInteger(intId)) {
             return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
+        }
+
+        const { searchParams } = new URL(req.url);
+        const raw = searchParams.get('commentsSkip');
+
+        if (raw === null) {
+            return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
+        }
+
+        const commentsSkip = Number(raw);
+
+        if (!isProperInteger(commentsSkip)) {
+            return NextResponse.json(
+                { message: 'commentsSkip must be a non-negative integer.' },
+                { status: 400 },
+            );
         }
 
         const collection = await prisma.collection.findUnique({
@@ -98,17 +115,35 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             },
 
             include: {
-                likes: true,
                 User: true,
-                addedToFavorite: true,
+                comments: true,
                 items: true,
+            },
+        });
+
+        const { liked, favorited } = await collectionActionData(session, collection);
+
+        const commentsRes = await prisma.comment.findMany({
+            where: {
+                collectionId: collection.id,
+            },
+            include: { User: true },
+            skip: commentsSkip,
+            take: 10,
+        });
+
+        const comments = await prisma.comment.count({
+            where: {
+                collectionId: collection.id,
             },
         });
 
         return NextResponse.json(
             {
                 message: 'Collection edited.',
-                data: updatedCollection ? getResData(updatedCollection) : null,
+                data: updatedCollection
+                    ? getResData({ ...updatedCollection, liked, favorited, commentsRes, comments })
+                    : null,
             },
             { status: 200 },
         );

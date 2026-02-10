@@ -1,11 +1,12 @@
 import { NotificationType } from '@/generated/prisma/client';
+import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { upsertNotification } from '@/helpers/upsertNotification';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const intId = Number(id);
 
@@ -13,11 +14,26 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
         return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
     }
 
+    const { searchParams } = new URL(req.url);
+
+    const raw = searchParams.get('commentsSkip');
+
+    if (raw === null) {
+        return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
+    }
+
+    const commentsSkip = Number(raw);
+
+    if (!isProperInteger(commentsSkip)) {
+        return NextResponse.json(
+            { message: 'commentsSkip must be a non-negative integer.' },
+            { status: 400 },
+        );
+    }
+
     const collection = await prisma.collection.findUnique({
         where: { id: intId },
         include: {
-            likes: true,
-            addedToFavorite: true,
             items: true,
             User: true,
         },
@@ -27,7 +43,34 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
         return NextResponse.json({ data: null }, { status: 404 });
     }
 
-    const resData = getResData(collection);
+    const sessionId = req.cookies.get('sessionId')?.value;
+    const session = sessionId
+        ? await prisma.session.findUnique({
+              where: { id: sessionId },
+              include: {
+                  user: true,
+              },
+          })
+        : null;
+
+    const { liked, favorited } = await collectionActionData(session, collection);
+
+    const commentsRes = await prisma.comment.findMany({
+        where: {
+            collectionId: collection.id,
+        },
+        include: { User: true },
+        skip: commentsSkip,
+        take: 10,
+    });
+
+    const comments = await prisma.comment.count({
+        where: {
+            collectionId: collection.id,
+        },
+    });
+
+    const resData = getResData({ ...collection, liked, favorited, commentsRes, comments });
 
     return NextResponse.json(
         {
@@ -45,6 +88,21 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
         if (!actionType || !actions.has(actionType)) {
             return NextResponse.json({ data: null }, { status: 401 });
+        }
+
+        const raw = searchParams.get('commentsSkip');
+
+        if (raw === null) {
+            return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
+        }
+
+        const commentsSkip = Number(raw);
+
+        if (!isProperInteger(commentsSkip)) {
+            return NextResponse.json(
+                { message: 'commentsSkip must be a non-negative integer.' },
+                { status: 400 },
+            );
         }
 
         const sessionId = req.cookies.get('sessionId')?.value;
@@ -102,23 +160,63 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
         }
 
-        const collection = await prisma.collection.update({
+        const collection = await prisma.collection.findUnique({
+            where: { id: intId },
+        });
+
+        if (!collection) {
+            return NextResponse.json({ message: 'Collection not found.' }, { status: 404 });
+        }
+
+        if (actionType === 'like') {
+            const check = await prisma.like.findFirst({
+                where: { userId: sessionUser.id, collectionId: collection.id },
+            });
+
+            if (check) {
+                return NextResponse.json(
+                    { message: 'Collection is already liked.' },
+                    { status: 403 },
+                );
+            }
+        }
+
+        if (actionType === 'favorite') {
+            const check = await prisma.collection.findFirst({
+                where: {
+                    id: collection.id,
+                    addedToFavorite: {
+                        some: {
+                            id: session.userId,
+                        },
+                    },
+                },
+            });
+
+            if (check) {
+                return NextResponse.json(
+                    { message: 'Collection is already favorited.' },
+                    { status: 403 },
+                );
+            }
+        }
+
+        const updatedCollection = await prisma.collection.update({
             where: { id: intId },
             data: actionConfig[actionType],
             include: {
-                likes: true,
-                addedToFavorite: true,
                 items: true,
+                comments: true,
                 User: true,
             },
         });
 
-        if (!collection || !collection.User) {
+        if (!updatedCollection || !updatedCollection.User) {
             return NextResponse.json({ data: null }, { status: 404 });
         }
 
         if (
-            sessionUser.id !== collection.User.id &&
+            sessionUser.id !== updatedCollection.User.id &&
             ['like', 'favorite'].some((x) => x === actionType)
         ) {
             const notificationType: Record<'like' | 'favorite', NotificationType> = {
@@ -128,13 +226,36 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
             await upsertNotification(
                 sessionUser.id,
-                collection.User.id,
+                updatedCollection.User.id,
                 notificationType[actionType as 'like' | 'favorite'],
-                collection.id,
+                updatedCollection.id,
             );
         }
 
-        const resData = getResData(collection);
+        const { liked, favorited } = await collectionActionData(session, updatedCollection);
+
+        const commentsRes = await prisma.comment.findMany({
+            where: {
+                collectionId: collection.id,
+            },
+            include: { User: true },
+            skip: commentsSkip,
+            take: 10,
+        });
+
+        const comments = await prisma.comment.count({
+            where: {
+                collectionId: collection.id,
+            },
+        });
+
+        const resData = getResData({
+            ...updatedCollection,
+            liked,
+            favorited,
+            commentsRes,
+            comments,
+        });
 
         return NextResponse.json(
             {

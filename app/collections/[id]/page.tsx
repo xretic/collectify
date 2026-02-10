@@ -1,7 +1,7 @@
 'use client';
 
 import { useUser } from '@/context/UserProvider';
-import { Avatar, IconButton, Tooltip } from '@mui/material';
+import { Avatar, IconButton, SxProps, Theme, Tooltip, Button as MuiButton } from '@mui/material';
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -31,9 +31,37 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { api } from '@/lib/api';
 import { Loader } from '@/components/ui/Loader';
+import TextArea from 'antd/es/input/TextArea';
+import { COMMENT_MAX_LENGTH } from '@/lib/constans';
+import { useUIStore } from '@/stores/uiStore';
+import { CollectionComment } from '@/components/features/collections/CollectionComment';
 
 type OrderPayloadItem = { id: number; order: number };
 type ActionType = 'like' | 'dislike' | 'favorite' | 'unfavorite';
+
+function applyActionOptimistic(
+    prev: CollectionPropsAdditional,
+    action: ActionType,
+): CollectionPropsAdditional {
+    const next: any = { ...prev };
+
+    if (action === 'like') next.liked = true;
+    if (action === 'dislike') next.liked = false;
+    if (action === 'favorite') next.favorited = true;
+    if (action === 'unfavorite') next.favorited = false;
+
+    if (typeof next.likesCount === 'number') {
+        const delta = action === 'like' ? 1 : action === 'dislike' ? -1 : 0;
+        next.likesCount = Math.max(0, next.likesCount + delta);
+    }
+
+    if (typeof next.favoritesCount === 'number') {
+        const delta = action === 'favorite' ? 1 : action === 'unfavorite' ? -1 : 0;
+        next.favoritesCount = Math.max(0, next.favoritesCount + delta);
+    }
+
+    return next as CollectionPropsAdditional;
+}
 
 export default function CollectionPage() {
     const params = useParams();
@@ -43,11 +71,7 @@ export default function CollectionPage() {
     const queryClient = useQueryClient();
 
     const { user, loading } = useUser();
-
     const { collection, setCollection } = useCollectionStore();
-
-    const [liked, setLiked] = useState(false);
-    const [favorited, setFavorited] = useState(false);
 
     const [pendingOrder, setPendingOrder] = useState<OrderPayloadItem[] | null>(null);
     const debouncedOrder = useDebounce(pendingOrder, 800);
@@ -55,8 +79,31 @@ export default function CollectionPage() {
     const { setOpen } = useDialogStore();
     const { setOpenDialog } = useDeleteDialogStore();
     const { setOpenEditing } = useEditingDialogStore();
+    const { startLoading, stopLoading, loadingCount } = useUIStore();
+
+    const [commentText, setCommentText] = useState('');
+    const [replyCommentId, setReplyCommentId] = useState(0);
+    const [commentsSkip, setCommentsSkip] = useState(0); // TODO: make a skip setting while scrolling
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+
+    const buttonsStyle: SxProps<Theme> = {
+        borderRadius: 6,
+        textTransform: 'none',
+        color: 'var(--text-color)',
+        position: 'absolute',
+        right: '12px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: 2,
+        margin: 0,
+    };
+
+    const inputStyle: Record<string, string> = {
+        backgroundColor: 'var(--container-color)',
+        color: 'var(--text-color)',
+        borderColor: 'var(--border-color)',
+    };
 
     const collectionKey = useMemo(() => ['collection', String(id)] as const, [id]);
 
@@ -68,9 +115,8 @@ export default function CollectionPage() {
             refetchOnWindowFocus: false,
             queryFn: async () => {
                 const res = await api
-                    .get(`api/collections/${id}/action`)
+                    .get(`api/collections/${id}/action`, { searchParams: { commentsSkip } })
                     .json<{ data: CollectionPropsAdditional }>();
-
                 return res.data;
             },
         });
@@ -88,91 +134,102 @@ export default function CollectionPage() {
         mutationFn: async (action: ActionType) => {
             const res = await api
                 .patch(`api/collections/${id}/action`, {
-                    searchParams: { actionType: action },
+                    searchParams: { actionType: action, commentsSkip },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
-
             return res.data;
         },
-
         onMutate: async (action) => {
-            queryClient.removeQueries({
-                queryKey: ['collections-search'],
-            });
-
             await queryClient.cancelQueries({ queryKey: collectionKey });
 
-            const previous = queryClient.getQueryData<CollectionPropsAdditional>(collectionKey);
+            const prev = queryClient.getQueryData<CollectionPropsAdditional>(collectionKey);
+            if (prev) {
+                const optimistic = applyActionOptimistic(prev, action);
+                queryClient.setQueryData(collectionKey, optimistic);
+                setCollection(optimistic);
+            }
 
-            queryClient.setQueryData<CollectionPropsAdditional>(collectionKey, (old) => {
-                if (!old || !user) return old;
-
-                const userId = user.id;
-
-                if (action === 'like') {
-                    if (old.likes?.some((x: any) => x.id === userId)) return old;
-                    return { ...old, likes: [...(old.likes ?? []), { id: userId }] };
-                }
-
-                if (action === 'dislike') {
-                    return { ...old, likes: (old.likes ?? []).filter((x: any) => x.id !== userId) };
-                }
-
-                if (action === 'favorite') {
-                    if (old.addedToFavorite?.some((x: any) => x.id === userId)) return old;
-                    return {
-                        ...old,
-                        addedToFavorite: [...(old.addedToFavorite ?? []), { id: userId }],
-                    };
-                }
-
-                if (action === 'unfavorite') {
-                    return {
-                        ...old,
-                        addedToFavorite: (old.addedToFavorite ?? []).filter(
-                            (x: any) => x.id !== userId,
-                        ),
-                    };
-                }
-
-                return old;
-            });
-
-            return { previous };
+            return { prev };
         },
-
         onError: (_err, _action, ctx) => {
-            if (ctx?.previous) queryClient.setQueryData(collectionKey, ctx.previous);
+            if (ctx?.prev) {
+                queryClient.setQueryData(collectionKey, ctx.prev);
+                setCollection(ctx.prev);
+            }
         },
-
-        onSuccess: (serverCollection) => {
-            queryClient.setQueryData(collectionKey, serverCollection);
+        onSuccess: (server) => {
+            queryClient.setQueryData(collectionKey, server);
+            setCollection(server);
+            queryClient.invalidateQueries({ queryKey: ['collections-search'] });
         },
     });
 
+    const commentMutation = useMutation({
+        mutationFn: async (payload: { text: string; replyCommentId: number }) => {
+            const res = await api
+                .post(`api/collections/${id}/comment`, {
+                    json: { text: payload.text },
+                    searchParams:
+                        payload.replyCommentId !== 0
+                            ? { replyCommentId: String(payload.replyCommentId), commentsSkip }
+                            : { commentsSkip },
+                })
+                .json<{ data: CollectionPropsAdditional }>();
+            return res.data;
+        },
+        onMutate: async () => {
+            await queryClient.cancelQueries({ queryKey: collectionKey });
+            const prev = queryClient.getQueryData<CollectionPropsAdditional>(collectionKey);
+            return { prev };
+        },
+        onError: (_err, _vars, ctx) => {
+            if (ctx?.prev) {
+                queryClient.setQueryData(collectionKey, ctx.prev);
+                setCollection(ctx.prev);
+            }
+        },
+        onSuccess: (server) => {
+            queryClient.setQueryData(collectionKey, server);
+            setCollection(server);
+            queryClient.invalidateQueries({ queryKey: ['collections-search'] });
+        },
+    });
+
+    const orderMutation = useMutation({
+        mutationFn: async (items: OrderPayloadItem[]) => {
+            await api.patch(`api/collections/${id}/order`, { json: { items } });
+            return true;
+        },
+    });
+
+    const isOwner = !!(user && collection && user.id === collection.authorId);
+
+    const liked = !!collection?.liked;
+    const favorited = !!collection?.favorited;
+
     const handleLike = () => {
-        if (!user) return;
-
-        const nextAction: ActionType = liked ? 'dislike' : 'like';
-
-        setLiked((x) => !x);
-
-        actionMutation.mutate(nextAction, {
-            onError: () => setLiked((v) => !v),
-        });
+        if (!user || !id) return;
+        actionMutation.mutate(liked ? 'dislike' : 'like');
     };
 
     const handleFavorite = () => {
-        if (!user) return;
-
-        const nextAction: ActionType = favorited ? 'unfavorite' : 'favorite';
-        setFavorited((x) => !x);
-        actionMutation.mutate(nextAction, {
-            onError: () => setFavorited((v) => !v),
-        });
+        if (!user || !id) return;
+        actionMutation.mutate(favorited ? 'unfavorite' : 'favorite');
     };
 
-    const isOwner = !!(user && collection && user.id === collection.authorId);
+    const handleSendComment = async () => {
+        if (!id) return;
+        if (!commentText.trim()) return;
+
+        startLoading();
+        try {
+            await commentMutation.mutateAsync({ text: commentText, replyCommentId });
+            setCommentText('');
+            setReplyCommentId(0);
+        } finally {
+            stopLoading();
+        }
+    };
 
     const handleDragEnd = ({ active, over }: any) => {
         if (!over || active.id === over.id) return;
@@ -200,45 +257,26 @@ export default function CollectionPage() {
         });
     };
 
-    const { mutate: saveOrder } = useMutation({
-        mutationFn: async (items: OrderPayloadItem[]) => {
-            await api.patch(`api/collections/${id}/order`, {
-                json: { items },
-            });
-        },
-    });
-
     const lastSentRef = useRef<string>('');
 
     useEffect(() => {
         if (!debouncedOrder) return;
         if (!isOwner) return;
+        if (!id) return;
 
         const key = JSON.stringify(debouncedOrder);
         if (key === lastSentRef.current) return;
         lastSentRef.current = key;
 
-        saveOrder(debouncedOrder, {
-            onSuccess: () => {
-                setPendingOrder(null);
-            },
+        orderMutation.mutate(debouncedOrder, {
+            onSuccess: () => setPendingOrder(null),
         });
-    }, [debouncedOrder, isOwner, saveOrder]);
-
-    useEffect(() => {
-        if (loading) return;
-        if (!user) return;
-        const src = collectionData ?? collection;
-        if (!src) return;
-
-        setLiked(src.likes?.some((x: any) => x.id === user.id) ?? false);
-        setFavorited(src.addedToFavorite?.some((x: any) => x.id === user.id) ?? false);
-    }, [loading, user, collectionData, collection]);
+    }, [debouncedOrder, isOwner, id, orderMutation]);
 
     if (loading) return null;
     if (!collection) return <Loader />;
 
-    return collection ? (
+    return (
         <>
             <div className={styles['container']}>
                 <span className={styles['title']}>{collection.name}</span>
@@ -251,9 +289,7 @@ export default function CollectionPage() {
                     sizes="100vw"
                     className={styles.banner}
                 />
-
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/50 to-transparent pointer-events-none" />
-
                 <Link href={'/users/' + collection.authorId} className={styles['author']}>
                     <Avatar
                         alt={collection.author}
@@ -265,6 +301,7 @@ export default function CollectionPage() {
                     <span>{collection.author}</span>
                 </Link>
             </div>
+
             <div className={styles['description-container']}>
                 <h1 className={styles['header']}>
                     <span>Description</span>
@@ -294,7 +331,7 @@ export default function CollectionPage() {
                     <Button
                         danger
                         onClick={handleLike}
-                        disabled={!user}
+                        disabled={!user || actionMutation.isPending}
                         icon={
                             liked ? (
                                 <FavoriteIcon sx={{ width: 17, height: 17 }} />
@@ -320,7 +357,7 @@ export default function CollectionPage() {
                         <Button
                             className={!user ? '' : styles['favorite-button-yellow-outline']}
                             onClick={handleFavorite}
-                            disabled={!user}
+                            disabled={!user || actionMutation.isPending}
                             icon={
                                 favorited ? (
                                     <BookmarkIcon sx={{ width: 17, height: 17 }} />
@@ -372,9 +409,47 @@ export default function CollectionPage() {
                 )}
             </div>
 
+            <div className={styles.commentDivider}>
+                <p className={styles.commentsAmount}>{collection.comments} comments</p>
+
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            colorTextPlaceholder: 'var(--soft-text)',
+                            colorIcon: 'var(--soft-text)',
+                        },
+                    }}
+                >
+                    <div className={styles.commentInput}>
+                        <TextArea
+                            value={commentText}
+                            maxLength={COMMENT_MAX_LENGTH}
+                            placeholder="Write your comment"
+                            onChange={(e) => setCommentText(e.target.value)}
+                            style={{ height: 70, resize: 'none', ...inputStyle }}
+                        />
+
+                        <MuiButton
+                            variant="contained"
+                            onClick={handleSendComment}
+                            disabled={loadingCount > 0 || commentMutation.isPending}
+                            sx={buttonsStyle}
+                        >
+                            Send
+                        </MuiButton>
+                    </div>
+
+                    <div className={styles.comments}>
+                        {collection.commentsRes.map((x) => (
+                            <CollectionComment key={x.id} comment={x} />
+                        ))}
+                    </div>
+                </ConfigProvider>
+            </div>
+
             <ItemAddDialog />
             <CollectionDeleteDialog />
             <CollectionEditingDialog />
         </>
-    ) : null;
+    );
 }

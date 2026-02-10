@@ -31,16 +31,18 @@ export default function CollectionField({
             <div className={styles.content}>
                 <h2 className={styles.title}>{name}</h2>
 
-                <div
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        router.replace('/users/' + authorId);
-                    }}
-                    className={styles.author}
-                >
+                <div className={styles.author}>
                     <Avatar src={authorAvatarUrl} alt={author} sx={{ width: 24, height: 24 }} />
-                    <span className={styles['author-name']}>{author}</span>
+                    <span
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            router.replace('/users/' + authorId);
+                        }}
+                        className={styles['author-name']}
+                    >
+                        {author}
+                    </span>
                 </div>
 
                 <div className={styles.border} />

@@ -1,3 +1,4 @@
+import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { isValidUrl } from '@/helpers/isValidUrl';
@@ -12,6 +13,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         const sessionId = req.cookies.get('sessionId')?.value;
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
+            include: {
+                user: true,
+            },
         });
 
         if (!session) {
@@ -23,6 +27,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         if (!isProperInteger(intId)) {
             return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
+        }
+
+        const { searchParams } = new URL(req.url);
+        const commentsSkip = Number(searchParams.get('commentsSkip'));
+
+        if (!commentsSkip || !isProperInteger(commentsSkip)) {
+            return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
         }
 
         const collection = await prisma.collection.findUnique({
@@ -108,17 +119,41 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 id: intId,
             },
             include: {
-                likes: true,
-                addedToFavorite: true,
                 items: true,
+                comments: true,
                 User: true,
+            },
+        });
+
+        const { liked, favorited } = await collectionActionData(session, collection);
+
+        const commentsRes = await prisma.comment.findMany({
+            where: {
+                collectionId: collection.id,
+            },
+            include: { User: true },
+            skip: commentsSkip,
+            take: 10,
+        });
+
+        const comments = await prisma.comment.count({
+            where: {
+                collectionId: collection.id,
             },
         });
 
         return NextResponse.json(
             {
                 message: 'Item created.',
-                data: updatedCollection ? getResData(updatedCollection) : null,
+                data: updatedCollection
+                    ? getResData({
+                          ...updatedCollection,
+                          liked,
+                          favorited,
+                          commentsRes,
+                          comments,
+                      })
+                    : null,
             },
             { status: 200 },
         );
@@ -140,6 +175,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         const sessionId = req.cookies.get('sessionId')?.value;
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
+            include: {
+                user: true,
+            },
         });
 
         if (!session) {
@@ -151,6 +189,21 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
         if (!isProperInteger(intId)) {
             return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
+        }
+
+        const raw = searchParams.get('commentsSkip');
+
+        if (raw === null) {
+            return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
+        }
+
+        const commentsSkip = Number(raw);
+
+        if (!isProperInteger(commentsSkip)) {
+            return NextResponse.json(
+                { message: 'commentsSkip must be a non-negative integer.' },
+                { status: 400 },
+            );
         }
 
         const collection = await prisma.collection.findUnique({
@@ -197,9 +250,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         const updatedCollection = await prisma.collection.findUnique({
             where: { id: collection.id },
             include: {
-                likes: true,
-                addedToFavorite: true,
                 items: true,
+                comments: true,
                 User: true,
             },
         });
@@ -208,7 +260,30 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
             return NextResponse.json({ message: 'Something went wrong!' }, { status: 500 });
         }
 
-        const resData = getResData(updatedCollection);
+        const { liked, favorited } = await collectionActionData(session, collection);
+
+        const commentsRes = await prisma.comment.findMany({
+            where: {
+                collectionId: collection.id,
+            },
+            include: { User: true },
+            skip: commentsSkip,
+            take: 10,
+        });
+
+        const comments = await prisma.comment.count({
+            where: {
+                collectionId: collection.id,
+            },
+        });
+
+        const resData = getResData({
+            ...updatedCollection,
+            liked,
+            favorited,
+            commentsRes,
+            comments,
+        });
 
         return NextResponse.json(
             {

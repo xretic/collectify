@@ -221,6 +221,35 @@
     cursor: pointer;
 }
 
+.commentDivider {
+    background-color: var(--container-color);
+    max-width: 1450px;
+    margin: 21px auto 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 25px 30px;
+    margin-top: 50px;
+}
+
+.commentsAmount {
+    font-family: var(--font-google-sans), sans-serif;
+    color: var(--text-color);
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.commentInput {
+    position: relative;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
 @media (max-width: 700px) {
     .title,
     .author,
