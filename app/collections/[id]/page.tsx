@@ -82,7 +82,6 @@ export default function CollectionPage() {
     const { startLoading, stopLoading, loadingCount } = useUIStore();
 
     const [commentText, setCommentText] = useState('');
-    const [replyCommentId, setReplyCommentId] = useState(0);
     const [commentsSkip, setCommentsSkip] = useState(0); // TODO: make a skip setting while scrolling
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
@@ -165,14 +164,11 @@ export default function CollectionPage() {
     });
 
     const commentMutation = useMutation({
-        mutationFn: async (payload: { text: string; replyCommentId: number }) => {
+        mutationFn: async (payload: { text: string }) => {
             const res = await api
                 .post(`api/collections/${id}/comment`, {
                     json: { text: payload.text },
-                    searchParams:
-                        payload.replyCommentId !== 0
-                            ? { replyCommentId: String(payload.replyCommentId), commentsSkip }
-                            : { commentsSkip },
+                    searchParams: { commentsSkip },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
             return res.data;
@@ -222,10 +218,10 @@ export default function CollectionPage() {
         if (!commentText.trim()) return;
 
         startLoading();
+
         try {
-            await commentMutation.mutateAsync({ text: commentText, replyCommentId });
+            await commentMutation.mutateAsync({ text: commentText });
             setCommentText('');
-            setReplyCommentId(0);
         } finally {
             stopLoading();
         }
