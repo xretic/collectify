@@ -4,8 +4,8 @@ import { randomUUID } from 'crypto';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
-import { api } from '@/lib/api';
 import { Prisma } from '@/generated/prisma/client';
+import ky from 'ky';
 
 type GoogleTokenResponse = {
     access_token?: string;
@@ -38,7 +38,7 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'No code provided' }, { status: 400 });
         }
 
-        const tokenData = await api
+        const tokenData = await ky
             .post('https://oauth2.googleapis.com/token', {
                 headers: { 'Content-Type': 'application/json' },
                 json: {
@@ -58,7 +58,7 @@ export async function GET(req: Request) {
             );
         }
 
-        const googleUser = await api
+        const googleUser = await ky
             .get('https://www.googleapis.com/oauth2/v2/userinfo', {
                 headers: { Authorization: `Bearer ${tokenData.access_token}` },
             })
