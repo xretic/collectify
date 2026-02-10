@@ -45,7 +45,7 @@ type State = {
     cooldown: boolean;
 };
 
-type Tab = '' | 'author' | 'favorites';
+type Tab = 'authorTab' | 'favoritesTab';
 
 export default function ProfilePage() {
     const { user, loading, setUser } = useUser();
@@ -59,7 +59,7 @@ export default function ProfilePage() {
         bannerUrl: '',
         avatarUrl: '',
         errorMessage: '',
-        tab: '' as Tab,
+        tab: 'authorTab' as Tab,
         cooldown: false,
     });
 
@@ -69,8 +69,6 @@ export default function ProfilePage() {
 
     const { sortedBy } = useUIStore();
     const { profilePagination } = usePaginationStore();
-    const authorTab = user ? `&authorId=${user.id}` : '';
-    const favoritesTab = user ? `&favoritesUserId=${user.id}` : '';
     const disabled =
         !state.fullName.trim() ||
         !isUsernameValid(state.username) ||
@@ -85,12 +83,6 @@ export default function ProfilePage() {
             router.replace('/');
         }
     }, [user, loading, router]);
-
-    useEffect(() => {
-        if (user && !state.tab) {
-            updateState('tab', authorTab);
-        }
-    }, [user, authorTab, state.tab]);
 
     const params = useMemo(() => {
         return {
@@ -111,11 +103,11 @@ export default function ProfilePage() {
                 skip: String(params.skip),
             });
 
-            if (params.tab === 'author') {
+            if (params.tab === 'authorTab') {
                 searchParams.set('authorId', String(params.userId));
             }
 
-            if (params.tab === 'favorites') {
+            if (params.tab === 'favoritesTab') {
                 searchParams.set('favoritesUserId', String(params.userId));
             }
 
@@ -128,7 +120,7 @@ export default function ProfilePage() {
     const collections = data?.data ?? [];
 
     const handleTabChoice = (choice: 'authorTab' | 'favoritesTab') => {
-        updateState('tab', choice === 'authorTab' ? authorTab : favoritesTab);
+        updateState('tab', choice === 'authorTab' ? 'authorTab' : 'favoritesTab');
     };
 
     if (!user) return null;
@@ -364,7 +356,7 @@ export default function ProfilePage() {
 
                 <div className={styles['collections-category']}>
                     <Button
-                        variant={state.tab === authorTab ? 'contained' : 'outlined'}
+                        variant={state.tab === 'authorTab' ? 'contained' : 'outlined'}
                         onClick={() => handleTabChoice('authorTab')}
                         sx={{
                             borderRadius: 10,
@@ -376,7 +368,7 @@ export default function ProfilePage() {
                     </Button>
 
                     <Button
-                        variant={state.tab === favoritesTab ? 'contained' : 'outlined'}
+                        variant={state.tab === 'favoritesTab' ? 'contained' : 'outlined'}
                         onClick={() => handleTabChoice('favoritesTab')}
                         sx={{ borderRadius: 10, textTransform: 'none' }}
                     >

@@ -7,15 +7,17 @@ import Menu from '@mui/material/Menu';
 import { LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
 import { useUIStore } from '@/stores/uiStore';
 import { useUser } from '@/context/UserProvider';
-import Alert from '@mui/material/Alert';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function HoverMenu() {
     const { setUser } = useUser();
     const { anchorEl, setAnchorEl, startLoading, stopLoading } = useUIStore();
+    const queryClient = useQueryClient();
 
     const handleClose = (path?: string | null) => {
+        queryClient.clear();
         setAnchorEl(null);
 
         if (path) {

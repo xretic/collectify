@@ -420,24 +420,26 @@ export default function CollectionPage() {
                         },
                     }}
                 >
-                    <div className={styles.commentInput}>
-                        <TextArea
-                            value={commentText}
-                            maxLength={COMMENT_MAX_LENGTH}
-                            placeholder="Write your comment"
-                            onChange={(e) => setCommentText(e.target.value)}
-                            style={{ height: 70, resize: 'none', ...inputStyle }}
-                        />
+                    {user && (
+                        <div className={styles.commentInput}>
+                            <TextArea
+                                value={commentText}
+                                maxLength={COMMENT_MAX_LENGTH}
+                                placeholder="Write your comment"
+                                onChange={(e) => setCommentText(e.target.value)}
+                                style={{ height: 70, resize: 'none', ...inputStyle }}
+                            />
 
-                        <MuiButton
-                            variant="contained"
-                            onClick={handleSendComment}
-                            disabled={loadingCount > 0 || commentMutation.isPending}
-                            sx={buttonsStyle}
-                        >
-                            Send
-                        </MuiButton>
-                    </div>
+                            <MuiButton
+                                variant="contained"
+                                onClick={handleSendComment}
+                                disabled={loadingCount > 0 || commentMutation.isPending}
+                                sx={buttonsStyle}
+                            >
+                                Send
+                            </MuiButton>
+                        </div>
+                    )}
 
                     <div className={styles.comments}>
                         {collection.commentsRes.map((x) => (
