@@ -2,7 +2,7 @@ import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { isValidUrl } from '@/helpers/isValidUrl';
-import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
+import { COMMENTS_LIMIT, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -133,6 +133,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             },
             include: { User: true },
             skip: commentsSkip,
+            orderBy: { createdAt: 'desc' },
             take: 10,
         });
 
@@ -268,7 +269,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
             },
             include: { User: true },
             skip: commentsSkip,
-            take: 10,
+            orderBy: { createdAt: 'desc' },
+            take: COMMENTS_LIMIT,
         });
 
         const comments = await prisma.comment.count({

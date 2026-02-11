@@ -2,7 +2,11 @@ import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { isValidUrl } from '@/helpers/isValidUrl';
-import { COLLECTION_DESCRIPTION_MAX_LENGTH, COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
+import {
+    COLLECTION_DESCRIPTION_MAX_LENGTH,
+    COLLECTION_NAME_MAX_LENGTH,
+    COMMENTS_LIMIT,
+} from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -129,7 +133,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             },
             include: { User: true },
             skip: commentsSkip,
-            take: 10,
+            orderBy: { createdAt: 'desc' },
+            take: COMMENTS_LIMIT,
         });
 
         const comments = await prisma.comment.count({

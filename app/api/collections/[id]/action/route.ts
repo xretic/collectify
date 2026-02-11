@@ -3,6 +3,7 @@ import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { upsertNotification } from '@/helpers/upsertNotification';
+import { COMMENTS_LIMIT } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -60,6 +61,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             collectionId: collection.id,
         },
         include: { User: true },
+        orderBy: { createdAt: 'desc' },
         skip: commentsSkip,
         take: 10,
     });
@@ -240,7 +242,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             },
             include: { User: true },
             skip: commentsSkip,
-            take: 10,
+            orderBy: { createdAt: 'desc' },
+            take: COMMENTS_LIMIT,
         });
 
         const comments = await prisma.comment.count({

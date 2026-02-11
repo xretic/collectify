@@ -119,7 +119,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             },
             include: { User: true },
             skip: commentsSkip,
-            take: 10,
+            orderBy: { createdAt: 'desc' },
+            take: COMMENTS_LIMIT,
         });
 
         const comments = await prisma.comment.count({

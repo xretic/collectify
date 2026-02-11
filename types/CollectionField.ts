@@ -36,7 +36,7 @@ export type CollectionPropsAdditional = {
         userId: number;
         username: string;
         avatarUrl: string;
-        createdAt: Date;
+        createdAt: string;
         text: string;
     }[];
 };

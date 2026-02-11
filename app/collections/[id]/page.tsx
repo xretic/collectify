@@ -1,12 +1,21 @@
 'use client';
 
 import { useUser } from '@/context/UserProvider';
-import { Avatar, IconButton, SxProps, Theme, Tooltip, Button as MuiButton } from '@mui/material';
+import {
+    Avatar,
+    IconButton,
+    SxProps,
+    Theme,
+    Tooltip,
+    Button as MuiButton,
+    SnackbarCloseReason,
+    Snackbar,
+} from '@mui/material';
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -27,14 +36,15 @@ import { useDeleteDialogStore } from '@/stores/dialogs/deleteDialogStore';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { CollectionEditingDialog } from '@/components/features/collections/CollectionEditingDialog';
 import { useEditingDialogStore } from '@/stores/dialogs/editCollectionDialogStore';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { api } from '@/lib/api';
 import { Loader } from '@/components/ui/Loader';
 import TextArea from 'antd/es/input/TextArea';
-import { COMMENT_MAX_LENGTH } from '@/lib/constans';
+import { COMMENT_MAX_LENGTH, COMMENTS_LIMIT } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
 import { CollectionComment } from '@/components/features/collections/CollectionComment';
+import CloseIcon from '@mui/icons-material/Close';
 
 type OrderPayloadItem = { id: number; order: number };
 type ActionType = 'like' | 'dislike' | 'favorite' | 'unfavorite';
@@ -71,7 +81,7 @@ export default function CollectionPage() {
     const queryClient = useQueryClient();
 
     const { user, loading } = useUser();
-    const { collection, setCollection } = useCollectionStore();
+    const { collection, setCollection, comments, addComments, setComments } = useCollectionStore();
 
     const [pendingOrder, setPendingOrder] = useState<OrderPayloadItem[] | null>(null);
     const debouncedOrder = useDebounce(pendingOrder, 800);
@@ -81,8 +91,8 @@ export default function CollectionPage() {
     const { setOpenEditing } = useEditingDialogStore();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
 
+    const [errorMsg, setErrorMsg] = useState('');
     const [commentText, setCommentText] = useState('');
-    const [commentsSkip, setCommentsSkip] = useState(0); // TODO: make a skip setting while scrolling
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
@@ -105,6 +115,14 @@ export default function CollectionPage() {
     };
 
     const collectionKey = useMemo(() => ['collection', String(id)] as const, [id]);
+    const commentsKey = useMemo(() => ['collection-comments', String(id)] as const, [id]);
+
+    const commentsInitializedRef = useRef(false);
+
+    useEffect(() => {
+        commentsInitializedRef.current = false;
+        setComments(null);
+    }, [id, setComments]);
 
     const { data: collectionData, isError: isCollectionError } =
         useQuery<CollectionPropsAdditional>({
@@ -114,7 +132,7 @@ export default function CollectionPage() {
             refetchOnWindowFocus: false,
             queryFn: async () => {
                 const res = await api
-                    .get(`api/collections/${id}/action`, { searchParams: { commentsSkip } })
+                    .get(`api/collections/${id}/action`, { searchParams: { commentsSkip: 0 } })
                     .json<{ data: CollectionPropsAdditional }>();
                 return res.data;
             },
@@ -129,25 +147,56 @@ export default function CollectionPage() {
         router.replace('/');
     }, [isCollectionError, router]);
 
+    const commentsQuery = useInfiniteQuery({
+        queryKey: commentsKey,
+        enabled: !!id,
+        initialPageParam: 0,
+        queryFn: async ({ pageParam }) => {
+            const res = await api
+                .get(`api/collections/${id}/action`, {
+                    searchParams: { commentsSkip: pageParam },
+                })
+                .json<{ data: CollectionPropsAdditional }>();
+            return res.data;
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            const got = lastPage.commentsRes?.length ?? 0;
+            if (got < COMMENTS_LIMIT) return undefined;
+            return allPages.length * COMMENTS_LIMIT;
+        },
+    });
+
+    useEffect(() => {
+        if (commentsInitializedRef.current) return;
+        const first = commentsQuery.data?.pages?.[0]?.commentsRes;
+        if (!first) return;
+        setComments(first);
+        commentsInitializedRef.current = true;
+    }, [commentsQuery.data, setComments]);
+
+    const applyServer = (server: CollectionPropsAdditional) => {
+        setCollection(server);
+        queryClient.setQueryData(collectionKey, server);
+        queryClient.invalidateQueries({ queryKey: ['collections-search'] });
+    };
+
     const actionMutation = useMutation({
         mutationFn: async (action: ActionType) => {
             const res = await api
                 .patch(`api/collections/${id}/action`, {
-                    searchParams: { actionType: action, commentsSkip },
+                    searchParams: { actionType: action, commentsSkip: 0 },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
             return res.data;
         },
         onMutate: async (action) => {
             await queryClient.cancelQueries({ queryKey: collectionKey });
-
             const prev = queryClient.getQueryData<CollectionPropsAdditional>(collectionKey);
             if (prev) {
                 const optimistic = applyActionOptimistic(prev, action);
                 queryClient.setQueryData(collectionKey, optimistic);
                 setCollection(optimistic);
             }
-
             return { prev };
         },
         onError: (_err, _action, ctx) => {
@@ -156,38 +205,24 @@ export default function CollectionPage() {
                 setCollection(ctx.prev);
             }
         },
-        onSuccess: (server) => {
-            queryClient.setQueryData(collectionKey, server);
-            setCollection(server);
-            queryClient.invalidateQueries({ queryKey: ['collections-search'] });
-        },
+        onSuccess: applyServer,
     });
 
     const commentMutation = useMutation({
-        mutationFn: async (payload: { text: string }) => {
+        mutationFn: async ({ text }: { text: string }) => {
             const res = await api
                 .post(`api/collections/${id}/comment`, {
-                    json: { text: payload.text },
-                    searchParams: { commentsSkip },
+                    json: { text },
+                    searchParams: { commentsSkip: 0 },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
             return res.data;
         },
-        onMutate: async () => {
-            await queryClient.cancelQueries({ queryKey: collectionKey });
-            const prev = queryClient.getQueryData<CollectionPropsAdditional>(collectionKey);
-            return { prev };
-        },
-        onError: (_err, _vars, ctx) => {
-            if (ctx?.prev) {
-                queryClient.setQueryData(collectionKey, ctx.prev);
-                setCollection(ctx.prev);
-            }
-        },
-        onSuccess: (server) => {
-            queryClient.setQueryData(collectionKey, server);
-            setCollection(server);
-            queryClient.invalidateQueries({ queryKey: ['collections-search'] });
+        onSuccess: async (server) => {
+            applyServer(server);
+            commentsInitializedRef.current = false;
+            setComments(null);
+            await queryClient.invalidateQueries({ queryKey: commentsKey });
         },
     });
 
@@ -199,7 +234,6 @@ export default function CollectionPage() {
     });
 
     const isOwner = !!(user && collection && user.id === collection.authorId);
-
     const liked = !!collection?.liked;
     const favorited = !!collection?.favorited;
 
@@ -221,11 +255,27 @@ export default function CollectionPage() {
 
         try {
             await commentMutation.mutateAsync({ text: commentText });
-            setCommentText('');
+        } catch {
+            setErrorMsg('You have reached the limit');
         } finally {
+            setCommentText('');
             stopLoading();
         }
     };
+
+    const handleLoadMore = useCallback(async () => {
+        if (!commentsQuery.hasNextPage || commentsQuery.isFetchingNextPage) return;
+
+        const res = await commentsQuery.fetchNextPage();
+        const lastPage = res.data?.pages?.at(-1);
+        const next = lastPage?.commentsRes ?? [];
+        if (next.length) addComments(next);
+    }, [
+        commentsQuery.hasNextPage,
+        commentsQuery.isFetchingNextPage,
+        commentsQuery.fetchNextPage,
+        addComments,
+    ]);
 
     const handleDragEnd = ({ active, over }: any) => {
         if (!over || active.id === over.id) return;
@@ -254,6 +304,26 @@ export default function CollectionPage() {
     };
 
     const lastSentRef = useRef<string>('');
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const el = loadMoreRef.current;
+        if (!el) return;
+
+        if (!commentsQuery.hasNextPage) return;
+
+        const obs = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) {
+                    handleLoadMore();
+                }
+            },
+            { root: null, rootMargin: '300px 0px 300px 0px', threshold: 0 },
+        );
+
+        obs.observe(el);
+        return () => obs.disconnect();
+    }, [commentsQuery.hasNextPage, commentsQuery.isFetchingNextPage, handleLoadMore]);
 
     useEffect(() => {
         if (!debouncedOrder) return;
@@ -269,11 +339,35 @@ export default function CollectionPage() {
         });
     }, [debouncedOrder, isOwner, id, orderMutation]);
 
+    const handleClose = (_: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setErrorMsg('');
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
+
     if (loading) return null;
     if (!collection) return <Loader />;
 
     return (
         <>
+            <Snackbar
+                open={errorMsg !== ''}
+                autoHideDuration={5000}
+                onClose={handleClose}
+                message={errorMsg}
+                action={action}
+            />
+
             <div className={styles['container']}>
                 <span className={styles['title']}>{collection.name}</span>
                 <span className={styles['category']}>{collection.category}</span>
@@ -438,10 +532,15 @@ export default function CollectionPage() {
                     )}
 
                     <div className={styles.comments}>
-                        {collection.commentsRes.map((x) => (
-                            <CollectionComment key={x.id} comment={x} />
-                        ))}
+                        {comments && comments.length > 0
+                            ? comments.map((x) => <CollectionComment key={x.id} comment={x} />)
+                            : null}
+                        {commentsQuery.hasNextPage ? (
+                            <div ref={loadMoreRef} style={{ height: 1 }} />
+                        ) : null}
                     </div>
+
+                    {commentsQuery.isFetchingNextPage ? <Loader /> : null}
                 </ConfigProvider>
             </div>
 
