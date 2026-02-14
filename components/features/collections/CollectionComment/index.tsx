@@ -1,5 +1,8 @@
 import styles from './index.module.css';
 import moment from 'moment';
+import { useUIStore } from '@/stores/uiStore';
+import CommentHoverMenu from '@/components/features/collections/CommentHoverMenu';
+import { useUser } from '@/context/UserProvider';
 
 interface Comment {
     id: number;
@@ -11,10 +14,16 @@ interface Comment {
 }
 
 interface Props {
+    collectionId: number;
     comment: Comment;
 }
 
-export function CollectionComment({ comment }: Props) {
+export function CollectionComment({ collectionId, comment }: Props) {
+    const { anchorEl, setCommentAnchorEl } = useUIStore();
+    const { user, loading } = useUser();
+
+    if (loading) return null;
+
     return (
         <article className={styles.comment}>
             <img
@@ -37,9 +46,19 @@ export function CollectionComment({ comment }: Props) {
                         </time>
                     </div>
 
-                    <button className={styles.moreBtn} aria-label="Comment actions" type="button">
-                        ···
-                    </button>
+                    {user?.id === comment.userId && (
+                        <>
+                            <button onClick={(event) =>
+                                setCommentAnchorEl(
+                                    anchorEl === event.currentTarget ? null : event.currentTarget,
+                                )
+                            } className={styles.moreBtn} aria-label="Comment actions" type="button">
+                                ···
+                            </button>
+
+                            <CommentHoverMenu collectionId={collectionId} commentId={comment.id} />
+                        </>
+                    )}
                 </header>
 
                 <p className={styles.text}>{comment.text}</p>

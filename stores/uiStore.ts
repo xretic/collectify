@@ -7,6 +7,10 @@ interface UIState {
     setAnchorEl: (el: HTMLElement | null) => void;
     resetAnchorEl: () => void;
 
+    commentAnchorEl: HTMLElement | null;
+    setCommentAnchorEl: (el: HTMLElement | null) => void;
+    resetCommentAnchorEl: () => void;
+
     searchBarOpened: boolean;
     setSearchBarOpened: () => void;
     resetSearchBarOpened: () => void;
@@ -26,6 +30,10 @@ export const useUIStore = create<UIState>((set) => ({
     anchorEl: null,
     setAnchorEl: (el) => set({ anchorEl: el }),
     resetAnchorEl: () => set({ anchorEl: null }),
+
+    commentAnchorEl: null,
+    setCommentAnchorEl: (el) => set({ commentAnchorEl: el }),
+    resetCommentAnchorEl: () => set({ commentAnchorEl: null }),
 
     searchBarOpened: false,
     setSearchBarOpened: () => set((state) => ({ searchBarOpened: !state.searchBarOpened })),
