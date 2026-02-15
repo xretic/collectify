@@ -3,6 +3,14 @@ import moment from 'moment';
 import { useUIStore } from '@/stores/uiStore';
 import CommentHoverMenu from '@/components/features/collections/CommentHoverMenu';
 import { useUser } from '@/context/UserProvider';
+import { useCommentEditStore } from '@/stores/commentEditStore';
+import { ConfigProvider } from 'antd';
+import { COMMENT_MAX_LENGTH } from '@/lib/constans';
+import React, { useEffect, useState } from 'react';
+import { Button, SxProps, Theme } from '@mui/material';
+import { api } from '@/lib/api';
+import { useQueryClient } from '@tanstack/react-query';
+import TextArea from 'antd/es/input/TextArea';
 
 interface Comment {
     id: number;
@@ -19,8 +27,66 @@ interface Props {
 }
 
 export function CollectionComment({ collectionId, comment }: Props) {
-    const { anchorEl, setCommentAnchorEl } = useUIStore();
+    const { startLoading, stopLoading, commentAnchorEl, setCommentAnchorEl, setCommentId, commentId } = useUIStore();
+    const { editingCommentId, resetEditingComment } = useCommentEditStore();
+
+    const [text, setText] = useState(comment.text);
+    const [editingText, setEditingText] = useState(comment.text);
+
     const { user, loading } = useUser();
+
+    const buttonsSx: SxProps<Theme> = {
+        borderRadius: 6,
+        textTransform: 'none',
+        color: 'var(--text-color)',
+    };
+
+    const queryClient = useQueryClient();
+
+    const handleEdit = async () => {
+        if (text === editingText) {
+            handleCancel();
+            return;
+        }
+
+        startLoading();
+
+        try {
+            await api.patch(`api/comments/${commentId}`, { json: { text: editingText } });
+
+            const commentsKey = ['collection-comments', String(collectionId)] as const;
+
+            queryClient.setQueryData(commentsKey, (old: any) => {
+                if (!old?.pages) return old;
+
+                return {
+                    ...old,
+                    pages: old.pages.map((p: any) => ({
+                        ...p,
+                        commentsRes: (p.commentsRes ?? []).map((c: any) =>
+                            c.id === commentId ? { ...c, text: editingText } : c,
+                        ),
+                    })),
+                };
+            });
+
+            setText(editingText);
+        } finally {
+            stopLoading();
+            resetEditingComment();
+            setEditingText(editingText);
+        }
+    };
+
+    const handleCancel = () => {
+        resetEditingComment();
+        setEditingText(text);
+    };
+
+    useEffect(() => {
+        setText(comment.text);
+        setEditingText(comment.text);
+    }, [comment.id, comment.text]);
 
     if (loading) return null;
 
@@ -48,21 +114,63 @@ export function CollectionComment({ collectionId, comment }: Props) {
 
                     {user?.id === comment.userId && (
                         <>
-                            <button onClick={(event) =>
+                            <button onClick={(event) => {
                                 setCommentAnchorEl(
-                                    anchorEl === event.currentTarget ? null : event.currentTarget,
-                                )
+                                    commentAnchorEl === event.currentTarget ? null : event.currentTarget,
+                                );
+
+                                setCommentId(comment.id);
+                            }
                             } className={styles.moreBtn} aria-label="Comment actions" type="button">
                                 ···
                             </button>
 
-                            <CommentHoverMenu collectionId={collectionId} commentId={comment.id} />
+                            <CommentHoverMenu collectionId={collectionId} />
                         </>
                     )}
                 </header>
 
-                <p className={styles.text}>{comment.text}</p>
+                {editingCommentId === comment.id ? <ConfigProvider
+                    theme={{
+                        token: {
+                            colorTextPlaceholder: 'var(--soft-text)',
+                            colorIcon: 'var(--soft-text)',
+                        },
+                    }}
+                >
+                    <TextArea
+                        onChange={(e) => setEditingText(e.target.value)}
+                        placeholder="Editing comment..."
+                        className={styles.input}
+                        style={{
+                            backgroundColor: 'var(--container-color)',
+                            color: 'var(--text-color)',
+                            resize: 'none',
+                            height: '80px',
+                        }}
+                        value={editingText}
+                        maxLength={COMMENT_MAX_LENGTH}
+                        showCount
+                    />
+                </ConfigProvider> : <p className={styles.text}>{text}</p>}
             </div>
+
+            {editingCommentId === comment.id && (<div className={styles.actions}>
+                <Button variant="text"
+                        onClick={handleCancel}
+                        sx={buttonsSx}>
+                    Cancel
+                </Button>
+
+                <Button variant="contained"
+                        onClick={handleEdit}
+                        disabled={!editingText.trim() || editingText.length === 0}
+                        sx={buttonsSx}
+                >
+                    Confirm
+                </Button>
+            </div>)}
         </article>
+
     );
 }

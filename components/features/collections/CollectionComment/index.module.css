@@ -9,11 +9,10 @@
     background: var(--container-color);
     border: 1px solid var(--border-color);
 
-    transition:
-        background 120ms ease,
-        border-color 120ms ease,
-        box-shadow 120ms ease,
-        transform 120ms ease;
+    transition: background 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
 }
 
 .comment:hover {
@@ -88,9 +87,8 @@
     font-size: 16px;
     line-height: 1;
 
-    transition:
-        background 120ms ease,
-        color 120ms ease;
+    transition: background 120ms ease,
+    color 120ms ease;
 }
 
 .moreBtn:hover {
@@ -108,4 +106,12 @@
 
     white-space: pre-wrap;
     word-break: break-word;
+}
+
+.actions {
+    grid-column: 2 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
 }

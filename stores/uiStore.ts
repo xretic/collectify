@@ -5,15 +5,16 @@ type SortType = 'popular' | 'newest' | 'old';
 interface UIState {
     anchorEl: HTMLElement | null;
     setAnchorEl: (el: HTMLElement | null) => void;
-    resetAnchorEl: () => void;
 
     commentAnchorEl: HTMLElement | null;
     setCommentAnchorEl: (el: HTMLElement | null) => void;
-    resetCommentAnchorEl: () => void;
+
+
+    commentId: number | null;
+    setCommentId: (id: number) => void;
 
     searchBarOpened: boolean;
     setSearchBarOpened: () => void;
-    resetSearchBarOpened: () => void;
 
     loadingCount: number;
     startLoading: () => void;
@@ -29,15 +30,15 @@ interface UIState {
 export const useUIStore = create<UIState>((set) => ({
     anchorEl: null,
     setAnchorEl: (el) => set({ anchorEl: el }),
-    resetAnchorEl: () => set({ anchorEl: null }),
 
     commentAnchorEl: null,
     setCommentAnchorEl: (el) => set({ commentAnchorEl: el }),
-    resetCommentAnchorEl: () => set({ commentAnchorEl: null }),
+
+    commentId: null,
+    setCommentId: (id: number) => set({ commentId: id }),
 
     searchBarOpened: false,
     setSearchBarOpened: () => set((state) => ({ searchBarOpened: !state.searchBarOpened })),
-    resetSearchBarOpened: () => set(() => ({ searchBarOpened: false })),
 
     loadingCount: 0,
     startLoading: () => set((state) => ({ loadingCount: state.loadingCount + 1 })),

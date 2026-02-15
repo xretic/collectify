@@ -29,7 +29,5 @@ export const COLLECTION_DESCRIPTION_MAX_LENGTH = 350;
 export const ITEM_TITLE_MAX_LENGTH = 14;
 export const ITEM_DESCRIPTION_MAX_LENGTH = 200;
 
-export const TAGS_MAX_AMOUNT = 10;
-
 export const COMMENTS_LIMIT = 10;
-export const COMMENT_MAX_LENGTH = 300;
+export const COMMENT_MAX_LENGTH = 500;

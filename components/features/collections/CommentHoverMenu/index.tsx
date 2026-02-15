@@ -10,17 +10,18 @@ import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useCollectionStore } from '@/stores/collectionStore';
+import { useCommentEditStore } from '@/stores/commentEditStore';
 
 type Props = {
     collectionId: string | number;
-    commentId: number;
 };
 
-export default function CommentHoverMenu({ collectionId, commentId }: Props) {
+export default function CommentHoverMenu({ collectionId }: Props) {
     const queryClient = useQueryClient();
 
-    const { commentAnchorEl, setCommentAnchorEl, startLoading, stopLoading } = useUIStore();
+    const { commentAnchorEl, setCommentAnchorEl, startLoading, stopLoading, commentId } = useUIStore();
     const { comments, setComments } = useCollectionStore();
+    const { setEditingComment } = useCommentEditStore();
 
     const open = Boolean(commentAnchorEl);
 
@@ -58,7 +59,8 @@ export default function CommentHoverMenu({ collectionId, commentId }: Props) {
     };
 
     const handleEdit = () => {
-        // TODO: edit
+        if (commentId) setEditingComment(commentId);
+        setCommentAnchorEl(null);
     };
 
     return (
