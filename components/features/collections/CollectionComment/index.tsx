@@ -11,6 +11,7 @@ import { Button, SxProps, Theme } from '@mui/material';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import TextArea from 'antd/es/input/TextArea';
+import { useRouter } from 'next/navigation';
 
 interface Comment {
     id: number;
@@ -27,13 +28,21 @@ interface Props {
 }
 
 export function CollectionComment({ collectionId, comment }: Props) {
-    const { startLoading, stopLoading, commentAnchorEl, setCommentAnchorEl, setCommentId, commentId } = useUIStore();
+    const {
+        startLoading,
+        stopLoading,
+        commentAnchorEl,
+        setCommentAnchorEl,
+        setCommentId,
+        commentId,
+    } = useUIStore();
     const { editingCommentId, resetEditingComment } = useCommentEditStore();
 
     const [text, setText] = useState(comment.text);
     const [editingText, setEditingText] = useState(comment.text);
 
     const { user, loading } = useUser();
+    const router = useRouter();
 
     const buttonsSx: SxProps<Theme> = {
         borderRadius: 6,
@@ -102,7 +111,12 @@ export function CollectionComment({ collectionId, comment }: Props) {
             <div className={styles.content}>
                 <header className={styles.header}>
                     <div className={styles.meta}>
-                        <span className={styles.username}>{comment.username}</span>
+                        <span
+                            onClick={() => router.replace('/users/' + comment?.userId)}
+                            className={styles.username}
+                        >
+                            {comment.username}
+                        </span>
                         <span className={styles.dot} />
                         <time
                             className={styles.date}
@@ -114,14 +128,20 @@ export function CollectionComment({ collectionId, comment }: Props) {
 
                     {user?.id === comment.userId && (
                         <>
-                            <button onClick={(event) => {
-                                setCommentAnchorEl(
-                                    commentAnchorEl === event.currentTarget ? null : event.currentTarget,
-                                );
+                            <button
+                                onClick={(event) => {
+                                    setCommentAnchorEl(
+                                        commentAnchorEl === event.currentTarget
+                                            ? null
+                                            : event.currentTarget,
+                                    );
 
-                                setCommentId(comment.id);
-                            }
-                            } className={styles.moreBtn} aria-label="Comment actions" type="button">
+                                    setCommentId(comment.id);
+                                }}
+                                className={styles.moreBtn}
+                                aria-label="Comment actions"
+                                type="button"
+                            >
                                 ···
                             </button>
 
@@ -130,47 +150,51 @@ export function CollectionComment({ collectionId, comment }: Props) {
                     )}
                 </header>
 
-                {editingCommentId === comment.id ? <ConfigProvider
-                    theme={{
-                        token: {
-                            colorTextPlaceholder: 'var(--soft-text)',
-                            colorIcon: 'var(--soft-text)',
-                        },
-                    }}
-                >
-                    <TextArea
-                        onChange={(e) => setEditingText(e.target.value)}
-                        placeholder="Editing comment..."
-                        className={styles.input}
-                        style={{
-                            backgroundColor: 'var(--container-color)',
-                            color: 'var(--text-color)',
-                            resize: 'none',
-                            height: '80px',
+                {editingCommentId === comment.id ? (
+                    <ConfigProvider
+                        theme={{
+                            token: {
+                                colorTextPlaceholder: 'var(--soft-text)',
+                                colorIcon: 'var(--soft-text)',
+                            },
                         }}
-                        value={editingText}
-                        maxLength={COMMENT_MAX_LENGTH}
-                        showCount
-                    />
-                </ConfigProvider> : <p className={styles.text}>{text}</p>}
+                    >
+                        <TextArea
+                            onChange={(e) => setEditingText(e.target.value)}
+                            placeholder="Editing comment..."
+                            className={styles.input}
+                            style={{
+                                backgroundColor: 'var(--container-color)',
+                                color: 'var(--text-color)',
+                                resize: 'none',
+                                height: '80px',
+                            }}
+                            value={editingText}
+                            maxLength={COMMENT_MAX_LENGTH}
+                            showCount
+                        />
+                    </ConfigProvider>
+                ) : (
+                    <p className={styles.text}>{text}</p>
+                )}
             </div>
 
-            {editingCommentId === comment.id && (<div className={styles.actions}>
-                <Button variant="text"
-                        onClick={handleCancel}
-                        sx={buttonsSx}>
-                    Cancel
-                </Button>
+            {editingCommentId === comment.id && (
+                <div className={styles.actions}>
+                    <Button variant="text" onClick={handleCancel} sx={buttonsSx}>
+                        Cancel
+                    </Button>
 
-                <Button variant="contained"
+                    <Button
+                        variant="contained"
                         onClick={handleEdit}
                         disabled={!editingText.trim() || editingText.length === 0}
                         sx={buttonsSx}
-                >
-                    Confirm
-                </Button>
-            </div>)}
+                    >
+                        Confirm
+                    </Button>
+                </div>
+            )}
         </article>
-
     );
 }

@@ -168,9 +168,13 @@ export default function CollectionPage() {
 
     useEffect(() => {
         if (commentsInitializedRef.current) return;
+
         const first = commentsQuery.data?.pages?.[0]?.commentsRes;
+
         if (!first) return;
+
         setComments(first);
+
         commentsInitializedRef.current = true;
     }, [commentsQuery.data, setComments]);
 
@@ -379,8 +383,7 @@ export default function CollectionPage() {
                     sizes="100vw"
                     className={styles.banner}
                 />
-                <div
-                    className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/50 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/50 to-transparent pointer-events-none" />
                 <Link href={'/users/' + collection.authorId} className={styles['author']}>
                     <Avatar
                         alt={collection.author}
@@ -534,8 +537,13 @@ export default function CollectionPage() {
 
                     <div className={styles.comments}>
                         {comments && comments.length > 0
-                            ? comments.map((x) => <CollectionComment key={x.id} collectionId={collection.id}
-                                                                     comment={x} />)
+                            ? comments.map((x) => (
+                                  <CollectionComment
+                                      key={x.id}
+                                      collectionId={collection.id}
+                                      comment={x}
+                                  />
+                              ))
                             : null}
                         {commentsQuery.hasNextPage ? (
                             <div ref={loadMoreRef} style={{ height: 1 }} />

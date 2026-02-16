@@ -9,10 +9,11 @@
     background: var(--container-color);
     border: 1px solid var(--border-color);
 
-    transition: background 120ms ease,
-    border-color 120ms ease,
-    box-shadow 120ms ease,
-    transform 120ms ease;
+    transition:
+        background 120ms ease,
+        border-color 120ms ease,
+        box-shadow 120ms ease,
+        transform 120ms ease;
 }
 
 .comment:hover {
@@ -63,6 +64,11 @@
     white-space: nowrap;
 }
 
+.username:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .dot {
     width: 3px;
     height: 3px;
@@ -87,8 +93,9 @@
     font-size: 16px;
     line-height: 1;
 
-    transition: background 120ms ease,
-    color 120ms ease;
+    transition:
+        background 120ms ease,
+        color 120ms ease;
 }
 
 .moreBtn:hover {
