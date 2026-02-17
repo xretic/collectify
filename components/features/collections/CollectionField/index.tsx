@@ -6,19 +6,21 @@ import { Avatar } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './index.module.css';
+import ForumIcon from '@mui/icons-material/Forum';
 
 export default function CollectionField({
-    id,
-    author,
-    authorAvatarUrl,
-    authorId,
-    bannerUrl,
-    name,
-    category,
-    likes,
-    addedToFavorite,
-    items,
-}: CollectionFieldProps) {
+                                            id,
+                                            author,
+                                            authorAvatarUrl,
+                                            authorId,
+                                            bannerUrl,
+                                            name,
+                                            category,
+                                            likes,
+                                            addedToFavorite,
+                                            items,
+                                            comments,
+                                        }: CollectionFieldProps) {
     const router = useRouter();
 
     return (
@@ -54,6 +56,9 @@ export default function CollectionField({
                     </span>
 
                     <div className={styles.stats}>
+                            <span>
+                            <ForumIcon sx={{ width: 20, height: 20 }} /> {comments}
+                        </span>
                         <span>
                             <BookmarkAddIcon sx={{ width: 20, height: 20 }} /> {addedToFavorite}
                         </span>
