@@ -248,6 +248,11 @@ export default function CollectionPage() {
 
     const handleFavorite = () => {
         if (!user || !id) return;
+
+        queryClient.removeQueries({
+            queryKey: ['me-collections-search'],
+        });
+
         actionMutation.mutate(favorited ? 'unfavorite' : 'favorite');
     };
 

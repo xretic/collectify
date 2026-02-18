@@ -38,6 +38,7 @@ import AddIcon from '@mui/icons-material/Add';
 import styles from './index.module.css';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import MenuIcon from '@mui/icons-material/Menu';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 
 interface NavItem {
     label: string;
@@ -242,6 +243,19 @@ export default function NavBar() {
                                         </IconButton>
                                     </Tooltip>
 
+                                    {/* <Tooltip title="Messages">
+                                        <IconButton
+                                            type="button"
+                                            onClick={() => router.replace('/messages')}
+                                            sx={{ p: '6px' }}
+                                            aria-label="messages"
+                                        >
+                                            <EmailOutlinedIcon sx={{ color: '#afafaf' }} />
+                                        </IconButton>
+                                    </Tooltip> */}
+
+                                    {/* TODO: badge */}
+
                                     <Tooltip title="Search">
                                         <IconButton
                                             onClick={setSearchBarOpened}
@@ -309,6 +323,7 @@ export default function NavBar() {
                     )}
                 </div>
             </nav>
+
             <Drawer
                 slotProps={{
                     paper: {
