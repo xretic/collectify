@@ -246,7 +246,7 @@ export default function NavBar() {
                                     <Tooltip title="Messages">
                                         <IconButton
                                             type="button"
-                                            onClick={() => router.replace('/messages')}
+                                            onClick={() => router.replace('/chats')}
                                             sx={{ p: '6px' }}
                                             aria-label="messages"
                                         >

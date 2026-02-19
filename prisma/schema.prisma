@@ -27,6 +27,29 @@ model User {
     sessions      Session[]
     favorites     Collection[]   @relation("FavoriteCollections")
     Comment       Comment[]
+    chats         Chat[]
+    messages      Message[]
+}
+
+model Chat {
+    id        Int       @id @default(autoincrement())
+    createdAt DateTime  @default(now())
+    users     User[]
+    messages  Message[]
+}
+
+model Message {
+    id        Int      @id @default(autoincrement())
+    chatId    Int
+    userId    Int
+    content   String
+    createdAt DateTime @default(now())
+
+    chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([chatId, createdAt])
+    @@index([userId, createdAt])
 }
 
 model Notification {

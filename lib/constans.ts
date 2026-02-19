@@ -31,3 +31,5 @@ export const ITEM_DESCRIPTION_MAX_LENGTH = 200;
 
 export const COMMENTS_LIMIT = 10;
 export const COMMENT_MAX_LENGTH = 500;
+
+export const MESSAGES_PAGE_LENGTH = 20;
