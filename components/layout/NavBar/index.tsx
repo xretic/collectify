@@ -243,16 +243,16 @@ export default function NavBar() {
                                         </IconButton>
                                     </Tooltip>
 
-                                    <Tooltip title="Messages">
+                                    {/* <Tooltip title="Messages">
                                         <IconButton
                                             type="button"
-                                            onClick={() => router.replace('/messages')}
+                                            onClick={() => router.replace('/chats')}
                                             sx={{ p: '6px' }}
                                             aria-label="messages"
                                         >
                                             <EmailOutlinedIcon sx={{ color: '#afafaf' }} />
                                         </IconButton>
-                                    </Tooltip>
+                                    </Tooltip>  */}
 
                                     {/* TODO: badge */}
 
