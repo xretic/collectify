@@ -16,8 +16,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (!server.io) {
         const io = new Server(server, {
-            path: '/api/socketio',
-            addTrailingSlash: false,
+            path: '/socketio',
+            transports: ['websocket'],
+            cors: { origin: true, credentials: true },
         });
 
         server.io = io;
