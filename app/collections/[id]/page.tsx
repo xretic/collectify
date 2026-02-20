@@ -75,7 +75,10 @@ function applyActionOptimistic(
 
 export default function CollectionPage() {
     const params = useParams();
-    const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
+    const id = useMemo(() => {
+        const raw = params?.id;
+        return Array.isArray(raw) ? raw[0] : raw;
+    }, [params]);
 
     const router = useRouter();
     const queryClient = useQueryClient();
