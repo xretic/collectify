@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useMemo, useRef } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUser } from '@/context/UserProvider';
 
@@ -10,30 +10,30 @@ const Ctx = createContext<SocketCtx>({ socket: null });
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
     const { user, loading } = useUser();
-    const socketRef = useRef<Socket | null>(null);
+    const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
         if (loading || !user) return;
 
-        fetch('/api/socketio');
+        const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+        if (!url) return;
 
-        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
+        const s = io(url, {
             path: '/socketio',
             transports: ['websocket'],
             upgrade: false,
             withCredentials: true,
         });
-        socketRef.current = socket;
+
+        setSocket(s);
 
         return () => {
-            socket.disconnect();
-            socketRef.current = null;
+            s.disconnect();
+            setSocket(null);
         };
     }, [loading, user?.id]);
 
-    const value = useMemo(() => ({ socket: socketRef.current }), [socketRef.current]);
-
-    return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+    return <Ctx.Provider value={{ socket }}>{children}</Ctx.Provider>;
 }
 
 export function useSocket() {
