@@ -18,7 +18,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const io = new Server(server, {
             path: '/socketio',
             transports: ['websocket'],
-            cors: { origin: true, credentials: true },
+            cors: {
+                origin: [process.env.NEXT_PUBLIC_VERCEL_URL],
+                credentials: true,
+            },
         });
 
         server.io = io;
