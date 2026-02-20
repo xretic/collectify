@@ -78,7 +78,12 @@ export default function ChatsPage() {
 
         fetch('/api/socketio');
 
-        const socket = io({ path: '/api/socketio' });
+        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
+            path: '/socketio',
+            transports: ['websocket'],
+            upgrade: false,
+            withCredentials: true,
+        });
         socketRef.current = socket;
 
         socket.on('connect', () => {
