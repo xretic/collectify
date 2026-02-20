@@ -24,6 +24,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             },
         });
 
+        console.log('NEXT_PUBLIC_SOCKET_URL', process.env.NEXT_PUBLIC_SOCKET_URL);
+
         server.io = io;
         global._io = io;
 
