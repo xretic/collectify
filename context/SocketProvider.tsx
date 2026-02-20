@@ -22,7 +22,6 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             path: '/socketio',
             transports: ['websocket'],
             upgrade: false,
-            withCredentials: true,
         });
 
         setSocket(s);

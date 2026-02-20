@@ -167,10 +167,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             createdAt: message.createdAt,
         };
 
-        global._io?.to(`chat:${chat.id}`).emit('message:new', {
-            chatId: chat.id,
-            ...messageData,
-        });
+        const publishUrl = process.env.SOCKET_PUBLISH_URL;
+
+        if (publishUrl) {
+            await fetch(publishUrl + '/publish/message', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                    chatId: chat.id,
+                    message: messageData,
+                }),
+            });
+        }
 
         return NextResponse.json({ data: messageData }, { status: 200 });
     } catch (e) {

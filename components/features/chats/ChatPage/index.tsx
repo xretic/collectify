@@ -30,7 +30,6 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
     const { user, loading } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
-
     const socket = useSocket();
 
     const router = useRouter();
@@ -152,10 +151,8 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
         if (shouldScrollToBottomRef.current) {
             shouldScrollToBottomRef.current = false;
-
             const isNearBottom =
                 container.scrollHeight - container.scrollTop - container.clientHeight < 120;
-
             if (isNearBottom) container.scrollTop = container.scrollHeight;
         }
     }, [details?.messages?.length]);
@@ -256,7 +253,6 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                                 {!chatId && 'Pick a chat from the left'}
                                 {details && details.messages?.length === 0 && 'No messages yet'}
                             </span>
-
                             <span className={styles.placeholderText}>
                                 {details?.messages?.length === 0 &&
                                     'Start the conversation by sending the first message.'}
