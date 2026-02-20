@@ -23,8 +23,11 @@ import { Loader } from '@/components/ui/Loader';
 import { CollectionFieldProps } from '@/types/CollectionField';
 
 export default function ProfilePage() {
-    const componentParams = useParams();
-    const id = Array.isArray(componentParams.id) ? componentParams.id[0] : componentParams.id;
+    const params = useParams<{ id: string }>();
+
+    if (!params) return null;
+
+    const id = params.id;
 
     const { user } = useUser();
     const [pageUser, setPageUser] = useState<UserInResponse | null>(null);
@@ -40,7 +43,7 @@ export default function ProfilePage() {
 
     const router = useRouter();
 
-    const params = useMemo(() => {
+    const paramsMemo = useMemo(() => {
         const q = (debouncedQuery ?? '').trim();
         const authorId = Number(id);
 
@@ -54,18 +57,18 @@ export default function ProfilePage() {
     }, [sortedBy, profilePagination, debouncedQuery, debouncedFollowed, id]);
 
     const { data, isFetching } = useQuery({
-        queryKey: ['profile-collections-search', params],
-        enabled: params.authorId != null,
+        queryKey: ['profile-collections-search', paramsMemo],
+        enabled: paramsMemo.authorId != null,
         staleTime: 10_000,
         queryFn: async () => {
             const searchParams = new URLSearchParams({
-                sortedBy: params.sortedBy,
-                skip: String(params.skip),
-                authorId: String(params.authorId),
+                sortedBy: paramsMemo.sortedBy,
+                skip: String(paramsMemo.skip),
+                authorId: String(paramsMemo.authorId),
             });
 
-            if (params.query) searchParams.set('query', params.query);
-            if (params.followed) searchParams.set('followed', 'true');
+            if (paramsMemo.query) searchParams.set('query', paramsMemo.query);
+            if (paramsMemo.followed) searchParams.set('followed', 'true');
 
             return api
                 .get(`api/collections/search/?${searchParams.toString()}`)
