@@ -13,13 +13,13 @@ import TextArea from 'antd/es/input/TextArea';
 import { DIRECT_MESSAGE_MAX_LENGTH } from '@/lib/constans';
 import SendIcon from '@mui/icons-material/Send';
 import { ConfigProvider } from 'antd';
-import { io, Socket } from 'socket.io-client';
 
 interface ChatPageProps {
     chatId: number | null;
 }
 
 type Cursor = number | null;
+type SocketMessage = MessageInResponse & { chatId: number };
 
 export default function ChatPage({ chatId }: ChatPageProps) {
     const [details, setDetails] = useState<ChatInResponse | null>(null);
@@ -32,7 +32,6 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
     const router = useRouter();
     const messagesRef = useRef<HTMLDivElement>(null);
-    const socketRef = useRef<Socket | null>(null);
 
     const fetchingRef = useRef(false);
     const isFirstLoadRef = useRef(true);
@@ -84,10 +83,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
             const incoming = sortAsc(res.data.messages ?? []);
 
             setDetails((prev) => {
-                if (!prev) {
-                    return { ...res.data, messages: incoming };
-                }
-
+                if (!prev) return { ...res.data, messages: incoming };
                 return {
                     ...prev,
                     ...res.data,
@@ -112,7 +108,12 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                 .post('api/chats/' + chatId, { json: { messageText } })
                 .json<{ data: MessageInResponse }>();
 
-            shouldScrollToBottomRef.current = true;
+            const container = messagesRef.current;
+            const nearBottom = container
+                ? container.scrollHeight - container.scrollTop - container.clientHeight < 120
+                : true;
+
+            shouldScrollToBottomRef.current = nearBottom;
 
             setDetails((prev) => {
                 if (!prev) return prev;
@@ -120,10 +121,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                 const exists = (prev.messages ?? []).some((m) => m.id === res.data.id);
                 if (exists) return prev;
 
-                return {
-                    ...prev,
-                    messages: [...(prev.messages ?? []), res.data],
-                };
+                return { ...prev, messages: [...(prev.messages ?? []), res.data] };
             });
 
             setMessageText('');
@@ -155,9 +153,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
             const isNearBottom =
                 container.scrollHeight - container.scrollTop - container.clientHeight < 120;
 
-            if (isNearBottom) {
-                container.scrollTop = container.scrollHeight;
-            }
+            if (isNearBottom) container.scrollTop = container.scrollHeight;
         }
     }, [details?.messages?.length]);
 
@@ -182,9 +178,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
         if (!container) return;
 
         const onScroll = () => {
-            if (container.scrollTop <= 10 && !fetchingRef.current && hasMore) {
-                getMessages();
-            }
+            if (container.scrollTop <= 10 && !fetchingRef.current && hasMore) getMessages();
         };
 
         container.addEventListener('scroll', onScroll);
@@ -192,21 +186,9 @@ export default function ChatPage({ chatId }: ChatPageProps) {
     }, [hasMore, chatId, cursor]);
 
     useEffect(() => {
-        if (!user || !chatId) return;
+        if (!chatId) return;
 
-        fetch('/api/socketio');
-
-        const socket = io({
-            path: '/api/socketio',
-        });
-
-        socketRef.current = socket;
-
-        socket.on('connect', () => {
-            socket.emit('chat:join', chatId);
-        });
-
-        socket.on('message:new', (msg: MessageInResponse & { chatId: number }) => {
+        const onNew = (msg: SocketMessage) => {
             if (msg.chatId !== chatId) return;
 
             setDetails((prev) => {
@@ -215,21 +197,25 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                 const exists = (prev.messages ?? []).some((m) => m.id === msg.id);
                 if (exists) return prev;
 
-                shouldScrollToBottomRef.current = true;
+                const container = messagesRef.current;
+                const nearBottom = container
+                    ? container.scrollHeight - container.scrollTop - container.clientHeight < 120
+                    : true;
 
-                return {
-                    ...prev,
-                    messages: [...(prev.messages ?? []), msg],
-                };
+                shouldScrollToBottomRef.current = nearBottom;
+
+                return { ...prev, messages: [...(prev.messages ?? []), msg] };
             });
-        });
+        };
+
+        (window as any).__socket?.emit?.('chat:join', chatId);
+        (window as any).__socket?.on?.('message:new', onNew);
 
         return () => {
-            socket.emit('chat:leave', chatId);
-            socket.disconnect();
-            socketRef.current = null;
+            (window as any).__socket?.off?.('message:new', onNew);
+            (window as any).__socket?.emit?.('chat:leave', chatId);
         };
-    }, [chatId, user?.id]);
+    }, [chatId]);
 
     if (!user) return null;
 

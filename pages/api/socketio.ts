@@ -2,18 +2,17 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Server } from 'socket.io';
 
 export const config = {
-    api: {
-        bodyParser: false,
-    },
+    api: { bodyParser: false },
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-    // @ts-expect-error next internal
-    const server = res.socket?.server;
-    if (!server) {
+    const socket = res.socket;
+    if (!socket) {
         res.status(500).end();
         return;
     }
+
+    const server = socket.server;
 
     if (!server.io) {
         const io = new Server(server, {
@@ -24,14 +23,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         server.io = io;
         global._io = io;
 
-        io.on('connection', (socket) => {
-            socket.on('chat:join', (chatId: number) => {
-                socket.join(`chat:${chatId}`);
-            });
-
-            socket.on('chat:leave', (chatId: number) => {
-                socket.leave(`chat:${chatId}`);
-            });
+        io.on('connection', (s) => {
+            s.on('chat:join', (chatId: number) => s.join(`chat:${chatId}`));
+            s.on('chat:leave', (chatId: number) => s.leave(`chat:${chatId}`));
         });
     }
 

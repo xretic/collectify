@@ -167,9 +167,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             createdAt: message.createdAt,
         };
 
-        const io: Server | undefined = global._io;
-
-        io?.to(`chat:${chat.id}`).emit('message:new', {
+        global._io?.to(`chat:${chat.id}`).emit('message:new', {
             chatId: chat.id,
             ...messageData,
         });
