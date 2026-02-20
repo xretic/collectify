@@ -13,6 +13,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { DIRECT_MESSAGE_MAX_LENGTH } from '@/lib/constans';
 import SendIcon from '@mui/icons-material/Send';
 import { ConfigProvider } from 'antd';
+import { useSocket } from '@/context/SocketProvider';
 
 interface ChatPageProps {
     chatId: number | null;
@@ -29,6 +30,8 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
     const { user, loading } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
+
+    const socket = useSocket();
 
     const router = useRouter();
     const messagesRef = useRef<HTMLDivElement>(null);
@@ -186,7 +189,9 @@ export default function ChatPage({ chatId }: ChatPageProps) {
     }, [hasMore, chatId, cursor]);
 
     useEffect(() => {
-        if (!chatId) return;
+        if (!socket || !chatId) return;
+
+        socket.emit('chat:join', chatId);
 
         const onNew = (msg: SocketMessage) => {
             if (msg.chatId !== chatId) return;
@@ -208,14 +213,13 @@ export default function ChatPage({ chatId }: ChatPageProps) {
             });
         };
 
-        (window as any).__socket?.emit?.('chat:join', chatId);
-        (window as any).__socket?.on?.('message:new', onNew);
+        socket.on('message:new', onNew);
 
         return () => {
-            (window as any).__socket?.off?.('message:new', onNew);
-            (window as any).__socket?.emit?.('chat:leave', chatId);
+            socket.off('message:new', onNew);
+            socket.emit('chat:leave', chatId);
         };
-    }, [chatId]);
+    }, [socket, chatId]);
 
     if (!user) return null;
 

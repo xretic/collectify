@@ -12,23 +12,22 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ChatPage from '@/components/features/chats/ChatPage';
 import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/lib/constans';
-import { io, Socket } from 'socket.io-client';
+import { useSocket } from '@/context/SocketProvider';
 
 type SocketMessage = MessageInResponse & { chatId: number };
 
 export default function ChatsPage() {
     const { user, loading, refreshUser } = useUser();
+    const { startLoading, stopLoading } = useUIStore();
+    const socket = useSocket();
 
     const [chats, setChats] = useState<ChatInResponse[]>([]);
     const [skip, setSkip] = useState(0);
     const [total, setTotal] = useState(0);
     const [activeChatId, setActiveChatId] = useState<number | null>(null);
 
-    const { startLoading, stopLoading } = useUIStore();
-
-    const socketRef = useRef<Socket | null>(null);
-    const joinedChatsRef = useRef<Set<number>>(new Set());
     const activeChatIdRef = useRef<number | null>(null);
+    const joinedChatsRef = useRef<Set<number>>(new Set());
     const fetchingChatsRef = useRef(false);
 
     useEffect(() => {
@@ -74,28 +73,20 @@ export default function ChatsPage() {
     }, [loading, skip]);
 
     useEffect(() => {
-        if (loading || !user) return;
+        if (!socket) return;
 
-        fetch('/api/socketio');
-
-        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
-            path: '/socketio',
-            transports: ['websocket'],
-            upgrade: false,
-            withCredentials: true,
-        });
-        socketRef.current = socket;
-
-        socket.on('connect', () => {
-            for (const c of chats) {
-                if (!joinedChatsRef.current.has(c.id)) {
-                    socket.emit('chat:join', c.id);
-                    joinedChatsRef.current.add(c.id);
-                }
+        for (const c of chats) {
+            if (!joinedChatsRef.current.has(c.id)) {
+                socket.emit('chat:join', c.id);
+                joinedChatsRef.current.add(c.id);
             }
-        });
+        }
+    }, [socket, chats]);
 
-        socket.on('message:new', (msg: SocketMessage) => {
+    useEffect(() => {
+        if (!socket || !user) return;
+
+        const onNew = (msg: SocketMessage) => {
             const currentActive = activeChatIdRef.current;
 
             setChats((prev) => {
@@ -122,26 +113,13 @@ export default function ChatsPage() {
                 next.unshift(updated);
                 return next;
             });
-        });
-
-        return () => {
-            socket.disconnect();
-            socketRef.current = null;
-            joinedChatsRef.current = new Set();
         };
-    }, [loading, user?.id, skip]);
 
-    useEffect(() => {
-        const socket = socketRef.current;
-        if (!socket) return;
-
-        for (const c of chats) {
-            if (!joinedChatsRef.current.has(c.id)) {
-                socket.emit('chat:join', c.id);
-                joinedChatsRef.current.add(c.id);
-            }
-        }
-    }, [chats]);
+        socket.on('message:new', onNew);
+        return () => {
+            socket.off('message:new', onNew);
+        };
+    }, [socket, user?.id]);
 
     if (loading) return <Loader />;
 
