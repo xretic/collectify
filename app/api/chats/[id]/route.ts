@@ -170,13 +170,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         const publishUrl = process.env.SOCKET_PUBLISH_URL;
 
         if (publishUrl) {
-            await fetch(publishUrl + '/publish/message', {
+            const base = (process.env.SOCKET_PUBLISH_URL ?? '').replace(/\/+$/, '');
+            await fetch(base + '/publish/message', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({
-                    chatId: chat.id,
-                    message: messageData,
-                }),
+                body: JSON.stringify({ chatId: chat.id, message: messageData }),
             });
         }
 
