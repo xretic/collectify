@@ -49,3 +49,20 @@ body {
     background-color: var(--container-color);
     border-radius: 8px;
 }
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--container-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--container-color);
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--soft-text);
+}

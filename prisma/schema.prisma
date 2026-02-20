@@ -39,11 +39,13 @@ model Chat {
 }
 
 model Message {
-    id        Int      @id @default(autoincrement())
-    chatId    Int
-    userId    Int
-    content   String
-    createdAt DateTime @default(now())
+    id              Int      @id @default(autoincrement())
+    chatId          Int
+    userId          Int
+    recipientUserId Int
+    content         String
+    read            Boolean  @default(false)
+    createdAt       DateTime @default(now())
 
     chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)

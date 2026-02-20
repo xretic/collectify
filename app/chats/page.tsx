@@ -5,24 +5,32 @@ import { useUser } from '@/context/UserProvider';
 import { api } from '@/lib/api';
 import { useUIStore } from '@/stores/uiStore';
 import { ChatInResponse } from '@/types/ChatInResponse';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './chats.module.css';
-import { Box, Button, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Typography } from '@mui/material';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import ChatPage from '@/components/features/chats/ChatPage';
+import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/lib/constans';
+import { io, Socket } from 'socket.io-client';
+import { MessageInResponse } from '@/types/ChatInResponse';
+
+type SocketMessage = MessageInResponse & { chatId: number };
 
 export default function ChatsPage() {
-    const { loading } = useUser();
+    const { user, loading, refreshUser } = useUser();
 
     const [chats, setChats] = useState<ChatInResponse[]>([]);
     const [skip, setSkip] = useState(0);
+    const [total, setTotal] = useState(0);
+
+    const socketRef = useRef<Socket | null>(null);
+    const joinedChatsRef = useRef<Set<number>>(new Set());
+    const [socketReady, setSocketReady] = useState(false);
 
     const [activeChatId, setActiveChatId] = useState<number | null>(null);
 
     const { startLoading, stopLoading } = useUIStore();
-
-    const activeChat = useMemo(
-        () => chats.find((c) => c.id === activeChatId) ?? null,
-        [chats, activeChatId],
-    );
 
     const getChats = async (): Promise<void> => {
         startLoading();
@@ -30,15 +38,12 @@ export default function ChatsPage() {
         try {
             const data = await api
                 .get('api/chats', {
-                    searchParams: { skip: String(skip) },
+                    searchParams: { skip: skip * CHATS_PAGE_LENGTH },
                 })
-                .json<{ data: ChatInResponse[] }>();
+                .json<{ data: ChatInResponse[]; total: number }>();
 
             setChats(data.data);
-
-            if (data.data.length > 0 && activeChatId === null) {
-                setActiveChatId(data.data[0].id);
-            }
+            setTotal(data.total);
         } catch {
             return;
         } finally {
@@ -46,8 +51,85 @@ export default function ChatsPage() {
         }
     };
 
+    const handleChangeChat = async (chat: ChatInResponse): Promise<void> => {
+        startLoading();
+        setActiveChatId(chat.id);
+        setChats((prev) => prev.map((c) => (c.id === chat.id ? { ...c, unread: 0 } : c)));
+
+        try {
+            await api.patch('api/chats/' + chat.id);
+            await refreshUser();
+        } catch {
+            return;
+        } finally {
+            stopLoading();
+        }
+    };
+    useEffect(() => {
+        if (loading || !user) return;
+
+        fetch('/api/socketio');
+
+        const socket = io({ path: '/api/socketio' });
+        socketRef.current = socket;
+
+        const onConnect = () => setSocketReady(true);
+        const onDisconnect = () => setSocketReady(false);
+
+        socket.on('connect', onConnect);
+        socket.on('disconnect', onDisconnect);
+
+        socket.on('message:new', (msg: SocketMessage) => {
+            setChats((prev) => {
+                const idx = prev.findIndex((c) => c.id === msg.chatId);
+                if (idx === -1) return prev;
+
+                const updated = { ...prev[idx] };
+
+                updated.previewContent = msg.content;
+
+                if (msg.userId !== user.id && activeChatId !== msg.chatId) {
+                    updated.unread = (updated.unread ?? 0) + 1;
+                }
+
+                if (activeChatId === msg.chatId) {
+                    updated.unread = 0;
+                }
+
+                const next = prev.slice();
+                next.splice(idx, 1);
+                next.unshift(updated);
+                return next;
+            });
+        });
+
+        return () => {
+            socket.off('connect', onConnect);
+            socket.off('disconnect', onDisconnect);
+            socket.disconnect();
+            socketRef.current = null;
+            joinedChatsRef.current = new Set();
+            setSocketReady(false);
+        };
+    }, [loading, user?.id, activeChatId]);
+
+    useEffect(() => {
+        if (!socketReady) return;
+
+        const socket = socketRef.current;
+        if (!socket) return;
+
+        for (const c of chats) {
+            if (!joinedChatsRef.current.has(c.id)) {
+                socket.emit('chat:join', c.id);
+                joinedChatsRef.current.add(c.id);
+            }
+        }
+    }, [socketReady, chats]);
+
     useEffect(() => {
         if (loading) return;
+
         getChats();
     }, [loading, skip]);
 
@@ -57,28 +139,24 @@ export default function ChatsPage() {
         <div className={styles.page}>
             <aside className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>
-                    <Typography className={styles.sidebarTitle}>Messages</Typography>
+                    <span className={styles.sidebarTitle}>Chats</span>
 
                     <Box className={styles.sidebarActions}>
-                        <Button
-                            size="small"
-                            variant="outlined"
+                        <IconButton
                             className={styles.smallBtn}
-                            onClick={() => setSkip((s) => Math.max(0, s - 20))}
+                            onClick={() => setSkip(skip - 1)}
                             disabled={skip === 0}
                         >
-                            Prev
-                        </Button>
+                            <KeyboardArrowLeftIcon sx={{ color: '#afafaf' }} />
+                        </IconButton>
 
-                        <Button
-                            size="small"
-                            variant="outlined"
+                        <IconButton
                             className={styles.smallBtn}
-                            onClick={() => setSkip((s) => s + 20)}
-                            disabled={chats.length === 0}
+                            onClick={() => setSkip(skip + 1)}
+                            disabled={chats.length === 0 || (skip + 1) * CHATS_PAGE_LENGTH > total}
                         >
-                            Next
-                        </Button>
+                            <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
+                        </IconButton>
                     </Box>
                 </div>
 
@@ -86,9 +164,6 @@ export default function ChatsPage() {
                     {chats.length === 0 ? (
                         <div className={styles.emptyState}>
                             <Typography className={styles.emptyTitle}>No chats yet</Typography>
-                            <Typography className={styles.emptyText}>
-                                When you start a conversation, it will appear here.
-                            </Typography>
                         </div>
                     ) : (
                         chats.map((c) => {
@@ -99,13 +174,12 @@ export default function ChatsPage() {
                                     key={c.id}
                                     type="button"
                                     className={`${styles.chatItem} ${isActive ? styles.chatItemActive : ''}`}
-                                    onClick={() => setActiveChatId(c.id)}
+                                    onClick={() => handleChangeChat(c)}
                                 >
-                                    <img
+                                    <Avatar
                                         className={styles.avatar}
-                                        src={c.userAvatarUrl || '/images/default-avatar.png'}
+                                        src={c.userAvatarUrl}
                                         alt={c.username}
-                                        loading="lazy"
                                     />
 
                                     <div className={styles.chatMeta}>
@@ -113,8 +187,20 @@ export default function ChatsPage() {
                                             <span className={styles.username}>{c.username}</span>
                                         </div>
 
-                                        <span className={styles.preview}>{c.previewContent}</span>
+                                        <span className={styles.preview}>
+                                            {c.previewContent?.length &&
+                                            c.previewContent.length > MAX_PREVIEW_MESSAGE_LENGTH
+                                                ? c.previewContent.slice(
+                                                      0,
+                                                      MAX_PREVIEW_MESSAGE_LENGTH - 3,
+                                                  ) + '...'
+                                                : c.previewContent}
+                                        </span>
                                     </div>
+
+                                    {c.unread > 0 && (
+                                        <span className={styles.badge}>{c.unread}</span>
+                                    )}
                                 </button>
                             );
                         })
@@ -122,46 +208,7 @@ export default function ChatsPage() {
                 </div>
             </aside>
 
-            <main className={styles.content}>
-                <header className={styles.contentHeader}>
-                    {activeChat ? (
-                        <div className={styles.contentHeaderInner}>
-                            <img
-                                className={styles.activeAvatar}
-                                src={activeChat.userAvatarUrl || '/images/default-avatar.png'}
-                                alt={activeChat.username}
-                            />
-                            <div>
-                                <Typography className={styles.activeTitle}>
-                                    {activeChat.username}
-                                </Typography>
-                                <Typography className={styles.activeSubtitle}>
-                                    Direct messages
-                                </Typography>
-                            </div>
-                        </div>
-                    ) : (
-                        <Typography className={styles.activeTitle}>Select a chat</Typography>
-                    )}
-                </header>
-
-                <section className={styles.messagesBox}>
-                    <div className={styles.messagesPlaceholder}>
-                        <Typography className={styles.placeholderTitle}>
-                            {activeChat ? 'No messages yet' : 'Pick a chat from the left'}
-                        </Typography>
-                        <Typography className={styles.placeholderText}>
-                            {activeChat
-                                ? 'Start the conversation by sending the first message.'
-                                : 'Your conversations will show up here.'}
-                        </Typography>
-                    </div>
-                </section>
-
-                <footer className={styles.composer}>
-                    <div className={styles.composerDisabled}>Message input (coming next)</div>
-                </footer>
-            </main>
+            <ChatPage chatId={activeChatId} />
         </div>
     );
 }

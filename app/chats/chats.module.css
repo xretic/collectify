@@ -30,8 +30,7 @@
 
 .sidebarTitle {
     font-family: var(--font-google-sans), sans-serif;
-    font-weight: 700;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--text-color);
 }
 
@@ -143,102 +142,15 @@
     flex: 0 0 auto;
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.contentHeader {
-    background-color: var(--container-color);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    padding: 18px 20px;
-}
-
-.contentHeaderInner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.activeAvatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
-    object-fit: cover;
-    background: var(--border-color);
-}
-
-.activeTitle {
+.badge {
+    min-width: 18px;
+    height: 18px;
     font-family: var(--font-google-sans), sans-serif;
-    font-weight: 600;
-    font-size: 16px;
+    padding: 0 5px;
+    background: color-mix(in srgb, var(--soft-text) 30%, transparent);
     color: var(--text-color);
-    line-height: 1.1;
-}
-
-.activeSubtitle {
-    color: var(--soft-text);
-    font-size: 13px;
-    margin-top: 2px;
-}
-
-.messagesBox {
-    background-color: var(--container-color);
-    border-radius: 20px;
-    padding: 18px 20px;
-    min-height: 520px;
-}
-
-.messagesPlaceholder {
-    height: 520px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 8px;
-    color: var(--soft-text);
-}
-
-.placeholderTitle {
-    font-weight: 700;
-    color: var(--text-color);
-}
-
-.placeholderText {
-    font-size: 13px;
-}
-
-.composer {
-    background-color: var(--container-color);
-    border-radius: 20px;
-    padding: 14px 20px;
-}
-
-.composerDisabled {
-    border: 1px dashed var(--border-color);
-    border-radius: 14px;
-    padding: 12px 14px;
-    color: var(--soft-text);
-    font-size: 13px;
-}
-
-.emptyState {
-    padding: 18px 10px;
-    text-align: center;
-    color: var(--soft-text);
-}
-
-.emptyTitle {
-    font-weight: 700;
-    color: var(--text-color);
-    margin-bottom: 6px;
-}
-
-.emptyText {
-    font-size: 13px;
+    font-size: 11px;
+    border-radius: 999px;
 }
 
 @media (max-width: 980px) {
@@ -250,13 +162,5 @@
         position: relative;
         top: 0;
         height: auto;
-    }
-
-    .messagesPlaceholder {
-        height: 360px;
-    }
-
-    .messagesBox {
-        min-height: 360px;
     }
 }

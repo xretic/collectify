@@ -62,6 +62,7 @@ export default function SettingsPage() {
     const inputStyle: Record<string, string> = {
         backgroundColor: 'var(--container-color)',
         color: 'var(--text-color)',
+        borderColor: 'var(--border-color)',
     };
 
     const updateState = <K extends keyof GlobalState>(key: K, value: GlobalState[K]) => {
