@@ -267,6 +267,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                             id={x.id}
                             senderAvatarUrl={x.userAvatarUrl}
                             senderUsername={x.username}
+                            senderId={x.userId}
                             content={x.content}
                             createdAt={x.createdAt}
                         />

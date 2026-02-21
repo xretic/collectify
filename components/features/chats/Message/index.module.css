@@ -9,6 +9,11 @@
     font-size: 13px;
 }
 
+.username:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .date {
     color: var(--soft-text);
     font-size: 13px;

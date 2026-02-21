@@ -116,6 +116,7 @@ export default function ChatsPage() {
         };
 
         socket.on('message:new', onNew);
+
         return () => {
             socket.off('message:new', onNew);
         };

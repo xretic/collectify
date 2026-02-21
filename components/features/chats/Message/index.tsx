@@ -3,11 +3,13 @@ import styles from './index.module.css';
 import { useUser } from '@/context/UserProvider';
 import { Loader } from '@/components/ui/Loader';
 import moment from 'moment';
+import { useRouter } from 'next/navigation';
 
 interface MessageProps {
     id: number;
     senderAvatarUrl: string;
     senderUsername: string;
+    senderId: number;
     content: string;
     createdAt: Date;
 }
@@ -16,10 +18,12 @@ export default function MessageComponent({
     id,
     senderAvatarUrl,
     senderUsername,
+    senderId,
     content,
     createdAt,
 }: MessageProps) {
     const { user } = useUser();
+    const router = useRouter();
 
     if (!user) return <Loader />;
 
@@ -29,7 +33,12 @@ export default function MessageComponent({
 
             <span>
                 <p>
-                    <span className={styles.username}>{senderUsername}</span>
+                    <span
+                        onClick={() => router.replace('/users/' + senderId)}
+                        className={styles.username}
+                    >
+                        {senderUsername}
+                    </span>
                     <span className={styles.date}>{moment(createdAt).fromNow()}</span>
                 </p>
                 <p className={styles.content}>{content}</p>
