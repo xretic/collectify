@@ -27,9 +27,6 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             withCredentials: true,
         });
 
-        s.on('connect', () => console.log('connected', s.id, url));
-        s.on('connect_error', (e) => console.log('connect_error', e.message));
-
         setSocket(s);
 
         return () => {
