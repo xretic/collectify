@@ -7,20 +7,21 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './index.module.css';
 import ForumIcon from '@mui/icons-material/Forum';
+import { COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
 
 export default function CollectionField({
-                                            id,
-                                            author,
-                                            authorAvatarUrl,
-                                            authorId,
-                                            bannerUrl,
-                                            name,
-                                            category,
-                                            likes,
-                                            addedToFavorite,
-                                            items,
-                                            comments,
-                                        }: CollectionFieldProps) {
+    id,
+    author,
+    authorAvatarUrl,
+    authorId,
+    bannerUrl,
+    name,
+    category,
+    likes,
+    addedToFavorite,
+    items,
+    comments,
+}: CollectionFieldProps) {
     const router = useRouter();
 
     return (
@@ -31,7 +32,11 @@ export default function CollectionField({
             </div>
 
             <div className={styles.content}>
-                <h2 className={styles.title}>{name}</h2>
+                <h2 className={styles.title}>
+                    {name.length > COLLECTION_NAME_MAX_LENGTH
+                        ? name.slice(0, COLLECTION_NAME_MAX_LENGTH - 3) + '...'
+                        : name}
+                </h2>
 
                 <div className={styles.author}>
                     <Avatar src={authorAvatarUrl} alt={author} sx={{ width: 24, height: 24 }} />
@@ -56,7 +61,7 @@ export default function CollectionField({
                     </span>
 
                     <div className={styles.stats}>
-                            <span>
+                        <span>
                             <ForumIcon sx={{ width: 20, height: 20 }} /> {comments}
                         </span>
                         <span>
