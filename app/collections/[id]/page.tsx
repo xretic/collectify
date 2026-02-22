@@ -380,9 +380,9 @@ export default function CollectionPage() {
                 action={action}
             />
 
-            <div className={styles['container']}>
-                <span className={styles['title']}>{collection.name}</span>
-                <span className={styles['category']}>{collection.category}</span>
+            <div className={styles.container}>
+                <span className={styles.title}>{collection.name}</span>
+                <span className={styles.category}>{collection.category}</span>
                 <Image
                     src={collection?.bannerUrl ?? '/'}
                     alt="Banner"
@@ -513,6 +513,7 @@ export default function CollectionPage() {
 
             <div className={styles.commentDivider}>
                 <p className={styles.commentsAmount}>{collection.comments} comments</p>
+                {!user && <p className={styles.noComments}>No comments yet.</p>}
 
                 <ConfigProvider
                     theme={{
