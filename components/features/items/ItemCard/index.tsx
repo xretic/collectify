@@ -20,8 +20,7 @@ export function ItemCard({
     dragHandleProps,
     draggable = false,
 }: Props) {
-    const textColor = imageUrl ? 'white' : 'var(--text-color)';
-    const descriptionColor = imageUrl ? 'white' : 'var(--text-color)';
+    const color = imageUrl ? 'white' : 'var(--text-color)';
 
     return (
         <article
@@ -44,7 +43,7 @@ export function ItemCard({
                 }
             >
                 <div className={styles.header}>
-                    <h3 className={styles.title} style={{ color: textColor }}>
+                    <h3 className={styles.title} style={{ color: color }}>
                         {title}
                     </h3>
                     <div className={styles.headerActions}>
@@ -54,7 +53,7 @@ export function ItemCard({
                                 className={styles.dragHandle}
                                 aria-label="Drag item"
                                 {...dragHandleProps}
-                                style={{ color: textColor }}
+                                style={{ color: color }}
                                 onClick={(e) => e.preventDefault()}
                             >
                                 <DragIndicatorIcon fontSize="small" />
@@ -67,7 +66,7 @@ export function ItemCard({
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={styles.sourceLink}
-                                style={{ color: textColor }}
+                                style={{ color: color }}
                                 aria-label="Open source"
                                 onPointerDown={(e) => e.stopPropagation()}
                             >
@@ -77,7 +76,7 @@ export function ItemCard({
                     </div>
                 </div>
 
-                <p className={styles.description} style={{ color: descriptionColor }}>
+                <p className={styles.description} style={{ color: color }}>
                     {description}
                 </p>
             </div>
