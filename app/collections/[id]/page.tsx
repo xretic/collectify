@@ -513,7 +513,9 @@ export default function CollectionPage() {
 
             <div className={styles.commentDivider}>
                 <p className={styles.commentsAmount}>{collection.comments} comments</p>
-                {collection.comments === 0 && <p className={styles.noComments}>No comments yet.</p>}
+                {!user && collection.comments === 0 && (
+                    <p className={styles.noComments}>No comments yet.</p>
+                )}
 
                 <ConfigProvider
                     theme={{
