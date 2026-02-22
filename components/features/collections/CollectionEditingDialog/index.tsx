@@ -70,6 +70,7 @@ export function CollectionEditingDialog() {
                         description: state.description,
                         bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
                     },
+                    searchParams: { commentsSkip: 0 },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
 

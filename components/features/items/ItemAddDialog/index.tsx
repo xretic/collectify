@@ -69,6 +69,7 @@ export function ItemAddDialog() {
                         sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
                         imageUrl: state.imageUrl === '' ? null : state.imageUrl,
                     },
+                    searchParams: { commentsSkip: 0 },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
 
