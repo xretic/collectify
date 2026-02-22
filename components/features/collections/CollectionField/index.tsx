@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './index.module.css';
 import ForumIcon from '@mui/icons-material/Forum';
-import { COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
+import { COLLECTION_NAME_FIELD_MAX_LENGTH, COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
 
 export default function CollectionField({
     id,
@@ -33,8 +33,8 @@ export default function CollectionField({
 
             <div className={styles.content}>
                 <h2 className={styles.title}>
-                    {name.length > COLLECTION_NAME_MAX_LENGTH
-                        ? name.slice(0, COLLECTION_NAME_MAX_LENGTH - 3) + '...'
+                    {name.length > COLLECTION_NAME_FIELD_MAX_LENGTH
+                        ? name.slice(0, COLLECTION_NAME_FIELD_MAX_LENGTH - 3) + '...'
                         : name}
                 </h2>
 
