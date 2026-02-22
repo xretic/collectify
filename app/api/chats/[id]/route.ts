@@ -3,7 +3,6 @@ import { MESSAGES_PAGE_LENGTH } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
-import { Server } from 'socket.io';
 
 // get messages from chat
 

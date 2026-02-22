@@ -25,6 +25,8 @@ const protectedRoutes: RouteRule[] = [
     createRule('/api/collections/:id/items', ['POST', 'DELETE']),
     createRule('/api/comments/:id', ['DELETE', 'PATCH']),
     createRule('/api/chats/:id', ['POST', 'GET', 'PATCH']),
+    createRule('/api/chats/:id/existence', ['GET']),
+    createRule('/api/chats/:id/create', ['POST']),
     createRule('/api/collections/:id/order', ['PATCH']),
     createRule('/api/collections/:id/comment', ['POST']),
     createRule('api/collection/:id/edit', ['PATCH']),

@@ -6,7 +6,7 @@ import { useUser } from '@/context/UserProvider';
 import { useCommentEditStore } from '@/stores/commentEditStore';
 import { ConfigProvider } from 'antd';
 import { COMMENT_MAX_LENGTH } from '@/lib/constans';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, Button, SxProps, Theme } from '@mui/material';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
@@ -161,9 +161,8 @@ export function CollectionComment({ collectionId, comment }: Props) {
                             style={{
                                 backgroundColor: 'var(--container-color)',
                                 color: 'var(--text-color)',
-                                resize: 'none',
-                                height: '80px',
                             }}
+                            autoSize={{ minRows: 1, maxRows: 20 }}
                             value={editingText}
                             maxLength={COMMENT_MAX_LENGTH}
                             showCount

@@ -292,10 +292,9 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                                     disabled={loadingCount > 0}
                                     onChange={(e) => setMessageText(e.target.value)}
                                     style={{
-                                        height: 50,
-                                        resize: 'none',
                                         ...inputStyle,
                                     }}
+                                    autoSize={{ minRows: 1, maxRows: 30 }}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
                                             e.preventDefault();

@@ -16,7 +16,11 @@ import { useSocket } from '@/context/SocketProvider';
 
 type SocketMessage = MessageInResponse & { chatId: number };
 
-export default function ChatsPage() {
+interface ChatPageProps {
+    chatId?: number;
+}
+
+export default function ChatsPage({ chatId }: ChatPageProps) {
     const { user, loading, refreshUser } = useUser();
     const { startLoading, stopLoading } = useUIStore();
     const socket = useSocket();
@@ -33,6 +37,17 @@ export default function ChatsPage() {
     useEffect(() => {
         activeChatIdRef.current = activeChatId;
     }, [activeChatId]);
+
+    useEffect(() => {
+        if (!chatId) return;
+
+        if (activeChatIdRef.current === chatId) return;
+
+        setActiveChatId(chatId);
+        activeChatIdRef.current = chatId;
+
+        void handleChangeChat(chatId);
+    }, [chatId]);
 
     const getChats = async (): Promise<void> => {
         if (fetchingChatsRef.current) return;
@@ -54,13 +69,13 @@ export default function ChatsPage() {
         }
     };
 
-    const handleChangeChat = async (chat: ChatInResponse): Promise<void> => {
+    const handleChangeChat = async (chatId: number): Promise<void> => {
         startLoading();
-        setActiveChatId(chat.id);
-        setChats((prev) => prev.map((c) => (c.id === chat.id ? { ...c, unread: 0 } : c)));
+        setActiveChatId(chatId);
+        setChats((prev) => prev.map((c) => (c.id === chatId ? { ...c, unread: 0 } : c)));
 
         try {
-            await api.patch('api/chats/' + chat.id);
+            await api.patch('api/chats/' + chatId);
             await refreshUser();
         } finally {
             stopLoading();
@@ -69,6 +84,7 @@ export default function ChatsPage() {
 
     useEffect(() => {
         if (loading) return;
+
         getChats();
     }, [loading, skip]);
 
@@ -151,9 +167,7 @@ export default function ChatsPage() {
 
                 <div className={styles.chatList}>
                     {chats.length === 0 ? (
-                        <div className={styles.emptyState}>
-                            <Typography className={styles.emptyTitle}>No chats yet</Typography>
-                        </div>
+                        <p className={styles.emptyTitle}>No chats yet</p>
                     ) : (
                         chats.map((c) => {
                             const isActive = c.id === activeChatId;
@@ -163,7 +177,7 @@ export default function ChatsPage() {
                                     key={c.id}
                                     type="button"
                                     className={`${styles.chatItem} ${isActive ? styles.chatItemActive : ''}`}
-                                    onClick={() => handleChangeChat(c)}
+                                    onClick={() => handleChangeChat(c.id)}
                                 >
                                     <Avatar
                                         className={styles.avatar}

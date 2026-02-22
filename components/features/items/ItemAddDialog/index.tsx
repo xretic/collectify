@@ -219,9 +219,8 @@ export function ItemAddDialog() {
                         style={{
                             backgroundColor: 'var(--container-color)',
                             color: 'var(--text-color)',
-                            height: 70,
-                            resize: 'none',
                         }}
+                        autoSize={{ minRows: 2, maxRows: 5 }}
                         maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                         showCount
                     />

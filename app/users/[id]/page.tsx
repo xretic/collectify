@@ -14,13 +14,18 @@ import { PAGE_SIZE } from '@/lib/constans';
 import { usePaginationStore } from '@/stores/paginationStore';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import styles from '../users.module.css';
-import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
+import { IconButton, Snackbar, SnackbarCloseReason, Tooltip } from '@mui/material';
 import { UserInResponse } from '@/types/UserInResponse';
 import CloseIcon from '@mui/icons-material/Close';
 import { api } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { Loader } from '@/components/ui/Loader';
 import { CollectionFieldProps } from '@/types/CollectionField';
+import EmailIcon from '@mui/icons-material/Email';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import { useFirstMessageDialogStore } from '@/stores/dialogs/firstMessageDialogStore';
+import FirstMessageDialog from '@/components/features/chats/FirstMessageDialog';
 
 export default function ProfilePage() {
     const params = useParams<{ id: string }>();
@@ -35,9 +40,12 @@ export default function ProfilePage() {
     const [followed, setFollowed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [emptyPage, setEmptyPage] = useState(true);
-    const { sortedBy } = useUIStore();
+
+    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { setOpen } = useFirstMessageDialogStore();
     const { profilePagination } = usePaginationStore();
     const { query } = useCollectionSearchStore();
+
     const debouncedQuery = useDebounce(query, 400);
     const debouncedFollowed = useDebounce(followed, 600);
 
@@ -94,6 +102,25 @@ export default function ProfilePage() {
             setFollowed(!debouncedFollowed);
         } catch {
             return;
+        }
+    };
+
+    const toggleMessage = async () => {
+        startLoading();
+
+        if (!pageUser) return;
+
+        try {
+            const data = await api
+                .get('api/chats/' + pageUser.id + '/existence')
+                .json<{ chatId: number | undefined; result: boolean }>();
+
+            if (data.result) router.replace('/chats/' + data.chatId);
+            else setOpen(true);
+        } catch {
+            return;
+        } finally {
+            stopLoading();
         }
     };
 
@@ -154,72 +181,82 @@ export default function ProfilePage() {
     if (isFetching) return <Loader />;
 
     return (
-        <header className={styles.profile}>
-            <div
-                className={styles.cover}
-                style={{ backgroundImage: `url(${pageUser.bannerUrl})` }}
-            />
-
-            <nav className={styles['nav-bar']}>
-                <Button
-                    onClick={toggleFollow}
-                    variant={followed ? 'text' : 'contained'}
-                    size="small"
-                    disabled={!user || debouncedFollowed !== followed}
-                    sx={{
-                        marginTop: '5px',
-                        marginRight: '5px',
-                        borderRadius: '20px',
-                    }}
-                    className={styles['action-btn']}
-                >
-                    {followed ? 'Unfollow' : 'Follow'}
-                </Button>
-
-                <div className={styles.header}>
-                    <Avatar
-                        className={styles.avatar}
-                        src={pageUser.avatarUrl}
-                        alt={pageUser.username}
-                    />
-                    <div className={styles.info}>
-                        <>
-                            <h1 className={styles['name']}>{pageUser.fullName}</h1>
-                            <span onClick={handleCopy} className={styles['username']}>
-                                @{pageUser.username}
-                            </span>
-                            <Snackbar
-                                open={copied}
-                                autoHideDuration={2000}
-                                onClose={handleClose}
-                                message="Username copied."
-                                action={action}
-                            />
-
-                            <p className={styles['description']}>
-                                <FormatQuoteIcon />
-                                {pageUser.description.length === 0
-                                    ? 'No bio yet'
-                                    : pageUser.description}
-                            </p>
-                        </>
-                    </div>
-                </div>
-            </nav>
-
-            <div className={styles['collections-category']}>
-                <CollectionSearchBar disabled={debouncedQuery === '' && collections.length === 0} />
-                <SortBy
-                    className={styles['collections-search']}
-                    disabled={collections.length === 0}
+        <>
+            <header className={styles.profile}>
+                <div
+                    className={styles.cover}
+                    style={{ backgroundImage: `url(${pageUser.bannerUrl})` }}
                 />
-            </div>
 
-            <div className={styles['before-collections-line']} />
+                <nav className={styles['nav-bar']}>
+                    <div className={styles.actions}>
+                        <Tooltip title={followed ? 'Unfollow' : 'Follow'}>
+                            <IconButton
+                                onClick={toggleFollow}
+                                size="small"
+                                color="error"
+                                disabled={!user || debouncedFollowed !== followed}
+                            >
+                                {followed ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
+                            </IconButton>
+                        </Tooltip>
 
-            <div className={styles['collections-wrapper']}>
-                <CollectionsWrapper collections={collections} page="profile" />
-            </div>
-        </header>
+                        <Tooltip title="Message">
+                            <IconButton color="inherit" onClick={toggleMessage}>
+                                <EmailIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+
+                    <div className={styles.header}>
+                        <Avatar
+                            className={styles.avatar}
+                            src={pageUser.avatarUrl}
+                            alt={pageUser.username}
+                        />
+                        <div className={styles.info}>
+                            <>
+                                <h1 className={styles['name']}>{pageUser.fullName}</h1>
+                                <span onClick={handleCopy} className={styles['username']}>
+                                    @{pageUser.username}
+                                </span>
+                                <Snackbar
+                                    open={copied}
+                                    autoHideDuration={2000}
+                                    onClose={handleClose}
+                                    message="Username copied."
+                                    action={action}
+                                />
+
+                                <p className={styles['description']}>
+                                    <FormatQuoteIcon />
+                                    {pageUser.description.length === 0
+                                        ? 'No bio yet'
+                                        : pageUser.description}
+                                </p>
+                            </>
+                        </div>
+                    </div>
+                </nav>
+
+                <div className={styles['collections-category']}>
+                    <CollectionSearchBar
+                        disabled={debouncedQuery === '' && collections.length === 0}
+                    />
+                    <SortBy
+                        className={styles['collections-search']}
+                        disabled={collections.length === 0}
+                    />
+                </div>
+
+                <div className={styles['before-collections-line']} />
+
+                <div className={styles['collections-wrapper']}>
+                    <CollectionsWrapper collections={collections} page="profile" />
+                </div>
+            </header>
+
+            <FirstMessageDialog user={pageUser} />
+        </>
     );
 }

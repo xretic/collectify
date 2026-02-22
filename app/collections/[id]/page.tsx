@@ -529,7 +529,8 @@ export default function CollectionPage() {
                                 maxLength={COMMENT_MAX_LENGTH}
                                 placeholder="Write your comment"
                                 onChange={(e) => setCommentText(e.target.value)}
-                                style={{ height: 70, resize: 'none', ...inputStyle }}
+                                style={{ ...inputStyle }}
+                                autoSize={{ minRows: 2, maxRows: 20 }}
                             />
 
                             <MuiButton

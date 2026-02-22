@@ -5,7 +5,6 @@ import MenuItem from '@mui/material/MenuItem';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Menu from '@mui/material/Menu';
 import { useUIStore } from '@/stores/uiStore';
-import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -19,7 +18,8 @@ type Props = {
 export default function CommentHoverMenu({ collectionId }: Props) {
     const queryClient = useQueryClient();
 
-    const { commentAnchorEl, setCommentAnchorEl, startLoading, stopLoading, commentId } = useUIStore();
+    const { commentAnchorEl, setCommentAnchorEl, startLoading, stopLoading, commentId } =
+        useUIStore();
     const { comments, setComments } = useCollectionStore();
     const { setEditingComment } = useCommentEditStore();
 
