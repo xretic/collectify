@@ -27,6 +27,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
     const [messageText, setMessageText] = useState('');
     const [cursor, setCursor] = useState<Cursor>(null);
     const [hasMore, setHasMore] = useState(true);
+    const [nowTick, setNowTick] = useState(() => Date.now());
 
     const { user, loading } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
@@ -95,6 +96,8 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
             setCursor(res.nextCursor);
             setHasMore(res.nextCursor !== null);
+        } catch {
+            router.replace('/chats');
         } finally {
             stopLoading();
             fetchingRef.current = false;
@@ -104,7 +107,6 @@ export default function ChatPage({ chatId }: ChatPageProps) {
     const handleSendMessage = async (): Promise<void> => {
         if (!chatId || !messageText.trim()) return;
 
-        startLoading();
         try {
             const res = await api
                 .post('api/chats/' + chatId, { json: { messageText } })
@@ -127,10 +129,18 @@ export default function ChatPage({ chatId }: ChatPageProps) {
             });
 
             setMessageText('');
-        } finally {
-            stopLoading();
+        } catch {
+            return;
         }
     };
+
+    useEffect(() => {
+        const id = setInterval(() => {
+            setNowTick(Date.now());
+        }, 30_000);
+
+        return () => clearInterval(id);
+    }, []);
 
     useLayoutEffect(() => {
         const container = messagesRef.current;
@@ -270,6 +280,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                             senderId={x.userId}
                             content={x.content}
                             createdAt={x.createdAt}
+                            nowTick={nowTick}
                         />
                     ))}
                 </section>

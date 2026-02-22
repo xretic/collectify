@@ -7,7 +7,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { useEffect, useRef, useState } from 'react';
 import styles from './chats.module.css';
-import { Avatar, Box, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, IconButton } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ChatPage from '@/components/features/chats/ChatPage';
@@ -33,6 +33,11 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
     const activeChatIdRef = useRef<number | null>(null);
     const joinedChatsRef = useRef<Set<number>>(new Set());
     const fetchingChatsRef = useRef(false);
+    const skipRef = useRef(0);
+
+    useEffect(() => {
+        skipRef.current = skip;
+    }, [skip]);
 
     useEffect(() => {
         activeChatIdRef.current = activeChatId;
@@ -40,13 +45,8 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
 
     useEffect(() => {
         if (!chatId) return;
-
         if (activeChatIdRef.current === chatId) return;
-
         setActiveChatId(chatId);
-        activeChatIdRef.current = chatId;
-
-        void handleChangeChat(chatId);
     }, [chatId]);
 
     const getChats = async (): Promise<void> => {
@@ -57,35 +57,39 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
         try {
             const data = await api
                 .get('api/chats', {
-                    searchParams: { skip: skip * CHATS_PAGE_LENGTH },
+                    searchParams: { skip: skipRef.current * CHATS_PAGE_LENGTH },
                 })
                 .json<{ data: ChatInResponse[]; total: number }>();
 
             setChats(data.data);
             setTotal(data.total);
+        } catch {
+            return;
         } finally {
             stopLoading();
             fetchingChatsRef.current = false;
         }
     };
 
-    const handleChangeChat = async (chatId: number): Promise<void> => {
-        startLoading();
-        setActiveChatId(chatId);
-        setChats((prev) => prev.map((c) => (c.id === chatId ? { ...c, unread: 0 } : c)));
+    const handleChangeChat = (id: number, unread?: number): void => {
+        setActiveChatId(id);
+        setChats((prev) => prev.map((c) => (c.id === id ? { ...c, unread: 0 } : c)));
 
-        try {
-            await api.patch('api/chats/' + chatId);
-            await refreshUser();
-        } finally {
-            stopLoading();
+        if (unread && unread > 0) {
+            void (async () => {
+                try {
+                    await api.patch('api/chats/' + id);
+                    await refreshUser();
+                } catch {
+                    return;
+                }
+            })();
         }
     };
 
     useEffect(() => {
         if (loading) return;
-
-        getChats();
+        void getChats();
     }, [loading, skip]);
 
     useEffect(() => {
@@ -132,7 +136,6 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
         };
 
         socket.on('message:new', onNew);
-
         return () => {
             socket.off('message:new', onNew);
         };
@@ -149,7 +152,7 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
                     <Box className={styles.sidebarActions}>
                         <IconButton
                             className={styles.smallBtn}
-                            onClick={() => setSkip(skip - 1)}
+                            onClick={() => setSkip((s) => s - 1)}
                             disabled={skip === 0}
                         >
                             <KeyboardArrowLeftIcon sx={{ color: '#afafaf' }} />
@@ -157,7 +160,7 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
 
                         <IconButton
                             className={styles.smallBtn}
-                            onClick={() => setSkip(skip + 1)}
+                            onClick={() => setSkip((s) => s + 1)}
                             disabled={chats.length === 0 || (skip + 1) * CHATS_PAGE_LENGTH > total}
                         >
                             <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
@@ -176,8 +179,10 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
                                 <button
                                     key={c.id}
                                     type="button"
-                                    className={`${styles.chatItem} ${isActive ? styles.chatItemActive : ''}`}
-                                    onClick={() => handleChangeChat(c.id)}
+                                    className={`${styles.chatItem} ${
+                                        isActive ? styles.chatItemActive : ''
+                                    }`}
+                                    onClick={() => handleChangeChat(c.id, c.unread)}
                                 >
                                     <Avatar
                                         className={styles.avatar}
@@ -211,7 +216,7 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
                 </div>
             </aside>
 
-            <ChatPage chatId={activeChatId} />
+            <ChatPage key={activeChatId ?? 'none'} chatId={activeChatId} />
         </div>
     );
 }

@@ -12,6 +12,7 @@ interface MessageProps {
     senderId: number;
     content: string;
     createdAt: Date;
+    nowTick: number;
 }
 
 export default function MessageComponent({
@@ -21,9 +22,12 @@ export default function MessageComponent({
     senderId,
     content,
     createdAt,
+    nowTick,
 }: MessageProps) {
     const { user } = useUser();
     const router = useRouter();
+
+    const timeLabel = moment(createdAt).from(nowTick);
 
     if (!user) return <Loader />;
 
@@ -39,7 +43,7 @@ export default function MessageComponent({
                     >
                         {senderUsername}
                     </span>
-                    <span className={styles.date}>{moment(createdAt).fromNow()}</span>
+                    <span className={styles.date}>{timeLabel}</span>
                 </p>
                 <p className={styles.content}>{content}</p>
             </span>
