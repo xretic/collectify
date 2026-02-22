@@ -193,8 +193,7 @@ export default function ProfilePage() {
                         <Tooltip title={followed ? 'Unfollow' : 'Follow'}>
                             <IconButton
                                 onClick={toggleFollow}
-                                size="small"
-                                color="error"
+                                color="inherit"
                                 disabled={!user || debouncedFollowed !== followed}
                             >
                                 {followed ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
