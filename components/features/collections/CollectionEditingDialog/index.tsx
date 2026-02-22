@@ -6,7 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { ConfigProvider, Input } from 'antd';
 import styles from './index.module.css';
-import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
+import { COLLECTION_DESCRIPTION_MAX_LENGTH, COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
 import TextArea from 'antd/es/input/TextArea';
 import { Box, IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -211,7 +211,7 @@ export function CollectionEditingDialog() {
                             color: 'var(--text-color)',
                         }}
                         value={state.title}
-                        maxLength={ITEM_TITLE_MAX_LENGTH}
+                        maxLength={COLLECTION_NAME_MAX_LENGTH}
                         showCount
                     />
 
@@ -226,7 +226,7 @@ export function CollectionEditingDialog() {
                         }}
                         autoSize={{ minRows: 2, maxRows: 5 }}
                         value={state.description}
-                        maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
+                        maxLength={COLLECTION_DESCRIPTION_MAX_LENGTH}
                         showCount
                     />
 
