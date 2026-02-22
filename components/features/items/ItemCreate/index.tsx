@@ -72,7 +72,9 @@ export function ItemCreate() {
             reset();
 
             queryClient.removeQueries({
-                queryKey: ['collections-search'],
+                predicate: (query) =>
+                    query.queryKey.includes('collection') ||
+                    query.queryKey.includes('collections-search'),
             });
 
             router.replace('/collections/' + data.id);

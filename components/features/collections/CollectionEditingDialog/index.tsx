@@ -18,6 +18,7 @@ import { api } from '@/lib/api';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { ItemField } from '../../items/ItemField';
 import { handleUpload } from '@/helpers/handleUpload';
+import { useQueryClient } from '@tanstack/react-query';
 
 type State = {
     title: string;
@@ -35,6 +36,8 @@ export function CollectionEditingDialog() {
     const { collection, setCollection } = useCollectionStore();
     const [errorMessage, setErrorMessage] = useState('');
     const [disabled, setDisabled] = useState(false);
+
+    const queryClient = useQueryClient();
 
     const buttonsStyle: SxProps<Theme> = {
         borderRadius: 6,
@@ -77,6 +80,12 @@ export function CollectionEditingDialog() {
             resetState();
             handleClose();
             setCollection(data.data);
+
+            queryClient.removeQueries({
+                predicate: (query) =>
+                    query.queryKey.includes('collection') ||
+                    query.queryKey.includes('collections-search'),
+            });
         } catch (err: any) {
             const message = err?.response?.message;
             if (message) setErrorMessage(message);
