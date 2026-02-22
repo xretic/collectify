@@ -63,6 +63,9 @@ export function ItemCreate() {
                         itemImageUrl: itemImageUrl === '' ? null : itemImageUrl,
                         itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
                     },
+                    searchParams: {
+                        commentsSkip: 0,
+                    },
                 })
                 .json<{ id: number }>();
 
