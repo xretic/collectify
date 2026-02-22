@@ -158,6 +158,12 @@
     border-radius: 999px;
 }
 
+.backButton {
+    margin-left: 2px;
+    font-size: 15   px;
+    font-family: var(--font-google-sans), sans-serif;
+}
+
 @media (max-width: 980px) {
     .page {
         grid-template-columns: 1fr;

@@ -7,12 +7,13 @@ import { useUIStore } from '@/stores/uiStore';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { useEffect, useRef, useState } from 'react';
 import styles from './chats.module.css';
-import { Avatar, Box, IconButton } from '@mui/material';
+import { Avatar, Box, Button, IconButton, useMediaQuery } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ChatPage from '@/components/features/chats/ChatPage';
 import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/lib/constans';
 import { useSocket } from '@/context/SocketProvider';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 type SocketMessage = MessageInResponse & { chatId: number };
 
@@ -34,6 +35,8 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
     const joinedChatsRef = useRef<Set<number>>(new Set());
     const fetchingChatsRef = useRef(false);
     const skipRef = useRef(0);
+
+    const isMobile = useMediaQuery('(max-width:1000px)');
 
     useEffect(() => {
         skipRef.current = skip;
@@ -85,6 +88,10 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
                 }
             })();
         }
+    };
+
+    const handleBackToChats = (): void => {
+        setActiveChatId(null);
     };
 
     useEffect(() => {
@@ -145,78 +152,94 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
 
     return (
         <div className={styles.page}>
-            <aside className={styles.sidebar}>
-                <div className={styles.sidebarHeader}>
-                    <span className={styles.sidebarTitle}>Chats</span>
+            {isMobile && activeChatId ? (
+                <Button
+                    onClick={handleBackToChats}
+                    sx={{ textTransform: 'none', marginRight: 'auto', color: 'var(--text-color)' }}
+                >
+                    <ArrowBackIcon />
+                    <span className={styles.backButton}>Chats</span>
+                </Button>
+            ) : (
+                <aside className={styles.sidebar}>
+                    <div className={styles.sidebarHeader}>
+                        <span className={styles.sidebarTitle}>Chats</span>
 
-                    <Box className={styles.sidebarActions}>
-                        <IconButton
-                            className={styles.smallBtn}
-                            onClick={() => setSkip((s) => s - 1)}
-                            disabled={skip === 0}
-                        >
-                            <KeyboardArrowLeftIcon sx={{ color: '#afafaf' }} />
-                        </IconButton>
+                        <Box className={styles.sidebarActions}>
+                            <IconButton
+                                className={styles.smallBtn}
+                                onClick={() => setSkip((s) => s - 1)}
+                                disabled={skip === 0}
+                            >
+                                <KeyboardArrowLeftIcon sx={{ color: '#afafaf' }} />
+                            </IconButton>
 
-                        <IconButton
-                            className={styles.smallBtn}
-                            onClick={() => setSkip((s) => s + 1)}
-                            disabled={chats.length === 0 || (skip + 1) * CHATS_PAGE_LENGTH > total}
-                        >
-                            <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
-                        </IconButton>
-                    </Box>
-                </div>
+                            <IconButton
+                                className={styles.smallBtn}
+                                onClick={() => setSkip((s) => s + 1)}
+                                disabled={
+                                    chats.length === 0 || (skip + 1) * CHATS_PAGE_LENGTH > total
+                                }
+                            >
+                                <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
+                            </IconButton>
+                        </Box>
+                    </div>
 
-                <div className={styles.chatList}>
-                    {chats.length === 0 ? (
-                        <p className={styles.emptyTitle}>No chats yet</p>
-                    ) : (
-                        chats.map((c) => {
-                            const isActive = c.id === activeChatId;
+                    <div className={styles.chatList}>
+                        {chats.length === 0 ? (
+                            <p className={styles.emptyTitle}>No chats yet</p>
+                        ) : (
+                            chats.map((c) => {
+                                const isActive = c.id === activeChatId;
 
-                            return (
-                                <button
-                                    key={c.id}
-                                    type="button"
-                                    className={`${styles.chatItem} ${
-                                        isActive ? styles.chatItemActive : ''
-                                    }`}
-                                    onClick={() => handleChangeChat(c.id, c.unread)}
-                                >
-                                    <Avatar
-                                        className={styles.avatar}
-                                        src={c.userAvatarUrl}
-                                        alt={c.username}
-                                    />
+                                return (
+                                    <button
+                                        key={c.id}
+                                        type="button"
+                                        className={`${styles.chatItem} ${
+                                            isActive ? styles.chatItemActive : ''
+                                        }`}
+                                        onClick={() => handleChangeChat(c.id, c.unread)}
+                                    >
+                                        <Avatar
+                                            className={styles.avatar}
+                                            src={c.userAvatarUrl}
+                                            alt={c.username}
+                                        />
 
-                                    <div className={styles.chatMeta}>
-                                        <div className={styles.chatTopRow}>
-                                            <span className={styles.username}>{c.username}</span>
+                                        <div className={styles.chatMeta}>
+                                            <div className={styles.chatTopRow}>
+                                                <span className={styles.username}>
+                                                    {c.username}
+                                                </span>
+                                            </div>
+
+                                            <span className={styles.preview}>
+                                                {c.previewContent?.length &&
+                                                c.previewContent.length > MAX_PREVIEW_MESSAGE_LENGTH
+                                                    ? c.previewContent.slice(
+                                                          0,
+                                                          MAX_PREVIEW_MESSAGE_LENGTH - 3,
+                                                      ) + '...'
+                                                    : c.previewContent}
+                                            </span>
                                         </div>
 
-                                        <span className={styles.preview}>
-                                            {c.previewContent?.length &&
-                                            c.previewContent.length > MAX_PREVIEW_MESSAGE_LENGTH
-                                                ? c.previewContent.slice(
-                                                      0,
-                                                      MAX_PREVIEW_MESSAGE_LENGTH - 3,
-                                                  ) + '...'
-                                                : c.previewContent}
-                                        </span>
-                                    </div>
+                                        {c.unread > 0 && (
+                                            <span className={styles.badge}>{c.unread}</span>
+                                        )}
+                                    </button>
+                                );
+                            })
+                        )}
+                    </div>
+                </aside>
+            )}
 
-                                    {c.unread > 0 && (
-                                        <span className={styles.badge}>{c.unread}</span>
-                                    )}
-                                </button>
-                            );
-                        })
-                    )}
-                </div>
-            </aside>
-
-            <ChatPage key={activeChatId ?? 'none'} chatId={activeChatId} />
+            {isMobile && !activeChatId ? null : (
+                <ChatPage key={activeChatId ?? 'none'} chatId={activeChatId} />
+            )}
         </div>
     );
 }
