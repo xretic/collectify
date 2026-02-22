@@ -129,6 +129,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
             });
 
             setMessageText('');
+            setNowTick(Date.now());
         } catch {
             return;
         }

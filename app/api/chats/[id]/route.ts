@@ -4,8 +4,6 @@ import { prisma } from '@/lib/prisma';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
 
-// get messages from chat
-
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
