@@ -185,6 +185,52 @@
     padding: 0px 32px;
 }
 
+.follow-stats {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--container-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    margin: 12px auto 0;
+}
+
+.follow-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 96px;
+    text-align: center;
+}
+
+.follow-number {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.1;
+    color: var(--text-color);
+}
+
+.follow-label {
+    margin-top: 4px;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--soft-text);
+}
+
+.follow-divider {
+    width: 1px;
+    height: 34px;
+    background: var(--border-color);
+    opacity: 0.9;
+}
+
 @media (max-width: 1000px) {
     .collections-category .category-text {
         display: none;

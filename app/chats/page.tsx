@@ -14,6 +14,7 @@ import ChatPage from '@/components/features/chats/ChatPage';
 import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/lib/constans';
 import { useSocket } from '@/context/SocketProvider';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import moment from 'moment';
 
 type SocketMessage = MessageInResponse & { chatId: number };
 

@@ -89,7 +89,18 @@ export default function ProfilePage() {
     const toggleFollow = async () => {
         if (!user || !pageUser) return;
 
-        const action = debouncedFollowed ? 'unfollow' : 'follow';
+        const nextFollowed = !followed;
+        const action = nextFollowed ? 'follow' : 'unfollow';
+
+        setFollowed(nextFollowed);
+        setPageUser((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                followers: Math.max(0, (prev.followers ?? 0) + (nextFollowed ? 1 : -1)),
+                sessionUserIsFollowed: nextFollowed,
+            };
+        });
 
         try {
             await api.patch('api/users', {
@@ -98,10 +109,16 @@ export default function ProfilePage() {
                     followAction: action,
                 },
             });
-
-            setFollowed(!debouncedFollowed);
         } catch {
-            return;
+            setFollowed(!nextFollowed);
+            setPageUser((prev) => {
+                if (!prev) return prev;
+                return {
+                    ...prev,
+                    followers: Math.max(0, (prev.followers ?? 0) + (nextFollowed ? -1 : 1)),
+                    sessionUserIsFollowed: !nextFollowed,
+                };
+            });
         }
     };
 
@@ -219,6 +236,7 @@ export default function ProfilePage() {
                                 <span onClick={handleCopy} className={styles['username']}>
                                     @{pageUser.username}
                                 </span>
+
                                 <Snackbar
                                     open={copied}
                                     autoHideDuration={2000}
@@ -237,6 +255,20 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </nav>
+
+                <div className={styles['follow-stats']}>
+                    <div className={styles['follow-stat']}>
+                        <span className={styles['follow-number']}>{pageUser.subscriptions}</span>
+                        <span className={styles['follow-label']}>Following</span>
+                    </div>
+
+                    <div className={styles['follow-divider']} />
+
+                    <div className={styles['follow-stat']}>
+                        <span className={styles['follow-number']}>{pageUser.followers}</span>
+                        <span className={styles['follow-label']}>Followers</span>
+                    </div>
+                </div>
 
                 <div className={styles['collections-category']}>
                     <CollectionSearchBar
