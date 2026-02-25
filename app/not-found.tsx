@@ -30,6 +30,7 @@ export default function NotFoundPage() {
                 justifyContent: 'center',
                 bgcolor: '#fff',
                 padding: 3,
+                backgroundColor: 'var(--background-color)',
             }}
         >
             <Stack spacing={4} alignItems="center" sx={{ maxWidth: 600 }}>
@@ -41,7 +42,7 @@ export default function NotFoundPage() {
                     <SearchOff
                         sx={{
                             fontSize: { xs: 100, md: 140 },
-                            color: '#2196F3',
+                            color: 'var(--accent)',
                             opacity: 0.9,
                         }}
                     />
@@ -52,7 +53,7 @@ export default function NotFoundPage() {
                         fontSize: { xs: '4rem', sm: '5rem', md: '6rem' },
                         fontWeight: 700,
                         lineHeight: 1,
-                        color: '#1a1a1a',
+                        color: 'var(--text-color)',
                         letterSpacing: '-0.02em',
                         animation: `${fadeIn} 0.6s ease-out`,
                     }}
@@ -71,7 +72,7 @@ export default function NotFoundPage() {
                         variant="h4"
                         sx={{
                             fontWeight: 600,
-                            color: '#1a1a1a',
+                            color: 'var(--text-color)',
                             fontSize: { xs: '1.5rem', md: '2rem' },
                             textAlign: 'center',
                         }}
@@ -82,7 +83,7 @@ export default function NotFoundPage() {
                     <Typography
                         variant="body1"
                         sx={{
-                            color: '#666',
+                            color: 'var(--soft-text)',
                             textAlign: 'center',
                             maxWidth: 450,
                             fontSize: { xs: '0.95rem', md: '1.05rem' },
@@ -106,7 +107,7 @@ export default function NotFoundPage() {
                         startIcon={<Home />}
                         onClick={() => (window.location.href = '/')}
                         sx={{
-                            bgcolor: '#2196F3',
+                            bgcolor: 'var(--accent)',
                             color: '#fff',
                             px: 3.5,
                             py: 1.3,
@@ -116,7 +117,7 @@ export default function NotFoundPage() {
                             borderRadius: 1.5,
                             boxShadow: 'none',
                             '&:hover': {
-                                bgcolor: '#1976D2',
+                                bgcolor: 'var(--accent)',
                                 boxShadow: '0 4px 12px rgba(33, 150, 243, 0.3)',
                             },
                         }}
@@ -129,8 +130,8 @@ export default function NotFoundPage() {
                         startIcon={<ArrowBack />}
                         onClick={() => window.history.back()}
                         sx={{
-                            borderColor: '#e0e0e0',
-                            color: '#666',
+                            borderColor: 'var(--border)',
+                            color: 'var(--text-color)',
                             px: 3.5,
                             py: 1.3,
                             textTransform: 'none',
@@ -138,9 +139,8 @@ export default function NotFoundPage() {
                             fontWeight: 500,
                             borderRadius: 1.5,
                             '&:hover': {
-                                borderColor: '#2196F3',
-                                bgcolor: 'rgba(33, 150, 243, 0.04)',
-                                color: '#2196F3',
+                                borderColor: 'var(--accent)',
+                                color: 'var(--accent)',
                             },
                         }}
                     >
