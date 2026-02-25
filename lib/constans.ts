@@ -48,3 +48,5 @@ export const MESSAGES_PAGE_LENGTH = 20;
 
 export const DIRECT_MESSAGE_MAX_LENGTH = 2000;
 export const MAX_PREVIEW_MESSAGE_LENGTH = 30;
+
+export const SESSION_AGE_IN_DAYS = 14;

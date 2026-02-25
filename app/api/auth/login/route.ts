@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
+import { SESSION_AGE_IN_DAYS } from '@/lib/constans';
 
 export async function POST(req: NextRequest) {
     try {
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
             path: '/',
             sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7,
+            maxAge: 60 * 60 * 24 * SESSION_AGE_IN_DAYS,
         });
 
         return response;

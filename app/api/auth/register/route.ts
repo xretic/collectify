@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
+import { SESSION_AGE_IN_DAYS } from '@/lib/constans';
 
 export async function POST(req: NextRequest) {
     try {
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
             path: '/',
             sameSite: 'lax',
             secure: true,
-            maxAge: 60 * 60 * 24 * 30,
+            maxAge: 60 * 60 * 24 * SESSION_AGE_IN_DAYS,
         });
 
         return response;

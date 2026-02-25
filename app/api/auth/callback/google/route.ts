@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { randomUUID } from 'crypto';
 import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
-import { USERNAME_MAX_LENGTH } from '@/lib/constans';
+import { SESSION_AGE_IN_DAYS, USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
 import { Prisma } from '@/generated/prisma/client';
 import ky from 'ky';
@@ -130,7 +130,7 @@ export async function GET(req: Request) {
             path: '/',
             sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7,
+            maxAge: 60 * 60 * 24 * SESSION_AGE_IN_DAYS,
         });
 
         return response;
