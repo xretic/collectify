@@ -14,7 +14,7 @@ import TextArea from 'antd/es/input/TextArea';
 export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
     const router = useRouter();
     const { open, setOpen } = useFirstMessageDialogStore();
-    const { startLoading, stopLoading } = useUIStore();
+    const { startLoading, stopLoading, loadingCount } = useUIStore();
 
     const [message, setMessage] = useState('');
 
@@ -24,6 +24,8 @@ export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
     };
 
     const handleConfirm = async () => {
+        if (loadingCount > 0) return;
+
         startLoading();
 
         try {

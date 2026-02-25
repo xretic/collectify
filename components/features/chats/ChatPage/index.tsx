@@ -106,6 +106,9 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
     const handleSendMessage = async (): Promise<void> => {
         if (!chatId || !messageText.trim()) return;
+        if (!messageText.trim()) return;
+
+        setMessageText('');
 
         try {
             const res = await api
@@ -128,7 +131,6 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                 return { ...prev, messages: [...(prev.messages ?? []), res.data] };
             });
 
-            setMessageText('');
             setNowTick(Date.now());
         } catch {
             return;
