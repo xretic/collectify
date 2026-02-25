@@ -88,13 +88,18 @@ High-level Flow
 
 ### Prerequisites
 
+```bash
 - Node.js ≥ 18
 - PostgreSQL
+```
 
 ### Installation
 
-git clone https://github.com/xretic/collectify.git cd collectify npm
-install npm run dev
+```bash
+git clone https://github.com/xretic/collectify.git cd collectify
+npm install
+npm run dev
+```
 
 ---
 
@@ -116,7 +121,9 @@ collectify-websocket-core npm install
 
 2.  Build and start the service:
 
+```bash
 npm run build npm start
+```
 
 3.  Deploy it to a separate domain or subdomain (for example:
     https://socket.yourdomain.com)
@@ -128,11 +135,15 @@ npm run build npm start
 After deploying the WebSocket core, configure your main Collectify
 project .env file:
 
+```bash
 NEXT_PUBLIC_SOCKET_URL=https://your-socket-url.com
 SOCKET_PUBLISH_URL=https://your-socket-url.com
+```
 
+```bash
 - NEXT_PUBLIC_SOCKET_URL
 - SOCKET_PUBLISH_URL
+```
 
 Without deploying the WebSocket core and setting these environment
 variables, real-time features will not function.
