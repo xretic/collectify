@@ -127,6 +127,13 @@ export default function CollectionPage() {
         setComments(null);
     }, [id, setComments]);
 
+    useEffect(() => {
+        if (!collection) return;
+        if (collection.id !== Number(id)) {
+            setCollection(null);
+        }
+    }, []);
+
     const { data: collectionData, isError: isCollectionError } =
         useQuery<CollectionPropsAdditional>({
             queryKey: collectionKey,
