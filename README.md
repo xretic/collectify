@@ -40,6 +40,10 @@ sharing collections of items.
 
 ![Collection Page](docs/screenshots/1-collection-page.png)
 
+### Chats
+
+![Chats](docs/screenshots/5-chats.png)
+
 ### Collection Create
 
 ![Collection Create](docs/screenshots/4-create-collection.png)
