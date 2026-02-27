@@ -156,7 +156,7 @@ export async function PATCH(req: NextRequest) {
         }
 
         if (safeData.username) {
-            const usernameCheck = await prisma.user.findFirst({
+            const usernameCheck = await prisma.user.findUnique({
                 where: {
                     username: safeData?.username,
                 },

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'Invalid data.' }, { status: 405 });
         }
 
-        const userExistence = await prisma.user.findFirst({
+        const userExistence = await prisma.user.findUnique({
             where: { email },
         });
 
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'This user already exists.' }, { status: 409 });
         }
 
-        const usernameExistence = await prisma.user.findFirst({
+        const usernameExistence = await prisma.user.findUnique({
             where: { username },
         });
 
