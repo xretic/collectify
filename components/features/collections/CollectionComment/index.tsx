@@ -97,7 +97,7 @@ export function CollectionComment({ collectionId, comment }: Props) {
         setEditingText(comment.text);
     }, [comment.id, comment.text]);
 
-    if (loading) return null;
+    if (loading && !user) return null;
 
     return (
         <article className={styles.comment}>

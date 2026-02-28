@@ -206,6 +206,8 @@ export default function ChatPage({ chatId }: ChatPageProps) {
         const onNew = (msg: SocketMessage) => {
             if (msg.chatId !== chatId) return;
 
+            void api.patch('api/chats/' + msg.chatId);
+
             setDetails((prev) => {
                 if (!prev) return prev;
 

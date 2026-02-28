@@ -374,7 +374,7 @@ export default function CollectionPage() {
         </React.Fragment>
     );
 
-    if (loading) return null;
+    if (loading && !user) return null;
     if (!collection) return <Loader />;
 
     return (

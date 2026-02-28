@@ -124,7 +124,7 @@ export default function NavBar() {
         }
     }, [user?.username]);
 
-    if (loading) return null;
+    if (loading && !user) return null;
 
     return (
         <header>

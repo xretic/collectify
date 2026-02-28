@@ -1,6 +1,5 @@
 'use client';
 
-import { Loader } from '@/components/ui/Loader';
 import { useUser } from '@/context/UserProvider';
 import { api } from '@/lib/api';
 import { useUIStore } from '@/stores/uiStore';
@@ -14,7 +13,6 @@ import ChatPage from '@/components/features/chats/ChatPage';
 import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/lib/constans';
 import { useSocket } from '@/context/SocketProvider';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import moment from 'moment';
 
 type SocketMessage = MessageInResponse & { chatId: number };
 
@@ -148,8 +146,6 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
             socket.off('message:new', onNew);
         };
     }, [socket, user?.id]);
-
-    if (loading) return <Loader />;
 
     return (
         <div className={styles.page}>

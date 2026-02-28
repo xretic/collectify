@@ -62,7 +62,7 @@ export default function HomePage() {
 
     const collections = data?.data ?? [];
 
-    if (loading) return null;
+    if (loading && !user) return null;
     if (isFetching) return <Loader />;
 
     return (
