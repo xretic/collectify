@@ -1,0 +1,128 @@
+.messagesBox {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--container-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 18px 20px;
+    height: 650px;
+    gap: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.messagesPlaceholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    color: var(--soft-text);
+}
+
+.placeholderTitle {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 22px;
+    color: var(--text-color);
+}
+
+.placeholderText {
+    font-size: 15px;
+}
+
+.composer {
+    background-color: var(--container-color);
+    border-radius: 20px;
+    padding: 14px 20px;
+}
+
+.composerDisabled {
+    border: 1px dashed var(--border-color);
+    border-radius: 14px;
+    padding: 12px 14px;
+    color: var(--soft-text);
+    font-size: 13px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.contentHeader {
+    background-color: var(--container-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 18px 20px;
+}
+
+.activeTitle:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.contentHeaderInner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.activeAvatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    object-fit: cover;
+    background: var(--border-color);
+}
+
+.activeTitle {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.activeSubtitle {
+    color: var(--soft-text);
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.emptyState {
+    padding: 18px 10px;
+    text-align: center;
+    color: var(--soft-text);
+}
+
+.emptyTitle {
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 6px;
+}
+
+.emptyText {
+    font-size: 13px;
+}
+
+.box {
+    display: grid;
+    gap: 15px;
+}
+
+.composerInputWrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.composerInputWrap textarea {
+    flex: 1;
+}
+
+@media (max-width: 980px) {
+    .contentHeader {
+        display: none;
+    }
+}

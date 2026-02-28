@@ -6,8 +6,8 @@ import { useUser } from '@/context/UserProvider';
 import { useCommentEditStore } from '@/stores/commentEditStore';
 import { ConfigProvider } from 'antd';
 import { COMMENT_MAX_LENGTH } from '@/lib/constans';
-import React, { useEffect, useState } from 'react';
-import { Button, SxProps, Theme } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Avatar, Button, SxProps, Theme } from '@mui/material';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import TextArea from 'antd/es/input/TextArea';
@@ -97,16 +97,11 @@ export function CollectionComment({ collectionId, comment }: Props) {
         setEditingText(comment.text);
     }, [comment.id, comment.text]);
 
-    if (loading) return null;
+    if (loading && !user) return null;
 
     return (
         <article className={styles.comment}>
-            <img
-                className={styles.avatar}
-                src={comment.avatarUrl}
-                alt={comment.username}
-                loading="lazy"
-            />
+            <Avatar className={styles.avatar} src={comment.avatarUrl} alt={comment.username} />
 
             <div className={styles.content}>
                 <header className={styles.header}>
@@ -166,9 +161,8 @@ export function CollectionComment({ collectionId, comment }: Props) {
                             style={{
                                 backgroundColor: 'var(--container-color)',
                                 color: 'var(--text-color)',
-                                resize: 'none',
-                                height: '80px',
                             }}
+                            autoSize={{ minRows: 1, maxRows: 20 }}
                             value={editingText}
                             maxLength={COMMENT_MAX_LENGTH}
                             showCount

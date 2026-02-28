@@ -62,6 +62,7 @@ export default function SettingsPage() {
     const inputStyle: Record<string, string> = {
         backgroundColor: 'var(--container-color)',
         color: 'var(--text-color)',
+        borderColor: 'var(--border-color)',
     };
 
     const updateState = <K extends keyof GlobalState>(key: K, value: GlobalState[K]) => {
@@ -161,7 +162,7 @@ export default function SettingsPage() {
         </React.Fragment>
     );
 
-    if (loading) return null;
+    if (loading && !user) return null;
 
     return (
         <>
@@ -346,7 +347,7 @@ export default function SettingsPage() {
                                         width: '100%',
                                         ...inputStyle,
                                     }}
-                                    onChange={(value) => changeTheme(value)}
+                                    onChange={(value: 'dark' | 'light') => changeTheme(value)}
                                     options={[
                                         { value: 'dark', label: 'Dark' },
                                         { value: 'light', label: 'Light' },

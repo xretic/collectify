@@ -69,6 +69,9 @@ export function ItemAddDialog() {
                         sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
                         imageUrl: state.imageUrl === '' ? null : state.imageUrl,
                     },
+                    searchParams: {
+                        commentsSkip: 0,
+                    },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
 
@@ -219,9 +222,8 @@ export function ItemAddDialog() {
                         style={{
                             backgroundColor: 'var(--container-color)',
                             color: 'var(--text-color)',
-                            height: 70,
-                            resize: 'none',
                         }}
+                        autoSize={{ minRows: 2, maxRows: 5 }}
                         maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                         showCount
                     />

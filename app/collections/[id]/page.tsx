@@ -74,8 +74,11 @@ function applyActionOptimistic(
 }
 
 export default function CollectionPage() {
-    const params = useParams();
-    const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    const params = useParams<{ id: string }>();
+
+    if (!params) return null;
+
+    const id = params.id;
 
     const router = useRouter();
     const queryClient = useQueryClient();
@@ -123,6 +126,13 @@ export default function CollectionPage() {
         commentsInitializedRef.current = false;
         setComments(null);
     }, [id, setComments]);
+
+    useEffect(() => {
+        if (!collection) return;
+        if (collection.id !== Number(id)) {
+            setCollection(null);
+        }
+    }, []);
 
     const { data: collectionData, isError: isCollectionError } =
         useQuery<CollectionPropsAdditional>({
@@ -364,7 +374,7 @@ export default function CollectionPage() {
         </React.Fragment>
     );
 
-    if (loading) return null;
+    if (loading && !user) return null;
     if (!collection) return <Loader />;
 
     return (
@@ -377,9 +387,9 @@ export default function CollectionPage() {
                 action={action}
             />
 
-            <div className={styles['container']}>
-                <span className={styles['title']}>{collection.name}</span>
-                <span className={styles['category']}>{collection.category}</span>
+            <div className={styles.container}>
+                <span className={styles.title}>{collection.name}</span>
+                <span className={styles.category}>{collection.category}</span>
                 <Image
                     src={collection?.bannerUrl ?? '/'}
                     alt="Banner"
@@ -510,6 +520,9 @@ export default function CollectionPage() {
 
             <div className={styles.commentDivider}>
                 <p className={styles.commentsAmount}>{collection.comments} comments</p>
+                {!user && collection.comments === 0 && (
+                    <p className={styles.noComments}>No comments yet.</p>
+                )}
 
                 <ConfigProvider
                     theme={{
@@ -526,7 +539,8 @@ export default function CollectionPage() {
                                 maxLength={COMMENT_MAX_LENGTH}
                                 placeholder="Write your comment"
                                 onChange={(e) => setCommentText(e.target.value)}
-                                style={{ height: 70, resize: 'none', ...inputStyle }}
+                                style={{ ...inputStyle }}
+                                autoSize={{ minRows: 2, maxRows: 20 }}
                             />
 
                             <MuiButton

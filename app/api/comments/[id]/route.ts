@@ -32,7 +32,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
 
         if (session.userId !== comment.userId) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
         }
 
         await prisma.comment.delete({
@@ -57,7 +57,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
 
         if (!text.trim() || text.length === 0 || text.length > COMMENT_MAX_LENGTH) {
-            return NextResponse.json({ message: `Text length should be within this range [0-${COMMENT_MAX_LENGTH}]` }, { status: 400 });
+            return NextResponse.json(
+                { message: `Text length should be within this range [0-${COMMENT_MAX_LENGTH}]` },
+                { status: 400 },
+            );
         }
 
         const sessionId = req.cookies.get('sessionId')?.value;
@@ -87,14 +90,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
 
         if (session.userId !== comment.userId) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
         }
 
         await prisma.comment.update({
             where: {
                 id: comment.id,
             },
-            
+
             data: {
                 text,
             },
@@ -106,6 +109,3 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
 }
-
-
-

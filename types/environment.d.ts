@@ -13,6 +13,11 @@ declare global {
             GITHUB_CLIENT_ID: string;
             GITHUB_CLIENT_SECRET: string;
 
+            NEXT_PUBLIC_VERCEL_URL: string;
+
+            NEXT_PUBLIC_SOCKET_URL: string;
+            SOCKET_PUBLISH_URL: string;
+
             NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY: string;
             REDIS_URL: string;
         }

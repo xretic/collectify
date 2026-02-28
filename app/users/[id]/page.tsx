@@ -14,17 +14,25 @@ import { PAGE_SIZE } from '@/lib/constans';
 import { usePaginationStore } from '@/stores/paginationStore';
 import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
 import styles from '../users.module.css';
-import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
+import { IconButton, Snackbar, SnackbarCloseReason, Tooltip } from '@mui/material';
 import { UserInResponse } from '@/types/UserInResponse';
 import CloseIcon from '@mui/icons-material/Close';
 import { api } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { Loader } from '@/components/ui/Loader';
 import { CollectionFieldProps } from '@/types/CollectionField';
+import EmailIcon from '@mui/icons-material/Email';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import { useFirstMessageDialogStore } from '@/stores/dialogs/firstMessageDialogStore';
+import FirstMessageDialog from '@/components/features/chats/FirstMessageDialog';
 
 export default function ProfilePage() {
-    const componentParams = useParams();
-    const id = Array.isArray(componentParams.id) ? componentParams.id[0] : componentParams.id;
+    const params = useParams<{ id: string }>();
+
+    if (!params) return null;
+
+    const id = params.id;
 
     const { user } = useUser();
     const [pageUser, setPageUser] = useState<UserInResponse | null>(null);
@@ -32,15 +40,18 @@ export default function ProfilePage() {
     const [followed, setFollowed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [emptyPage, setEmptyPage] = useState(true);
-    const { sortedBy } = useUIStore();
+
+    const { startLoading, stopLoading, sortedBy } = useUIStore();
+    const { setOpen } = useFirstMessageDialogStore();
     const { profilePagination } = usePaginationStore();
     const { query } = useCollectionSearchStore();
+
     const debouncedQuery = useDebounce(query, 400);
     const debouncedFollowed = useDebounce(followed, 600);
 
     const router = useRouter();
 
-    const params = useMemo(() => {
+    const paramsMemo = useMemo(() => {
         const q = (debouncedQuery ?? '').trim();
         const authorId = Number(id);
 
@@ -54,18 +65,18 @@ export default function ProfilePage() {
     }, [sortedBy, profilePagination, debouncedQuery, debouncedFollowed, id]);
 
     const { data, isFetching } = useQuery({
-        queryKey: ['profile-collections-search', params],
-        enabled: params.authorId != null,
+        queryKey: ['profile-collections-search', paramsMemo],
+        enabled: paramsMemo.authorId != null,
         staleTime: 10_000,
         queryFn: async () => {
             const searchParams = new URLSearchParams({
-                sortedBy: params.sortedBy,
-                skip: String(params.skip),
-                authorId: String(params.authorId),
+                sortedBy: paramsMemo.sortedBy,
+                skip: String(paramsMemo.skip),
+                authorId: String(paramsMemo.authorId),
             });
 
-            if (params.query) searchParams.set('query', params.query);
-            if (params.followed) searchParams.set('followed', 'true');
+            if (paramsMemo.query) searchParams.set('query', paramsMemo.query);
+            if (paramsMemo.followed) searchParams.set('followed', 'true');
 
             return api
                 .get(`api/collections/search/?${searchParams.toString()}`)
@@ -78,7 +89,18 @@ export default function ProfilePage() {
     const toggleFollow = async () => {
         if (!user || !pageUser) return;
 
-        const action = debouncedFollowed ? 'unfollow' : 'follow';
+        const nextFollowed = !followed;
+        const action = nextFollowed ? 'follow' : 'unfollow';
+
+        setFollowed(nextFollowed);
+        setPageUser((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                followers: Math.max(0, (prev.followers ?? 0) + (nextFollowed ? 1 : -1)),
+                sessionUserIsFollowed: nextFollowed,
+            };
+        });
 
         try {
             await api.patch('api/users', {
@@ -87,10 +109,35 @@ export default function ProfilePage() {
                     followAction: action,
                 },
             });
+        } catch {
+            setFollowed(!nextFollowed);
+            setPageUser((prev) => {
+                if (!prev) return prev;
+                return {
+                    ...prev,
+                    followers: Math.max(0, (prev.followers ?? 0) + (nextFollowed ? -1 : 1)),
+                    sessionUserIsFollowed: !nextFollowed,
+                };
+            });
+        }
+    };
 
-            setFollowed(!debouncedFollowed);
+    const toggleMessage = async () => {
+        startLoading();
+
+        if (!pageUser) return;
+
+        try {
+            const data = await api
+                .get('api/chats/' + pageUser.id + '/existence')
+                .json<{ chatId: number | undefined; result: boolean }>();
+
+            if (data.result) router.replace('/chats/' + data.chatId);
+            else setOpen(true);
         } catch {
             return;
+        } finally {
+            stopLoading();
         }
     };
 
@@ -151,72 +198,96 @@ export default function ProfilePage() {
     if (isFetching) return <Loader />;
 
     return (
-        <header className={styles.profile}>
-            <div
-                className={styles.cover}
-                style={{ backgroundImage: `url(${pageUser.bannerUrl})` }}
-            />
+        <>
+            <header className={styles.profile}>
+                <div
+                    className={styles.cover}
+                    style={{ backgroundImage: `url(${pageUser.bannerUrl})` }}
+                />
 
-            <nav className={styles['nav-bar']}>
-                <Button
-                    onClick={toggleFollow}
-                    variant={followed ? 'text' : 'contained'}
-                    size="small"
-                    disabled={!user || debouncedFollowed !== followed}
-                    sx={{
-                        marginTop: '5px',
-                        marginRight: '5px',
-                        borderRadius: '20px',
-                    }}
-                    className={styles['action-btn']}
-                >
-                    {followed ? 'Unfollow' : 'Follow'}
-                </Button>
+                <nav className={styles['nav-bar']}>
+                    <div className={styles.actions}>
+                        <Tooltip title={followed ? 'Unfollow' : 'Follow'}>
+                            <IconButton
+                                onClick={toggleFollow}
+                                color="inherit"
+                                disabled={!user || debouncedFollowed !== followed}
+                            >
+                                {followed ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
+                            </IconButton>
+                        </Tooltip>
 
-                <div className={styles.header}>
-                    <Avatar
-                        className={styles.avatar}
-                        src={pageUser.avatarUrl}
-                        alt={pageUser.username}
-                    />
-                    <div className={styles.info}>
-                        <>
-                            <h1 className={styles['name']}>{pageUser.fullName}</h1>
-                            <span onClick={handleCopy} className={styles['username']}>
-                                @{pageUser.username}
-                            </span>
-                            <Snackbar
-                                open={copied}
-                                autoHideDuration={2000}
-                                onClose={handleClose}
-                                message="Username copied."
-                                action={action}
-                            />
+                        <Tooltip title="Message">
+                            <IconButton color="inherit" onClick={toggleMessage}>
+                                <EmailIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
 
-                            <p className={styles['description']}>
-                                <FormatQuoteIcon />
-                                {pageUser.description.length === 0
-                                    ? 'No bio yet'
-                                    : pageUser.description}
-                            </p>
-                        </>
+                    <div className={styles.header}>
+                        <Avatar
+                            className={styles.avatar}
+                            src={pageUser.avatarUrl}
+                            alt={pageUser.username}
+                        />
+                        <div className={styles.info}>
+                            <>
+                                <h1 className={styles['name']}>{pageUser.fullName}</h1>
+                                <span onClick={handleCopy} className={styles['username']}>
+                                    @{pageUser.username}
+                                </span>
+
+                                <Snackbar
+                                    open={copied}
+                                    autoHideDuration={2000}
+                                    onClose={handleClose}
+                                    message="Username copied."
+                                    action={action}
+                                />
+
+                                <p className={styles['description']}>
+                                    <FormatQuoteIcon />
+                                    {pageUser.description.length === 0
+                                        ? 'No bio yet'
+                                        : pageUser.description}
+                                </p>
+                            </>
+                        </div>
+                    </div>
+                </nav>
+
+                <div className={styles['follow-stats']}>
+                    <div className={styles['follow-stat']}>
+                        <span className={styles['follow-number']}>{pageUser.subscriptions}</span>
+                        <span className={styles['follow-label']}>Following</span>
+                    </div>
+
+                    <div className={styles['follow-divider']} />
+
+                    <div className={styles['follow-stat']}>
+                        <span className={styles['follow-number']}>{pageUser.followers}</span>
+                        <span className={styles['follow-label']}>Followers</span>
                     </div>
                 </div>
-            </nav>
 
-            <div className={styles['collections-category']}>
-                <CollectionSearchBar disabled={debouncedQuery === '' && collections.length === 0} />
-                <SortBy
-                    className={styles['collections-search']}
-                    disabled={collections.length === 0}
-                />
-            </div>
+                <div className={styles['collections-category']}>
+                    <CollectionSearchBar
+                        disabled={debouncedQuery === '' && collections.length === 0}
+                    />
+                    <SortBy
+                        className={styles['collections-search']}
+                        disabled={collections.length === 0}
+                    />
+                </div>
 
-            <div className={styles['before-collections-line']} />
+                <div className={styles['before-collections-line']} />
 
-            <div className={styles['collections-wrapper']}>
-                <CollectionsWrapper collections={collections} page="profile" />
-            </div>
-        </header>
+                <div className={styles['collections-wrapper']}>
+                    <CollectionsWrapper collections={collections} page="profile" />
+                </div>
+            </header>
+
+            <FirstMessageDialog user={pageUser} />
+        </>
     );
 }

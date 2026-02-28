@@ -44,7 +44,7 @@ const counterSx = (active: boolean): SxProps<Theme> => ({
 });
 
 export default function NotificationsPage() {
-    const { loading, refreshUser } = useUser();
+    const { loading, refreshUser, user } = useUser();
     const [active, setActive] = useState<Tab>('all');
     const [totalAmount, setTotalAmount] = useState(0);
     const [unreadCount, setUnreadCount] = useState(0);
@@ -109,7 +109,7 @@ export default function NotificationsPage() {
         getNotifications(debouncedTab);
     }, [loading, debouncedTab]);
 
-    if (loading) return null;
+    if (loading && !user) return null;
 
     return (
         <>

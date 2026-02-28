@@ -3,20 +3,27 @@ import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 
 export async function getSessionUserResponse(user: User): Promise<SessionUserInResponse> {
-    const [followersCount, subscriptionsCount, notificationsCount] = await prisma.$transaction([
-        prisma.follow.count({
-            where: { followingId: user.id },
-        }),
-        prisma.follow.count({
-            where: { followerId: user.id },
-        }),
-        prisma.notification.count({
-            where: {
-                recipientUserId: user.id,
-                isRead: false,
-            },
-        }),
-    ]);
+    const [followersCount, subscriptionsCount, notificationsCount, unreadMessages] =
+        await prisma.$transaction([
+            prisma.follow.count({
+                where: { followingId: user.id },
+            }),
+            prisma.follow.count({
+                where: { followerId: user.id },
+            }),
+            prisma.notification.count({
+                where: {
+                    recipientUserId: user.id,
+                    isRead: false,
+                },
+            }),
+            prisma.message.count({
+                where: {
+                    recipientUserId: user.id,
+                    read: false,
+                },
+            }),
+        ]);
 
     const responseUser: SessionUserInResponse = {
         id: user.id,
@@ -28,6 +35,7 @@ export async function getSessionUserResponse(user: User): Promise<SessionUserInR
         followers: followersCount,
         subscriptions: subscriptionsCount,
         notifications: notificationsCount,
+        unreadMessages: unreadMessages,
         protected: user.passwordHash ? true : false,
     };
 

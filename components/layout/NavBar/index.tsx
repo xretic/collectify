@@ -105,13 +105,26 @@ export default function NavBar() {
         </IconButton>
     );
 
+    const messagesIcon = (
+        <Tooltip title="Messages">
+            <IconButton
+                type="button"
+                onClick={() => router.replace('/chats')}
+                sx={{ p: '6px' }}
+                aria-label="messages"
+            >
+                <EmailOutlinedIcon sx={{ color: '#afafaf' }} />
+            </IconButton>
+        </Tooltip>
+    );
+
     useEffect(() => {
         if (usernameRef.current) {
             setWidth(usernameRef.current.offsetWidth);
         }
     }, [user?.username]);
 
-    if (loading) return null;
+    if (loading && !user) return null;
 
     return (
         <header>
@@ -243,18 +256,30 @@ export default function NavBar() {
                                         </IconButton>
                                     </Tooltip>
 
-                                    <Tooltip title="Messages">
-                                        <IconButton
-                                            type="button"
-                                            onClick={() => router.replace('/chats')}
-                                            sx={{ p: '6px' }}
-                                            aria-label="messages"
+                                    {user.unreadMessages > 0 ? (
+                                        <Badge
+                                            badgeContent={user?.unreadMessages}
+                                            max={99}
+                                            color="error"
+                                            anchorOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'right',
+                                            }}
+                                            sx={{
+                                                '.MuiBadge-badge': {
+                                                    minWidth: 16,
+                                                    height: 16,
+                                                    fontSize: 10,
+                                                    padding: 0,
+                                                    transform: 'translate(0%, -0%)',
+                                                },
+                                            }}
                                         >
-                                            <EmailOutlinedIcon sx={{ color: '#afafaf' }} />
-                                        </IconButton>
-                                    </Tooltip>
-
-                                    {/* TODO: badge */}
+                                            {messagesIcon}
+                                        </Badge>
+                                    ) : (
+                                        messagesIcon
+                                    )}
 
                                     <Tooltip title="Search">
                                         <IconButton

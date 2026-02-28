@@ -30,10 +30,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         }
 
         const { searchParams } = new URL(req.url);
-        const commentsSkip = Number(searchParams.get('commentsSkip'));
+        const raw = searchParams.get('commentsSkip');
 
-        if (!commentsSkip || !isProperInteger(commentsSkip)) {
+        if (raw === null) {
             return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
+        }
+
+        const commentsSkip = Number(raw);
+
+        if (!isProperInteger(commentsSkip)) {
+            return NextResponse.json(
+                { message: 'commentsSkip must be a non-negative integer.' },
+                { status: 400 },
+            );
         }
 
         const collection = await prisma.collection.findUnique({

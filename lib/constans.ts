@@ -12,7 +12,17 @@ export const DEFAULT_DEBOUNCE_DELAY = 400;
 
 export const PAGE_SIZE = 10;
 
-export const CATEGORIES = ['Books', 'Movies', 'Games', 'Recipes', 'Apps', 'Travel', 'Custom'];
+export const CATEGORIES = [
+    'Books',
+    'Movies',
+    'Games',
+    'Recipes',
+    'Apps',
+    'Travel',
+    'Music',
+    'Sport',
+    'Custom',
+];
 
 export enum NOTIFICATION_TEXTS {
     FOLLOW = 'started following you',
@@ -23,13 +33,20 @@ export enum NOTIFICATION_TEXTS {
 
 export const NOTIFICATIONS_PER_LOAD = 30;
 
-export const COLLECTION_NAME_MAX_LENGTH = 20;
+export const COLLECTION_NAME_FIELD_MAX_LENGTH = 20;
+export const COLLECTION_NAME_MAX_LENGTH = 50;
 export const COLLECTION_DESCRIPTION_MAX_LENGTH = 350;
 
-export const ITEM_TITLE_MAX_LENGTH = 14;
+export const ITEM_TITLE_MAX_LENGTH = 22;
 export const ITEM_DESCRIPTION_MAX_LENGTH = 200;
 
 export const COMMENTS_LIMIT = 10;
-export const COMMENT_MAX_LENGTH = 500;
+export const COMMENT_MAX_LENGTH = 700;
 
+export const CHATS_PAGE_LENGTH = 10;
 export const MESSAGES_PAGE_LENGTH = 20;
+
+export const DIRECT_MESSAGE_MAX_LENGTH = 2000;
+export const MAX_PREVIEW_MESSAGE_LENGTH = 30;
+
+export const SESSION_AGE_IN_DAYS = 14;

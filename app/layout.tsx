@@ -7,6 +7,7 @@ import { GlobalLoader } from '@/components/layout/GlobalLoader';
 import Script from 'next/script';
 import ThemeProvider from '@/context/ThemeProvider';
 import { QueryProvider } from '@/context/QueryProvider';
+import { SocketProvider } from '@/context/SocketProvider';
 
 const googleSans = localFont({
     src: [
@@ -50,9 +51,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <QueryProvider>
                     <ThemeProvider>
                         <UserProvider>
-                            <NavBar />
-                            <GlobalLoader />
-                            {children}
+                            <SocketProvider>
+                                <NavBar />
+                                <GlobalLoader />
+                                {children}
+                            </SocketProvider>
                         </UserProvider>
                     </ThemeProvider>
                 </QueryProvider>

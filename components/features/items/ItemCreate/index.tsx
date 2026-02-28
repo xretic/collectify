@@ -63,13 +63,18 @@ export function ItemCreate() {
                         itemImageUrl: itemImageUrl === '' ? null : itemImageUrl,
                         itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
                     },
+                    searchParams: {
+                        commentsSkip: 0,
+                    },
                 })
                 .json<{ id: number }>();
 
             reset();
 
             queryClient.removeQueries({
-                queryKey: ['collections-search'],
+                predicate: (query) =>
+                    query.queryKey.includes('collection') ||
+                    query.queryKey.includes('collections-search'),
             });
 
             router.replace('/collections/' + data.id);

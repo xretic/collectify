@@ -341,7 +341,6 @@ export default function ProfilePage() {
                                         message="Username copied."
                                         action={action}
                                     />
-
                                     <p className={styles.description}>
                                         <FormatQuoteIcon />
                                         {user.description.length > 0
@@ -353,6 +352,20 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </nav>
+
+                <div className={styles['follow-stats']}>
+                    <div className={styles['follow-stat']}>
+                        <span className={styles['follow-number']}>{user.subscriptions}</span>
+                        <span className={styles['follow-label']}>Following</span>
+                    </div>
+
+                    <div className={styles['follow-divider']} />
+
+                    <div className={styles['follow-stat']}>
+                        <span className={styles['follow-number']}>{user.followers}</span>
+                        <span className={styles['follow-label']}>Followers</span>
+                    </div>
+                </div>
 
                 <div className={styles['collections-category']}>
                     <Button

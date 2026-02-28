@@ -6,7 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { ConfigProvider, Input } from 'antd';
 import styles from './index.module.css';
-import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
+import { COLLECTION_DESCRIPTION_MAX_LENGTH, COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
 import TextArea from 'antd/es/input/TextArea';
 import { Box, IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -18,6 +18,7 @@ import { api } from '@/lib/api';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { ItemField } from '../../items/ItemField';
 import { handleUpload } from '@/helpers/handleUpload';
+import { useQueryClient } from '@tanstack/react-query';
 
 type State = {
     title: string;
@@ -35,6 +36,8 @@ export function CollectionEditingDialog() {
     const { collection, setCollection } = useCollectionStore();
     const [errorMessage, setErrorMessage] = useState('');
     const [disabled, setDisabled] = useState(false);
+
+    const queryClient = useQueryClient();
 
     const buttonsStyle: SxProps<Theme> = {
         borderRadius: 6,
@@ -70,12 +73,19 @@ export function CollectionEditingDialog() {
                         description: state.description,
                         bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
                     },
+                    searchParams: { commentsSkip: 0 },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
 
             resetState();
             handleClose();
             setCollection(data.data);
+
+            queryClient.removeQueries({
+                predicate: (query) =>
+                    query.queryKey.includes('collection') ||
+                    query.queryKey.includes('collections-search'),
+            });
         } catch (err: any) {
             const message = err?.response?.message;
             if (message) setErrorMessage(message);
@@ -192,6 +202,7 @@ export function CollectionEditingDialog() {
                     </Box>
 
                     <p className={styles.paragraph}>Title</p>
+
                     <Input
                         onChange={(e) => updateState('title', e.target.value)}
                         placeholder="Enter title"
@@ -201,11 +212,12 @@ export function CollectionEditingDialog() {
                             color: 'var(--text-color)',
                         }}
                         value={state.title}
-                        maxLength={ITEM_TITLE_MAX_LENGTH}
+                        maxLength={COLLECTION_NAME_MAX_LENGTH}
                         showCount
                     />
 
                     <p className={styles.paragraph}>Description</p>
+
                     <TextArea
                         onChange={(e) => updateState('description', e.target.value)}
                         placeholder="Enter description"
@@ -213,17 +225,22 @@ export function CollectionEditingDialog() {
                         style={{
                             backgroundColor: 'var(--container-color)',
                             color: 'var(--text-color)',
-                            height: 70,
-                            resize: 'none',
                         }}
+                        autoSize={{ minRows: 2, maxRows: 5 }}
                         value={state.description}
-                        maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
+                        maxLength={COLLECTION_DESCRIPTION_MAX_LENGTH}
                         showCount
                     />
 
                     <p className={styles.paragraph}>Items</p>
+
                     {collection?.items.map((x) => (
-                        <ItemField key={x.id} item={x} collection={collection} />
+                        <ItemField
+                            key={x.id}
+                            item={x}
+                            collection={collection}
+                            isLast={collection.items.length === 1}
+                        />
                     ))}
                 </ConfigProvider>
             </DialogContent>

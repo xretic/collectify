@@ -1,0 +1,30 @@
+.box {
+    display: flex;
+    gap: 10px;
+}
+
+.username {
+    color: var(--text-color);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 13px;
+}
+
+.username:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.date {
+    color: var(--soft-text);
+    font-size: 13px;
+}
+
+.date::before {
+    content: '·';
+    margin: 0 6px;
+    color: var(--soft-text);
+}
+
+.content {
+    color: var(--text-color);
+}

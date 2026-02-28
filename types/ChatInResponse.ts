@@ -5,12 +5,15 @@ export type ChatInResponse = {
     username: string;
     previewContent?: string;
     createdAt: Date;
+    unread: number;
     messages?: MessageInResponse[];
 };
 
-interface MessageInResponse {
+export type MessageInResponse = {
     id: number;
     userId: number;
+    userAvatarUrl: string;
+    username: string;
     content: string;
     createdAt: Date;
-}
+};

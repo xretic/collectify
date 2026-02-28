@@ -107,8 +107,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             include: { items: true, User: true },
         });
 
-        if (!updatedCollection) {
+        if (!updatedCollection || !updatedCollection.userId) {
             return NextResponse.json({ message: 'Something went wrong.' }, { status: 500 });
+        }
+
+        if (updatedCollection.userId !== session.userId) {
+            await prisma.notification.create({
+                data: {
+                    senderUserId: session.userId,
+                    recipientUserId: updatedCollection.userId,
+                    type: 'COMMENT',
+                    collectionId: updatedCollection.id,
+                },
+            });
         }
 
         const { liked, favorited } = await collectionActionData(session, updatedCollection);
