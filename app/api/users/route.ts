@@ -27,6 +27,10 @@ export async function DELETE(req: NextRequest) {
             include: { user: true },
         });
 
+        if (!session) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         if (session?.user.passwordHash) {
             const passwordMatch = await bcrypt.compare(data.password, session.user.passwordHash);
 
@@ -37,7 +41,7 @@ export async function DELETE(req: NextRequest) {
 
         await prisma.user.delete({
             where: {
-                id: session!.userId,
+                id: session.userId,
             },
         });
 
