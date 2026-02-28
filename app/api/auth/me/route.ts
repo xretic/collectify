@@ -13,6 +13,10 @@ export async function GET(req: NextRequest) {
             },
         });
 
+        if (!session) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         const userInResponse: SessionUserInResponse = await getSessionUserResponse(session!.user);
 
         return NextResponse.json({ user: userInResponse }, { status: 200 });

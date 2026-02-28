@@ -20,9 +20,10 @@ interface Item {
 interface Props {
     item: Item;
     collection: CollectionPropsAdditional;
+    isLast: boolean;
 }
 
-export function ItemField({ item, collection }: Props) {
+export function ItemField({ item, collection, isLast }: Props) {
     const { setCollection } = useCollectionStore();
     const { startLoading, stopLoading, loadingCount, itemDeletionId, setItemDeletionId } =
         useUIStore();
@@ -37,6 +38,7 @@ export function ItemField({ item, collection }: Props) {
                 .delete(`api/collections/${collection.id}/items`, {
                     searchParams: {
                         itemId: item.id,
+                        commentsSkip: 0,
                     },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
@@ -91,11 +93,17 @@ export function ItemField({ item, collection }: Props) {
                     </Tooltip>
                 </>
             ) : (
-                <Tooltip title="Delete item">
-                    <IconButton disabled={loadingCount > 0} onClick={openAccepting} color="error">
-                        <DeleteOutlineOutlinedIcon />
-                    </IconButton>
-                </Tooltip>
+                !isLast && (
+                    <Tooltip title="Delete item">
+                        <IconButton
+                            disabled={loadingCount > 0}
+                            onClick={openAccepting}
+                            color="error"
+                        >
+                            <DeleteOutlineOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                )
             )}
         </div>
     );

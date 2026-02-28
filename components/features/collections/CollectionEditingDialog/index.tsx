@@ -202,6 +202,7 @@ export function CollectionEditingDialog() {
                     </Box>
 
                     <p className={styles.paragraph}>Title</p>
+
                     <Input
                         onChange={(e) => updateState('title', e.target.value)}
                         placeholder="Enter title"
@@ -216,6 +217,7 @@ export function CollectionEditingDialog() {
                     />
 
                     <p className={styles.paragraph}>Description</p>
+
                     <TextArea
                         onChange={(e) => updateState('description', e.target.value)}
                         placeholder="Enter description"
@@ -231,8 +233,14 @@ export function CollectionEditingDialog() {
                     />
 
                     <p className={styles.paragraph}>Items</p>
+
                     {collection?.items.map((x) => (
-                        <ItemField key={x.id} item={x} collection={collection} />
+                        <ItemField
+                            key={x.id}
+                            item={x}
+                            collection={collection}
+                            isLast={collection.items.length === 1}
+                        />
                     ))}
                 </ConfigProvider>
             </DialogContent>
