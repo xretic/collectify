@@ -45,6 +45,7 @@ import { COMMENT_MAX_LENGTH, COMMENTS_LIMIT } from '@/lib/constans';
 import { useUIStore } from '@/stores/uiStore';
 import { CollectionComment } from '@/components/features/collections/CollectionComment';
 import CloseIcon from '@mui/icons-material/Close';
+import CollectionPageSkeleton from '@/components/skeletons/CollectionPageSkeleton';
 
 type OrderPayloadItem = { id: number; order: number };
 type ActionType = 'like' | 'dislike' | 'favorite' | 'unfavorite';
@@ -375,7 +376,7 @@ export default function CollectionPage() {
     );
 
     if (loading && !user) return null;
-    if (!collection) return <Loader />;
+    if (!collection) return <CollectionPageSkeleton />;
 
     return (
         <>
