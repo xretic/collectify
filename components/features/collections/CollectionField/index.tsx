@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './index.module.css';
 import ForumIcon from '@mui/icons-material/Forum';
-import { COLLECTION_NAME_FIELD_MAX_LENGTH, COLLECTION_NAME_MAX_LENGTH } from '@/lib/constans';
+import { COLLECTION_NAME_FIELD_MAX_LENGTH } from '@/lib/constans';
 
 export default function CollectionField({
     id,

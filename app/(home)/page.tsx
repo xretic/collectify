@@ -14,8 +14,8 @@ import styles from './home.module.css';
 import { useQuery } from '@tanstack/react-query';
 import { useDebounce } from '@/lib/useDebounce';
 import { api } from '@/lib/api';
-import { Loader } from '@/components/ui/Loader';
 import { CollectionFieldProps } from '@/types/CollectionField';
+import HomePageSkeleton from '@/components/skeletons/HomePageSkeleton';
 
 export default function HomePage() {
     const { user, loading } = useUser();
@@ -63,7 +63,7 @@ export default function HomePage() {
     const collections = data?.data ?? [];
 
     if (loading && !user) return null;
-    if (isFetching) return <Loader />;
+    if (isFetching) return <HomePageSkeleton />;
 
     return (
         <Suspense>
