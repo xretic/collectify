@@ -120,8 +120,11 @@ before running the application in production.
 
 1.  Clone the WebSocket core:
 
-git clone https://github.com/xretic/collectify-websocket-core cd
-collectify-websocket-core npm install
+```bash
+git clone https://github.com/xretic/collectify-websocket-core
+cd collectify-websocket-core
+npm install
+```
 
 2.  Build and start the service:
 
