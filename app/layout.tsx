@@ -43,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Script id="uploadcare-key" strategy="beforeInteractive">
                     {`UPLOADCARE_PUBLIC_KEY = '${process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY}';`}
                 </Script>
+
                 <Script
                     src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js"
                     strategy="beforeInteractive"

@@ -4,7 +4,7 @@ import { useUser } from '@/context/UserProvider';
 import { api } from '@/lib/api';
 import { useUIStore } from '@/stores/uiStore';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import styles from './chats.module.css';
 import { Avatar, Box, Button, IconButton, useMediaQuery } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -13,6 +13,7 @@ import ChatPage from '@/components/features/chats/ChatPage';
 import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/lib/constans';
 import { useSocket } from '@/context/SocketProvider';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ChatListSkeleton from '@/components/skeletons/ChatsListSkeleton';
 
 type SocketMessage = MessageInResponse & { chatId: number };
 
@@ -22,7 +23,6 @@ interface ChatPageProps {
 
 export default function ChatsPage({ chatId }: ChatPageProps) {
     const { user, loading, refreshUser } = useUser();
-    const { startLoading, stopLoading } = useUIStore();
     const socket = useSocket();
 
     const [chats, setChats] = useState<ChatInResponse[]>([]);
@@ -34,6 +34,8 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
     const joinedChatsRef = useRef<Set<number>>(new Set());
     const fetchingChatsRef = useRef(false);
     const skipRef = useRef(0);
+
+    const [isFetching, setIsFetching] = useState(false);
 
     const isMobile = useMediaQuery('(max-width:1000px)');
 
@@ -55,7 +57,8 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
         if (fetchingChatsRef.current) return;
         fetchingChatsRef.current = true;
 
-        startLoading();
+        setIsFetching(true);
+
         try {
             const data = await api
                 .get('api/chats', {
@@ -68,7 +71,7 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
         } catch {
             return;
         } finally {
-            stopLoading();
+            setIsFetching(false);
             fetchingChatsRef.current = false;
         }
     };
@@ -147,6 +150,8 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
         };
     }, [socket, user?.id]);
 
+    if (loading && !user) return null;
+
     return (
         <div className={styles.page}>
             {isMobile && activeChatId ? (
@@ -185,7 +190,11 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
 
                     <div className={styles.chatList}>
                         {chats.length === 0 ? (
-                            <p className={styles.emptyTitle}>No chats yet</p>
+                            isFetching ? (
+                                <ChatListSkeleton />
+                            ) : (
+                                <p className={styles.emptyTitle}>No chats yet</p>
+                            )
                         ) : (
                             chats.map((c) => {
                                 const isActive = c.id === activeChatId;

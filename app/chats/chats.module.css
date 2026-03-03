@@ -59,7 +59,8 @@
     padding-right: 6px;
 }
 
-.chatItem {
+.chatItem,
+.chatItemNoHover {
     width: 100%;
     display: flex;
     align-items: center;
@@ -73,6 +74,10 @@
     transition:
         background 150ms ease,
         border-color 150ms ease;
+}
+
+.chatItemNoHover {
+    cursor: default;
 }
 
 .chatItem:hover {
@@ -160,7 +165,7 @@
 
 .backButton {
     margin-left: 2px;
-    font-size: 15   px;
+    font-size: 15 px;
     font-family: var(--font-google-sans), sans-serif;
 }
 
