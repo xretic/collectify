@@ -3,10 +3,14 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { sessionId } = await req.json();
+    const { searchParams } = new URL(req.url);
+    const sessionId = searchParams.get('sessionId');
 
     if (!sessionId) {
-        return NextResponse.json({ message: 'sessionId is required field.' }, { status: 400 });
+        return NextResponse.json(
+            { message: 'sessionId is required searchParam.' },
+            { status: 400 },
+        );
     }
 
     const session = await prisma.session.findUnique({
