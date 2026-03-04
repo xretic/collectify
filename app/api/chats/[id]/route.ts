@@ -168,6 +168,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         if (publishUrl) {
             const base = (process.env.SOCKET_PUBLISH_URL ?? '').replace(/\/+$/, '');
+
             await fetch(base + '/publish/message', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },

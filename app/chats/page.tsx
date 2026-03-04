@@ -145,6 +145,7 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
         };
 
         socket.on('message:new', onNew);
+
         return () => {
             socket.off('message:new', onNew);
         };
