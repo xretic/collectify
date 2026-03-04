@@ -174,10 +174,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             await fetch(base + '/publish/message', {
                 method: 'POST',
                 headers: {
-                    'content-type': 'application/json',
-                    ...(sessionId ? { Cookie: `sessionId=${sessionId}` } : {}),
+                    'Content-Type': 'application/json',
+                    Cookie: `sessionId=${sessionId}`,
                 },
-                body: JSON.stringify({ chatId: chat.id, message: messageData }),
+                body: JSON.stringify({
+                    chatId: chat.id,
+                    message: messageData,
+                }),
             });
         }
 
