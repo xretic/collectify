@@ -43,4 +43,4 @@ next-env.d.ts
 
 /generated/prisma
 /prisma/migrations/
-.idea
+/.idea
