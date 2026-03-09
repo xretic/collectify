@@ -95,19 +95,25 @@ export async function GET(req: NextRequest) {
             return bt - at;
         });
 
-        const response: ChatInResponse[] = chats.map((x) => {
-            const otherUser = x.users.find((u) => u.id !== session.userId)!;
+        const response: ChatInResponse[] = chats
+            .filter((x) => {
+                const otherUser = x.users.find((u) => u.id !== session.userId)!;
 
-            return {
-                id: x.id,
-                userId: otherUser.id,
-                userAvatarUrl: otherUser.avatarUrl,
-                username: otherUser.username,
-                previewContent: x.messages.length ? x.messages[0].content : '',
-                createdAt: x.createdAt,
-                unread: unreadMap.get(x.id) ?? 0,
-            };
-        });
+                if (otherUser) return x;
+            })
+            .map((x) => {
+                const otherUser = x.users.find((u) => u.id !== session.userId)!;
+
+                return {
+                    id: x.id,
+                    userId: otherUser.id,
+                    userAvatarUrl: otherUser.avatarUrl,
+                    username: otherUser.username,
+                    previewContent: x.messages.length ? x.messages[0].content : '',
+                    createdAt: x.createdAt,
+                    unread: unreadMap.get(x.id) ?? 0,
+                };
+            });
 
         return NextResponse.json({ data: response, total: chatsCount }, { status: 200 });
     } catch (e) {
