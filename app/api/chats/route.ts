@@ -7,8 +7,14 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
     try {
         const sessionId = req.cookies.get('sessionId')?.value;
+
+        if (!sessionId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
+            select: { userId: true },
         });
 
         if (!session) {
@@ -18,106 +24,105 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const skipRaw = searchParams.get('skip');
 
-        if (skipRaw === null) {
-            return NextResponse.json({ message: 'skip is required.' }, { status: 400 });
-        }
-
-        const skip = Number(searchParams.get('skip'));
-
-        if (!isProperInteger(skip)) {
+        if (skipRaw === null || !isProperInteger(Number(skipRaw))) {
             return NextResponse.json(
-                {
-                    message: 'skip option is required.',
-                },
+                { message: 'skip is required and must be integer.' },
                 { status: 400 },
             );
         }
 
+        const skip = Number(skipRaw);
+
         const chats = await prisma.chat.findMany({
             where: {
+                users: { some: { id: session.userId } },
+            },
+
+            select: {
+                id: true,
+                createdAt: true,
+
                 users: {
-                    some: {
-                        id: session.userId,
+                    where: { id: { not: session.userId } },
+                    select: {
+                        id: true,
+                        username: true,
+                        avatarUrl: true,
+                    },
+                },
+
+                messages: {
+                    take: 1,
+                    orderBy: { createdAt: 'desc' },
+                    select: {
+                        content: true,
+                        createdAt: true,
                     },
                 },
             },
-            include: {
-                users: true,
-                messages: {
-                    orderBy: { createdAt: 'desc' },
-                    take: 1,
-                    select: { content: true, createdAt: true },
-                },
+
+            orderBy: {
+                createdAt: 'desc',
             },
-            take: CHATS_PAGE_LENGTH,
+
             skip,
+            take: CHATS_PAGE_LENGTH,
         });
 
         if (chats.length === 0) {
-            return NextResponse.json({ data: [] }, { status: 200 });
+            return NextResponse.json({ data: [], total: 0 }, { status: 200 });
         }
-
-        const chatsCount = await prisma.chat.count({
-            where: {
-                users: {
-                    some: {
-                        id: session.userId,
-                    },
-                },
-            },
-        });
 
         const chatIds = chats.map((c) => c.id);
 
-        const unreadGrouped = await prisma.message.groupBy({
+        const unread = await prisma.message.groupBy({
             by: ['chatId'],
             where: {
                 chatId: { in: chatIds },
                 recipientUserId: session.userId,
                 read: false,
             },
-            _count: { _all: true },
+            _count: true,
         });
 
-        const unreadMap = new Map<number, number>(
-            unreadGrouped.map((x) => [x.chatId, x._count._all]),
-        );
-
-        chats.sort((a, b) => {
-            const ua = unreadMap.get(a.id) ?? 0;
-            const ub = unreadMap.get(b.id) ?? 0;
-
-            if (ub !== ua) return ub - ua;
-
-            const at = a.messages[0]?.createdAt ? new Date(a.messages[0].createdAt).getTime() : 0;
-            const bt = b.messages[0]?.createdAt ? new Date(b.messages[0].createdAt).getTime() : 0;
-
-            return bt - at;
-        });
+        const unreadMap = new Map(unread.map((x) => [x.chatId, x._count]));
 
         const response: ChatInResponse[] = chats
-            .filter((x) => {
-                const otherUser = x.users.find((u) => u.id !== session.userId)!;
+            .map((chat) => {
+                const otherUser = chat.users.find((u) => u.id !== session.userId);
 
-                if (otherUser) return x;
-            })
-            .map((x) => {
-                const otherUser = x.users.find((u) => u.id !== session.userId)!;
+                if (!otherUser) return null;
+
+                const lastMessage = chat.messages[0];
 
                 return {
-                    id: x.id,
+                    id: chat.id,
                     userId: otherUser.id,
-                    userAvatarUrl: otherUser.avatarUrl,
                     username: otherUser.username,
-                    previewContent: x.messages.length ? x.messages[0].content : '',
-                    createdAt: x.createdAt,
-                    unread: unreadMap.get(x.id) ?? 0,
+                    userAvatarUrl: otherUser.avatarUrl,
+                    previewContent: lastMessage?.content ?? '',
+                    createdAt: chat.createdAt,
+                    unread: unreadMap.get(chat.id) ?? 0,
                 };
-            });
+            })
+            .filter(Boolean) as ChatInResponse[];
 
-        return NextResponse.json({ data: response, total: chatsCount }, { status: 200 });
-    } catch (e) {
-        console.error(e);
+        response.sort((a, b) => {
+            if (a.unread > 0 && b.unread === 0) return -1;
+            if (a.unread === 0 && b.unread > 0) return 1;
+
+            return b.createdAt.getTime() - a.createdAt.getTime();
+        });
+
+        const total = await prisma.chat.count({
+            where: {
+                users: { some: { id: session.userId } },
+            },
+        });
+
+        return NextResponse.json({ data: response, total });
+    } catch (error) {
+        console.error(error);
         return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
 }

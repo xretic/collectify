@@ -43,7 +43,7 @@ export const ITEM_DESCRIPTION_MAX_LENGTH = 200;
 export const COMMENTS_LIMIT = 10;
 export const COMMENT_MAX_LENGTH = 700;
 
-export const CHATS_PAGE_LENGTH = 10;
+export const CHATS_PAGE_LENGTH = 12;
 export const MESSAGES_PAGE_LENGTH = 20;
 
 export const DIRECT_MESSAGE_MAX_LENGTH = 2000;
