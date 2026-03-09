@@ -117,6 +117,7 @@ model Like {
     userId       Int
     collectionId Int
     Collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    createdAt    DateTime   @default(now())
 }
 
 model Item {

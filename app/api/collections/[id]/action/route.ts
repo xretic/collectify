@@ -8,78 +8,83 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-    const intId = Number(id);
+    try {
+        const { id } = await params;
+        const intId = Number(id);
 
-    if (!isProperInteger(intId)) {
-        return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
-    }
+        if (!isProperInteger(intId)) {
+            return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
+        }
 
-    const { searchParams } = new URL(req.url);
+        const { searchParams } = new URL(req.url);
 
-    const raw = searchParams.get('commentsSkip');
+        const raw = searchParams.get('commentsSkip');
 
-    if (raw === null) {
-        return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
-    }
+        if (raw === null) {
+            return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
+        }
 
-    const commentsSkip = Number(raw);
+        const commentsSkip = Number(raw);
 
-    if (!isProperInteger(commentsSkip)) {
+        if (!isProperInteger(commentsSkip)) {
+            return NextResponse.json(
+                { message: 'commentsSkip must be a non-negative integer.' },
+                { status: 400 },
+            );
+        }
+
+        const collection = await prisma.collection.findUnique({
+            where: { id: intId },
+            include: {
+                items: true,
+                User: true,
+            },
+        });
+
+        if (!collection || !collection.User) {
+            return NextResponse.json({ data: null }, { status: 404 });
+        }
+
+        const sessionId = req.cookies.get('sessionId')?.value;
+        const session = sessionId
+            ? await prisma.session.findUnique({
+                  where: { id: sessionId },
+                  include: {
+                      user: true,
+                  },
+              })
+            : null;
+
+        const { liked, favorited } = await collectionActionData(session, collection);
+
+        const commentsRes = await prisma.comment.findMany({
+            where: {
+                collectionId: collection.id,
+            },
+            include: { User: true },
+            orderBy: { createdAt: 'desc' },
+            skip: commentsSkip,
+            take: 10,
+        });
+
+        const comments = await prisma.comment.count({
+            where: {
+                collectionId: collection.id,
+            },
+        });
+
+        const resData = getResData({ ...collection, liked, favorited, commentsRes, comments });
+
         return NextResponse.json(
-            { message: 'commentsSkip must be a non-negative integer.' },
-            { status: 400 },
+            {
+                data: resData,
+            },
+            { status: 200 },
         );
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
     }
-
-    const collection = await prisma.collection.findUnique({
-        where: { id: intId },
-        include: {
-            items: true,
-            User: true,
-        },
-    });
-
-    if (!collection || !collection.User) {
-        return NextResponse.json({ data: null }, { status: 404 });
-    }
-
-    const sessionId = req.cookies.get('sessionId')?.value;
-    const session = sessionId
-        ? await prisma.session.findUnique({
-              where: { id: sessionId },
-              include: {
-                  user: true,
-              },
-          })
-        : null;
-
-    const { liked, favorited } = await collectionActionData(session, collection);
-
-    const commentsRes = await prisma.comment.findMany({
-        where: {
-            collectionId: collection.id,
-        },
-        include: { User: true },
-        orderBy: { createdAt: 'desc' },
-        skip: commentsSkip,
-        take: 10,
-    });
-
-    const comments = await prisma.comment.count({
-        where: {
-            collectionId: collection.id,
-        },
-    });
-
-    const resData = getResData({ ...collection, liked, favorited, commentsRes, comments });
-
-    return NextResponse.json(
-        {
-            data: resData,
-        },
-        { status: 200 },
-    );
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

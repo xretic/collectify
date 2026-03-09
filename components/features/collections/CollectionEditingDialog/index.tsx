@@ -62,6 +62,7 @@ export function CollectionEditingDialog() {
             bannerUrl: collection.bannerUrl,
         });
     };
+    
     const handleSubmit = async () => {
         setDisabled(true);
 

@@ -1,7 +1,6 @@
 import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
-import { isValidUrl } from '@/helpers/isValidUrl';
 import {
     COLLECTION_DESCRIPTION_MAX_LENGTH,
     COLLECTION_NAME_MAX_LENGTH,

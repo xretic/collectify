@@ -46,6 +46,8 @@ import { useUIStore } from '@/stores/uiStore';
 import { CollectionComment } from '@/components/features/collections/CollectionComment';
 import CloseIcon from '@mui/icons-material/Close';
 import CollectionPageSkeleton from '@/components/skeletons/CollectionPageSkeleton';
+import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
+import CollectionStatsDialog from '@/components/features/collections/CollectionStatsDialog';
 
 type OrderPayloadItem = { id: number; order: number };
 type ActionType = 'like' | 'dislike' | 'favorite' | 'unfavorite';
@@ -95,6 +97,7 @@ export default function CollectionPage() {
     const { setOpenEditing } = useEditingDialogStore();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
 
+    const [openStats, setOpenStats] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [commentText, setCommentText] = useState('');
 
@@ -387,7 +390,6 @@ export default function CollectionPage() {
                 message={errorMsg}
                 action={action}
             />
-
             <div className={styles.container}>
                 <span className={styles.title}>{collection.name}</span>
                 <span className={styles.category}>{collection.category}</span>
@@ -411,7 +413,6 @@ export default function CollectionPage() {
                     <span>{collection.author}</span>
                 </Link>
             </div>
-
             <div className={styles['description-container']}>
                 <h1 className={styles['header']}>
                     <span>Description</span>
@@ -429,6 +430,15 @@ export default function CollectionPage() {
                                     sx={{ color: 'var(--text-color)' }}
                                 >
                                     <EditOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Collection statistics ">
+                                <IconButton
+                                    onClick={() => setOpenStats(true)}
+                                    sx={{ color: 'var(--text-color)' }}
+                                >
+                                    <InsertChartOutlinedIcon />
                                 </IconButton>
                             </Tooltip>
                         </div>
@@ -482,7 +492,6 @@ export default function CollectionPage() {
                     </ConfigProvider>
                 </div>
             </div>
-
             <div className={styles.itemsGrid}>
                 <DndContext
                     sensors={sensors}
@@ -518,7 +527,6 @@ export default function CollectionPage() {
                     </button>
                 )}
             </div>
-
             <div className={styles.commentDivider}>
                 <p className={styles.commentsAmount}>{collection.comments} comments</p>
                 {!user && collection.comments === 0 && (
@@ -577,6 +585,14 @@ export default function CollectionPage() {
             <ItemAddDialog />
             <CollectionDeleteDialog />
             <CollectionEditingDialog />
+
+            {collection.authorId === user?.id && (
+                <CollectionStatsDialog
+                    id={id}
+                    open={openStats}
+                    onClose={() => setOpenStats(false)}
+                />
+            )}
         </>
     );
 }
