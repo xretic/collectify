@@ -14,7 +14,7 @@ import {
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
@@ -138,32 +138,33 @@ export default function CollectionPage() {
         }
     }, []);
 
-    const { data: collectionData, isError: isCollectionError } =
-        useQuery<CollectionPropsAdditional>({
-            queryKey: collectionKey,
-            enabled: !!id,
-            staleTime: 30_000,
-            refetchOnWindowFocus: false,
-            queryFn: async () => {
-                const res = await api
-                    .get(`api/collections/${id}/action`, { searchParams: { commentsSkip: 0 } })
-                    .json<{ data: CollectionPropsAdditional }>();
-                return res.data;
-            },
-        });
+    const {
+        data: collectionData,
+        isError: isCollectionError,
+        isSuccess: isCollectionSuccess,
+        error: collectionError,
+    } = useQuery<CollectionPropsAdditional>({
+        queryKey: collectionKey,
+        enabled: !!id,
+        staleTime: 30_000,
+        refetchOnWindowFocus: false,
+        retry: false,
+        queryFn: async () => {
+            const res = await api
+                .get(`api/collections/${id}/action`, { searchParams: { commentsSkip: 0 } })
+                .json<{ data: CollectionPropsAdditional }>();
+
+            return res.data;
+        },
+    });
 
     useEffect(() => {
         if (collectionData) setCollection(collectionData);
     }, [collectionData, setCollection]);
 
-    useEffect(() => {
-        if (!isCollectionError) return;
-        router.replace('/');
-    }, [isCollectionError, router]);
-
     const commentsQuery = useInfiniteQuery({
         queryKey: commentsKey,
-        enabled: !!id,
+        enabled: !!id && isCollectionSuccess,
         initialPageParam: 0,
         queryFn: async ({ pageParam }) => {
             const res = await api
@@ -379,6 +380,7 @@ export default function CollectionPage() {
     );
 
     if (loading && !user) return null;
+    if (isCollectionError) notFound();
     if (!collection) return <CollectionPageSkeleton />;
 
     return (
