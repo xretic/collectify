@@ -1,7 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, Stack, IconButton } from '@mui/material';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    Stack,
+    IconButton,
+    DialogContentText,
+} from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { api } from '@/lib/api';
 import { useUIStore } from '@/stores/uiStore';
@@ -154,7 +161,13 @@ export default function CollectionStatsDialog({
                 ) : null}
             </DialogTitle>
 
-            <DialogContent>{!stats ? <Loader /> : <CollectionChart stats={stats} />}</DialogContent>
+            <DialogContent>
+                <DialogContentText sx={{ color: 'var(--soft-text)' }}>
+                    Detailed information about activity on your collection by day
+                </DialogContentText>
+
+                {!stats ? <Loader /> : <CollectionChart stats={stats} />}
+            </DialogContent>
         </Dialog>
     );
 }
