@@ -19,6 +19,7 @@
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
     "@mui/x-charts": "^8.27.4",
+    "@prisma/adapter-neon": "^7.5.0",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/adapter-ppg": "^7.2.0",
     "@prisma/client": "^7.2.0",

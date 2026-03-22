@@ -2,9 +2,8 @@
 
 import { useUser } from '@/context/UserProvider';
 import { api } from '@/lib/api';
-import { useUIStore } from '@/stores/uiStore';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './chats.module.css';
 import { Avatar, Box, Button, IconButton, useMediaQuery } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
