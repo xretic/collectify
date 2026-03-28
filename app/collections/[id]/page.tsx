@@ -170,6 +170,7 @@ export default function CollectionPage() {
                     searchParams: { commentsSkip: pageParam },
                 })
                 .json<{ data: CollectionPropsAdditional }>();
+
             return res.data;
         },
         getNextPageParam: (lastPage, allPages) => {
@@ -593,7 +594,7 @@ export default function CollectionPage() {
             <CollectionDeleteDialog />
             <CollectionEditingDialog />
 
-            {collection.authorId === user?.id && (
+            {collection.authorId === user?.id && !collection.isPrivate && (
                 <CollectionStatsDialog
                     id={id}
                     open={openStats}
