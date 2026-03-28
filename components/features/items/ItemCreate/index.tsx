@@ -26,6 +26,7 @@ export function ItemCreate() {
         description,
         category,
         banner,
+        isPrivate,
         setField,
         reset,
     } = useCollectionCreateStore();
@@ -62,9 +63,7 @@ export function ItemCreate() {
                         itemDescription,
                         itemImageUrl: itemImageUrl === '' ? null : itemImageUrl,
                         itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
-                    },
-                    searchParams: {
-                        commentsSkip: 0,
+                        isPrivate: String(isPrivate),
                     },
                 })
                 .json<{ id: number }>();

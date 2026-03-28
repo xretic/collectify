@@ -26,6 +26,7 @@ type CollectionListRow = Prisma.CollectionGetPayload<{
         bannerUrl: true;
         category: true;
         userId: true;
+        private: true;
         User: {
             select: {
                 id: true;
@@ -57,6 +58,7 @@ function mapCollection(collection: CollectionListRow): CollectionFieldProps {
         addedToFavorite: collection._count.addedToFavorite,
         items: collection._count.items,
         comments: collection._count.comments,
+        isPrivate: collection.private,
     };
 }
 
@@ -68,11 +70,21 @@ export async function GET(req: NextRequest) {
         const userId = searchParams.get('userId');
         const sortedBy = searchParams.get('sortedBy');
         const skip = Number(searchParams.get('skip'));
-        const query = searchParams.get('query')?.toLowerCase();
+        const query = searchParams.get('query')?.toLowerCase()?.trim();
 
         const authorId = Number(searchParams.get('authorId'));
         const favoritesUserId = Number(searchParams.get('favoritesUserId'));
 
+        const privateOnly = searchParams.get('privateOnly');
+
+        if (privateOnly !== 'true' && privateOnly !== 'false') {
+            return NextResponse.json(
+                { message: 'Option privateOnly is required and must be true or false.' },
+                { status: 400 },
+            );
+        }
+
+        const privateOnlyBool = privateOnly === 'true';
         const excludedIds: number[] = [];
 
         if (!sortedBy || !isProperInteger(skip)) {
@@ -92,8 +104,26 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        if (favoritesUserId) {
+        if (!isSortOption(sortedBy)) {
+            return NextResponse.json({ message: 'Invalid sortedBy value' }, { status: 400 });
+        }
+
+        if (category && !CATEGORIES.includes(category)) {
+            return NextResponse.json(
+                { message: 'You should set a valid category name' },
+                { status: 404 },
+            );
+        }
+
+        let sessionUserId: number | null = null;
+
+        if (privateOnlyBool || favoritesUserId) {
             const sessionId = req.cookies.get('sessionId')?.value;
+
+            if (!sessionId) {
+                return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            }
+
             const session = await prisma.session.findUnique({
                 where: { id: sessionId },
                 include: {
@@ -105,28 +135,28 @@ export async function GET(req: NextRequest) {
                 return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
             }
 
-            const sessionUser = session.user;
+            sessionUserId = session.user.id;
 
-            if (sessionUser.id !== favoritesUserId) {
+            if (favoritesUserId && sessionUserId !== favoritesUserId) {
                 return NextResponse.json({ data: null }, { status: 401 });
             }
         }
 
-        if (!isSortOption(sortedBy)) {
-            return NextResponse.json({ message: 'Invalid sortedBy value' }, { status: 400 });
-        }
-
-        if (category) {
-            if (!CATEGORIES.includes(category)) {
+        if (privateOnlyBool) {
+            if (!authorId) {
                 return NextResponse.json(
-                    { message: 'You should set a valid category name' },
-                    { status: 404 },
+                    { message: 'authorId is required for private collections search.' },
+                    { status: 400 },
                 );
+            }
+
+            if (sessionUserId !== authorId) {
+                return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
             }
         }
 
         const collections: CollectionFieldProps[] = [];
-        const cacheRequired = !userId && !favoritesUserId;
+        const cacheRequired = !userId && !favoritesUserId && !privateOnlyBool;
 
         const paramsForKey = {
             category,
@@ -151,6 +181,7 @@ export async function GET(req: NextRequest) {
             bannerUrl: true,
             category: true,
             userId: true,
+            private: true,
             User: {
                 select: {
                     id: true,
@@ -168,7 +199,7 @@ export async function GET(req: NextRequest) {
             },
         } satisfies Prisma.CollectionSelect;
 
-        if (userId) {
+        if (userId && !privateOnlyBool) {
             const user = await prisma.user.findUnique({
                 where: { id: Number(userId) },
                 select: { subscriptions: true },
@@ -180,6 +211,7 @@ export async function GET(req: NextRequest) {
                 const subscribedCollections = await prisma.collection.findMany({
                     where: {
                         userId: { in: subscribedUserIds },
+                        private: false,
                         ...(category && { category }),
                         lowerCaseName: { startsWith: query ?? '' },
                     },
@@ -195,13 +227,15 @@ export async function GET(req: NextRequest) {
         }
 
         if (collections.length < PAGE_SIZE) {
-            const publicCollections = await prisma.collection.findMany({
+            const publicOrOwnPrivateCollections = await prisma.collection.findMany({
                 where: {
                     id: { notIn: excludedIds },
                     ...(authorId && { userId: authorId }),
                     ...(category && { category }),
                     ...(favoritesUserId && { addedToFavorite: { some: { id: favoritesUserId } } }),
                     lowerCaseName: { startsWith: query ?? '' },
+                    private: privateOnlyBool,
+                    ...(privateOnlyBool && sessionUserId ? { userId: sessionUserId } : {}),
                 },
                 select: selectForList,
                 orderBy: ORDER_BY_MAP[sortedBy],
@@ -209,7 +243,7 @@ export async function GET(req: NextRequest) {
                 skip,
             });
 
-            collections.push(...publicCollections.map(mapCollection));
+            collections.push(...publicOrOwnPrivateCollections.map(mapCollection));
         }
 
         if (cacheRequired) {

@@ -61,6 +61,7 @@ export function getResData(
         category: collection.category,
         liked: collection.liked,
         favorited: collection.favorited,
+        isPrivate: collection.private,
         items: collection.items.map((x) => ({
             id: x.id,
             title: x.title,

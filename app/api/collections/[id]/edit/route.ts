@@ -14,6 +14,11 @@ const requiredFields = ['title', 'description', 'bannerUrl'] as const;
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const sessionId = req.cookies.get('sessionId')?.value;
+
+        if (!sessionId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
             include: {

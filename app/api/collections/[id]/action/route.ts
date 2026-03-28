@@ -45,6 +45,29 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             return NextResponse.json({ data: null }, { status: 404 });
         }
 
+        if (collection.private) {
+            const sessionId = req.cookies.get('sessionId')?.value;
+
+            if (!sessionId) {
+                return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            }
+
+            const session = await prisma.session.findUnique({
+                where: { id: sessionId },
+                include: {
+                    user: true,
+                },
+            });
+
+            if (!session) {
+                return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            }
+
+            if (collection.userId !== session.userId) {
+                return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
+            }
+        }
+
         const sessionId = req.cookies.get('sessionId')?.value;
         const session = sessionId
             ? await prisma.session.findUnique({
@@ -113,6 +136,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
 
         const sessionId = req.cookies.get('sessionId')?.value;
+
+        if (!sessionId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
             include: {
@@ -168,7 +196,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
 
         const collection = await prisma.collection.findUnique({
-            where: { id: intId },
+            where: { id: intId, private: false },
         });
 
         if (!collection) {

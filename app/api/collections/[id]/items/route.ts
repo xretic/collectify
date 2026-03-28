@@ -11,6 +11,11 @@ const requiredFields = ['title', 'description'] as const;
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const sessionId = req.cookies.get('sessionId')?.value;
+
+        if (!sessionId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
             include: {
@@ -183,6 +188,11 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
 
         const sessionId = req.cookies.get('sessionId')?.value;
+
+        if (!sessionId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
             include: {

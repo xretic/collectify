@@ -48,6 +48,7 @@ export default function HomePage() {
             const searchParams = new URLSearchParams({
                 sortedBy: params.sortedBy,
                 skip: String(params.skip),
+                privateOnly: 'false',
             });
 
             if (params.category) searchParams.set('category', params.category);

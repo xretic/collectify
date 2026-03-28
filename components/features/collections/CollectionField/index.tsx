@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import styles from './index.module.css';
 import ForumIcon from '@mui/icons-material/Forum';
 import { COLLECTION_NAME_FIELD_MAX_LENGTH } from '@/lib/constans';
+import { Activity } from 'react';
 
 export default function CollectionField({
     id,
@@ -21,6 +22,7 @@ export default function CollectionField({
     addedToFavorite,
     items,
     comments,
+    isPrivate,
 }: CollectionFieldProps) {
     const router = useRouter();
 
@@ -60,17 +62,19 @@ export default function CollectionField({
                         {items} items
                     </span>
 
-                    <div className={styles.stats}>
-                        <span>
-                            <ForumIcon sx={{ width: 20, height: 20 }} /> {comments}
-                        </span>
-                        <span>
-                            <BookmarkAddIcon sx={{ width: 20, height: 20 }} /> {addedToFavorite}
-                        </span>
-                        <span>
-                            <FavoriteIcon sx={{ width: 20, height: 20 }} /> {likes}
-                        </span>
-                    </div>
+                    <Activity mode={isPrivate ? 'hidden' : 'visible'}>
+                        <div className={styles.stats}>
+                            <span>
+                                <ForumIcon sx={{ width: 20, height: 20 }} /> {comments}
+                            </span>
+                            <span>
+                                <BookmarkAddIcon sx={{ width: 20, height: 20 }} /> {addedToFavorite}
+                            </span>
+                            <span>
+                                <FavoriteIcon sx={{ width: 20, height: 20 }} /> {likes}
+                            </span>
+                        </div>
+                    </Activity>
                 </div>
             </div>
         </Link>

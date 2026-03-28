@@ -6,6 +6,9 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
+import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { ConfigProvider, Input } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -15,8 +18,6 @@ import {
     USERNAME_MAX_LENGTH,
     USERNAME_MIN_LENGTH,
 } from '@/lib/constans';
-import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
-import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { useUIStore } from '@/stores/uiStore';
 import { usePaginationStore } from '@/stores/paginationStore';
 import CollectionsWrapper from '@/components/features/collections/CollectionsWrapper';
@@ -32,6 +33,8 @@ import { Loader } from '@/components/ui/Loader';
 import { CollectionFieldProps } from '@/types/CollectionField';
 import { handleUpload } from '@/helpers/handleUpload';
 
+type Tab = 'authorTab' | 'favoritesTab' | 'privateTab';
+
 type State = {
     copied: boolean;
     editing: boolean;
@@ -41,11 +44,9 @@ type State = {
     bannerUrl: string;
     avatarUrl: string;
     errorMessage: string;
-    tab: string;
+    tab: Tab;
     cooldown: boolean;
 };
-
-type Tab = 'authorTab' | 'favoritesTab';
 
 export default function ProfilePage() {
     const { user, loading, setUser } = useUser();
@@ -59,7 +60,7 @@ export default function ProfilePage() {
         bannerUrl: '',
         avatarUrl: '',
         errorMessage: '',
-        tab: 'authorTab' as Tab,
+        tab: 'authorTab',
         cooldown: false,
     });
 
@@ -95,12 +96,13 @@ export default function ProfilePage() {
 
     const { data, isFetching } = useQuery({
         queryKey: ['me-collections-search', params],
-        enabled: !loading && params.userId != null && params.tab !== '',
+        enabled: !loading && params.userId != null,
         staleTime: 10_000,
         queryFn: async () => {
             const searchParams = new URLSearchParams({
                 sortedBy: params.sortedBy,
                 skip: String(params.skip),
+                privateOnly: params.tab === 'privateTab' ? 'true' : 'false',
             });
 
             if (params.tab === 'authorTab') {
@@ -111,6 +113,10 @@ export default function ProfilePage() {
                 searchParams.set('favoritesUserId', String(params.userId));
             }
 
+            if (params.tab === 'privateTab') {
+                searchParams.set('authorId', String(params.userId));
+            }
+
             return api
                 .get(`api/collections/search/?${searchParams.toString()}`)
                 .json<{ data: CollectionFieldProps[] }>();
@@ -119,8 +125,8 @@ export default function ProfilePage() {
 
     const collections = data?.data ?? [];
 
-    const handleTabChoice = (choice: 'authorTab' | 'favoritesTab') => {
-        updateState('tab', choice === 'authorTab' ? 'authorTab' : 'favoritesTab');
+    const handleTabChoice = (choice: Tab) => {
+        updateState('tab', choice);
     };
 
     if (!user) return null;
@@ -330,7 +336,7 @@ export default function ProfilePage() {
                             ) : (
                                 <>
                                     <h1 className={styles.name}>{user.fullName}</h1>
-                                    <span onClick={handleCopy} className={styles['username']}>
+                                    <span onClick={handleCopy} className={styles.username}>
                                         @{user.username}
                                     </span>
 
@@ -394,10 +400,26 @@ export default function ProfilePage() {
                         <span className={styles['category-text']}>Favorites</span>
                     </Button>
 
-                    <SortBy
-                        className={styles['collections-search']}
-                        disabled={collections.length === 0}
-                    />
+                    <Button
+                        variant={state.tab === 'privateTab' ? 'contained' : 'outlined'}
+                        onClick={() => handleTabChoice('privateTab')}
+                        sx={{ borderRadius: 10, textTransform: 'none' }}
+                    >
+                        <LockOutlinedIcon
+                            sx={{
+                                width: 18,
+                                height: 18,
+                            }}
+                        />
+                        <span className={styles['category-text']}>Private</span>
+                    </Button>
+
+                    {state.tab !== 'privateTab' && (
+                        <SortBy
+                            className={styles['collections-search']}
+                            disabled={collections.length === 0}
+                        />
+                    )}
                 </div>
 
                 <div className={styles['before-collections-line']} />

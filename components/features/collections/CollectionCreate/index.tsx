@@ -17,7 +17,7 @@ import { handleUpload } from '@/helpers/handleUpload';
 export function CollectionCreate() {
     const router = useRouter();
 
-    const { name, description, category, banner, setField } = useCollectionCreateStore();
+    const { name, description, category, banner, isPrivate, setField } = useCollectionCreateStore();
 
     const inputStyle: Record<string, string> = {
         backgroundColor: 'var(--container-color)',
@@ -90,6 +90,25 @@ export function CollectionCreate() {
                         style={inputStyle}
                         showCount
                     />
+
+                    <p className={styles.column}>Type</p>
+                    <div className={styles.categories}>
+                        <Button
+                            onClick={() => setField('isPrivate', false)}
+                            variant={!isPrivate ? 'contained' : 'outlined'}
+                            sx={{ borderRadius: 6, height: 35, textTransform: 'none' }}
+                        >
+                            Public
+                        </Button>
+
+                        <Button
+                            onClick={() => setField('isPrivate', true)}
+                            variant={isPrivate ? 'contained' : 'outlined'}
+                            sx={{ borderRadius: 6, height: 35, textTransform: 'none' }}
+                        >
+                            Private
+                        </Button>
+                    </div>
 
                     <p className={styles.column}>Category</p>
                     <div className={styles.categories}>

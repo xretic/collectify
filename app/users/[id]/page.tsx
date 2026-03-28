@@ -73,6 +73,7 @@ export default function ProfilePage() {
                 sortedBy: paramsMemo.sortedBy,
                 skip: String(paramsMemo.skip),
                 authorId: String(paramsMemo.authorId),
+                privateOnly: 'false',
             });
 
             if (paramsMemo.query) searchParams.set('query', paramsMemo.query);

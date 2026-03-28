@@ -10,6 +10,7 @@ export type CollectionFieldProps = {
     addedToFavorite: number;
     items: number;
     comments: number;
+    isPrivate: boolean;
 };
 
 export type CollectionPropsAdditional = {
@@ -23,6 +24,7 @@ export type CollectionPropsAdditional = {
     category: string;
     liked: boolean;
     favorited: boolean;
+    isPrivate: boolean;
     items: {
         id: number;
         title: string;

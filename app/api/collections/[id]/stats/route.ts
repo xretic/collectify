@@ -12,6 +12,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         }
 
         const sessionId = req.cookies.get('sessionId')?.value;
+
+        if (!sessionId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
         const session = await prisma.session.findUnique({
             where: { id: sessionId },
             select: { userId: true },
@@ -20,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         if (!session) return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
 
         const collection = await prisma.collection.findUnique({
-            where: { id: intId },
+            where: { id: intId, private: false },
             select: { id: true, userId: true },
         });
 

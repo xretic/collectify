@@ -99,6 +99,7 @@ model Collection {
     likes           Like[]
     comments        Comment[]
     addedToFavorite User[]         @relation("FavoriteCollections")
+    private         Boolean        @default(false)
     Notification    Notification[]
 }
 

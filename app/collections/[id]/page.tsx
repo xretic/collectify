@@ -14,8 +14,8 @@ import {
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound, useParams, useRouter } from 'next/navigation';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { notFound, useParams } from 'next/navigation';
+import React, { Activity, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -83,7 +83,6 @@ export default function CollectionPage() {
 
     const id = params.id;
 
-    const router = useRouter();
     const queryClient = useQueryClient();
 
     const { user, loading } = useUser();
@@ -142,7 +141,6 @@ export default function CollectionPage() {
         data: collectionData,
         isError: isCollectionError,
         isSuccess: isCollectionSuccess,
-        error: collectionError,
     } = useQuery<CollectionPropsAdditional>({
         queryKey: collectionKey,
         enabled: !!id,
@@ -435,64 +433,68 @@ export default function CollectionPage() {
                                 </IconButton>
                             </Tooltip>
 
-                            <Tooltip title="Collection statistics ">
-                                <IconButton
-                                    onClick={() => setOpenStats(true)}
-                                    sx={{ color: 'var(--text-color)' }}
-                                >
-                                    <InsertChartOutlinedIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {!collection.isPrivate && (
+                                <Tooltip title="Collection statistics ">
+                                    <IconButton
+                                        onClick={() => setOpenStats(true)}
+                                        sx={{ color: 'var(--text-color)' }}
+                                    >
+                                        <InsertChartOutlinedIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                         </div>
                     )}
                 </h1>
 
                 <span className={styles['description']}>{collection.description}</span>
 
-                <div className={styles['actions']}>
-                    <Button
-                        danger
-                        onClick={handleLike}
-                        disabled={!user || actionMutation.isPending}
-                        icon={
-                            liked ? (
-                                <FavoriteIcon sx={{ width: 17, height: 17 }} />
-                            ) : (
-                                <FavoriteBorderIcon sx={{ width: 17, height: 17 }} />
-                            )
-                        }
-                        style={{ backgroundColor: 'var(--container-color)' }}
-                    >
-                        {liked ? 'Unlike' : 'Like'}
-                    </Button>
-
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Button: {
-                                    colorPrimaryHover: '#ffc247',
-                                    colorPrimaryActive: '#ffc247',
-                                },
-                            },
-                        }}
-                    >
+                <Activity mode={collection.isPrivate ? 'hidden' : 'visible'}>
+                    <div className={styles['actions']}>
                         <Button
-                            className={!user ? '' : styles['favorite-button-yellow-outline']}
-                            onClick={handleFavorite}
+                            danger
+                            onClick={handleLike}
                             disabled={!user || actionMutation.isPending}
                             icon={
-                                favorited ? (
-                                    <BookmarkIcon sx={{ width: 17, height: 17 }} />
+                                liked ? (
+                                    <FavoriteIcon sx={{ width: 17, height: 17 }} />
                                 ) : (
-                                    <BookmarkBorderIcon sx={{ width: 17, height: 17 }} />
+                                    <FavoriteBorderIcon sx={{ width: 17, height: 17 }} />
                                 )
                             }
                             style={{ backgroundColor: 'var(--container-color)' }}
                         >
-                            {favorited ? 'Remove' : 'Add'}
+                            {liked ? 'Unlike' : 'Like'}
                         </Button>
-                    </ConfigProvider>
-                </div>
+
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        colorPrimaryHover: '#ffc247',
+                                        colorPrimaryActive: '#ffc247',
+                                    },
+                                },
+                            }}
+                        >
+                            <Button
+                                className={!user ? '' : styles['favorite-button-yellow-outline']}
+                                onClick={handleFavorite}
+                                disabled={!user || actionMutation.isPending}
+                                icon={
+                                    favorited ? (
+                                        <BookmarkIcon sx={{ width: 17, height: 17 }} />
+                                    ) : (
+                                        <BookmarkBorderIcon sx={{ width: 17, height: 17 }} />
+                                    )
+                                }
+                                style={{ backgroundColor: 'var(--container-color)' }}
+                            >
+                                {favorited ? 'Remove' : 'Add'}
+                            </Button>
+                        </ConfigProvider>
+                    </div>
+                </Activity>
             </div>
             <div className={styles.itemsGrid}>
                 <DndContext
@@ -529,60 +531,63 @@ export default function CollectionPage() {
                     </button>
                 )}
             </div>
-            <div className={styles.commentDivider}>
-                <p className={styles.commentsAmount}>{collection.comments} comments</p>
-                {!user && collection.comments === 0 && (
-                    <p className={styles.noComments}>No comments yet.</p>
-                )}
 
-                <ConfigProvider
-                    theme={{
-                        token: {
-                            colorTextPlaceholder: 'var(--soft-text)',
-                            colorIcon: 'var(--soft-text)',
-                        },
-                    }}
-                >
-                    {user && (
-                        <div className={styles.commentInput}>
-                            <TextArea
-                                value={commentText}
-                                maxLength={COMMENT_MAX_LENGTH}
-                                placeholder="Write your comment"
-                                onChange={(e) => setCommentText(e.target.value)}
-                                style={{ ...inputStyle }}
-                                autoSize={{ minRows: 2, maxRows: 20 }}
-                            />
-
-                            <MuiButton
-                                variant="contained"
-                                onClick={handleSendComment}
-                                disabled={loadingCount > 0 || commentMutation.isPending}
-                                sx={buttonsStyle}
-                            >
-                                Send
-                            </MuiButton>
-                        </div>
+            <Activity mode={collection.isPrivate ? 'hidden' : 'visible'}>
+                <div className={styles.commentDivider}>
+                    <p className={styles.commentsAmount}>{collection.comments} comments</p>
+                    {!user && collection.comments === 0 && (
+                        <p className={styles.noComments}>No comments yet.</p>
                     )}
 
-                    <div className={styles.comments}>
-                        {comments && comments.length > 0
-                            ? comments.map((x) => (
-                                  <CollectionComment
-                                      key={x.id}
-                                      collectionId={collection.id}
-                                      comment={x}
-                                  />
-                              ))
-                            : null}
-                        {commentsQuery.hasNextPage ? (
-                            <div ref={loadMoreRef} style={{ height: 1 }} />
-                        ) : null}
-                    </div>
+                    <ConfigProvider
+                        theme={{
+                            token: {
+                                colorTextPlaceholder: 'var(--soft-text)',
+                                colorIcon: 'var(--soft-text)',
+                            },
+                        }}
+                    >
+                        {user && (
+                            <div className={styles.commentInput}>
+                                <TextArea
+                                    value={commentText}
+                                    maxLength={COMMENT_MAX_LENGTH}
+                                    placeholder="Write your comment"
+                                    onChange={(e) => setCommentText(e.target.value)}
+                                    style={{ ...inputStyle }}
+                                    autoSize={{ minRows: 2, maxRows: 20 }}
+                                />
 
-                    {commentsQuery.isFetchingNextPage ? <Loader /> : null}
-                </ConfigProvider>
-            </div>
+                                <MuiButton
+                                    variant="contained"
+                                    onClick={handleSendComment}
+                                    disabled={loadingCount > 0 || commentMutation.isPending}
+                                    sx={buttonsStyle}
+                                >
+                                    Send
+                                </MuiButton>
+                            </div>
+                        )}
+
+                        <div className={styles.comments}>
+                            {comments && comments.length > 0
+                                ? comments.map((x) => (
+                                      <CollectionComment
+                                          key={x.id}
+                                          collectionId={collection.id}
+                                          comment={x}
+                                      />
+                                  ))
+                                : null}
+                            {commentsQuery.hasNextPage ? (
+                                <div ref={loadMoreRef} style={{ height: 1 }} />
+                            ) : null}
+                        </div>
+
+                        {commentsQuery.isFetchingNextPage ? <Loader /> : null}
+                    </ConfigProvider>
+                </div>
+            </Activity>
 
             <ItemAddDialog />
             <CollectionDeleteDialog />

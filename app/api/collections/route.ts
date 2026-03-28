@@ -15,6 +15,7 @@ const requiredFields = [
     'banner',
     'itemTitle',
     'itemDescription',
+    'isPrivate',
 ] as const;
 
 export async function POST(req: NextRequest) {
@@ -43,10 +44,11 @@ export async function POST(req: NextRequest) {
             itemDescription,
             itemSourceUrl,
             itemImageUrl,
+            isPrivate,
         } = requestData;
 
         if (
-            [name, description, category, itemTitle, itemDescription, banner].some(
+            [name, description, category, itemTitle, itemDescription, banner, isPrivate].some(
                 (x) => typeof x !== 'string' || x.trim().length === 0,
             )
         ) {
@@ -55,6 +57,15 @@ export async function POST(req: NextRequest) {
                 { status: 400 },
             );
         }
+
+        if (isPrivate !== 'true' && isPrivate !== 'false') {
+            return NextResponse.json(
+                { message: 'Option isPrivate is required and must be true or false.' },
+                { status: 400 },
+            );
+        }
+
+        const isPrivateBool = isPrivate === 'true';
 
         type Rule = {
             ok: boolean;
@@ -104,6 +115,7 @@ export async function POST(req: NextRequest) {
                 description,
                 category,
                 bannerUrl: banner,
+                private: isPrivateBool,
             },
         });
 
