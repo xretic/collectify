@@ -9,15 +9,32 @@ import CollectionField from '../CollectionField';
 
 type CollectionsWrapperProps = {
     collections: CollectionFieldProps[];
-    page: 'home' | 'profile';
+    page: 'home' | 'profile' | 'myCollections';
 };
 
 export default function CollectionsWrapper({ collections, page }: CollectionsWrapperProps) {
-    const { homePagination, setHomePagination, profilePagination, setProfilePagination } =
-        usePaginationStore();
+    const {
+        homePagination,
+        setHomePagination,
+        profilePagination,
+        setProfilePagination,
+        myCollectionsPagination,
+        setMyCollectionsPagination,
+    } = usePaginationStore();
 
-    const pagination = page === 'home' ? homePagination : profilePagination;
-    const setPagination = page === 'home' ? setHomePagination : setProfilePagination;
+    const pagination =
+        page === 'home'
+            ? homePagination
+            : page === 'profile'
+              ? profilePagination
+              : myCollectionsPagination;
+
+    const setPagination =
+        page === 'home'
+            ? setHomePagination
+            : page === 'profile'
+              ? setProfilePagination
+              : setMyCollectionsPagination;
 
     return (
         <>
@@ -36,18 +53,19 @@ export default function CollectionsWrapper({ collections, page }: CollectionsWra
                         type="button"
                         onClick={() => setPagination(pagination - 1)}
                         sx={{ p: '10px' }}
-                        aria-label="search"
+                        aria-label="previous page"
                     >
                         <KeyboardArrowLeftIcon sx={{ color: '#afafaf' }} />
                     </IconButton>
                 </Tooltip>
+
                 <Tooltip title="Next page">
                     <IconButton
                         onClick={() => setPagination(pagination + 1)}
                         type="button"
                         disabled={collections.length === 0 || collections.length < PAGE_SIZE}
                         sx={{ p: '10px' }}
-                        aria-label="search"
+                        aria-label="next page"
                     >
                         <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
                     </IconButton>

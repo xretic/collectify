@@ -6,6 +6,9 @@ interface PaginationState {
 
     profilePagination: number;
     setProfilePagination: (newPagintion: number) => void;
+
+    myCollectionsPagination: number;
+    setMyCollectionsPagination: (newPagination: number) => void;
 }
 
 export const usePaginationStore = create<PaginationState>((set) => ({
@@ -14,4 +17,7 @@ export const usePaginationStore = create<PaginationState>((set) => ({
 
     profilePagination: 0,
     setProfilePagination: (newPagintion) => set({ profilePagination: newPagintion }),
+
+    myCollectionsPagination: 0,
+    setMyCollectionsPagination: (newPagination) => set({ myCollectionsPagination: newPagination }),
 }));

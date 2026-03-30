@@ -10,6 +10,7 @@ import { useUser } from '@/context/UserProvider';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 
 export default function HoverMenu() {
     const { setUser } = useUser();
@@ -71,6 +72,16 @@ export default function HoverMenu() {
                     <AccountCircleOutlinedIcon fontSize="small" />
                 </ListItemIcon>
                 Profile
+            </MenuItem>
+
+            <MenuItem
+                sx={{ color: 'var(--text-color)' }}
+                onClick={() => handleClose('/collections/my')}
+            >
+                <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                    <LibraryBooksOutlinedIcon fontSize="small" />
+                </ListItemIcon>
+                Collections
             </MenuItem>
 
             <MenuItem sx={{ color: 'var(--text-color)' }} onClick={() => handleClose('/settings')}>

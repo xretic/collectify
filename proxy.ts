@@ -46,7 +46,7 @@ function isProtected(pathname: string, method: string): boolean {
     );
 }
 
-const publicPages: RegExp[] = [/^\/$/, /^\/users\/[^/]+$/, /^\/collections\/(?!create$)[^/]+$/];
+const publicPages: RegExp[] = [/^\/$/, /^\/users\/[^/]+$/, /^\/collections\/(?!create$|my$)[^/]+$/];
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
