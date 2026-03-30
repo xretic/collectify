@@ -8,7 +8,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockIcon from '@mui/icons-material/Lock';
 import { ConfigProvider, Input } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -405,7 +405,7 @@ export default function ProfilePage() {
                         onClick={() => handleTabChoice('privateTab')}
                         sx={{ borderRadius: 10, textTransform: 'none' }}
                     >
-                        <LockOutlinedIcon
+                        <LockIcon
                             sx={{
                                 width: 18,
                                 height: 18,
