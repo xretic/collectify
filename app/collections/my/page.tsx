@@ -123,7 +123,7 @@ export default function MyCollectionsPage() {
                 <Button
                     variant="contained"
                     onClick={() => router.push('/collections/create')}
-                    sx={{ borderRadius: 3, textTransform: 'none', height: 40 }}
+                    sx={{ borderRadius: 6, textTransform: 'none', height: 40 }}
                 >
                     <AddIcon sx={{ width: 18, height: 18, marginRight: 0.5 }} />
                     Create collection
@@ -148,7 +148,7 @@ export default function MyCollectionsPage() {
                             <Button
                                 onClick={() => handleVisibilityChange('public')}
                                 variant={visibility === 'public' ? 'contained' : 'outlined'}
-                                sx={{ borderRadius: 3, textTransform: 'none', height: 38 }}
+                                sx={{ borderRadius: 6, textTransform: 'none', height: 38 }}
                             >
                                 <PublicIcon sx={{ width: 18, height: 18 }} />
                                 <span className={styles.buttonText}>Public</span>
@@ -157,7 +157,7 @@ export default function MyCollectionsPage() {
                             <Button
                                 onClick={() => handleVisibilityChange('private')}
                                 variant={visibility === 'private' ? 'contained' : 'outlined'}
-                                sx={{ borderRadius: 3, textTransform: 'none', height: 38 }}
+                                sx={{ borderRadius: 6, textTransform: 'none', height: 38 }}
                             >
                                 <LockIcon sx={{ width: 18, height: 18 }} />
                                 <span className={styles.buttonText}>Private</span>
