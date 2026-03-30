@@ -39,6 +39,8 @@ import styles from './index.module.css';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import MenuIcon from '@mui/icons-material/Menu';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import EggAltOutlinedIcon from '@mui/icons-material/EggAltOutlined';
+import EggAltIcon from '@mui/icons-material/EggAlt';
 
 interface NavItem {
     label: string;
@@ -55,6 +57,13 @@ const navItems = (user: SessionUserInResponse | null): NavItem[] => [
         href: '/',
         icon: HomeIcon,
         iconOutlined: HomeOutlinedIcon,
+    },
+    {
+        label: 'Collections',
+        href: '/collections/my',
+        icon: EggAltIcon,
+        iconOutlined: EggAltOutlinedIcon,
+        hide: !user,
     },
     {
         label: 'Profile',
