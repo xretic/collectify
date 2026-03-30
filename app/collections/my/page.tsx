@@ -211,7 +211,7 @@ export default function MyCollectionsPage() {
                             <Button
                                 onClick={() => handleCategoryChange('')}
                                 variant={category === '' ? 'contained' : 'outlined'}
-                                sx={{ borderRadius: 3, textTransform: 'none', height: 36 }}
+                                sx={{ borderRadius: 6, textTransform: 'none', height: 36 }}
                             >
                                 All
                             </Button>
@@ -221,7 +221,7 @@ export default function MyCollectionsPage() {
                                     key={item}
                                     onClick={() => handleCategoryChange(item)}
                                     variant={category === item ? 'contained' : 'outlined'}
-                                    sx={{ borderRadius: 3, textTransform: 'none', height: 36 }}
+                                    sx={{ borderRadius: 6, textTransform: 'none', height: 36 }}
                                 >
                                     {item}
                                 </Button>
