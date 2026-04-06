@@ -70,10 +70,10 @@ export function ItemCreate() {
 
             reset();
 
-            queryClient.removeQueries({
+            queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collection') ||
-                    query.queryKey.includes('collections-search'),
+                    query.queryKey.includes('collections-search') ||
+                    query.queryKey.includes('my-collections-search'),
             });
 
             router.replace('/collections/' + data.id);

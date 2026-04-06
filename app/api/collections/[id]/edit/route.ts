@@ -9,7 +9,7 @@ import {
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-const requiredFields = ['title', 'description', 'bannerUrl'] as const;
+const requiredFields = ['title', 'description', 'bannerUrl', 'isPrivate'] as const;
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -77,7 +77,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             return NextResponse.json({ message: 'Bad request.' }, { status: 400 });
         }
 
-        const { title, description, bannerUrl } = requestData;
+        const { title, description, bannerUrl, isPrivate } = requestData;
+
+        if (typeof isPrivate !== 'boolean') {
+            return NextResponse.json(
+                { message: 'Field isPrivate is required and must be true or false.' },
+                { status: 400 },
+            );
+        }
 
         if ([title, description].some((x) => typeof x !== 'string' || x.trim().length === 0)) {
             return NextResponse.json(
@@ -120,6 +127,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                 lowerCaseName: title.toLowerCase(),
                 description,
                 ...(bannerUrl && { bannerUrl }),
+                private: isPrivate,
             },
 
             include: {

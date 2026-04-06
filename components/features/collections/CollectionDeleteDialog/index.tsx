@@ -38,7 +38,7 @@ export function CollectionDeleteDialog() {
             setCollection(null);
             handleClose();
 
-            queryClient.removeQueries({
+            queryClient.invalidateQueries({
                 queryKey: ['collections-search'],
             });
 

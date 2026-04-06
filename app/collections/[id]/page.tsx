@@ -263,7 +263,7 @@ export default function CollectionPage() {
     const handleFavorite = () => {
         if (!user || !id) return;
 
-        queryClient.removeQueries({
+        queryClient.invalidateQueries({
             queryKey: ['me-collections-search'],
         });
 

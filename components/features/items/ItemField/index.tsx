@@ -2,7 +2,6 @@ import { IconButton, SxProps, Theme, Tooltip } from '@mui/material';
 import styles from './index.module.css';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useCollectionStore } from '@/stores/collectionStore';
-import { useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { api } from '@/lib/api';
@@ -45,10 +44,10 @@ export function ItemField({ item, collection, isLast }: Props) {
 
             setCollection(data.data);
 
-            queryClient.removeQueries({
+            queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collection') ||
-                    query.queryKey.includes('collections-search'),
+                    query.queryKey.includes('collections-search') ||
+                    query.queryKey.includes('my-collections-search'),
             });
 
             setItemDeletionId(0);

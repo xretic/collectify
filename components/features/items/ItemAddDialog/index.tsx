@@ -79,10 +79,10 @@ export function ItemAddDialog() {
             handleClose();
             setCollection(data.data);
 
-            queryClient.removeQueries({
+            queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collection') ||
-                    query.queryKey.includes('collections-search'),
+                    query.queryKey.includes('collections-search') ||
+                    query.queryKey.includes('my-collections-search'),
             });
         } catch (err: any) {
             const message = err?.response?.message;

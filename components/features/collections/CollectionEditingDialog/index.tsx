@@ -24,6 +24,7 @@ type State = {
     title: string;
     description: string;
     bannerUrl: string;
+    isPrivate: boolean;
 };
 
 export function CollectionEditingDialog() {
@@ -32,6 +33,7 @@ export function CollectionEditingDialog() {
         title: '',
         description: '',
         bannerUrl: '',
+        isPrivate: false,
     });
     const { collection, setCollection } = useCollectionStore();
     const [errorMessage, setErrorMessage] = useState('');
@@ -49,7 +51,8 @@ export function CollectionEditingDialog() {
         setState((prev) => ({ ...prev, [key]: value }));
     };
 
-    const resetState = () => setState({ title: '', description: '', bannerUrl: '' });
+    const resetState = () =>
+        setState({ title: '', description: '', bannerUrl: '', isPrivate: false });
 
     const handleClose = () => {
         setOpenEditing(false);
@@ -60,9 +63,10 @@ export function CollectionEditingDialog() {
             title: collection.name,
             description: collection.description,
             bannerUrl: collection.bannerUrl,
+            isPrivate: collection.isPrivate,
         });
     };
-    
+
     const handleSubmit = async () => {
         setDisabled(true);
 
@@ -73,6 +77,7 @@ export function CollectionEditingDialog() {
                         title: state.title,
                         description: state.description,
                         bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
+                        isPrivate: state.isPrivate,
                     },
                     searchParams: { commentsSkip: 0 },
                 })
@@ -82,10 +87,10 @@ export function CollectionEditingDialog() {
             handleClose();
             setCollection(data.data);
 
-            queryClient.removeQueries({
+            queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collection') ||
-                    query.queryKey.includes('collections-search'),
+                    query.queryKey.includes('collections-search') ||
+                    query.queryKey.includes('my-collections-search'),
             });
         } catch (err: any) {
             const message = err?.response?.message;
@@ -103,6 +108,10 @@ export function CollectionEditingDialog() {
         setErrorMessage('');
     };
 
+    const handleCollectionTypeChange = (isPrivate: boolean) => {
+        updateState('isPrivate', isPrivate);
+    };
+
     useEffect(() => {
         if (!collection) return;
 
@@ -110,6 +119,7 @@ export function CollectionEditingDialog() {
             title: collection.name,
             description: collection.description,
             bannerUrl: collection.bannerUrl,
+            isPrivate: collection.isPrivate,
         });
     }, [collection]);
 
@@ -232,6 +242,28 @@ export function CollectionEditingDialog() {
                         maxLength={COLLECTION_DESCRIPTION_MAX_LENGTH}
                         showCount
                     />
+
+                    <p className={styles.paragraph}>Type</p>
+
+                    <div className="flex gap-2">
+                        <Button
+                            onClick={() => handleCollectionTypeChange(false)}
+                            sx={{ borderRadius: 6, textTransform: 'none' }}
+                            size="small"
+                            variant={state.isPrivate ? 'outlined' : 'contained'}
+                        >
+                            Public
+                        </Button>
+
+                        <Button
+                            onClick={() => handleCollectionTypeChange(true)}
+                            sx={{ borderRadius: 6, textTransform: 'none' }}
+                            size="small"
+                            variant={state.isPrivate ? 'contained' : 'outlined'}
+                        >
+                            Private
+                        </Button>
+                    </div>
 
                     <p className={styles.paragraph}>Items</p>
 
