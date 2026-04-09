@@ -1,15 +1,13 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Button, InputAdornment, TextField } from '@mui/material';
+import { Button, InputAdornment, TextField } from '@mui/material';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
-
 import { useUser } from '@/context/UserProvider';
 import { api } from '@/lib/api';
 import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
@@ -150,8 +148,7 @@ export default function MyCollectionsPage() {
                                 variant={visibility === 'public' ? 'contained' : 'outlined'}
                                 sx={{ borderRadius: 6, textTransform: 'none', height: 38 }}
                             >
-                                <PublicIcon sx={{ width: 18, height: 18 }} />
-                                <span className={styles.buttonText}>Public</span>
+                                Public
                             </Button>
 
                             <Button
@@ -159,8 +156,7 @@ export default function MyCollectionsPage() {
                                 variant={visibility === 'private' ? 'contained' : 'outlined'}
                                 sx={{ borderRadius: 6, textTransform: 'none', height: 38 }}
                             >
-                                <LockIcon sx={{ width: 18, height: 18 }} />
-                                <span className={styles.buttonText}>Private</span>
+                                Private
                             </Button>
                         </div>
                     </div>
