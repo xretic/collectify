@@ -199,7 +199,7 @@ export async function PATCH(req: NextRequest) {
                 },
                 { status: 200 },
             );
-        } catch (error) {
+        } catch {
             return NextResponse.json({ message: 'User does not exist.' }, { status: 404 });
         }
     } catch (e) {

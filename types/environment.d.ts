@@ -20,6 +20,8 @@ declare global {
 
             NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY: string;
             REDIS_URL: string;
+
+            ASSIGN_SECRET: string;
         }
     }
 }

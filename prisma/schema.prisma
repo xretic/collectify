@@ -31,6 +31,13 @@ model User {
     messages      Message[]
 }
 
+model Admin {
+    id         Int      @id @default(autoincrement())
+    userId     Int      @unique
+    assignedBy Int      @default(0)
+    createdAt  DateTime @default(now())
+}
+
 model Chat {
     id        Int       @id @default(autoincrement())
     createdAt DateTime  @default(now())
