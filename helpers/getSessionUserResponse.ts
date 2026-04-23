@@ -25,6 +25,12 @@ export async function getSessionUserResponse(user: User): Promise<SessionUserInR
             }),
         ]);
 
+    const admin = await prisma.admin.findUnique({
+        where: {
+            userId: user.id,
+        },
+    });
+
     const responseUser: SessionUserInResponse = {
         id: user.id,
         avatarUrl: user.avatarUrl,
@@ -37,6 +43,7 @@ export async function getSessionUserResponse(user: User): Promise<SessionUserInR
         notifications: notificationsCount,
         unreadMessages: unreadMessages,
         protected: user.passwordHash ? true : false,
+        admin: !!admin,
     };
 
     return responseUser;

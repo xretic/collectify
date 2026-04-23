@@ -10,6 +10,7 @@ export type SessionUserInResponse = {
     notifications: number;
     unreadMessages: number;
     protected: boolean;
+    admin: boolean;
 };
 
 export type UserInResponse = {
