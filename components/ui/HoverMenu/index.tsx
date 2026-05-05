@@ -5,12 +5,12 @@ import MenuItem from '@mui/material/MenuItem';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import Menu from '@mui/material/Menu';
 import { LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/shared/model/uiStore';
 import { useUser } from '@/context/UserProvider';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import { authApi } from '@/entities/auth/api/authApi';
 
 export default function HoverMenu() {
     const { setUser } = useUser();
@@ -35,7 +35,7 @@ export default function HoverMenu() {
         try {
             handleClose();
 
-            await api.post('api/auth/logout');
+            await authApi.logout();
 
             setUser(null);
             router.replace('/');

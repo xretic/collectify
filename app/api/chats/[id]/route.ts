@@ -3,6 +3,7 @@ import { MESSAGES_PAGE_LENGTH } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
+import { publishChatMessage } from '@/server/socketBus';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -154,11 +155,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
         }
 
+        const recipientUserId = chat.users.filter((x) => x.id !== session.userId)[0].id;
+
         const message = await prisma.message.create({
             data: {
                 chatId: chat.id,
                 userId: session.userId,
-                recipientUserId: chat.users.filter((x) => x.id !== session.userId)[0].id,
+                recipientUserId,
                 content: messageText,
             },
 
@@ -174,25 +177,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             createdAt: message.createdAt,
         };
 
-        const publishUrl = process.env.SOCKET_PUBLISH_URL;
-
-        if (publishUrl) {
-            const base = (process.env.SOCKET_PUBLISH_URL ?? '').replace(/\/+$/, '');
-
-            const sessionId = req.cookies.get('sessionId')?.value;
-
-            await fetch(base + '/publish/message', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Cookie: `sessionId=${sessionId}`,
-                },
-                body: JSON.stringify({
-                    chatId: chat.id,
-                    message: messageData,
-                }),
-            });
-        }
+        await publishChatMessage({
+            chatId: chat.id,
+            senderUserId: session.userId,
+            recipientUserId,
+            message: messageData,
+        });
 
         return NextResponse.json({ data: messageData }, { status: 200 });
     } catch (e) {

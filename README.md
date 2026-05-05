@@ -93,7 +93,7 @@ High-level Flow
 ### Prerequisites
 
 ```bash
-- Node.js ≥ 18
+- Node.js ≥ 20.9
 - PostgreSQL
 ```
 
@@ -107,50 +107,21 @@ npm run dev
 
 ---
 
-### WebSocket Core
+### Realtime Chat
 
-For real-time functionality the project relies on a separate WebSocket service:
+Real-time chat is served by the application itself. `npm run dev` and
+`npm run start` run `server.mjs`, which starts Next.js and Socket.IO on the
+same origin at `/socketio`.
 
-https://github.com/xretic/collectify-websocket-core
-
-IMPORTANT: The WebSocket core must be deployed separately on its own URL
-before running the application in production.
-
-### Deployment Steps
-
-1.  Clone the WebSocket core:
+On Vercel, custom Socket.IO servers are not used by the platform runtime. Set
+these Pusher Channels variables in Vercel instead:
 
 ```bash
-git clone https://github.com/xretic/collectify-websocket-core
-cd collectify-websocket-core
-npm install
+PUSHER_APP_ID=
+PUSHER_SECRET=
+NEXT_PUBLIC_PUSHER_KEY=
+NEXT_PUBLIC_PUSHER_CLUSTER=
 ```
 
-2.  Build and start the service:
-
-```bash
-npm run build npm start
-```
-
-3.  Deploy it to a separate domain or subdomain (for example:
-    https://socket.yourdomain.com)
-
----
-
-### Environment Configuration
-
-After deploying the WebSocket core, configure your main Collectify
-project .env file:
-
-```bash
-NEXT_PUBLIC_SOCKET_URL=https://your-socket-url.com
-SOCKET_PUBLISH_URL=https://your-socket-url.com
-```
-
-```bash
-- NEXT_PUBLIC_SOCKET_URL
-- SOCKET_PUBLISH_URL
-```
-
-Without deploying the WebSocket core and setting these environment
-variables, real-time features will not function.
+The client automatically uses Pusher when `NEXT_PUBLIC_PUSHER_KEY` and
+`NEXT_PUBLIC_PUSHER_CLUSTER` exist. Otherwise it uses local Socket.IO.

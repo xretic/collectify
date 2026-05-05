@@ -1,10 +1,10 @@
 'use client';
 
+import ChatsPage from '@/widgets/chat/list/ui/ChatsPage';
 import { useParams } from 'next/navigation';
-import ChatsPage from '../page';
 
-export default function ChatsPageWithId() {
-    const params = useParams();
+export default function ChatRoute() {
+    const params = useParams<{ id: string }>();
     const chatId = Number(params.id);
 
     return <ChatsPage chatId={chatId} />;

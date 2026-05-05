@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { PAGE_SIZE } from '@/lib/constans';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { usePaginationStore } from '@/stores/paginationStore';
+import { usePaginationStore } from '@/shared/model/paginationStore';
 import styles from './index.module.css';
 import CollectionField from '../CollectionField';
 

@@ -31,6 +31,7 @@ export type CollectionPropsAdditional = {
         description: string;
         sourceUrl: string | null;
         imageUrl: string | null;
+        order: number;
     }[];
     comments: number;
     commentsRes: {

@@ -2,15 +2,15 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-import styles from './index.module.css';
 import { useState } from 'react';
-import { useCollectionStore } from '@/stores/collectionStore';
+import { useCollectionStore } from '@/entities/collection/model/collectionStore';
 import { SxProps } from '@mui/material';
 import { Theme } from '@mui/system';
-import { useDeleteDialogStore } from '@/stores/dialogs/deleteDialogStore';
+import { useDeleteDialogStore } from '@/features/collection/delete/model/deleteCollectionDialogStore';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { collectionApi } from '@/entities/collection/api/collectionApi';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 
 export function CollectionDeleteDialog() {
     const { open, setOpenDialog } = useDeleteDialogStore();
@@ -33,13 +33,15 @@ export function CollectionDeleteDialog() {
         setDisabled(true);
 
         try {
-            await api.delete(`api/collections/${collection?.id}/delete`);
+            if (!collection) return;
+
+            await collectionApi.delete(collection.id);
 
             setCollection(null);
             handleClose();
 
             queryClient.invalidateQueries({
-                queryKey: ['collections-search'],
+                queryKey: collectionQueryKeys.search,
             });
 
             router.replace('/');

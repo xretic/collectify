@@ -12,8 +12,8 @@ export function SortableItemCard({
     children: (args: {
         setNodeRef: (node: HTMLElement | null) => void;
         style: React.CSSProperties;
-        attributes: any;
-        listeners: any;
+        attributes: React.HTMLAttributes<HTMLElement>;
+        listeners: React.HTMLAttributes<HTMLElement>;
         isDragging: boolean;
     }) => React.ReactNode;
 }) {
@@ -29,5 +29,15 @@ export function SortableItemCard({
         touchAction: 'none',
     };
 
-    return <>{children({ setNodeRef, style, attributes, listeners, isDragging })}</>;
+    return (
+        <>
+            {children({
+                setNodeRef,
+                style,
+                attributes: attributes as React.HTMLAttributes<HTMLElement>,
+                listeners: (listeners ?? {}) as React.HTMLAttributes<HTMLElement>,
+                isDragging,
+            })}
+        </>
+    );
 }

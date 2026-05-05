@@ -1,15 +1,15 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTitle, DialogActions, Button, Avatar } from '@mui/material';
-import { ConfigProvider, Input } from 'antd';
+import { ConfigProvider } from 'antd';
 import { DIRECT_MESSAGE_MAX_LENGTH } from '@/lib/constans';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useUIStore } from '@/stores/uiStore';
-import { api } from '@/lib/api';
+import { useUIStore } from '@/shared/model/uiStore';
 import { UserInResponse } from '@/types/UserInResponse';
-import { useFirstMessageDialogStore } from '@/stores/dialogs/firstMessageDialogStore';
+import { useFirstMessageDialogStore } from '@/features/chat/create/model/firstMessageDialogStore';
 import TextArea from 'antd/es/input/TextArea';
+import { chatApi } from '@/entities/chat/api/chatApi';
 
 export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
     const router = useRouter();
@@ -29,13 +29,7 @@ export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
         startLoading();
 
         try {
-            const data = await api
-                .post('api/chats/' + user.id + '/create', {
-                    json: {
-                        message,
-                    },
-                })
-                .json<{ id: number }>();
+            const data = await chatApi.create(user.id, message);
 
             handleClose();
             router.replace('/chats/' + data.id);

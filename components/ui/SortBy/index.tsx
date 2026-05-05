@@ -1,4 +1,4 @@
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/shared/model/uiStore';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 interface SortByProps {

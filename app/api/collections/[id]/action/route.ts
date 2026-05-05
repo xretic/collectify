@@ -1,4 +1,4 @@
-import { NotificationType } from '@/generated/prisma/client';
+import { NotificationType, Prisma } from '@/generated/prisma/client';
 import { collectionActionData } from '@/helpers/collectionActionsData';
 import { getResData } from '@/helpers/getCollectionData';
 import { isProperInteger } from '@/helpers/isProperInteger';
@@ -154,7 +154,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
         const sessionUser = session.user;
 
-        const actionConfig: Record<string, any> = {
+        const actionConfig: Record<string, Prisma.CollectionUpdateInput> = {
             like: {
                 likes: {
                     create: {

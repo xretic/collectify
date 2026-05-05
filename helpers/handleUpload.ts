@@ -1,10 +1,35 @@
-const waitForUploadcare = (): Promise<any> =>
+type UploadcareFileInfo = {
+    cdnUrl: string;
+};
+
+type UploadcareFile = {
+    done: (callback: (info: UploadcareFileInfo) => void) => void;
+};
+
+type UploadcareDialog = {
+    done: (callback: (file: UploadcareFile) => void) => void;
+};
+
+type UploadcareClient = {
+    openDialog: (
+        file: null,
+        options: { imagesOnly: boolean; multiple: boolean; crop: string },
+    ) => UploadcareDialog;
+};
+
+type WindowWithUploadcare = Window & {
+    uploadcare?: UploadcareClient;
+};
+
+const waitForUploadcare = (): Promise<UploadcareClient> =>
     new Promise((resolve, reject) => {
         let attempts = 0;
         const interval = setInterval(() => {
-            if ((window as any).uploadcare) {
+            const uploadcare = (window as WindowWithUploadcare).uploadcare;
+
+            if (uploadcare) {
                 clearInterval(interval);
-                resolve((window as any).uploadcare);
+                resolve(uploadcare);
             } else if (++attempts >= 10) {
                 clearInterval(interval);
                 reject(new Error('Uploadcare failed to load.'));
@@ -17,8 +42,8 @@ export const handleUpload = async (setUrl: (url: string) => void) => {
         const uploadcare = await waitForUploadcare();
         uploadcare
             .openDialog(null, { imagesOnly: true, multiple: false, crop: 'free' })
-            .done((file: any) => {
-                file.done((info: any) => setUrl(info.cdnUrl));
+            .done((file) => {
+                file.done((info) => setUrl(info.cdnUrl));
             });
     } catch (err) {
         console.error(err);

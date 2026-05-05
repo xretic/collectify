@@ -1,17 +1,5 @@
-'use client';
+import CreateCollectionPage from '@/widgets/collection/create/ui/CreateCollectionPage';
 
-import { CollectionStepper } from '@/components/features/collections/CollectionStepper';
-import { CollectionCreate } from '@/components/features/collections/CollectionCreate';
-import { useCollectionCreateStore } from '@/stores/collectionCreateStore';
-import { ItemCreate } from '@/components/features/items/ItemCreate';
-
-export default function CreateCollection() {
-    const { step } = useCollectionCreateStore();
-
-    return (
-        <>
-            <CollectionStepper skip={step} />
-            {step === 0 ? <CollectionCreate /> : <ItemCreate />}
-        </>
-    );
+export default function CreateCollectionRoute() {
+    return <CreateCollectionPage />;
 }

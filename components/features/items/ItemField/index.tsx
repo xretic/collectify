@@ -1,23 +1,20 @@
 import { IconButton, SxProps, Theme, Tooltip } from '@mui/material';
 import styles from './index.module.css';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { useCollectionStore } from '@/stores/collectionStore';
+import { useCollectionStore } from '@/entities/collection/model/collectionStore';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { api } from '@/lib/api';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/shared/model/uiStore';
 import { useQueryClient } from '@tanstack/react-query';
-
-interface Item {
-    id: number;
-    title: string;
-    description: string;
-    sourceUrl: string | null;
-}
+import EditIcon from '@mui/icons-material/Edit';
+import { collectionApi } from '@/entities/collection/api/collectionApi';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { CollectionItem } from '@/entities/collection/model/types';
+import { useItemEditDialogStore } from '@/features/item/edit/model/itemEditDialogStore';
 
 interface Props {
-    item: Item;
+    item: CollectionItem;
     collection: CollectionPropsAdditional;
     isLast: boolean;
 }
@@ -28,26 +25,21 @@ export function ItemField({ item, collection, isLast }: Props) {
         useUIStore();
     const buttonsStyle: SxProps<Theme> = { color: 'var(--text-color)' };
     const queryClient = useQueryClient();
+    const { openItemEdit } = useItemEditDialogStore();
 
     const deleteItem = async () => {
         startLoading();
 
         try {
-            const data = await api
-                .delete(`api/collections/${collection.id}/items`, {
-                    searchParams: {
-                        itemId: item.id,
-                        commentsSkip: 0,
-                    },
-                })
-                .json<{ data: CollectionPropsAdditional }>();
+            const updatedCollection = await collectionApi.deleteItem(collection.id, item.id);
 
-            setCollection(data.data);
+            setCollection(updatedCollection);
+            queryClient.setQueryData(collectionQueryKeys.detail(collection.id), updatedCollection);
 
             queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collections-search') ||
-                    query.queryKey.includes('my-collections-search'),
+                    query.queryKey.includes(collectionQueryKeys.search[0]) ||
+                    query.queryKey.includes(collectionQueryKeys.mySearch[0]),
             });
 
             setItemDeletionId(0);
@@ -92,17 +84,29 @@ export function ItemField({ item, collection, isLast }: Props) {
                     </Tooltip>
                 </>
             ) : (
-                !isLast && (
-                    <Tooltip title="Delete item">
+                <>
+                    {!isLast && (
+                        <Tooltip title="Delete item">
+                            <IconButton
+                                disabled={loadingCount > 0}
+                                onClick={openAccepting}
+                                color="error"
+                            >
+                                <DeleteOutlineOutlinedIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+
+                    <Tooltip title="Edit item">
                         <IconButton
                             disabled={loadingCount > 0}
-                            onClick={openAccepting}
-                            color="error"
+                            onClick={() => openItemEdit(item)}
+                            color="inherit"
                         >
-                            <DeleteOutlineOutlinedIcon />
+                            <EditIcon />
                         </IconButton>
                     </Tooltip>
-                )
+                </>
             )}
         </div>
     );

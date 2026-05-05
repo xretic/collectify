@@ -10,15 +10,17 @@ import { COLLECTION_DESCRIPTION_MAX_LENGTH, COLLECTION_NAME_MAX_LENGTH } from '@
 import TextArea from 'antd/es/input/TextArea';
 import { Box, IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useCollectionStore } from '@/stores/collectionStore';
+import { useCollectionStore } from '@/entities/collection/model/collectionStore';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEditingDialogStore } from '@/stores/dialogs/editCollectionDialogStore';
+import { useEditingDialogStore } from '@/features/collection/edit/model/editCollectionDialogStore';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
-import { api } from '@/lib/api';
-import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { ItemField } from '../../items/ItemField';
 import { handleUpload } from '@/helpers/handleUpload';
 import { useQueryClient } from '@tanstack/react-query';
+import { collectionApi } from '@/entities/collection/api/collectionApi';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
+import { ItemEditDialog } from '../../items/ItemEditDialog';
 
 type State = {
     title: string;
@@ -71,30 +73,27 @@ export function CollectionEditingDialog() {
         setDisabled(true);
 
         try {
-            const data = await api
-                .patch(`api/collections/${collection?.id}/edit`, {
-                    json: {
-                        title: state.title,
-                        description: state.description,
-                        bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
-                        isPrivate: state.isPrivate,
-                    },
-                    searchParams: { commentsSkip: 0 },
-                })
-                .json<{ data: CollectionPropsAdditional }>();
+            if (!collection) return;
+
+            const updatedCollection = await collectionApi.updateDetails(collection.id, {
+                title: state.title,
+                description: state.description,
+                bannerUrl: state.bannerUrl === '' ? null : state.bannerUrl,
+                isPrivate: state.isPrivate,
+            });
 
             resetState();
             handleClose();
-            setCollection(data.data);
+            setCollection(updatedCollection);
+            queryClient.setQueryData(collectionQueryKeys.detail(collection.id), updatedCollection);
 
             queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collections-search') ||
-                    query.queryKey.includes('my-collections-search'),
+                    query.queryKey.includes(collectionQueryKeys.search[0]) ||
+                    query.queryKey.includes(collectionQueryKeys.mySearch[0]),
             });
-        } catch (err: any) {
-            const message = err?.response?.message;
-            if (message) setErrorMessage(message);
+        } catch (err) {
+            setErrorMessage(await getApiErrorMessage(err));
         } finally {
             setDisabled(false);
         }
@@ -291,6 +290,7 @@ export function CollectionEditingDialog() {
                     Confirm
                 </Button>
             </DialogActions>
+            <ItemEditDialog />
         </Dialog>
     );
 }

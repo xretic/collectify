@@ -6,7 +6,7 @@ import { LoginRounded, SvgIconComponent } from '@mui/icons-material';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useUser } from '@/context/UserProvider';
 import Avatar from '@mui/material/Avatar';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/shared/model/uiStore';
 import HoverMenu from '../../ui/HoverMenu';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { usePathname, useRouter } from 'next/navigation';
@@ -41,6 +41,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import EggAltOutlinedIcon from '@mui/icons-material/EggAltOutlined';
 import EggAltIcon from '@mui/icons-material/EggAlt';
+import { useSocket } from '@/context/SocketProvider';
+import { MessageInResponse } from '@/types/ChatInResponse';
+import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
 
 interface NavItem {
     label: string;
@@ -50,6 +53,8 @@ interface NavItem {
     badge?: number;
     hide?: boolean;
 }
+
+type SocketMessage = MessageInResponse & { chatId: number };
 
 const navItems = (user: SessionUserInResponse | null): NavItem[] => [
     {
@@ -92,8 +97,11 @@ const badgeSx: SxProps<Theme> = {
 };
 
 export default function NavBar() {
-    const { user, loading } = useUser();
+    const { user, setUser, loading } = useUser();
     const { anchorEl, setAnchorEl, searchBarOpened, setSearchBarOpened } = useUIStore();
+    const userId = user?.id;
+    const socket = useSocket();
+    const activeChatId = useActiveChatStore((state) => state.activeChatId);
     const pathname = usePathname();
     const buttonStyle = { width: 22, height: 22, marginLeft: 2 };
 
@@ -132,6 +140,23 @@ export default function NavBar() {
             setWidth(usernameRef.current.offsetWidth);
         }
     }, [user?.username]);
+
+    useEffect(() => {
+        if (!socket || !userId) return;
+
+        const onNewMessage = (message: SocketMessage) => {
+            if (message.userId === userId) return;
+            if (message.chatId === activeChatId) return;
+
+            setUser((prev) => (prev ? { ...prev, unreadMessages: prev.unreadMessages + 1 } : prev));
+        };
+
+        socket.on('message:new', onNewMessage);
+
+        return () => {
+            socket.off('message:new', onNewMessage);
+        };
+    }, [activeChatId, setUser, socket, userId]);
 
     if (loading && !user) return null;
 

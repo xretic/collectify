@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -10,22 +9,17 @@ import {
     DialogContentText,
 } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { api } from '@/lib/api';
-import { useUIStore } from '@/stores/uiStore';
 import { useUser } from '@/context/UserProvider';
 import { Loader } from '@/components/ui/Loader';
 import CloseIcon from '@mui/icons-material/Close';
 import { CustomLegend } from './components/CustomLegend';
-
-interface CollectionStatsResponse {
-    days: string[];
-    likesData: number[];
-    commentsData: number[];
-    favoritesData: number[];
-}
+import { useQuery } from '@tanstack/react-query';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { collectionApi } from '@/entities/collection/api/collectionApi';
+import { CollectionStats } from '@/entities/collection/model/types';
 
 interface CollectionChartProps {
-    stats: CollectionStatsResponse;
+    stats: CollectionStats;
 }
 
 function CollectionChart({ stats }: CollectionChartProps) {
@@ -102,28 +96,19 @@ export default function CollectionStatsDialog({
     open = true,
     onClose,
 }: CollectionStatsDialogProps) {
-    const [stats, setStats] = useState<CollectionStatsResponse | null>(null);
-    const { startLoading, stopLoading } = useUIStore();
     const { user, loading } = useUser();
 
-    const getStats = async () => {
-        startLoading();
-        try {
-            const data = await api
-                .get(`api/collections/${id}/stats`)
-                .json<CollectionStatsResponse>();
-            setStats(data);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            stopLoading();
-        }
-    };
-
-    useEffect(() => {
-        if (!id) return;
-        getStats();
-    }, [id]);
+    const {
+        data: stats,
+        isError,
+        isLoading,
+    } = useQuery({
+        queryKey: collectionQueryKeys.stats(id),
+        queryFn: () => collectionApi.getStats(id),
+        enabled: open && !!id,
+        retry: false,
+        staleTime: 60_000,
+    });
 
     if (loading && !user) return null;
 
@@ -166,7 +151,13 @@ export default function CollectionStatsDialog({
                     Detailed information about activity on your collection by day
                 </DialogContentText>
 
-                {!stats ? <Loader /> : <CollectionChart stats={stats} />}
+                {isLoading ? <Loader /> : null}
+                {isError ? (
+                    <DialogContentText sx={{ color: 'var(--soft-text)', mt: 2 }}>
+                        Statistics are unavailable for this collection.
+                    </DialogContentText>
+                ) : null}
+                {stats ? <CollectionChart stats={stats} /> : null}
             </DialogContent>
         </Dialog>
     );

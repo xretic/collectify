@@ -1,12 +1,21 @@
 'use client';
 
-import { api } from '@/lib/api';
+import { authApi } from '@/entities/auth/api/authApi';
 import { SessionUserInResponse } from '@/types/UserInResponse';
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    ReactNode,
+    useCallback,
+    Dispatch,
+    SetStateAction,
+} from 'react';
 
 interface UserContextType {
     user: SessionUserInResponse | null;
-    setUser: (user: SessionUserInResponse | null) => void;
+    setUser: Dispatch<SetStateAction<SessionUserInResponse | null>>;
     loading: boolean;
     refreshUser: () => Promise<void>;
 }
@@ -21,9 +30,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setLoading(true);
 
         try {
-            const data = await api.get('api/auth/me').json<{ user: SessionUserInResponse }>();
-
-            setUser(data.user ?? null);
+            setUser(await authApi.getMe());
         } catch {
             setUser(null);
         } finally {

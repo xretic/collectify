@@ -9,7 +9,6 @@ interface UIState {
     commentAnchorEl: HTMLElement | null;
     setCommentAnchorEl: (el: HTMLElement | null) => void;
 
-
     commentId: number | null;
     setCommentId: (id: number) => void;
 

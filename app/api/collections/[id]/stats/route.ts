@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         if (!session) return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
 
         const collection = await prisma.collection.findUnique({
-            where: { id: intId, private: false },
+            where: { id: intId },
             select: { id: true, userId: true },
         });
 

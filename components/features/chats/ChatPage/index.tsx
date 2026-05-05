@@ -5,8 +5,7 @@ import styles from './index.module.css';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
-import { useUIStore } from '@/stores/uiStore';
-import { api } from '@/lib/api';
+import { useUIStore } from '@/shared/model/uiStore';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import MessageComponent from '../Message';
 import TextArea from 'antd/es/input/TextArea';
@@ -14,6 +13,8 @@ import { DIRECT_MESSAGE_MAX_LENGTH } from '@/lib/constans';
 import SendIcon from '@mui/icons-material/Send';
 import { ConfigProvider } from 'antd';
 import { useSocket } from '@/context/SocketProvider';
+import { chatApi } from '@/entities/chat/api/chatApi';
+import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
 
 interface ChatPageProps {
     chatId: number | null;
@@ -32,6 +33,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
     const { user, loading } = useUser();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
     const socket = useSocket();
+    const { setActiveChatId } = useActiveChatStore();
 
     const router = useRouter();
     const messagesRef = useRef<HTMLDivElement>(null);
@@ -77,11 +79,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                 prevScrollHeightRef.current = container.scrollHeight;
             }
 
-            const res = await api
-                .get('api/chats/' + chatId, {
-                    searchParams: cursor ? { cursor } : {},
-                })
-                .json<{ data: ChatInResponse; nextCursor: Cursor }>();
+            const res = await chatApi.detail(chatId, cursor);
 
             const incoming = sortAsc(res.data.messages ?? []);
 
@@ -111,9 +109,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
         setMessageText('');
 
         try {
-            const res = await api
-                .post('api/chats/' + chatId, { json: { messageText } })
-                .json<{ data: MessageInResponse }>();
+            const res = await chatApi.sendMessage(chatId, messageText);
 
             const container = messagesRef.current;
             const nearBottom = container
@@ -187,6 +183,14 @@ export default function ChatPage({ chatId }: ChatPageProps) {
     }, [chatId]);
 
     useEffect(() => {
+        setActiveChatId(chatId);
+
+        return () => {
+            setActiveChatId(null);
+        };
+    }, [chatId, setActiveChatId]);
+
+    useEffect(() => {
         const container = messagesRef.current;
         if (!container) return;
 
@@ -206,7 +210,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
         const onNew = (msg: SocketMessage) => {
             if (msg.chatId !== chatId) return;
 
-            void api.patch('api/chats/' + msg.chatId);
+            void chatApi.markAsRead(msg.chatId);
 
             setDetails((prev) => {
                 if (!prev) return prev;

@@ -113,7 +113,7 @@ export async function GET(req: Request) {
 
             try {
                 user = await createUser(baseUsername);
-            } catch (e: any) {
+            } catch (e) {
                 if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
                     user = await createUser(String(uniqueId));
                 } else {

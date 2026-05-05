@@ -13,17 +13,12 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/shared/model/uiStore';
 import { useDebounce } from '@/lib/useDebounce';
 import styles from './index.module.css';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
-
-interface User {
-    id: number;
-    username: string;
-    avatarUrl: string;
-}
+import { userApi, UserSearchItem } from '@/entities/user/api/userApi';
+import { userQueryKeys } from '@/entities/user/model/queryKeys';
 
 export default function UserSearchBar() {
     const router = useRouter();
@@ -31,7 +26,7 @@ export default function UserSearchBar() {
     const [inputValue, setInputValue] = useState('');
     const debouncedQuery = useDebounce(inputValue, 400);
 
-    const handleSelect = (_: any, value: User | string | null) => {
+    const handleSelect = (_: unknown, value: UserSearchItem | string | null) => {
         if (!value) return;
 
         if (typeof value !== 'string') {
@@ -39,14 +34,14 @@ export default function UserSearchBar() {
         }
     };
     const { data } = useQuery({
-        queryKey: ['users-search', debouncedQuery],
+        queryKey: userQueryKeys.search(debouncedQuery),
         enabled: !!debouncedQuery,
         staleTime: 60_000,
         refetchOnWindowFocus: false,
-        queryFn: () => api.get(`api/users/search/${debouncedQuery}`).json<{ users: User[] }>(),
+        queryFn: () => userApi.search(debouncedQuery),
     });
 
-    const users = data?.users ?? [];
+    const users = data ?? [];
 
     return (
         <Autocomplete

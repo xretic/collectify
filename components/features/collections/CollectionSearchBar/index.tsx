@@ -1,6 +1,6 @@
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { useCollectionSearchStore } from '@/stores/collectionSearchStore';
+import { useCollectionSearchStore } from '@/features/collection/search/model/collectionSearchStore';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface CollectionSearchBarProps {

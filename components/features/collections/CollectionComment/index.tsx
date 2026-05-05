@@ -1,17 +1,19 @@
 import styles from './index.module.css';
 import moment from 'moment';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/shared/model/uiStore';
 import CommentHoverMenu from '@/components/features/collections/CommentHoverMenu';
 import { useUser } from '@/context/UserProvider';
-import { useCommentEditStore } from '@/stores/commentEditStore';
+import { useCommentEditStore } from '@/features/comment/edit/model/commentEditStore';
 import { ConfigProvider } from 'antd';
 import { COMMENT_MAX_LENGTH } from '@/lib/constans';
 import { useEffect, useState } from 'react';
 import { Avatar, Button, SxProps, Theme } from '@mui/material';
-import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import TextArea from 'antd/es/input/TextArea';
 import { useRouter } from 'next/navigation';
+import { commentApi } from '@/entities/comment/api/commentApi';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { CollectionPropsAdditional } from '@/entities/collection/model/types';
 
 interface Comment {
     id: number;
@@ -61,18 +63,20 @@ export function CollectionComment({ collectionId, comment }: Props) {
         startLoading();
 
         try {
-            await api.patch(`api/comments/${commentId}`, { json: { text: editingText } });
+            if (!commentId) return;
 
-            const commentsKey = ['collection-comments', String(collectionId)] as const;
+            await commentApi.update(commentId, editingText);
 
-            queryClient.setQueryData(commentsKey, (old: any) => {
+            const commentsKey = collectionQueryKeys.comments(collectionId);
+
+            queryClient.setQueryData<{ pages: CollectionPropsAdditional[] }>(commentsKey, (old) => {
                 if (!old?.pages) return old;
 
                 return {
                     ...old,
-                    pages: old.pages.map((p: any) => ({
+                    pages: old.pages.map((p) => ({
                         ...p,
-                        commentsRes: (p.commentsRes ?? []).map((c: any) =>
+                        commentsRes: (p.commentsRes ?? []).map((c) =>
                             c.id === commentId ? { ...c, text: editingText } : c,
                         ),
                     })),

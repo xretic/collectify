@@ -12,6 +12,7 @@ export function getResData(
             title: string;
             sourceUrl: string | null;
             imageUrl: string | null;
+            order: number;
         }[];
 
         comments: number;
@@ -68,6 +69,7 @@ export function getResData(
             description: x.description,
             sourceUrl: x.sourceUrl,
             imageUrl: x.imageUrl,
+            order: x.order,
         })),
 
         comments: collection.comments,

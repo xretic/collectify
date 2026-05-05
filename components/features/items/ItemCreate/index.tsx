@@ -2,7 +2,7 @@
 
 import { Box, Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import styles from '../../../../app/collections/collections.module.css';
-import { useCollectionCreateStore } from '@/stores/collectionCreateStore';
+import { useCollectionCreateStore } from '@/features/collection/create/model/collectionCreateStore';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { ConfigProvider, Input } from 'antd';
 import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
@@ -13,8 +13,10 @@ import { isValidUrl } from '@/helpers/isValidUrl';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
 import { useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
 import { handleUpload } from '@/helpers/handleUpload';
+import { collectionApi } from '@/entities/collection/api/collectionApi';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 
 export function ItemCreate() {
     const {
@@ -52,36 +54,31 @@ export function ItemCreate() {
         }
 
         try {
-            const data = await api
-                .post('api/collections', {
-                    json: {
-                        name,
-                        description,
-                        category,
-                        banner,
-                        itemTitle,
-                        itemDescription,
-                        itemImageUrl: itemImageUrl === '' ? null : itemImageUrl,
-                        itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
-                        isPrivate: String(isPrivate),
-                    },
-                })
-                .json<{ id: number }>();
+            const data = await collectionApi.create({
+                name,
+                description,
+                category,
+                banner,
+                itemTitle,
+                itemDescription,
+                itemImageUrl: itemImageUrl === '' ? null : itemImageUrl,
+                itemSourceUrl: itemSourceUrl === '' ? null : itemSourceUrl,
+                isPrivate: String(isPrivate),
+            });
 
             reset();
 
             queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collections-search') ||
-                    query.queryKey.includes('my-collections-search'),
+                    query.queryKey.includes(collectionQueryKeys.search[0]) ||
+                    query.queryKey.includes(collectionQueryKeys.mySearch[0]),
             });
 
             router.replace('/collections/' + data.id);
 
             await refreshUser();
-        } catch (err: any) {
-            const message = err?.response?.message;
-            if (message) setErrorMessage(message);
+        } catch (err) {
+            setErrorMessage(await getApiErrorMessage(err));
         } finally {
             setDisabled(false);
         }
@@ -116,7 +113,7 @@ export function ItemCreate() {
             <header className={styles.createHeader}>
                 <p className={styles.createTitle}>Add First Item</p>
                 <span className={styles.secondary}>
-                    Add the first item to your "{name}" collection
+                    Add the first item to your &quot;{name}&quot; collection
                 </span>
             </header>
 

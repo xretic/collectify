@@ -15,13 +15,15 @@ declare global {
 
             NEXT_PUBLIC_VERCEL_URL: string;
 
-            NEXT_PUBLIC_SOCKET_URL: string;
-            SOCKET_PUBLISH_URL: string;
-
             NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY: string;
             REDIS_URL: string;
 
             ASSIGN_SECRET: string;
+
+            PUSHER_APP_ID: string;
+            PUSHER_SECRET: string;
+            NEXT_PUBLIC_PUSHER_KEY: string;
+            NEXT_PUBLIC_PUSHER_CLUSTER: string;
         }
     }
 }

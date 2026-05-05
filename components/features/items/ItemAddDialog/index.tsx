@@ -4,7 +4,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useDialogStore } from '@/stores/dialogs/dialogStore';
+import { useDialogStore } from '@/shared/model/dialogStore';
 import { ConfigProvider, Input } from 'antd';
 import styles from './index.module.css';
 import { ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
@@ -12,13 +12,14 @@ import TextArea from 'antd/es/input/TextArea';
 import { Box, IconButton, Snackbar, SnackbarCloseReason, SxProps, Theme } from '@mui/material';
 import React, { useState } from 'react';
 import { isValidUrl } from '@/helpers/isValidUrl';
-import { useCollectionStore } from '@/stores/collectionStore';
+import { useCollectionStore } from '@/entities/collection/model/collectionStore';
 import CloseIcon from '@mui/icons-material/Close';
-import { api } from '@/lib/api';
-import { CollectionPropsAdditional } from '@/types/CollectionField';
 import { useQueryClient } from '@tanstack/react-query';
 import { handleUpload } from '@/helpers/handleUpload';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import { collectionApi } from '@/entities/collection/api/collectionApi';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 
 type State = {
     title: string;
@@ -61,32 +62,27 @@ export function ItemAddDialog() {
         setDisabled(true);
 
         try {
-            const data = await api
-                .post(`api/collections/${collection?.id}/items`, {
-                    json: {
-                        title: state.title,
-                        description: state.description,
-                        sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
-                        imageUrl: state.imageUrl === '' ? null : state.imageUrl,
-                    },
-                    searchParams: {
-                        commentsSkip: 0,
-                    },
-                })
-                .json<{ data: CollectionPropsAdditional }>();
+            if (!collection) return;
+
+            const updatedCollection = await collectionApi.createItem(collection.id, {
+                title: state.title,
+                description: state.description,
+                sourceUrl: state.sourceUrl === '' ? null : state.sourceUrl,
+                imageUrl: state.imageUrl === '' ? null : state.imageUrl,
+            });
 
             resetState();
             handleClose();
-            setCollection(data.data);
+            setCollection(updatedCollection);
+            queryClient.setQueryData(collectionQueryKeys.detail(collection.id), updatedCollection);
 
             queryClient.invalidateQueries({
                 predicate: (query) =>
-                    query.queryKey.includes('collections-search') ||
-                    query.queryKey.includes('my-collections-search'),
+                    query.queryKey.includes(collectionQueryKeys.search[0]) ||
+                    query.queryKey.includes(collectionQueryKeys.mySearch[0]),
             });
-        } catch (err: any) {
-            const message = err?.response?.message;
-            if (message) setErrorMessage(message);
+        } catch (err) {
+            setErrorMessage(await getApiErrorMessage(err));
         } finally {
             setDisabled(false);
         }
@@ -102,7 +98,7 @@ export function ItemAddDialog() {
 
     const action = (
         <React.Fragment>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackClose}>
                 <CloseIcon fontSize="small" />
             </IconButton>
         </React.Fragment>

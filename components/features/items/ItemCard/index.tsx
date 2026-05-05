@@ -21,12 +21,12 @@ export function ItemCard({
     draggable = false,
 }: Props) {
     const color = imageUrl ? 'white' : 'var(--text-color)';
+    const backgroundStyle = imageUrl
+        ? ({ '--bg-image': `url(${imageUrl})` } as React.CSSProperties)
+        : undefined;
 
     return (
-        <article
-            className={styles.card}
-            style={imageUrl ? { ['--bg-image' as any]: `url(${imageUrl})` } : undefined}
-        >
+        <article className={styles.card} style={backgroundStyle}>
             <div
                 className={styles.body}
                 style={

@@ -1,8 +1,5 @@
 import type { NextConfig } from 'next';
 
-const railwayUrl = process.env.NEXT_PUBLIC_SOCKET_URL ?? '';
-const normalizedRailway = railwayUrl.replace(/\/+$/, '');
-
 const securityHeaders = [
     {
         key: 'Content-Security-Policy-Report-Only',
@@ -12,7 +9,7 @@ const securityHeaders = [
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob: https:",
             "font-src 'self' https:",
-            `connect-src 'self' https: wss: ${normalizedRailway} ${normalizedRailway.replace('https://', 'wss://')}`,
+            "connect-src 'self' https: ws: wss:",
             "frame-ancestors 'none'",
             "base-uri 'self'",
             "form-action 'self'",

@@ -4,12 +4,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import MenuItem from '@mui/material/MenuItem';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Menu from '@mui/material/Menu';
-import { useUIStore } from '@/stores/uiStore';
-import { api } from '@/lib/api';
+import { useUIStore } from '@/shared/model/uiStore';
 import { useQueryClient } from '@tanstack/react-query';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { useCollectionStore } from '@/stores/collectionStore';
-import { useCommentEditStore } from '@/stores/commentEditStore';
+import { useCollectionStore } from '@/entities/collection/model/collectionStore';
+import { useCommentEditStore } from '@/features/comment/edit/model/commentEditStore';
+import { commentApi } from '@/entities/comment/api/commentApi';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { CollectionPropsAdditional } from '@/entities/collection/model/types';
 
 type Props = {
     collectionId: string | number;
@@ -29,7 +31,7 @@ export default function CommentHoverMenu({ collectionId }: Props) {
         setCommentAnchorEl(null);
     };
 
-    const commentsKey = ['collection-comments', String(collectionId)] as const;
+    const commentsKey = collectionQueryKeys.comments(collectionId);
 
     const handleDelete = async () => {
         startLoading();
@@ -37,22 +39,24 @@ export default function CommentHoverMenu({ collectionId }: Props) {
         try {
             handleClose();
 
-            await api.delete(`api/comments/${commentId}`);
+            if (!commentId) return;
 
-            if (comments) setComments(comments.filter((c: any) => c.id !== commentId));
+            await commentApi.delete(commentId);
 
-            queryClient.setQueryData(commentsKey, (old: any) => {
+            if (comments) setComments(comments.filter((c) => c.id !== commentId));
+
+            queryClient.setQueryData<{ pages: CollectionPropsAdditional[] }>(commentsKey, (old) => {
                 if (!old?.pages) return old;
                 return {
                     ...old,
-                    pages: old.pages.map((p: any) => ({
+                    pages: old.pages.map((p) => ({
                         ...p,
-                        commentsRes: (p.commentsRes ?? []).filter((c: any) => c.id !== commentId),
+                        commentsRes: (p.commentsRes ?? []).filter((c) => c.id !== commentId),
                     })),
                 };
             });
 
-            queryClient.invalidateQueries({ queryKey: ['collection', String(collectionId)] });
+            queryClient.invalidateQueries({ queryKey: collectionQueryKeys.detail(collectionId) });
         } finally {
             stopLoading();
         }

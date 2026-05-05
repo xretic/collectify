@@ -1,6 +1,6 @@
 'use client';
 
-import { useDialogStore } from '@/stores/dialogs/dialogStore';
+import { useDialogStore } from '@/shared/model/dialogStore';
 import {
     Dialog,
     DialogContent,
@@ -16,9 +16,9 @@ import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '@/lib/constans';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserProvider';
 import { useState } from 'react';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/shared/model/uiStore';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { api } from '@/lib/api';
+import { userApi } from '@/entities/user/api/userApi';
 
 interface Props {
     userProtected: boolean;
@@ -41,11 +41,7 @@ export default function DeleteAccountDialog({ userProtected }: Props) {
         startLoading();
 
         try {
-            await api.delete('api/users/', {
-                json: {
-                    password: userProtected ? password : '0',
-                },
-            });
+            await userApi.deleteAccount(userProtected ? password : '0');
 
             await refreshUser();
             router.replace('/');

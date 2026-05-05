@@ -133,7 +133,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 id: intId,
             },
             include: {
-                items: true,
+                items: {
+                    orderBy: { order: 'asc' },
+                },
                 comments: true,
                 User: true,
             },
@@ -181,7 +183,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { searchParams } = new URL(req.url);
-        const itemId = Number(searchParams.get('itemId'));
+        const rawItemId = searchParams.get('itemId');
+
+        if (rawItemId === null) {
+            return NextResponse.json({ message: 'itemId is required.' }, { status: 400 });
+        }
+
+        const itemId = Number(rawItemId);
 
         if (!isProperInteger(itemId)) {
             return NextResponse.json({ message: 'Invalid item id.' }, { status: 400 });
@@ -240,8 +248,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
             return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
         }
 
-        const item = await prisma.item.findUnique({
-            where: { collectionId: collection.id, id: itemId },
+        const item = await prisma.item.findFirst({
+            where: { id: itemId, collectionId: collection.id },
         });
 
         if (!item) {
@@ -270,7 +278,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         const updatedCollection = await prisma.collection.findUnique({
             where: { id: collection.id },
             include: {
-                items: true,
+                items: {
+                    orderBy: { order: 'asc' },
+                },
                 comments: true,
                 User: true,
             },
@@ -308,6 +318,195 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
         return NextResponse.json(
             {
+                data: resData,
+            },
+            { status: 200 },
+        );
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
+    }
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const rawItemId = searchParams.get('itemId');
+
+        if (rawItemId === null) {
+            return NextResponse.json({ message: 'itemId is required.' }, { status: 400 });
+        }
+
+        const itemId = Number(rawItemId);
+
+        if (!isProperInteger(itemId)) {
+            return NextResponse.json({ message: 'Invalid item id.' }, { status: 400 });
+        }
+
+        const sessionId = req.cookies.get('sessionId')?.value;
+
+        if (!sessionId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
+        const session = await prisma.session.findUnique({
+            where: { id: sessionId },
+            include: {
+                user: true,
+            },
+        });
+
+        if (!session) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
+        const { id } = await params;
+        const intId = Number(id);
+
+        if (!isProperInteger(intId)) {
+            return NextResponse.json({ message: 'Invalid collection id' }, { status: 400 });
+        }
+
+        const raw = searchParams.get('commentsSkip');
+
+        if (raw === null) {
+            return NextResponse.json({ message: 'commentsSkip is required.' }, { status: 400 });
+        }
+
+        const commentsSkip = Number(raw);
+
+        if (!isProperInteger(commentsSkip)) {
+            return NextResponse.json(
+                { message: 'commentsSkip must be a non-negative integer.' },
+                { status: 400 },
+            );
+        }
+
+        const collection = await prisma.collection.findUnique({
+            where: {
+                id: intId,
+            },
+        });
+
+        if (!collection) {
+            return NextResponse.json({ message: 'Collection not found.' }, { status: 404 });
+        }
+
+        if (session.userId !== collection.userId) {
+            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
+        const item = await prisma.item.findFirst({
+            where: { id: itemId, collectionId: collection.id },
+        });
+
+        if (!item) {
+            return NextResponse.json({ message: 'Item not found.' }, { status: 404 });
+        }
+
+        const requestData = await req.json();
+
+        if (!requiredFields.every((field) => field in requestData)) {
+            return NextResponse.json({ message: 'Bad request.' }, { status: 400 });
+        }
+
+        const { title, description, sourceUrl, imageUrl } = requestData;
+
+        if ([title, description].some((x) => typeof x !== 'string' || x.trim().length === 0)) {
+            return NextResponse.json(
+                { message: 'Required fields are not filled in.' },
+                { status: 400 },
+            );
+        }
+
+        const badRequest = (message: string, status = 400) =>
+            NextResponse.json({ message }, { status });
+
+        type Rule = {
+            ok: boolean;
+            message: string;
+            status?: number;
+        };
+
+        const rules: Rule[] = [
+            {
+                ok: title.length <= ITEM_TITLE_MAX_LENGTH,
+                message: `Item title length must be within ${ITEM_TITLE_MAX_LENGTH}`,
+            },
+            {
+                ok: description.length <= ITEM_DESCRIPTION_MAX_LENGTH,
+                message: `Item description length must be within ${ITEM_DESCRIPTION_MAX_LENGTH}`,
+            },
+            {
+                ok: !sourceUrl || isValidUrl(sourceUrl),
+                message: `Item source URL must be a valid URL.`,
+            },
+            {
+                ok: !imageUrl || isValidUrl(imageUrl),
+                message: `Image URL must be a valid URL.`,
+            },
+        ];
+
+        const failed = rules.find((x) => !x.ok);
+
+        if (failed) return badRequest(failed.message, failed.status);
+
+        await prisma.item.update({
+            where: {
+                id: item.id,
+            },
+            data: {
+                title,
+                description,
+                sourceUrl,
+                imageUrl,
+            },
+        });
+
+        const updatedCollection = await prisma.collection.findUnique({
+            where: { id: collection.id },
+            include: {
+                items: {
+                    orderBy: { order: 'asc' },
+                },
+                comments: true,
+                User: true,
+            },
+        });
+
+        if (!updatedCollection) {
+            return NextResponse.json({ message: 'Something went wrong!' }, { status: 500 });
+        }
+
+        const { liked, favorited } = await collectionActionData(session, collection);
+
+        const commentsRes = await prisma.comment.findMany({
+            where: {
+                collectionId: collection.id,
+            },
+            include: { User: true },
+            skip: commentsSkip,
+            orderBy: { createdAt: 'desc' },
+            take: COMMENTS_LIMIT,
+        });
+
+        const comments = await prisma.comment.count({
+            where: {
+                collectionId: collection.id,
+            },
+        });
+
+        const resData = getResData({
+            ...updatedCollection,
+            liked,
+            favorited,
+            commentsRes,
+            comments,
+        });
+
+        return NextResponse.json(
+            {
+                message: 'Item edited.',
                 data: resData,
             },
             { status: 200 },

@@ -2,8 +2,18 @@ import { Stack } from '@mui/material';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import { SvgIconComponent } from '@mui/icons-material';
 
-export function CustomLegend({ payload }: any) {
+type LegendPayloadItem = {
+    value: string;
+    color?: string;
+};
+
+type CustomLegendProps = {
+    payload?: LegendPayloadItem[];
+};
+
+export function CustomLegend({ payload }: CustomLegendProps) {
     return (
         <Stack
             direction="row"
@@ -17,8 +27,8 @@ export function CustomLegend({ payload }: any) {
                 pointerEvents: 'none',
             }}
         >
-            {payload?.map((entry: any) => {
-                let Icon;
+            {payload?.map((entry) => {
+                let Icon: SvgIconComponent | undefined;
                 if (entry.value === 'Comments') Icon = ForumOutlinedIcon;
                 if (entry.value === 'Likes') Icon = FavoriteBorderIcon;
                 if (entry.value === 'Favorites') Icon = BookmarkBorderIcon;

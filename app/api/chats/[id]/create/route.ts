@@ -1,6 +1,8 @@
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { DIRECT_MESSAGE_MAX_LENGTH } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
+import { publishChatMessage } from '@/server/socketBus';
+import { MessageInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -85,8 +87,34 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                     },
                 },
             },
-            select: { id: true },
+            include: {
+                messages: {
+                    include: { user: true },
+                    orderBy: { createdAt: 'desc' },
+                    take: 1,
+                },
+            },
         });
+
+        const firstMessage = chat.messages[0];
+
+        if (firstMessage) {
+            const messageData: MessageInResponse = {
+                id: firstMessage.id,
+                userId: firstMessage.userId,
+                userAvatarUrl: firstMessage.user.avatarUrl,
+                username: firstMessage.user.username,
+                content: firstMessage.content,
+                createdAt: firstMessage.createdAt,
+            };
+
+            await publishChatMessage({
+                chatId: chat.id,
+                senderUserId: session.userId,
+                recipientUserId: user.id,
+                message: messageData,
+            });
+        }
 
         return NextResponse.json({ id: chat.id }, { status: 200 });
     } catch (e) {

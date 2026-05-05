@@ -2,10 +2,10 @@ import { create } from 'zustand';
 
 interface PaginationState {
     homePagination: number;
-    setHomePagination: (newPagintion: number) => void;
+    setHomePagination: (newPagination: number) => void;
 
     profilePagination: number;
-    setProfilePagination: (newPagintion: number) => void;
+    setProfilePagination: (newPagination: number) => void;
 
     myCollectionsPagination: number;
     setMyCollectionsPagination: (newPagination: number) => void;
@@ -13,10 +13,10 @@ interface PaginationState {
 
 export const usePaginationStore = create<PaginationState>((set) => ({
     homePagination: 0,
-    setHomePagination: (newPagintion) => set({ homePagination: newPagintion }),
+    setHomePagination: (newPagination) => set({ homePagination: newPagination }),
 
     profilePagination: 0,
-    setProfilePagination: (newPagintion) => set({ profilePagination: newPagintion }),
+    setProfilePagination: (newPagination) => set({ profilePagination: newPagination }),
 
     myCollectionsPagination: 0,
     setMyCollectionsPagination: (newPagination) => set({ myCollectionsPagination: newPagination }),

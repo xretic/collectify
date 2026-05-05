@@ -1,6 +1,1 @@
-import ky from 'ky';
-
-export const api = ky.create({
-    credentials: 'include',
-    prefixUrl: '/',
-});
+export { api } from '@/shared/api/api';

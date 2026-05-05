@@ -15,7 +15,7 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ status: 400 });
         }
 
-        const data = await req.json();
+        const data = (await req.json()) as { password?: string };
 
         if (!data.password) {
             return NextResponse.json({ status: 400 });
@@ -143,7 +143,7 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ status: 400 });
         }
 
-        const data = await req.json();
+        const data = (await req.json()) as UserUpdateData;
 
         const safeData = filterAllowedFields(data);
 
@@ -151,7 +151,7 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ message: 'No allowed fields to update' }, { status: 400 });
         }
 
-        if (safeData.fullName?.length === 0 || !isUsernameValid(safeData.username)) {
+        if (typeof safeData.username !== 'string' || !isUsernameValid(safeData.username)) {
             return NextResponse.json(
                 { message: 'The username is not set or contains prohibited characters.' },
                 { status: 400 },
@@ -159,7 +159,8 @@ export async function PATCH(req: NextRequest) {
         }
 
         if (
-            safeData.fullName?.length === 0 ||
+            typeof safeData.fullName !== 'string' ||
+            safeData.fullName.length === 0 ||
             !safeData.fullName.trim() ||
             safeData.fullName.length > FULLNAME_MAX_LENGTH
         ) {
@@ -172,7 +173,7 @@ export async function PATCH(req: NextRequest) {
         if (safeData.username) {
             const usernameCheck = await prisma.user.findUnique({
                 where: {
-                    username: safeData?.username,
+                    username: safeData.username,
                 },
             });
 
@@ -222,6 +223,16 @@ const BANNED_FIELDS = new Set([
     'Notification',
 ]);
 
-function filterAllowedFields<T extends Record<string, any>>(data: T) {
-    return Object.fromEntries(Object.entries(data).filter(([key]) => !BANNED_FIELDS.has(key)));
+type UserUpdateData = {
+    fullName?: string;
+    username?: string;
+    description?: string;
+    bannerUrl?: string;
+    avatarUrl?: string;
+};
+
+function filterAllowedFields<T extends object>(data: T): Partial<T> {
+    return Object.fromEntries(
+        Object.entries(data).filter(([key]) => !BANNED_FIELDS.has(key)),
+    ) as Partial<T>;
 }
