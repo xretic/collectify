@@ -29,11 +29,28 @@ model User {
     Comment       Comment[]
     chats         Chat[]
     messages      Message[]
+    Verified      Verified?
+    Moderator     Moderator?
 }
 
 model Admin {
     id         Int      @id @default(autoincrement())
     userId     Int      @unique
+    assignedBy Int      @default(0)
+    createdAt  DateTime @default(now())
+}
+
+model Verified {
+    id        Int      @id @default(autoincrement())
+    userId    Int      @unique
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+}
+
+model Moderator {
+    id         Int      @id @default(autoincrement())
+    userId     Int      @unique
+    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     assignedBy Int      @default(0)
     createdAt  DateTime @default(now())
 }

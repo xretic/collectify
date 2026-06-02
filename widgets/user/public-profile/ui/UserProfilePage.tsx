@@ -27,6 +27,7 @@ import FirstMessageDialog from '@/components/features/chats/FirstMessageDialog';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { userApi } from '@/entities/user/api/userApi';
 import { chatApi } from '@/entities/chat/api/chatApi';
+import UserBadge from '@/components/ui/UserBadge';
 
 export default function ProfilePage() {
     const params = useParams<{ id: string }>();
@@ -220,7 +221,14 @@ export default function ProfilePage() {
                         />
                         <div className={styles.info}>
                             <>
-                                <h1 className={styles['name']}>{pageUser.fullName}</h1>
+                                <h1 className={styles['name']}>
+                                    {pageUser.fullName}
+                                    {pageUser.roles.map((x) => (
+                                        <span style={{ marginLeft: 8 }} key={x}>
+                                            <UserBadge role={x} />
+                                        </span>
+                                    ))}
+                                </h1>
                                 <span onClick={handleCopy} className={styles['username']}>
                                     @{pageUser.username}
                                 </span>

@@ -1,3 +1,5 @@
+import { UserRole } from './UserRole';
+
 export type SessionUserInResponse = {
     id: number;
     avatarUrl: string;
@@ -10,6 +12,7 @@ export type SessionUserInResponse = {
     notifications: number;
     unreadMessages: number;
     protected: boolean;
+    roles: UserRole[];
     admin: boolean;
 };
 
@@ -23,4 +26,5 @@ export type UserInResponse = {
     sessionUserIsFollowed: boolean;
     followers: number;
     subscriptions: number;
+    roles: UserRole[];
 };

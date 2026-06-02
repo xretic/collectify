@@ -1,6 +1,7 @@
 import { User } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse } from '@/types/UserInResponse';
+import { getUserRoles } from './getUserRoles';
 
 export async function getSessionUserResponse(user: User): Promise<SessionUserInResponse> {
     const [followersCount, subscriptionsCount, notificationsCount, unreadMessages] =
@@ -31,6 +32,8 @@ export async function getSessionUserResponse(user: User): Promise<SessionUserInR
         },
     });
 
+    const roles = await getUserRoles(user.id);
+
     const responseUser: SessionUserInResponse = {
         id: user.id,
         avatarUrl: user.avatarUrl,
@@ -44,6 +47,7 @@ export async function getSessionUserResponse(user: User): Promise<SessionUserInR
         unreadMessages: unreadMessages,
         protected: user.passwordHash ? true : false,
         admin: !!admin,
+        roles,
     };
 
     return responseUser;

@@ -33,6 +33,7 @@ import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { userApi } from '@/entities/user/api/userApi';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
+import UserBadge from '@/components/ui/UserBadge';
 
 type Tab = 'authorTab' | 'favoritesTab' | 'privateTab';
 
@@ -322,7 +323,15 @@ export default function ProfilePage() {
                                 </>
                             ) : (
                                 <>
-                                    <h1 className={styles.name}>{user.fullName}</h1>
+                                    <h1 className={styles.name}>
+                                        {user.fullName}
+                                        {user.roles.map((x) => (
+                                            <span style={{ marginLeft: 8 }} key={x}>
+                                                <UserBadge role={x} />
+                                            </span>
+                                        ))}
+                                    </h1>
+
                                     <span onClick={handleCopy} className={styles.username}>
                                         @{user.username}
                                     </span>

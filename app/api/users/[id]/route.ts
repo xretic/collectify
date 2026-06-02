@@ -1,3 +1,4 @@
+import { getUserRoles } from '@/helpers/getUserRoles';
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { prisma } from '@/lib/prisma';
 import { UserInResponse } from '@/types/UserInResponse';
@@ -51,6 +52,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             isFollowed = !!followCheck;
         }
 
+        const roles = await getUserRoles(user.id);
+
         const responseData: UserInResponse = {
             id: user.id,
             avatarUrl: user.avatarUrl,
@@ -61,6 +64,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             followers: followersCount,
             subscriptions: subscriptionsCount,
             sessionUserIsFollowed: isFollowed,
+            roles,
         };
 
         return NextResponse.json(
