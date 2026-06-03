@@ -21,6 +21,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader } from '@/components/ui/Loader';
 import EmailIcon from '@mui/icons-material/Email';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useFirstMessageDialogStore } from '@/features/chat/create/model/firstMessageDialogStore';
@@ -187,6 +188,15 @@ export default function ProfilePage() {
         </React.Fragment>
     );
 
+    const canManagePageUser =
+        !!user &&
+        user.id !== pageUser.id &&
+        (user.roles.includes('Admin')
+            ? !pageUser.roles.includes('Admin')
+            : user.roles.includes('Moderator') &&
+              !pageUser.roles.includes('Admin') &&
+              !pageUser.roles.includes('Moderator'));
+
     if (isFetching) return <Loader />;
 
     return (
@@ -224,6 +234,17 @@ export default function ProfilePage() {
                                 <FlagOutlinedIcon />
                             </IconButton>
                         </Tooltip>
+
+                        {canManagePageUser && (
+                            <Tooltip title="Manage">
+                                <IconButton
+                                    color="inherit"
+                                    onClick={() => router.push(`/management?userId=${pageUser.id}`)}
+                                >
+                                    <AdminPanelSettingsOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                     </div>
 
                     <div className={styles.header}>

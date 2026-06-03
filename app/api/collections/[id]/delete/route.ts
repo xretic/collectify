@@ -1,8 +1,11 @@
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserRoles } from '@/helpers/getUserRoles';
-import { writeModerationAction } from '@/helpers/management';
+import {
+    canModerateTarget,
+    requireManagementAccess,
+    writeModerationAction,
+} from '@/helpers/management';
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -38,27 +41,22 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
 
         if (session.userId !== collection.userId) {
-            const roles = await getUserRoles(session.userId);
-            const isAdmin = roles.includes('Admin');
-            const isModerator = roles.includes('Moderator');
+            const access = await requireManagementAccess(req);
 
-            if (!isAdmin && !isModerator) {
-                return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            if (access.response || !access.context) {
+                return access.response;
             }
 
-            if (collection.userId && isModerator && !isAdmin) {
-                const targetRoles = await getUserRoles(collection.userId);
+            if (collection.userId) {
+                const targetAccess = await canModerateTarget(access.context, collection.userId);
 
-                if (targetRoles.includes('Admin') || targetRoles.includes('Moderator')) {
-                    return NextResponse.json(
-                        { message: 'Moderators cannot delete admin or moderator collections.' },
-                        { status: 403 },
-                    );
+                if (!targetAccess.ok) {
+                    return NextResponse.json({ message: targetAccess.message }, { status: 403 });
                 }
             }
 
             await writeModerationAction({
-                actorId: session.userId,
+                actorId: access.context.session.userId,
                 targetUserId: collection.userId,
                 targetCollectionId: collection.id,
                 action: 'delete-collection',

@@ -49,6 +49,7 @@ export type ManagementReport = {
     targetUserId: number;
     messageId: number | null;
     commentId: number | null;
+    collectionId: number | null;
     reason: string;
     details: string;
     status: ReportStatus;
@@ -74,6 +75,14 @@ export type ManagementReport = {
             id: number;
             name: string;
         };
+    } | null;
+    collection: {
+        id: number;
+        name: string;
+        description: string;
+        category: string;
+        private: boolean;
+        createdAt: string;
     } | null;
 };
 
@@ -129,10 +138,14 @@ type Paginated<T> = {
 };
 
 export const managementApi = {
-    users(query: string, skip = 0) {
+    users(query: string, skip = 0, userId?: number | null) {
         return api
             .get('api/management/users', {
-                searchParams: { query, skip },
+                searchParams: {
+                    query,
+                    skip,
+                    ...(userId ? { userId } : {}),
+                },
             })
             .json<{ data: ManagementUser[]; total: number }>();
     },

@@ -1,5 +1,10 @@
 import ManagementPage from '@/widgets/management/ui/ManagementPage';
+import { Suspense } from 'react';
 
 export default function ManagementRoute() {
-    return <ManagementPage />;
+    return (
+        <Suspense fallback={null}>
+            <ManagementPage />
+        </Suspense>
+    );
 }

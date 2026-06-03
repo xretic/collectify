@@ -25,6 +25,8 @@ type ReportDialogProps = {
     messagePreview?: string;
     commentId?: number;
     commentPreview?: string;
+    collectionId?: number;
+    collectionPreview?: string;
 };
 
 export default function ReportDialog({
@@ -36,6 +38,8 @@ export default function ReportDialog({
     messagePreview,
     commentId,
     commentPreview,
+    collectionId,
+    collectionPreview,
 }: ReportDialogProps) {
     const [reason, setReason] = useState<ReportReason>('spam');
     const [details, setDetails] = useState('');
@@ -58,6 +62,7 @@ export default function ReportDialog({
                 targetUserId,
                 messageId,
                 commentId,
+                collectionId,
                 reason,
                 details,
             });
@@ -74,14 +79,22 @@ export default function ReportDialog({
     return (
         <Dialog className={styles.dialog} open={open} onClose={handleClose}>
             <DialogTitle>
-                {commentId ? 'Report comment' : messageId ? 'Report message' : 'Report user'}
+                {collectionId
+                    ? 'Report collection'
+                    : commentId
+                      ? 'Report comment'
+                      : messageId
+                        ? 'Report message'
+                        : 'Report user'}
             </DialogTitle>
             <DialogContent>
                 <div className={styles.content}>
                     <div className={styles.target}>
                         <div className={styles.targetTitle}>@{targetUsername}</div>
-                        {(messagePreview || commentPreview) && (
-                            <div className={styles.quote}>{messagePreview || commentPreview}</div>
+                        {(messagePreview || commentPreview || collectionPreview) && (
+                            <div className={styles.quote}>
+                                {messagePreview || commentPreview || collectionPreview}
+                            </div>
                         )}
                     </div>
 

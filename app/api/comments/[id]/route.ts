@@ -2,8 +2,12 @@ import { isProperInteger } from '@/helpers/isProperInteger';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { COMMENT_MAX_LENGTH } from '@/lib/constans';
-import { getUserRoles } from '@/helpers/getUserRoles';
-import { getScopedSanctionResponse, writeModerationAction } from '@/helpers/management';
+import {
+    canModerateTarget,
+    getScopedSanctionResponse,
+    requireManagementAccess,
+    writeModerationAction,
+} from '@/helpers/management';
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -39,27 +43,20 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
 
         if (session.userId !== comment.userId) {
-            const roles = await getUserRoles(session.userId);
-            const isAdmin = roles.includes('Admin');
-            const isModerator = roles.includes('Moderator');
+            const access = await requireManagementAccess(req);
 
-            if (!isAdmin && !isModerator) {
-                return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
+            if (access.response || !access.context) {
+                return access.response;
             }
 
-            if (isModerator && !isAdmin) {
-                const targetRoles = await getUserRoles(comment.userId);
+            const targetAccess = await canModerateTarget(access.context, comment.userId);
 
-                if (targetRoles.includes('Admin') || targetRoles.includes('Moderator')) {
-                    return NextResponse.json(
-                        { message: 'Moderators cannot delete admin or moderator comments.' },
-                        { status: 403 },
-                    );
-                }
+            if (!targetAccess.ok) {
+                return NextResponse.json({ message: targetAccess.message }, { status: 403 });
             }
 
             await writeModerationAction({
-                actorId: session.userId,
+                actorId: access.context.session.userId,
                 targetUserId: comment.userId,
                 targetCommentId: comment.id,
                 action: 'delete-comment',

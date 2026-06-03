@@ -45,7 +45,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             select: {
                 id: true,
                 targetUserId: true,
+                messageId: true,
                 commentId: true,
+                collectionId: true,
                 status: true,
                 reason: true,
             },
@@ -96,7 +98,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                 );
             }
 
-            await prisma.$transaction([
+            const guiltyActions = [
                 prisma.accountSanction.updateMany({
                     where: {
                         userId: report.targetUserId,
@@ -127,7 +129,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                         resolution: body.resolution?.trim() ?? '',
                     },
                 }),
-            ]);
+            ];
+
+            if (report.commentId) {
+                guiltyActions.push(
+                    prisma.comment.deleteMany({
+                        where: { id: report.commentId },
+                    }),
+                );
+            }
+
+            if (report.messageId) {
+                guiltyActions.push(
+                    prisma.message.deleteMany({
+                        where: { id: report.messageId },
+                    }),
+                );
+            }
+
+            await prisma.$transaction(guiltyActions);
 
             if (punishment.scope === 'ACCOUNT') {
                 await prisma.session.deleteMany({ where: { userId: report.targetUserId } });
@@ -148,11 +168,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         await writeModerationAction({
             actorId: access.context.session.userId,
             targetUserId: report.targetUserId,
-            targetCommentId: report.commentId,
+            targetCommentId:
+                body.verdict === 'GUILTY' && report.commentId ? null : report.commentId,
+            targetCollectionId: report.collectionId,
             action: `report:${body.verdict}`,
             reason: body.resolution,
             metadata: {
                 reportId: report.id,
+                reportedCommentId: report.commentId,
+                reportedMessageId: report.messageId,
                 punishmentScope: body.verdict === 'GUILTY' ? (punishment?.scope ?? null) : null,
                 punishmentExpiresAt:
                     body.verdict === 'GUILTY' ? (expiresAt?.toISOString() ?? null) : null,

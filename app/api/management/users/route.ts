@@ -14,12 +14,18 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const query = searchParams.get('query')?.trim() ?? '';
         const skip = Number(searchParams.get('skip') ?? 0);
+        const userIdParam = searchParams.get('userId');
+        const userId = userIdParam ? Number(userIdParam) : null;
 
         if (!Number.isInteger(skip) || skip < 0) {
             return NextResponse.json(
                 { message: 'skip must be a non-negative integer.' },
                 { status: 400 },
             );
+        }
+
+        if (userId !== null && (!Number.isInteger(userId) || userId <= 0)) {
+            return NextResponse.json({ message: 'Invalid user id.' }, { status: 400 });
         }
 
         const searchWhere: Prisma.UserWhereInput = query
@@ -48,7 +54,7 @@ export async function GET(req: NextRequest) {
         }
 
         const where: Prisma.UserWhereInput = {
-            AND: [searchWhere, { id: { notIn: Array.from(hiddenIds) } }],
+            AND: [userId ? { id: userId } : searchWhere, { id: { notIn: Array.from(hiddenIds) } }],
         };
 
         const [users, total] = await prisma.$transaction([

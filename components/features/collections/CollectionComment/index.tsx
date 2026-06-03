@@ -49,6 +49,13 @@ export function CollectionComment({ collectionId, comment }: Props) {
 
     const { user, loading } = useUser();
     const router = useRouter();
+    const isCommentOwner = user?.id === comment.userId;
+    const canModerateComments = !!user?.roles.some(
+        (role) => role === 'Admin' || role === 'Moderator',
+    );
+    const canEditComment = !!isCommentOwner;
+    const canDeleteComment =
+        !!isCommentOwner || (!!user && canModerateComments && user.id !== comment.userId);
     const commentsRestriction = user?.restrictions.comments;
     const commentsMuted = !!commentsRestriction?.muted;
     const editPlaceholder = getMutePlaceholder(
@@ -151,7 +158,7 @@ export function CollectionComment({ collectionId, comment }: Props) {
                             </Tooltip>
                         )}
 
-                        {user?.id === comment.userId && (
+                        {(canEditComment || canDeleteComment) && (
                             <button
                                 onClick={(event) => {
                                     setCommentAnchorEl(
@@ -171,10 +178,12 @@ export function CollectionComment({ collectionId, comment }: Props) {
                         )}
                     </div>
 
-                    {user?.id === comment.userId && (
-                        <>
-                            <CommentHoverMenu collectionId={collectionId} />
-                        </>
+                    {(canEditComment || canDeleteComment) && (
+                        <CommentHoverMenu
+                            collectionId={collectionId}
+                            canEdit={canEditComment}
+                            canDelete={canDeleteComment}
+                        />
                     )}
                 </header>
 

@@ -15,9 +15,11 @@ import { CollectionPropsAdditional } from '@/entities/collection/model/types';
 
 type Props = {
     collectionId: string | number;
+    canEdit: boolean;
+    canDelete: boolean;
 };
 
-export default function CommentHoverMenu({ collectionId }: Props) {
+export default function CommentHoverMenu({ collectionId, canEdit, canDelete }: Props) {
     const queryClient = useQueryClient();
 
     const { commentAnchorEl, setCommentAnchorEl, startLoading, stopLoading, commentId } =
@@ -90,26 +92,30 @@ export default function CommentHoverMenu({ collectionId }: Props) {
                 },
             }}
         >
-            <MenuItem sx={{ color: 'var(--text-color)' }} onClick={handleEdit}>
-                <ListItemIcon sx={{ color: 'var(--text-color)' }}>
-                    <EditOutlinedIcon fontSize="small" />
-                </ListItemIcon>
-                Edit
-            </MenuItem>
-            <MenuItem
-                onClick={handleDelete}
-                sx={{
-                    color: 'error.main',
-                    '&:hover': {
-                        backgroundColor: 'light',
-                    },
-                }}
-            >
-                <ListItemIcon sx={{ color: 'error.main' }}>
-                    <DeleteOutlineOutlinedIcon fontSize="small" />
-                </ListItemIcon>
-                Delete
-            </MenuItem>
+            {canEdit && (
+                <MenuItem sx={{ color: 'var(--text-color)' }} onClick={handleEdit}>
+                    <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                        <EditOutlinedIcon fontSize="small" />
+                    </ListItemIcon>
+                    Edit
+                </MenuItem>
+            )}
+            {canDelete && (
+                <MenuItem
+                    onClick={handleDelete}
+                    sx={{
+                        color: 'error.main',
+                        '&:hover': {
+                            backgroundColor: 'light',
+                        },
+                    }}
+                >
+                    <ListItemIcon sx={{ color: 'error.main' }}>
+                        <DeleteOutlineOutlinedIcon fontSize="small" />
+                    </ListItemIcon>
+                    Delete
+                </MenuItem>
+            )}
         </Menu>
     );
 }

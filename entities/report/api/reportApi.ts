@@ -7,6 +7,7 @@ export const reportApi = {
         targetUserId?: number;
         messageId?: number;
         commentId?: number;
+        collectionId?: number;
         reason: ReportReason;
         details: string;
     }) {

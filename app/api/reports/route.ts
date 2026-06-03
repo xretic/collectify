@@ -9,6 +9,7 @@ type Body = {
     targetUserId?: number;
     messageId?: number;
     commentId?: number;
+    collectionId?: number;
     reason?: string;
     details?: string;
 };
@@ -36,10 +37,12 @@ export async function POST(req: NextRequest) {
         let targetUserId = Number(body.targetUserId);
         const messageId = body.messageId ? Number(body.messageId) : null;
         const commentId = body.commentId ? Number(body.commentId) : null;
+        const collectionId = body.collectionId ? Number(body.collectionId) : null;
+        const targetedContentCount = [messageId, commentId, collectionId].filter(Boolean).length;
 
-        if (messageId && commentId) {
+        if (targetedContentCount > 1) {
             return NextResponse.json(
-                { message: 'Report can target either a message or a comment.' },
+                { message: 'Report can target one content item at a time.' },
                 { status: 400 },
             );
         }
@@ -104,6 +107,37 @@ export async function POST(req: NextRequest) {
             targetUserId = comment.userId;
         }
 
+        if (collectionId) {
+            const collection = await prisma.collection.findUnique({
+                where: { id: collectionId },
+                select: {
+                    id: true,
+                    userId: true,
+                    private: true,
+                },
+            });
+
+            if (!collection) {
+                return NextResponse.json({ message: 'Collection not found.' }, { status: 404 });
+            }
+
+            const canSeeCollection =
+                !collection.private || collection.userId === access.session.userId;
+
+            if (!canSeeCollection) {
+                return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
+            }
+
+            if (!collection.userId) {
+                return NextResponse.json(
+                    { message: 'Collection owner does not exist.' },
+                    { status: 404 },
+                );
+            }
+
+            targetUserId = collection.userId;
+        }
+
         if (!Number.isInteger(targetUserId) || targetUserId <= 0) {
             return NextResponse.json(
                 { message: 'Valid target user is required.' },
@@ -130,6 +164,7 @@ export async function POST(req: NextRequest) {
                 targetUserId,
                 messageId,
                 commentId,
+                collectionId,
                 reason,
                 details,
             },

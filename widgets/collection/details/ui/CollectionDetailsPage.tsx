@@ -53,11 +53,13 @@ import { CollectionComment } from '@/components/features/collections/CollectionC
 import CloseIcon from '@mui/icons-material/Close';
 import CollectionPageSkeleton from '@/components/skeletons/CollectionPageSkeleton';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
+import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
 import CollectionStatsDialog from '@/components/features/collections/CollectionStatsDialog';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { CollectionActionType, CollectionItem } from '@/entities/collection/model/types';
 import { getMutePlaceholder } from '@/lib/restrictions';
+import ReportDialog from '@/components/features/reports/ReportDialog';
 
 type OrderPayloadItem = { id: number; order: number };
 
@@ -105,6 +107,7 @@ export function CollectionDetailsPage() {
     const { startLoading, stopLoading, loadingCount } = useUIStore();
 
     const [openStats, setOpenStats] = useState(false);
+    const [reportOpen, setReportOpen] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [commentText, setCommentText] = useState('');
     const commentsRestriction = user?.restrictions.comments;
@@ -238,6 +241,10 @@ export function CollectionDetailsPage() {
     });
 
     const isOwner = !!(user && collection && user.id === collection.authorId);
+    const canModerateCollection = !!user?.roles.some(
+        (role) => role === 'Admin' || role === 'Moderator',
+    );
+    const canDeleteCollection = isOwner || (!!user && canModerateCollection && !isOwner);
     const liked = !!collection?.liked;
     const favorited = !!collection?.favorited;
 
@@ -405,35 +412,52 @@ export function CollectionDetailsPage() {
             <div className={styles['description-container']}>
                 <h1 className={styles['header']}>
                     <span>Description</span>
-                    {user?.id === collection.authorId && (
-                        <div>
-                            <Tooltip title="Delete collection">
-                                <IconButton onClick={() => setOpenDialog(true)} color="error">
-                                    <DeleteOutlineOutlinedIcon />
-                                </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title="Edit collection">
-                                <IconButton
-                                    onClick={() => setOpenEditing(true)}
-                                    sx={{ color: 'var(--text-color)' }}
+                    <div>
+                        {canDeleteCollection ? (
+                            <>
+                                <Tooltip
+                                    title={isOwner ? 'Delete collection' : 'Delete as moderator'}
                                 >
-                                    <EditOutlinedIcon />
-                                </IconButton>
-                            </Tooltip>
-
-                            {!collection.isPrivate && (
-                                <Tooltip title="Collection statistics ">
-                                    <IconButton
-                                        onClick={() => setOpenStats(true)}
-                                        sx={{ color: 'var(--text-color)' }}
-                                    >
-                                        <InsertChartOutlinedIcon />
+                                    <IconButton onClick={() => setOpenDialog(true)} color="error">
+                                        <DeleteOutlineOutlinedIcon />
                                     </IconButton>
                                 </Tooltip>
-                            )}
-                        </div>
-                    )}
+
+                                {isOwner && (
+                                    <Tooltip title="Edit collection">
+                                        <IconButton
+                                            onClick={() => setOpenEditing(true)}
+                                            sx={{ color: 'var(--text-color)' }}
+                                        >
+                                            <EditOutlinedIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+
+                                {isOwner && !collection.isPrivate && (
+                                    <Tooltip title="Collection statistics ">
+                                        <IconButton
+                                            onClick={() => setOpenStats(true)}
+                                            sx={{ color: 'var(--text-color)' }}
+                                        >
+                                            <InsertChartOutlinedIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                            </>
+                        ) : (
+                            user && (
+                                <Tooltip title="Report collection">
+                                    <IconButton
+                                        onClick={() => setReportOpen(true)}
+                                        sx={{ color: 'var(--soft-text)' }}
+                                    >
+                                        <ReportGmailerrorredOutlinedIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )
+                        )}
+                    </div>
                 </h1>
 
                 <span className={styles['description']}>{collection.description}</span>
@@ -592,6 +616,17 @@ export function CollectionDetailsPage() {
                     id={id}
                     open={openStats}
                     onClose={() => setOpenStats(false)}
+                />
+            )}
+
+            {user && collection.authorId !== user.id && (
+                <ReportDialog
+                    open={reportOpen}
+                    onClose={() => setReportOpen(false)}
+                    targetUserId={collection.authorId}
+                    targetUsername={collection.author}
+                    collectionId={collection.id}
+                    collectionPreview={collection.name}
                 />
             )}
         </>
