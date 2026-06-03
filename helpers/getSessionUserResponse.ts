@@ -1,9 +1,13 @@
 import { User } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse } from '@/types/UserInResponse';
+import { getActiveSanction } from './management';
 import { getUserRoles } from './getUserRoles';
 
-export async function getSessionUserResponse(user: User): Promise<SessionUserInResponse> {
+export async function getSessionUserResponse(
+    user: User,
+    session?: { impersonatorUserId?: number | null },
+): Promise<SessionUserInResponse> {
     const [followersCount, subscriptionsCount, notificationsCount, unreadMessages] =
         await prisma.$transaction([
             prisma.follow.count({
@@ -32,7 +36,11 @@ export async function getSessionUserResponse(user: User): Promise<SessionUserInR
         },
     });
 
-    const roles = await getUserRoles(user.id);
+    const [roles, commentsMute, messengerMute] = await Promise.all([
+        getUserRoles(user.id),
+        getActiveSanction(user.id, 'COMMENTS'),
+        getActiveSanction(user.id, 'MESSENGER'),
+    ]);
 
     const responseUser: SessionUserInResponse = {
         id: user.id,
@@ -48,6 +56,17 @@ export async function getSessionUserResponse(user: User): Promise<SessionUserInR
         protected: user.passwordHash ? true : false,
         admin: !!admin,
         roles,
+        impersonatorUserId: session?.impersonatorUserId ?? null,
+        restrictions: {
+            comments: {
+                muted: !!commentsMute,
+                expiresAt: commentsMute?.expiresAt?.toISOString() ?? null,
+            },
+            messenger: {
+                muted: !!messengerMute,
+                expiresAt: messengerMute?.expiresAt?.toISOString() ?? null,
+            },
+        },
     };
 
     return responseUser;

@@ -7,7 +7,7 @@ export type UserSearchItem = {
     avatarUrl: string;
 };
 
-export type UpdateUserProfilePayload = {
+type UpdateUserProfilePayload = {
     fullName: string;
     username: string;
     description: string;
@@ -15,7 +15,7 @@ export type UpdateUserProfilePayload = {
     avatarUrl?: string;
 };
 
-export type UpdatePasswordPayload = {
+type UpdatePasswordPayload = {
     currentPassword: string;
     newPassword: string;
     confirmPassword: string;

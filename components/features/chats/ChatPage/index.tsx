@@ -15,6 +15,7 @@ import { ConfigProvider } from 'antd';
 import { useSocket } from '@/context/SocketProvider';
 import { chatApi } from '@/entities/chat/api/chatApi';
 import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
+import { getMutePlaceholder } from '@/lib/restrictions';
 
 interface ChatPageProps {
     chatId: number | null;
@@ -37,6 +38,13 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
     const router = useRouter();
     const messagesRef = useRef<HTMLDivElement>(null);
+    const messengerRestriction = user?.restrictions.messenger;
+    const messengerMuted = !!messengerRestriction?.muted;
+    const messagePlaceholder = getMutePlaceholder(
+        messengerRestriction,
+        'messenger',
+        'Write your message',
+    );
 
     const fetchingRef = useRef(false);
     const isFirstLoadRef = useRef(true);
@@ -103,6 +111,7 @@ export default function ChatPage({ chatId }: ChatPageProps) {
     };
 
     const handleSendMessage = async (): Promise<void> => {
+        if (messengerMuted) return;
         if (!chatId || !messageText.trim()) return;
         if (!messageText.trim()) return;
 
@@ -306,10 +315,10 @@ export default function ChatPage({ chatId }: ChatPageProps) {
                         <footer className={styles.composer}>
                             <div className={styles.composerInputWrap}>
                                 <TextArea
-                                    value={messageText}
+                                    value={messengerMuted ? '' : messageText}
                                     maxLength={DIRECT_MESSAGE_MAX_LENGTH}
-                                    placeholder="Write your message"
-                                    disabled={loadingCount > 0}
+                                    placeholder={messagePlaceholder}
+                                    disabled={loadingCount > 0 || messengerMuted}
                                     onChange={(e) => setMessageText(e.target.value)}
                                     style={{
                                         ...inputStyle,
@@ -325,7 +334,9 @@ export default function ChatPage({ chatId }: ChatPageProps) {
 
                                 <IconButton
                                     onClick={handleSendMessage}
-                                    disabled={loadingCount > 0 || !messageText.trim()}
+                                    disabled={
+                                        loadingCount > 0 || messengerMuted || !messageText.trim()
+                                    }
                                     color="inherit"
                                 >
                                     <SendIcon />

@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
 import { publishChatMessage } from '@/server/socketBus';
+import { getScopedSanctionResponse } from '@/helpers/management';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -136,6 +137,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         if (!session) {
             return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
+        const muteResponse = await getScopedSanctionResponse(session.userId, 'MESSENGER');
+
+        if (muteResponse) {
+            return muteResponse;
         }
 
         const chat = await prisma.chat.findUnique({

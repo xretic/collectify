@@ -32,7 +32,6 @@
         "antd": "^6.2.0",
         "bcrypt": "^6.0.0",
         "class-variance-authority": "^0.7.1",
-        "clsx": "^2.1.1",
         "crypto": "^1.0.1",
         "dotenv": "^17.2.3",
         "ioredis": "^5.9.2",
@@ -49,7 +48,6 @@
         "redis": "^5.10.0",
         "socket.io": "^4.8.3",
         "socket.io-client": "^4.8.3",
-        "tailwind-merge": "^3.4.0",
         "zustand": "^5.0.10"
     },
     "devDependencies": {

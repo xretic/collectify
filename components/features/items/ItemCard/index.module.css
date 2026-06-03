@@ -26,10 +26,6 @@
     border-color: var(--accent);
 }
 
-.card:hover .image {
-    transform: scale(1.06);
-}
-
 .body {
     padding: 16px;
     position: relative;

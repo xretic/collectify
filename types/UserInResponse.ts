@@ -1,5 +1,10 @@
 import { UserRole } from './UserRole';
 
+export type UserRestrictionInResponse = {
+    muted: boolean;
+    expiresAt: string | null;
+};
+
 export type SessionUserInResponse = {
     id: number;
     avatarUrl: string;
@@ -14,6 +19,11 @@ export type SessionUserInResponse = {
     protected: boolean;
     roles: UserRole[];
     admin: boolean;
+    impersonatorUserId: number | null;
+    restrictions: {
+        comments: UserRestrictionInResponse;
+        messenger: UserRestrictionInResponse;
+    };
 };
 
 export type UserInResponse = {

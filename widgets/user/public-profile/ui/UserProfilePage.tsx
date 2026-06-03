@@ -20,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useQuery } from '@tanstack/react-query';
 import { Loader } from '@/components/ui/Loader';
 import EmailIcon from '@mui/icons-material/Email';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useFirstMessageDialogStore } from '@/features/chat/create/model/firstMessageDialogStore';
@@ -28,6 +29,7 @@ import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { userApi } from '@/entities/user/api/userApi';
 import { chatApi } from '@/entities/chat/api/chatApi';
 import UserBadge from '@/components/ui/UserBadge';
+import ReportDialog from '@/components/features/reports/ReportDialog';
 
 export default function ProfilePage() {
     const params = useParams<{ id: string }>();
@@ -39,6 +41,7 @@ export default function ProfilePage() {
     const [followed, setFollowed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [emptyPage, setEmptyPage] = useState(true);
+    const [reportOpen, setReportOpen] = useState(false);
 
     const { startLoading, stopLoading, sortedBy } = useUIStore();
     const { setOpen } = useFirstMessageDialogStore();
@@ -211,6 +214,16 @@ export default function ProfilePage() {
                                 <EmailIcon />
                             </IconButton>
                         </Tooltip>
+
+                        <Tooltip title="Report">
+                            <IconButton
+                                color="inherit"
+                                disabled={!user}
+                                onClick={() => setReportOpen(true)}
+                            >
+                                <FlagOutlinedIcon />
+                            </IconButton>
+                        </Tooltip>
                     </div>
 
                     <div className={styles.header}>
@@ -284,6 +297,12 @@ export default function ProfilePage() {
             </header>
 
             <FirstMessageDialog user={pageUser} />
+            <ReportDialog
+                open={reportOpen}
+                onClose={() => setReportOpen(false)}
+                targetUserId={pageUser.id}
+                targetUsername={pageUser.username}
+            />
         </>
     );
 }

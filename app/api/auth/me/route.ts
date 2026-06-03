@@ -22,7 +22,10 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
         }
 
-        const userInResponse: SessionUserInResponse = await getSessionUserResponse(session.user);
+        const userInResponse: SessionUserInResponse = await getSessionUserResponse(
+            session.user,
+            session,
+        );
 
         return NextResponse.json({ user: userInResponse }, { status: 200 });
     } catch (e) {

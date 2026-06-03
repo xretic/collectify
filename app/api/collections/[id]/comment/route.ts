@@ -4,6 +4,7 @@ import { isProperInteger } from '@/helpers/isProperInteger';
 import { COMMENT_MAX_LENGTH, COMMENTS_LIMIT } from '@/lib/constans';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { getScopedSanctionResponse } from '@/helpers/management';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -22,6 +23,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         if (!session) {
             return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+        }
+
+        const muteResponse = await getScopedSanctionResponse(session.userId, 'COMMENTS');
+
+        if (muteResponse) {
+            return muteResponse;
         }
 
         const { id } = await params;

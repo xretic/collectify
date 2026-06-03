@@ -47,6 +47,13 @@
     margin-bottom: 6px;
 }
 
+.headerActions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+
 .meta {
     display: flex;
     align-items: center;
@@ -101,6 +108,24 @@
 .moreBtn:hover {
     background: rgba(255, 255, 255, 0.06);
     color: var(--text-color);
+}
+
+.reportBtn {
+    color: var(--soft-text) !important;
+    opacity: 0;
+    transition:
+        opacity 120ms ease,
+        color 120ms ease,
+        background-color 120ms ease;
+}
+
+.comment:hover .reportBtn {
+    opacity: 1;
+}
+
+.reportBtn:hover {
+    color: var(--accent) !important;
+    background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
 }
 
 .text {

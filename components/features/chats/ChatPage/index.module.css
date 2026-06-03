@@ -38,14 +38,6 @@
     padding: 14px 20px;
 }
 
-.composerDisabled {
-    border: 1px dashed var(--border-color);
-    border-radius: 14px;
-    padding: 12px 14px;
-    color: var(--soft-text);
-    font-size: 13px;
-}
-
 .content {
     display: flex;
     flex-direction: column;
@@ -88,22 +80,6 @@
     color: var(--soft-text);
     font-size: 13px;
     margin-top: 2px;
-}
-
-.emptyState {
-    padding: 18px 10px;
-    text-align: center;
-    color: var(--soft-text);
-}
-
-.emptyTitle {
-    font-weight: 700;
-    color: var(--text-color);
-    margin-bottom: 6px;
-}
-
-.emptyText {
-    font-size: 13px;
 }
 
 .box {

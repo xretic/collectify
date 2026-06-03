@@ -7,7 +7,7 @@ const {
     NEXT_PUBLIC_PUSHER_CLUSTER: cluster,
 } = process.env;
 
-export const pusherEnabled = Boolean(appId && key && secret && cluster);
+const pusherEnabled = Boolean(appId && key && secret && cluster);
 
 export const pusher = pusherEnabled
     ? new Pusher({

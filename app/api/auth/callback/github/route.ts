@@ -6,6 +6,7 @@ import { SESSION_AGE_IN_DAYS, USERNAME_MAX_LENGTH } from '@/lib/constans';
 import { isUsernameValid } from '@/helpers/isUsernameValid';
 import { Prisma } from '@/generated/prisma/client';
 import ky from 'ky';
+import { getActiveSanction } from '@/helpers/management';
 
 interface GithubUser {
     id: number;
@@ -125,6 +126,12 @@ export async function GET(req: Request) {
                 where: { id: user.id },
                 data: { githubId, avatarUrl: githubUser.avatar_url || user.avatarUrl },
             });
+        }
+
+        const accountBan = await getActiveSanction(user.id, 'ACCOUNT');
+
+        if (accountBan) {
+            return NextResponse.redirect(new URL('/?error=account-banned', req.url));
         }
 
         const session = await prisma.session.create({

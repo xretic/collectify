@@ -2,6 +2,8 @@ import { isProperInteger } from '@/helpers/isProperInteger';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { COMMENT_MAX_LENGTH } from '@/lib/constans';
+import { getUserRoles } from '@/helpers/getUserRoles';
+import { getScopedSanctionResponse, writeModerationAction } from '@/helpers/management';
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -37,7 +39,31 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
 
         if (session.userId !== comment.userId) {
-            return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
+            const roles = await getUserRoles(session.userId);
+            const isAdmin = roles.includes('Admin');
+            const isModerator = roles.includes('Moderator');
+
+            if (!isAdmin && !isModerator) {
+                return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
+            }
+
+            if (isModerator && !isAdmin) {
+                const targetRoles = await getUserRoles(comment.userId);
+
+                if (targetRoles.includes('Admin') || targetRoles.includes('Moderator')) {
+                    return NextResponse.json(
+                        { message: 'Moderators cannot delete admin or moderator comments.' },
+                        { status: 403 },
+                    );
+                }
+            }
+
+            await writeModerationAction({
+                actorId: session.userId,
+                targetUserId: comment.userId,
+                targetCommentId: comment.id,
+                action: 'delete-comment',
+            });
         }
 
         await prisma.comment.delete({
@@ -81,6 +107,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         if (!session) {
             return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
         }
+
+        const sanctionResponse = await getScopedSanctionResponse(session.userId, 'COMMENTS');
+        if (sanctionResponse) return sanctionResponse;
 
         const { id } = await params;
         const intId = Number(id);

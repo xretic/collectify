@@ -162,7 +162,7 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
             ) : (
                 <aside className={styles.sidebar}>
                     <div className={styles.sidebarHeader}>
-                        <span className={styles.sidebarTitle}>Chats</span>
+                        <span className={styles.backButton}>Chats</span>
 
                         <Box className={styles.sidebarActions}>
                             <IconButton
@@ -183,22 +183,22 @@ export default function ChatsPage({ chatId }: ChatPageProps) {
                                 <KeyboardArrowRightIcon sx={{ color: '#afafaf' }} />
                             </IconButton>
                         </Box>
-                    </div>
+                        </div>
 
-                    <div className={styles.chatList}>
-                        {chats.length === 0 ? (
-                            isFetching ? (
-                                <ChatListSkeleton />
+                        <div className={styles.chatList}>
+                            {chats.length === 0 ? (
+                                isFetching ? (
+                                    <ChatListSkeleton />
+                                ) : (
+                                    <p className={styles.emptyTitle}>No chats yet</p>
+                                )
                             ) : (
-                                <p className={styles.emptyTitle}>No chats yet</p>
-                            )
-                        ) : (
-                            chats.map((c) => {
-                                const isActive = c.id === activeChatId;
+                                chats.map((c) => {
+                                    const isActive = c.id === activeChatId;
 
-                                return (
-                                    <button
-                                        key={c.id}
+                                    return (
+                                        <button
+                                            key={c.id}
                                         type="button"
                                         className={`${styles.chatItem} ${
                                             isActive ? styles.chatItemActive : ''

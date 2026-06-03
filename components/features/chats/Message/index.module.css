@@ -1,6 +1,19 @@
 .box {
     display: flex;
     gap: 10px;
+    align-items: flex-start;
+    position: relative;
+    border-radius: 14px;
+    padding: 4px 8px 4px 0;
+}
+
+.box:hover .reportButton {
+    opacity: 1;
+}
+
+.body {
+    flex: 1;
+    min-width: 0;
 }
 
 .username {
@@ -27,4 +40,21 @@
 
 .content {
     color: var(--text-color);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.reportButton {
+    margin-left: auto !important;
+    color: var(--soft-text) !important;
+    opacity: 0;
+    transition:
+        opacity 0.18s ease,
+        color 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.reportButton:hover {
+    color: var(--accent) !important;
+    background-color: color-mix(in srgb, var(--accent) 10%, transparent) !important;
 }

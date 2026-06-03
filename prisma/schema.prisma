@@ -8,29 +8,37 @@ datasource db {
 }
 
 model User {
-    id            Int            @id
-    email         String         @unique
-    passwordHash  String?
-    avatarUrl     String         @default("")
-    bannerUrl     String         @default("")
-    username      String         @unique
-    fullName      String
-    description   String         @default("")
-    githubId      String?        @unique
-    googleId      String?        @unique
-    createdAt     DateTime       @default(now())
-    collections   Collection[]
-    subscriptions Follow[]       @relation("Subscriptions")
-    followers     Follow[]       @relation("Followers")
-    notifications Notification[] @relation("ReceivedNotifications")
-    Notification  Notification[]
-    sessions      Session[]
-    favorites     Collection[]   @relation("FavoriteCollections")
-    Comment       Comment[]
-    chats         Chat[]
-    messages      Message[]
-    Verified      Verified?
-    Moderator     Moderator?
+    id                   Int                @id
+    email                String             @unique
+    passwordHash         String?
+    avatarUrl            String             @default("")
+    bannerUrl            String             @default("")
+    username             String             @unique
+    fullName             String
+    description          String             @default("")
+    githubId             String?            @unique
+    googleId             String?            @unique
+    createdAt            DateTime           @default(now())
+    collections          Collection[]
+    subscriptions        Follow[]           @relation("Subscriptions")
+    followers            Follow[]           @relation("Followers")
+    notifications        Notification[]     @relation("ReceivedNotifications")
+    Notification         Notification[]
+    sessions             Session[]
+    favorites            Collection[]       @relation("FavoriteCollections")
+    Comment              Comment[]
+    chats                Chat[]
+    messages             Message[]
+    Verified             Verified?
+    Moderator            Moderator?
+    sanctions            AccountSanction[]  @relation("UserSanctions")
+    issuedSanctions      AccountSanction[]  @relation("IssuedSanctions")
+    moderationActions    ModerationAction[] @relation("ModerationActionsActor")
+    moderationTargets    ModerationAction[] @relation("ModerationActionsTargetUser")
+    reportsMade          Report[]           @relation("ReportsMade")
+    reportsReceived      Report[]           @relation("ReportsReceived")
+    reportsReviewed      Report[]           @relation("ReportsReviewed")
+    impersonatedSessions Session[]          @relation("ImpersonatedSessions")
 }
 
 model Admin {
@@ -71,8 +79,9 @@ model Message {
     read            Boolean  @default(false)
     createdAt       DateTime @default(now())
 
-    chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    chat    Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    reports Report[]
 
     @@index([chatId, createdAt])
     @@index([userId, createdAt])
@@ -91,6 +100,70 @@ model Notification {
     senderUser      User?            @relation(fields: [senderUserId], references: [id], onDelete: Cascade)
 }
 
+model AccountSanction {
+    id          Int           @id @default(autoincrement())
+    userId      Int
+    moderatorId Int?
+    scope       SanctionScope
+    reason      String        @default("")
+    expiresAt   DateTime?
+    revokedAt   DateTime?
+    createdAt   DateTime      @default(now())
+
+    user      User  @relation("UserSanctions", fields: [userId], references: [id], onDelete: Cascade)
+    moderator User? @relation("IssuedSanctions", fields: [moderatorId], references: [id], onDelete: SetNull)
+
+    @@index([userId, scope])
+    @@index([revokedAt, expiresAt])
+}
+
+model ModerationAction {
+    id                 Int      @id @default(autoincrement())
+    actorId            Int?
+    targetUserId       Int?
+    targetCollectionId Int?
+    targetCommentId    Int?
+    action             String
+    reason             String   @default("")
+    metadata           Json?
+    createdAt          DateTime @default(now())
+
+    actor            User?       @relation("ModerationActionsActor", fields: [actorId], references: [id], onDelete: SetNull)
+    targetUser       User?       @relation("ModerationActionsTargetUser", fields: [targetUserId], references: [id], onDelete: SetNull)
+    targetCollection Collection? @relation(fields: [targetCollectionId], references: [id], onDelete: SetNull)
+    targetComment    Comment?    @relation(fields: [targetCommentId], references: [id], onDelete: SetNull)
+
+    @@index([actorId, createdAt])
+    @@index([targetUserId, createdAt])
+}
+
+model Report {
+    id           Int           @id @default(autoincrement())
+    reporterId   Int
+    targetUserId Int
+    messageId    Int?
+    commentId    Int?
+    reason       String
+    details      String        @default("")
+    status       ReportStatus  @default(OPEN)
+    verdict      ReportVerdict @default(PENDING)
+    reviewedById Int?
+    reviewedAt   DateTime?
+    resolution   String        @default("")
+    createdAt    DateTime      @default(now())
+
+    reporter   User     @relation("ReportsMade", fields: [reporterId], references: [id], onDelete: Cascade)
+    targetUser User     @relation("ReportsReceived", fields: [targetUserId], references: [id], onDelete: Cascade)
+    reviewedBy User?    @relation("ReportsReviewed", fields: [reviewedById], references: [id], onDelete: SetNull)
+    message    Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+    comment    Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
+
+    @@index([status, createdAt])
+    @@index([targetUserId, createdAt])
+    @@index([messageId])
+    @@index([commentId])
+}
+
 model Follow {
     followerId  Int
     followingId Int
@@ -101,40 +174,46 @@ model Follow {
 }
 
 model Session {
-    id        String   @id
-    userId    Int
-    expiresAt DateTime
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id                 String   @id
+    userId             Int
+    impersonatorUserId Int?
+    expiresAt          DateTime
+    user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    impersonator       User?    @relation("ImpersonatedSessions", fields: [impersonatorUserId], references: [id], onDelete: SetNull)
 
     @@index([userId])
+    @@index([impersonatorUserId])
 }
 
 model Collection {
-    id              Int            @id @default(autoincrement())
-    name            String
-    lowerCaseName   String
-    description     String         @default("")
-    bannerUrl       String
-    category        String
-    userId          Int?
-    createdAt       DateTime       @default(now())
-    User            User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    items           Item[]
-    likes           Like[]
-    comments        Comment[]
-    addedToFavorite User[]         @relation("FavoriteCollections")
-    private         Boolean        @default(false)
-    Notification    Notification[]
+    id               Int                @id @default(autoincrement())
+    name             String
+    lowerCaseName    String
+    description      String             @default("")
+    bannerUrl        String
+    category         String
+    userId           Int?
+    createdAt        DateTime           @default(now())
+    User             User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    items            Item[]
+    likes            Like[]
+    comments         Comment[]
+    addedToFavorite  User[]             @relation("FavoriteCollections")
+    private          Boolean            @default(false)
+    Notification     Notification[]
+    ModerationAction ModerationAction[]
 }
 
 model Comment {
-    id           Int        @id @default(autoincrement())
-    User         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId       Int
-    collectionId Int
-    text         String
-    Collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-    createdAt    DateTime   @default(now())
+    id               Int                @id @default(autoincrement())
+    User             User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId           Int
+    collectionId     Int
+    text             String
+    Collection       Collection         @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    createdAt        DateTime           @default(now())
+    ModerationAction ModerationAction[]
+    reports          Report[]
 }
 
 model Like {
@@ -163,4 +242,23 @@ enum NotificationType {
     LIKE
     COMMENT
     FAVORITE
+}
+
+enum SanctionScope {
+    ACCOUNT
+    COMMENTS
+    MESSENGER
+}
+
+enum ReportStatus {
+    OPEN
+    CLOSED
+}
+
+enum ReportVerdict {
+    PENDING
+    NO_VIOLATION
+    INSUFFICIENT_EVIDENCE
+    DUPLICATE
+    GUILTY
 }

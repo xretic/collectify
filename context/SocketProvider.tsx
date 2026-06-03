@@ -17,7 +17,7 @@ type SocketIoEmitEvents = {
     'chat:leave': (chatId: number) => void;
 };
 
-export type RealtimeClient = {
+type RealtimeClient = {
     provider: 'socket.io' | 'pusher';
     on: (event: 'message:new', handler: (message: SocketMessage) => void) => void;
     off: (event: 'message:new', handler: (message: SocketMessage) => void) => void;

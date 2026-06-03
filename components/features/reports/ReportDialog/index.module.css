@@ -1,0 +1,107 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: min(430px, calc(100vw - 48px));
+}
+
+.target {
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: color-mix(in srgb, var(--bg-color) 24%, transparent);
+}
+
+.targetTitle {
+    font-family: var(--font-google-sans), sans-serif;
+    color: var(--text-color);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.quote {
+    color: var(--soft-text);
+    font-size: 13px;
+    margin-top: 6px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.dialog :global(.MuiPaper-root) {
+    border-radius: 20px;
+    background-color: var(--container-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+}
+
+.dialog :global(.MuiDialogTitle-root) {
+    font-family: var(--font-google-sans), sans-serif;
+    color: var(--text-color);
+}
+
+.dialog :global(.MuiInputBase-root) {
+    border-radius: 10px;
+    color: var(--text-color);
+    background-color: color-mix(in srgb, var(--bg-color) 24%, transparent);
+}
+
+.dialog :global(.MuiInputBase-input) {
+    color: var(--text-color);
+    font-family: var(--font-google-sans), sans-serif;
+}
+
+.dialog :global(.MuiInputLabel-root) {
+    color: var(--soft-text);
+}
+
+.dialog :global(.MuiInputLabel-root.Mui-focused) {
+    color: var(--accent);
+}
+
+.dialog :global(.MuiOutlinedInput-notchedOutline) {
+    border-color: color-mix(in srgb, var(--border-color) 78%, transparent);
+}
+
+.dialog :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border-color));
+}
+
+.dialog :global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
+    border-color: var(--accent);
+    border-width: 1px;
+}
+
+.dialog :global(.MuiSelect-icon) {
+    color: var(--soft-text);
+}
+
+:global(.MuiPopover-paper.MuiMenu-paper) {
+    border-radius: 14px !important;
+    background-color: var(--container-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16) !important;
+}
+
+:global(.MuiMenuItem-root) {
+    color: var(--text-color) !important;
+    font-family: var(--font-google-sans), sans-serif !important;
+}
+
+:global(.MuiMenuItem-root:hover) {
+    background-color: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+}
+
+.dialog :global(.MuiButton-root) {
+    border-radius: 10px;
+    text-transform: none;
+    box-shadow: none;
+    font-family: var(--font-google-sans), sans-serif;
+}

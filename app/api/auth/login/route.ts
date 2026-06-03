@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
 import { SESSION_AGE_IN_DAYS } from '@/lib/constans';
+import { getActiveSanction } from '@/helpers/management';
 
 export async function POST(req: NextRequest) {
     try {
@@ -28,6 +29,19 @@ export async function POST(req: NextRequest) {
 
         if (!passwordMatch) {
             return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
+        }
+
+        const accountBan = await getActiveSanction(user.id, 'ACCOUNT');
+
+        if (accountBan) {
+            return NextResponse.json(
+                {
+                    message: accountBan.expiresAt
+                        ? `Account is banned until ${accountBan.expiresAt.toISOString()}.`
+                        : 'Account is permanently banned.',
+                },
+                { status: 403 },
+            );
         }
 
         const session = await prisma.session.create({

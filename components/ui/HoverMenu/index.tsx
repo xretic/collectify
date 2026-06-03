@@ -11,9 +11,11 @@ import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import { authApi } from '@/entities/auth/api/authApi';
+import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
+import KeyboardReturnOutlinedIcon from '@mui/icons-material/KeyboardReturnOutlined';
 
 export default function HoverMenu() {
-    const { setUser } = useUser();
+    const { user, setUser, loading } = useUser();
     const { anchorEl, setAnchorEl, startLoading, stopLoading } = useUIStore();
     const queryClient = useQueryClient();
 
@@ -46,6 +48,23 @@ export default function HoverMenu() {
         }
     };
 
+    const handleStopImpersonation = async () => {
+        startLoading();
+
+        try {
+            handleClose();
+            const data = await authApi.stopImpersonation();
+            setUser(data.user);
+            router.replace('/management');
+        } catch {
+            return;
+        } finally {
+            stopLoading();
+        }
+    };
+
+    if (!user || loading) return;
+
     return (
         <Menu
             anchorEl={anchorEl}
@@ -67,6 +86,15 @@ export default function HoverMenu() {
                 },
             }}
         >
+            {user.impersonatorUserId && (
+                <MenuItem sx={{ color: 'var(--text-color)' }} onClick={handleStopImpersonation}>
+                    <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                        <KeyboardReturnOutlinedIcon fontSize="small" />
+                    </ListItemIcon>
+                    Return to admin
+                </MenuItem>
+            )}
+
             <MenuItem sx={{ color: 'var(--text-color)' }} onClick={() => handleClose('/users/me')}>
                 <ListItemIcon sx={{ color: 'var(--text-color)' }}>
                     <AccountCircleOutlinedIcon fontSize="small" />
@@ -83,6 +111,18 @@ export default function HoverMenu() {
                 </ListItemIcon>
                 Collections
             </MenuItem>
+
+            {user.roles.filter((x) => x !== 'Verified').length > 0 && (
+                <MenuItem
+                    sx={{ color: 'var(--text-color)' }}
+                    onClick={() => handleClose('/management')}
+                >
+                    <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                        <SecurityOutlinedIcon fontSize="small" />
+                    </ListItemIcon>
+                    Management
+                </MenuItem>
+            )}
 
             <MenuItem sx={{ color: 'var(--text-color)' }} onClick={() => handleClose('/settings')}>
                 <ListItemIcon sx={{ color: 'var(--text-color)' }}>

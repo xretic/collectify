@@ -1,12 +1,12 @@
 import { api } from '@/shared/api/api';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 
-export type LoginPayload = {
+type LoginPayload = {
     email: string;
     password: string;
 };
 
-export type RegisterPayload = {
+type RegisterPayload = {
     email: string;
     password: string;
     username: string;
@@ -34,5 +34,9 @@ export const authApi = {
 
     logout() {
         return api.post('api/auth/logout');
+    },
+
+    stopImpersonation() {
+        return api.post('api/auth/impersonation/stop').json<{ user: SessionUserInResponse }>();
     },
 };

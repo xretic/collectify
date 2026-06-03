@@ -10,13 +10,23 @@ import { UserInResponse } from '@/types/UserInResponse';
 import { useFirstMessageDialogStore } from '@/features/chat/create/model/firstMessageDialogStore';
 import TextArea from 'antd/es/input/TextArea';
 import { chatApi } from '@/entities/chat/api/chatApi';
+import { useUser } from '@/context/UserProvider';
+import { getMutePlaceholder } from '@/lib/restrictions';
 
-export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
+export default function FirstMessageDialog({ user: targetUser }: { user: UserInResponse }) {
     const router = useRouter();
     const { open, setOpen } = useFirstMessageDialogStore();
     const { startLoading, stopLoading, loadingCount } = useUIStore();
+    const { user } = useUser();
 
     const [message, setMessage] = useState('');
+    const messengerRestriction = user?.restrictions.messenger;
+    const messengerMuted = !!messengerRestriction?.muted;
+    const messagePlaceholder = getMutePlaceholder(
+        messengerRestriction,
+        'messenger',
+        'Write your message',
+    );
 
     const handleClose = () => {
         setMessage('');
@@ -24,12 +34,12 @@ export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
     };
 
     const handleConfirm = async () => {
-        if (loadingCount > 0) return;
+        if (loadingCount > 0 || messengerMuted) return;
 
         startLoading();
 
         try {
-            const data = await chatApi.create(user.id, message);
+            const data = await chatApi.create(targetUser.id, message);
 
             handleClose();
             router.replace('/chats/' + data.id);
@@ -55,8 +65,12 @@ export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
             onClose={handleClose}
         >
             <DialogTitle sx={{ color: 'var(--text-color)' }} className="flex gap-2 mb-5">
-                <Avatar src={user.avatarUrl} alt={user.username} sx={{ width: 35, height: 35 }} />
-                Send your first message to {user.username}
+                <Avatar
+                    src={targetUser.avatarUrl}
+                    alt={targetUser.username}
+                    sx={{ width: 35, height: 35 }}
+                />
+                Send your first message to {targetUser.username}
             </DialogTitle>
             <DialogContent>
                 <ConfigProvider
@@ -68,8 +82,10 @@ export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
                     }}
                 >
                     <TextArea
+                        value={messengerMuted ? '' : message}
+                        disabled={messengerMuted}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Write your message"
+                        placeholder={messagePlaceholder}
                         maxLength={DIRECT_MESSAGE_MAX_LENGTH}
                         style={{
                             backgroundColor: 'var(--container-color)',
@@ -94,7 +110,7 @@ export default function FirstMessageDialog({ user }: { user: UserInResponse }) {
                     variant="contained"
                     size="small"
                     onClick={handleConfirm}
-                    disabled={!message.trim()}
+                    disabled={messengerMuted || !message.trim()}
                     sx={{
                         marginTop: 3,
                         borderRadius: 6,

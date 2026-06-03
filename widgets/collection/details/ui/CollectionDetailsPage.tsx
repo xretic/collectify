@@ -57,6 +57,7 @@ import CollectionStatsDialog from '@/components/features/collections/CollectionS
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { CollectionActionType, CollectionItem } from '@/entities/collection/model/types';
+import { getMutePlaceholder } from '@/lib/restrictions';
 
 type OrderPayloadItem = { id: number; order: number };
 
@@ -106,6 +107,13 @@ export function CollectionDetailsPage() {
     const [openStats, setOpenStats] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [commentText, setCommentText] = useState('');
+    const commentsRestriction = user?.restrictions.comments;
+    const commentsMuted = !!commentsRestriction?.muted;
+    const commentPlaceholder = getMutePlaceholder(
+        commentsRestriction,
+        'comments',
+        'Write your comment',
+    );
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
@@ -249,6 +257,7 @@ export function CollectionDetailsPage() {
     };
 
     const handleSendComment = async () => {
+        if (commentsMuted) return;
         if (!id) return;
         if (!commentText.trim()) return;
 
@@ -530,9 +539,10 @@ export function CollectionDetailsPage() {
                         {user && (
                             <div className={styles.commentInput}>
                                 <TextArea
-                                    value={commentText}
+                                    value={commentsMuted ? '' : commentText}
                                     maxLength={COMMENT_MAX_LENGTH}
-                                    placeholder="Write your comment"
+                                    placeholder={commentPlaceholder}
+                                    disabled={commentsMuted}
                                     onChange={(e) => setCommentText(e.target.value)}
                                     style={{ ...inputStyle }}
                                     autoSize={{ minRows: 2, maxRows: 20 }}
@@ -541,7 +551,11 @@ export function CollectionDetailsPage() {
                                 <MuiButton
                                     variant="contained"
                                     onClick={handleSendComment}
-                                    disabled={loadingCount > 0 || commentMutation.isPending}
+                                    disabled={
+                                        commentsMuted ||
+                                        loadingCount > 0 ||
+                                        commentMutation.isPending
+                                    }
                                     sx={buttonsStyle}
                                 >
                                     Send

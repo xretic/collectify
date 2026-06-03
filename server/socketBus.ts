@@ -12,7 +12,7 @@ type ClientToServerEvents = {
     'chat:leave': (chatId: number) => void;
 };
 
-export type SocketChatMessage = MessageInResponse & {
+type SocketChatMessage = MessageInResponse & {
     chatId: number;
 };
 

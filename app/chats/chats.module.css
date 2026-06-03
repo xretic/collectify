@@ -14,7 +14,7 @@
     padding: 18px 18px;
     position: sticky;
     top: 20px;
-    height: calc(100vh - 40px);
+    height: 725.5px;
     display: flex;
     flex-direction: column;
 }
@@ -31,12 +31,6 @@
     gap: 12px;
     padding: 6px 6px 14px;
     border-bottom: 1px solid var(--border-color);
-}
-
-.sidebarTitle {
-    font-family: var(--font-google-sans), sans-serif;
-    font-size: 20px;
-    color: var(--text-color);
 }
 
 .sidebarActions {
@@ -121,12 +115,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.time {
-    color: var(--soft-text);
-    font-size: 12px;
-    flex: 0 0 auto;
 }
 
 .preview {

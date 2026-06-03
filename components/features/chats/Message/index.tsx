@@ -1,9 +1,12 @@
-import { Avatar } from '@mui/material';
+import { Avatar, IconButton, Tooltip } from '@mui/material';
 import styles from './index.module.css';
 import { useUser } from '@/context/UserProvider';
 import { Loader } from '@/components/ui/Loader';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import { useState } from 'react';
+import ReportDialog from '@/components/features/reports/ReportDialog';
 
 interface MessageProps {
     id: number;
@@ -26,27 +29,51 @@ export default function MessageComponent({
 }: MessageProps) {
     const { user } = useUser();
     const router = useRouter();
+    const [reportOpen, setReportOpen] = useState(false);
 
     const timeLabel = moment(createdAt).from(nowTick);
 
     if (!user) return <Loader />;
 
     return (
-        <div className={styles.box}>
-            <Avatar src={senderAvatarUrl} alt="avatar" sx={{ width: 35, height: 35 }} />
+        <>
+            <div className={styles.box}>
+                <Avatar src={senderAvatarUrl} alt="avatar" sx={{ width: 35, height: 35 }} />
 
-            <span>
-                <p>
-                    <span
-                        onClick={() => router.replace('/users/' + senderId)}
-                        className={styles.username}
-                    >
-                        {senderUsername}
-                    </span>
-                    <span className={styles.date}>{timeLabel}</span>
-                </p>
-                <p className={styles.content}>{content}</p>
-            </span>
-        </div>
+                <span className={styles.body}>
+                    <p>
+                        <span
+                            onClick={() => router.replace('/users/' + senderId)}
+                            className={styles.username}
+                        >
+                            {senderUsername}
+                        </span>
+                        <span className={styles.date}>{timeLabel}</span>
+                    </p>
+                    <p className={styles.content}>{content}</p>
+                </span>
+
+                {senderId !== user.id && (
+                    <Tooltip title="Report message">
+                        <IconButton
+                            className={styles.reportButton}
+                            size="small"
+                            onClick={() => setReportOpen(true)}
+                        >
+                            <FlagOutlinedIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </div>
+
+            <ReportDialog
+                open={reportOpen}
+                onClose={() => setReportOpen(false)}
+                targetUserId={senderId}
+                targetUsername={senderUsername}
+                messageId={id}
+                messagePreview={content}
+            />
+        </>
     );
 }

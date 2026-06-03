@@ -1,6 +1,8 @@
 import { isProperInteger } from '@/helpers/isProperInteger';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { getUserRoles } from '@/helpers/getUserRoles';
+import { writeModerationAction } from '@/helpers/management';
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -36,7 +38,31 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
 
         if (session.userId !== collection.userId) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            const roles = await getUserRoles(session.userId);
+            const isAdmin = roles.includes('Admin');
+            const isModerator = roles.includes('Moderator');
+
+            if (!isAdmin && !isModerator) {
+                return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+            }
+
+            if (collection.userId && isModerator && !isAdmin) {
+                const targetRoles = await getUserRoles(collection.userId);
+
+                if (targetRoles.includes('Admin') || targetRoles.includes('Moderator')) {
+                    return NextResponse.json(
+                        { message: 'Moderators cannot delete admin or moderator collections.' },
+                        { status: 403 },
+                    );
+                }
+            }
+
+            await writeModerationAction({
+                actorId: session.userId,
+                targetUserId: collection.userId,
+                targetCollectionId: collection.id,
+                action: 'delete-collection',
+            });
         }
 
         await prisma.collection.delete({

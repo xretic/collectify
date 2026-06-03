@@ -29,9 +29,23 @@ const protectedRoutes: RouteRule[] = [
     createRule('/api/chats/:id/create', ['POST']),
     createRule('/api/collections/:id/order', ['PATCH']),
     createRule('/api/collections/:id/comment', ['POST']),
-    createRule('api/collection/:id/edit', ['PATCH']),
+    createRule('/api/collections/:id/edit', ['PATCH']),
     createRule('/api/collections/:id/delete', ['DELETE']),
+    createRule('/api/collections/:id/items', ['POST', 'DELETE', 'PATCH']),
     createRule('/api/collections', ['POST']),
+    createRule('/api/management/users', ['GET']),
+    createRule('/api/management/users/:id', ['DELETE']),
+    createRule('/api/management/users/:id/roles', ['PATCH']),
+    createRule('/api/management/users/:id/sanctions', ['POST']),
+    createRule('/api/management/users/:id/impersonate', ['POST']),
+    createRule('/api/management/users/:id/messages', ['GET']),
+    createRule('/api/management/users/:id/collections', ['GET']),
+    createRule('/api/management/users/:id/comments', ['GET']),
+    createRule('/api/management/sanctions/:id', ['DELETE']),
+    createRule('/api/management/audit', ['GET']),
+    createRule('/api/management/reports', ['GET']),
+    createRule('/api/management/reports/:id', ['PATCH']),
+    createRule('/api/reports', ['POST']),
     createRule('/api/users/search/:query', ['GET']),
     createRule('/api/users/auth', ['PATCH']),
     createRule('/api/users', ['DELETE', 'PATCH']),
@@ -65,8 +79,19 @@ export async function proxy(request: NextRequest) {
 
     const isPublicPage = publicPages.some((x) => x.test(pathname));
 
-    if (!pathname.startsWith('/api') && !isPublicPage && !sessionId) {
-        return NextResponse.redirect(new URL('/', request.url));
+    if (!pathname.startsWith('/api') && !isPublicPage) {
+        if (!sessionId) {
+            return NextResponse.redirect(new URL('/', request.url));
+        }
+
+        const valid = await isSessionValid(request);
+
+        if (!valid) {
+            const response = NextResponse.redirect(new URL('/', request.url));
+            response.cookies.delete('sessionId');
+
+            return response;
+        }
     }
 
     return NextResponse.next();
@@ -85,6 +110,20 @@ async function isSessionValid(request: NextRequest): Promise<boolean> {
         return false;
     }
 
+    const accountBan = await prisma.accountSanction.findFirst({
+        where: {
+            userId: session.userId,
+            scope: 'ACCOUNT',
+            revokedAt: null,
+            OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+        },
+        select: { id: true },
+    });
+
+    if (accountBan) {
+        return false;
+    }
+
     return true;
 }
 
@@ -96,11 +135,14 @@ export const config = {
         '/api/notifications/:path*',
         '/api/chats/:path*',
         '/api/comments/:path*',
+        '/api/management/:path*',
+        '/api/reports/:path*',
         '/users/:path*',
         '/collections/:path*',
         '/notifications',
         '/settings',
         '/chats',
+        '/management',
         '/',
     ],
 };

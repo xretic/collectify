@@ -7,13 +7,16 @@ import { useCommentEditStore } from '@/features/comment/edit/model/commentEditSt
 import { ConfigProvider } from 'antd';
 import { COMMENT_MAX_LENGTH } from '@/lib/constans';
 import { useEffect, useState } from 'react';
-import { Avatar, Button, SxProps, Theme } from '@mui/material';
+import { Avatar, Button, IconButton, SxProps, Theme, Tooltip } from '@mui/material';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import { useQueryClient } from '@tanstack/react-query';
 import TextArea from 'antd/es/input/TextArea';
 import { useRouter } from 'next/navigation';
 import { commentApi } from '@/entities/comment/api/commentApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { CollectionPropsAdditional } from '@/entities/collection/model/types';
+import { getMutePlaceholder } from '@/lib/restrictions';
+import ReportDialog from '@/components/features/reports/ReportDialog';
 
 interface Comment {
     id: number;
@@ -42,9 +45,17 @@ export function CollectionComment({ collectionId, comment }: Props) {
 
     const [text, setText] = useState(comment.text);
     const [editingText, setEditingText] = useState(comment.text);
+    const [reportOpen, setReportOpen] = useState(false);
 
     const { user, loading } = useUser();
     const router = useRouter();
+    const commentsRestriction = user?.restrictions.comments;
+    const commentsMuted = !!commentsRestriction?.muted;
+    const editPlaceholder = getMutePlaceholder(
+        commentsRestriction,
+        'comments',
+        'Editing comment...',
+    );
 
     const buttonsSx: SxProps<Theme> = {
         borderRadius: 6,
@@ -55,6 +66,8 @@ export function CollectionComment({ collectionId, comment }: Props) {
     const queryClient = useQueryClient();
 
     const handleEdit = async () => {
+        if (commentsMuted) return;
+
         if (text === editingText) {
             handleCancel();
             return;
@@ -125,8 +138,20 @@ export function CollectionComment({ collectionId, comment }: Props) {
                         </time>
                     </div>
 
-                    {user?.id === comment.userId && (
-                        <>
+                    <div className={styles.headerActions}>
+                        {user && user.id !== comment.userId && (
+                            <Tooltip title="Report comment">
+                                <IconButton
+                                    className={styles.reportBtn}
+                                    size="small"
+                                    onClick={() => setReportOpen(true)}
+                                >
+                                    <FlagOutlinedIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+
+                        {user?.id === comment.userId && (
                             <button
                                 onClick={(event) => {
                                     setCommentAnchorEl(
@@ -143,7 +168,11 @@ export function CollectionComment({ collectionId, comment }: Props) {
                             >
                                 ···
                             </button>
+                        )}
+                    </div>
 
+                    {user?.id === comment.userId && (
+                        <>
                             <CommentHoverMenu collectionId={collectionId} />
                         </>
                     )}
@@ -160,14 +189,15 @@ export function CollectionComment({ collectionId, comment }: Props) {
                     >
                         <TextArea
                             onChange={(e) => setEditingText(e.target.value)}
-                            placeholder="Editing comment..."
+                            placeholder={editPlaceholder}
+                            disabled={commentsMuted}
                             className={styles.input}
                             style={{
                                 backgroundColor: 'var(--container-color)',
                                 color: 'var(--text-color)',
                             }}
                             autoSize={{ minRows: 1, maxRows: 20 }}
-                            value={editingText}
+                            value={commentsMuted ? '' : editingText}
                             maxLength={COMMENT_MAX_LENGTH}
                             showCount
                         />
@@ -186,13 +216,22 @@ export function CollectionComment({ collectionId, comment }: Props) {
                     <Button
                         variant="contained"
                         onClick={handleEdit}
-                        disabled={!editingText.trim() || editingText.length === 0}
+                        disabled={commentsMuted || !editingText.trim() || editingText.length === 0}
                         sx={buttonsSx}
                     >
                         Confirm
                     </Button>
                 </div>
             )}
+
+            <ReportDialog
+                open={reportOpen}
+                onClose={() => setReportOpen(false)}
+                targetUserId={comment.userId}
+                targetUsername={comment.username}
+                commentId={comment.id}
+                commentPreview={text}
+            />
         </article>
     );
 }
