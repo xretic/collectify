@@ -1,13 +1,13 @@
 import { Metadata } from 'next';
-import NavBar from '@/components/layout/NavBar';
+import NavBar from '@/widgets/layout/ui/NavBar';
 import localFont from 'next/font/local';
 import './globals.css';
-import { UserProvider } from '@/context/UserProvider';
-import { GlobalLoader } from '@/components/layout/GlobalLoader';
+import { UserProvider } from '@/app/providers/UserProvider';
+import { GlobalLoader } from '@/widgets/layout/ui/GlobalLoader';
 import Script from 'next/script';
-import ThemeProvider from '@/context/ThemeProvider';
-import { QueryProvider } from '@/context/QueryProvider';
-import { SocketProvider } from '@/context/SocketProvider';
+import ThemeProvider from '@/app/providers/ThemeProvider';
+import { QueryProvider } from '@/app/providers/QueryProvider';
+import { SocketProvider } from '@/app/providers/SocketProvider';
 
 const googleSans = localFont({
     src: [

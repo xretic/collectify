@@ -10,7 +10,7 @@ import {
     ManagementUser,
     SanctionScope,
 } from '@/entities/management/api/managementApi';
-import { useUser } from '@/context/UserProvider';
+import { useUser } from '@/app/providers/UserProvider';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { UserRole } from '@/types/UserRole';
 import { durationToExpiresAt } from '../lib/format';

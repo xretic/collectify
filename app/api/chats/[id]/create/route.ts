@@ -1,10 +1,10 @@
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { DIRECT_MESSAGE_MAX_LENGTH } from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { DIRECT_MESSAGE_MAX_LENGTH } from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { publishChatMessage } from '@/server/socketBus';
 import { MessageInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
-import { getScopedSanctionResponse } from '@/helpers/management';
+import { getScopedSanctionResponse } from '@/entities/management/api/server';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {

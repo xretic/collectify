@@ -6,18 +6,18 @@ import { useQuery } from '@tanstack/react-query';
 import { Button, InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { useUser } from '@/context/UserProvider';
-import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
-import { useDebounce } from '@/lib/useDebounce';
+import { useUser } from '@/app/providers/UserProvider';
+import { CATEGORIES, PAGE_SIZE } from '@/shared/lib/constants';
+import { useDebounce } from '@/shared/lib/hooks/useDebounce';
 import { usePaginationStore } from '@/shared/model/paginationStore';
 import { useUIStore } from '@/shared/model/uiStore';
 import {
     useMyCollectionsFiltersStore,
     MyCollectionsVisibility,
 } from '@/features/collection/filter/model/myCollectionsFiltersStore';
-import { Loader } from '@/components/ui/Loader';
-import SortBy from '@/components/ui/SortBy';
-import CollectionsWrapper from '@/components/features/collections/CollectionsWrapper';
+import { Loader } from '@/shared/ui/Loader';
+import SortBy from '@/shared/ui/SortBy';
+import CollectionsWrapper from '@/entities/collection/ui/CollectionsWrapper';
 import AddIcon from '@mui/icons-material/Add';
 import styles from '@/app/collections/my/my.module.css';
 import { collectionApi } from '@/entities/collection/api/collectionApi';

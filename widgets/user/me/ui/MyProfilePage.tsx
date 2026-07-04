@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser } from '@/context/UserProvider';
+import { useUser } from '@/app/providers/UserProvider';
 import Avatar from '@mui/material/Avatar';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -17,23 +17,23 @@ import {
     PAGE_SIZE,
     USERNAME_MAX_LENGTH,
     USERNAME_MIN_LENGTH,
-} from '@/lib/constans';
+} from '@/shared/lib/constants';
 import { useUIStore } from '@/shared/model/uiStore';
 import { usePaginationStore } from '@/shared/model/paginationStore';
-import CollectionsWrapper from '@/components/features/collections/CollectionsWrapper';
-import SortBy from '@/components/ui/SortBy';
+import CollectionsWrapper from '@/entities/collection/ui/CollectionsWrapper';
+import SortBy from '@/shared/ui/SortBy';
 import { IconButton, Tooltip, Button, SnackbarCloseReason, Snackbar } from '@mui/material';
 import styles from '@/app/users/users.module.css';
 import { useRouter } from 'next/navigation';
-import { isUsernameValid } from '@/helpers/isUsernameValid';
+import { isUsernameValid } from '@/shared/lib/validation/isUsernameValid';
 import { useQuery } from '@tanstack/react-query';
-import { Loader } from '@/components/ui/Loader';
-import { handleUpload } from '@/helpers/handleUpload';
+import { Loader } from '@/shared/ui/Loader';
+import { handleUpload } from '@/shared/lib/handleUpload';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { userApi } from '@/entities/user/api/userApi';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
-import UserBadge from '@/components/ui/UserBadge';
+import UserBadge from '@/shared/ui/UserBadge';
 
 type Tab = 'authorTab' | 'favoritesTab' | 'privateTab';
 

@@ -1,9 +1,9 @@
-import { collectionActionData } from '@/helpers/collectionActionsData';
-import { getResData } from '@/helpers/getCollectionData';
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { isValidUrl } from '@/helpers/isValidUrl';
-import { COMMENTS_LIMIT, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+import { collectionActionData } from '@/entities/collection/api/collectionActionsData';
+import { getResData } from '@/entities/collection/api/getCollectionData';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { isValidUrl } from '@/shared/lib/validation/isValidUrl';
+import { COMMENTS_LIMIT, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_TITLE_MAX_LENGTH } from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 const requiredFields = ['title', 'description'] as const;

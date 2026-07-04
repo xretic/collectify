@@ -3,25 +3,25 @@
 import { ConfigProvider, Input, Select } from 'antd';
 import styles from '@/app/settings/settings.module.css';
 import PersonIcon from '@mui/icons-material/Person';
-import { useUser } from '@/context/UserProvider';
+import { useUser } from '@/app/providers/UserProvider';
 import {
     DESCRPITION_MAX_LENGTH,
     FULLNAME_MAX_LENGTH,
     PASSWORD_MAX_LENGTH,
     USERNAME_MAX_LENGTH,
-} from '@/lib/constans';
+} from '@/shared/lib/constants';
 import React, { useEffect, useState } from 'react';
 import { Button, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { useDialogStore } from '@/shared/model/dialogStore';
-import DeleteAccountDialog from '@/components/features/settings/DeleteAccountDialog';
+import DeleteAccountDialog from '@/features/settings/delete-account/ui/DeleteAccountDialog';
 import { useUIStore } from '@/shared/model/uiStore';
 import CloseIcon from '@mui/icons-material/Close';
-import { isUsernameValid } from '@/helpers/isUsernameValid';
-import { isPasswordValid } from '@/helpers/isPasswordValid';
+import { isUsernameValid } from '@/shared/lib/validation/isUsernameValid';
+import { isPasswordValid } from '@/shared/lib/validation/isPasswordValid';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
-import { useTheme } from '@/lib/useTheme';
+import { useTheme } from '@/shared/lib/hooks/useTheme';
 import { userApi } from '@/entities/user/api/userApi';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 

@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { NOTIFICATIONS_PER_LOAD } from '../../../lib/constans';
+import { NOTIFICATIONS_PER_LOAD } from '@/shared/lib/constants';
 import { NotificationInResponse } from '@/types/NotificationInResponse';
 
 export async function GET(req: NextRequest) {

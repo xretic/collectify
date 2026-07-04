@@ -3,9 +3,9 @@ import {
     requireManagementAccess,
     SanctionScope,
     writeModerationAction,
-} from '@/helpers/management';
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { prisma } from '@/lib/prisma';
+} from '@/entities/management/api/server';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 type ReportVerdict = 'NO_VIOLATION' | 'INSUFFICIENT_EVIDENCE' | 'DUPLICATE' | 'GUILTY';

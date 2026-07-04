@@ -1,5 +1,5 @@
-import { requireManagementAccess } from '@/helpers/management';
-import { prisma } from '@/lib/prisma';
+import { requireManagementAccess } from '@/entities/management/api/server';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {

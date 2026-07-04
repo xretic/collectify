@@ -1,10 +1,11 @@
 import { Prisma } from '@/generated/prisma/client';
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
-import { redis } from '@/lib/redis';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { CATEGORIES, PAGE_SIZE } from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { CollectionFieldProps } from '@/types/CollectionField';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from '@/shared/api/rateLimit';
+import { withCache } from '@/shared/api/cache';
 
 const SORT_OPTIONS = ['popular', 'newest', 'old'] as const;
 type SortOption = (typeof SORT_OPTIONS)[number];
@@ -64,6 +65,9 @@ function mapCollection(collection: CollectionListRow): CollectionFieldProps {
 
 export async function GET(req: NextRequest) {
     try {
+        const limited = await rateLimit(req, 'search');
+        if (limited) return limited;
+
         const { searchParams } = new URL(req.url);
 
         const category = searchParams.get('category');
@@ -155,7 +159,6 @@ export async function GET(req: NextRequest) {
             }
         }
 
-        const collections: CollectionFieldProps[] = [];
         const cacheRequired = !userId && !favoritesUserId && !privateOnlyBool;
 
         const paramsForKey = {
@@ -169,11 +172,6 @@ export async function GET(req: NextRequest) {
         };
 
         const key = `collections:${JSON.stringify(paramsForKey)}`;
-
-        if (cacheRequired) {
-            const cached = await redis.getJson<{ data: CollectionFieldProps[] }>(key);
-            if (cached) return NextResponse.json(cached, { status: 200 });
-        }
 
         const selectForList = {
             id: true,
@@ -199,59 +197,66 @@ export async function GET(req: NextRequest) {
             },
         } satisfies Prisma.CollectionSelect;
 
-        if (userId && !privateOnlyBool) {
-            const user = await prisma.user.findUnique({
-                where: { id: Number(userId) },
-                select: { subscriptions: true },
-            });
+        const fetchCollections = async () => {
+            const collections: CollectionFieldProps[] = [];
 
-            if (user?.subscriptions.length) {
-                const subscribedUserIds = user.subscriptions.map((x) => x.followingId);
+            if (userId && !privateOnlyBool) {
+                const user = await prisma.user.findUnique({
+                    where: { id: Number(userId) },
+                    select: { subscriptions: true },
+                });
 
-                const subscribedCollections = await prisma.collection.findMany({
+                if (user?.subscriptions.length) {
+                    const subscribedUserIds = user.subscriptions.map((x) => x.followingId);
+
+                    const subscribedCollections = await prisma.collection.findMany({
+                        where: {
+                            userId: { in: subscribedUserIds },
+                            private: false,
+                            ...(category && { category }),
+                            lowerCaseName: { startsWith: query ?? '' },
+                        },
+                        select: selectForList,
+                        orderBy: ORDER_BY_MAP[sortedBy],
+                        take: PAGE_SIZE,
+                        skip,
+                    });
+
+                    collections.push(...subscribedCollections.map(mapCollection));
+                    excludedIds.push(...subscribedCollections.map((x) => x.id));
+                }
+            }
+
+            if (collections.length < PAGE_SIZE) {
+                const publicOrOwnPrivateCollections = await prisma.collection.findMany({
                     where: {
-                        userId: { in: subscribedUserIds },
-                        private: false,
+                        id: { notIn: excludedIds },
+                        ...(authorId && { userId: authorId }),
                         ...(category && { category }),
+                        ...(favoritesUserId && {
+                            addedToFavorite: { some: { id: favoritesUserId } },
+                        }),
                         lowerCaseName: { startsWith: query ?? '' },
+                        private: privateOnlyBool,
+                        ...(privateOnlyBool && sessionUserId ? { userId: sessionUserId } : {}),
                     },
                     select: selectForList,
                     orderBy: ORDER_BY_MAP[sortedBy],
-                    take: PAGE_SIZE,
+                    take: PAGE_SIZE - collections.length,
                     skip,
                 });
 
-                collections.push(...subscribedCollections.map(mapCollection));
-                excludedIds.push(...subscribedCollections.map((x) => x.id));
+                collections.push(...publicOrOwnPrivateCollections.map(mapCollection));
             }
-        }
 
-        if (collections.length < PAGE_SIZE) {
-            const publicOrOwnPrivateCollections = await prisma.collection.findMany({
-                where: {
-                    id: { notIn: excludedIds },
-                    ...(authorId && { userId: authorId }),
-                    ...(category && { category }),
-                    ...(favoritesUserId && { addedToFavorite: { some: { id: favoritesUserId } } }),
-                    lowerCaseName: { startsWith: query ?? '' },
-                    private: privateOnlyBool,
-                    ...(privateOnlyBool && sessionUserId ? { userId: sessionUserId } : {}),
-                },
-                select: selectForList,
-                orderBy: ORDER_BY_MAP[sortedBy],
-                take: PAGE_SIZE - collections.length,
-                skip,
-            });
+            return { data: collections };
+        };
 
-            collections.push(...publicOrOwnPrivateCollections.map(mapCollection));
-        }
+        const payload = cacheRequired
+            ? await withCache(key, 30, fetchCollections)
+            : await fetchCollections();
 
-        if (cacheRequired) {
-            const payload = { data: collections };
-            await redis.setJson(key, payload, { ex: 30 });
-        }
-
-        return NextResponse.json({ data: collections }, { status: 200 });
+        return NextResponse.json(payload, { status: 200 });
     } catch (e) {
         console.error(e);
         return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });

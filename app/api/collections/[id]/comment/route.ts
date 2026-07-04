@@ -1,10 +1,10 @@
-import { collectionActionData } from '@/helpers/collectionActionsData';
-import { getResData } from '@/helpers/getCollectionData';
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { COMMENT_MAX_LENGTH, COMMENTS_LIMIT } from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+import { collectionActionData } from '@/entities/collection/api/collectionActionsData';
+import { getResData } from '@/entities/collection/api/getCollectionData';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { COMMENT_MAX_LENGTH, COMMENTS_LIMIT } from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { getScopedSanctionResponse } from '@/helpers/management';
+import { getScopedSanctionResponse } from '@/entities/management/api/server';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {

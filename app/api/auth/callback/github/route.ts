@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib/prisma';
 import { randomUUID } from 'crypto';
-import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
-import { SESSION_AGE_IN_DAYS, USERNAME_MAX_LENGTH } from '@/lib/constans';
-import { isUsernameValid } from '@/helpers/isUsernameValid';
+import { generateUniqueUserId } from '@/shared/lib/generateUniqueUserId';
+import { SESSION_AGE_IN_DAYS, USERNAME_MAX_LENGTH } from '@/shared/lib/constants';
+import { isUsernameValid } from '@/shared/lib/validation/isUsernameValid';
 import { Prisma } from '@/generated/prisma/client';
 import ky from 'ky';
-import { getActiveSanction } from '@/helpers/management';
+import { getActiveSanction } from '@/entities/management/api/server';
 
 interface GithubUser {
     id: number;

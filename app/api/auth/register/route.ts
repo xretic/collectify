@@ -1,15 +1,19 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { isPasswordValid } from '@/helpers/isPasswordValid';
+import { isPasswordValid } from '@/shared/lib/validation/isPasswordValid';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
-import { prisma } from '@/lib/prisma';
-import { generateUniqueUserId } from '@/helpers/generateUniqueUserId';
+import { prisma } from '@/shared/lib/prisma';
+import { generateUniqueUserId } from '@/shared/lib/generateUniqueUserId';
 import { SessionUserInResponse } from '@/types/UserInResponse';
-import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
-import { SESSION_AGE_IN_DAYS } from '@/lib/constans';
+import { getSessionUserResponse } from '@/entities/auth/api/getSessionUserResponse';
+import { SESSION_AGE_IN_DAYS } from '@/shared/lib/constants';
+import { rateLimit } from '@/shared/api/rateLimit';
 
 export async function POST(req: NextRequest) {
     try {
+        const limited = await rateLimit(req, 'auth');
+        if (limited) return limited;
+
         const { email, password, username } = await req.json();
 
         if (!email || !password || !username) {

@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib/prisma';
 import { pusher, userChannelName } from '@/server/realtime/pusher';
 import { NextRequest, NextResponse } from 'next/server';
 

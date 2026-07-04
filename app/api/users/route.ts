@@ -1,11 +1,11 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { SessionUserInResponse } from '@/types/UserInResponse';
-import { upsertNotification } from '@/helpers/upsertNotification';
-import { FULLNAME_MAX_LENGTH } from '@/lib/constans';
-import { isUsernameValid } from '@/helpers/isUsernameValid';
-import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
+import { upsertNotification } from '@/entities/notification/api/upsertNotification';
+import { FULLNAME_MAX_LENGTH } from '@/shared/lib/constants';
+import { isUsernameValid } from '@/shared/lib/validation/isUsernameValid';
+import { getSessionUserResponse } from '@/entities/auth/api/getSessionUserResponse';
 
 export async function DELETE(req: NextRequest) {
     try {

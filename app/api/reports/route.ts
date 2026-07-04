@@ -1,6 +1,7 @@
-import { requireActiveSession } from '@/helpers/management';
-import { prisma } from '@/lib/prisma';
+import { requireActiveSession } from '@/entities/auth/api/session';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from '@/shared/api/rateLimit';
 
 const REASONS = new Set(['spam', 'harassment', 'hate', 'scam', 'adult', 'other']);
 const MAX_DETAILS = 1000;
@@ -18,6 +19,9 @@ export async function POST(req: NextRequest) {
     try {
         const access = await requireActiveSession(req);
         if (access.response || !access.session) return access.response;
+
+        const limited = await rateLimit(req, 'report', String(access.session.userId));
+        if (limited) return limited;
 
         const body = (await req.json()) as Body;
         const reason = body.reason?.trim() ?? '';

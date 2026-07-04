@@ -1,10 +1,10 @@
 import { NotificationType, Prisma } from '@/generated/prisma/client';
-import { collectionActionData } from '@/helpers/collectionActionsData';
-import { getResData } from '@/helpers/getCollectionData';
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { upsertNotification } from '@/helpers/upsertNotification';
-import { COMMENTS_LIMIT } from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+import { collectionActionData } from '@/entities/collection/api/collectionActionsData';
+import { getResData } from '@/entities/collection/api/getCollectionData';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { upsertNotification } from '@/entities/notification/api/upsertNotification';
+import { COMMENTS_LIMIT } from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

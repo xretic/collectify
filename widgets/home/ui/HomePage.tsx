@@ -1,19 +1,19 @@
 'use client';
 
-import { useUser } from '@/context/UserProvider';
-import { CATEGORIES, PAGE_SIZE } from '@/lib/constans';
+import { useUser } from '@/app/providers/UserProvider';
+import { CATEGORIES, PAGE_SIZE } from '@/shared/lib/constants';
 import { useUIStore } from '@/shared/model/uiStore';
 import { Avatar, Button } from '@mui/material';
 import { Suspense, useMemo, useState } from 'react';
-import CollectionSearchBar from '@/components/features/collections/CollectionSearchBar';
+import CollectionSearchBar from '@/features/collection/search/ui/CollectionSearchBar';
 import { useCollectionSearchStore } from '@/features/collection/search/model/collectionSearchStore';
 import { usePaginationStore } from '@/shared/model/paginationStore';
-import CollectionsWrapper from '@/components/features/collections/CollectionsWrapper';
-import SortBy from '@/components/ui/SortBy';
+import CollectionsWrapper from '@/entities/collection/ui/CollectionsWrapper';
+import SortBy from '@/shared/ui/SortBy';
 import styles from '@/app/(home)/home.module.css';
 import { useQuery } from '@tanstack/react-query';
-import { useDebounce } from '@/lib/useDebounce';
-import HomePageSkeleton from '@/components/skeletons/HomePageSkeleton';
+import { useDebounce } from '@/shared/lib/hooks/useDebounce';
+import HomePageSkeleton from '@/shared/ui/skeletons/HomePageSkeleton';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 

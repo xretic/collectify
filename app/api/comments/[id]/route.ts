@@ -1,13 +1,13 @@
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { prisma } from '@/lib/prisma';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { COMMENT_MAX_LENGTH } from '@/lib/constans';
+import { COMMENT_MAX_LENGTH } from '@/shared/lib/constants';
 import {
     canModerateTarget,
     getScopedSanctionResponse,
     requireManagementAccess,
     writeModerationAction,
-} from '@/helpers/management';
+} from '@/entities/management/api/server';
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {

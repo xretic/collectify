@@ -1,0 +1,150 @@
+'use client';
+
+import ListItemIcon from '@mui/material/ListItemIcon';
+import MenuItem from '@mui/material/MenuItem';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import Menu from '@mui/material/Menu';
+import { LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
+import { useUIStore } from '@/shared/model/uiStore';
+import { useUser } from '@/app/providers/UserProvider';
+import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import { authApi } from '@/entities/auth/api/authApi';
+import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
+import KeyboardReturnOutlinedIcon from '@mui/icons-material/KeyboardReturnOutlined';
+
+export default function HoverMenu() {
+    const { user, setUser, loading } = useUser();
+    const { anchorEl, setAnchorEl, startLoading, stopLoading } = useUIStore();
+    const queryClient = useQueryClient();
+
+    const handleClose = (path?: string | null) => {
+        queryClient.clear();
+        setAnchorEl(null);
+
+        if (path) {
+            router.push(path);
+        }
+    };
+
+    const open = Boolean(anchorEl);
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        startLoading();
+
+        try {
+            handleClose();
+
+            await authApi.logout();
+
+            setUser(null);
+            router.replace('/');
+        } catch {
+            return;
+        } finally {
+            stopLoading();
+        }
+    };
+
+    const handleStopImpersonation = async () => {
+        startLoading();
+
+        try {
+            handleClose();
+            const data = await authApi.stopImpersonation();
+            setUser(data.user);
+            router.replace('/management');
+        } catch {
+            return;
+        } finally {
+            stopLoading();
+        }
+    };
+
+    if (!user || loading) return;
+
+    return (
+        <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={() => handleClose()}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            slotProps={{
+                paper: {
+                    sx: {
+                        bgcolor: 'var(--container-color)',
+                    },
+                },
+            }}
+        >
+            {user.impersonatorUserId && (
+                <MenuItem sx={{ color: 'var(--text-color)' }} onClick={handleStopImpersonation}>
+                    <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                        <KeyboardReturnOutlinedIcon fontSize="small" />
+                    </ListItemIcon>
+                    Return to admin
+                </MenuItem>
+            )}
+
+            <MenuItem sx={{ color: 'var(--text-color)' }} onClick={() => handleClose('/users/me')}>
+                <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                    <AccountCircleOutlinedIcon fontSize="small" />
+                </ListItemIcon>
+                Profile
+            </MenuItem>
+
+            <MenuItem
+                sx={{ color: 'var(--text-color)' }}
+                onClick={() => handleClose('/collections/my')}
+            >
+                <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                    <LibraryBooksOutlinedIcon fontSize="small" />
+                </ListItemIcon>
+                Collections
+            </MenuItem>
+
+            {user.roles.filter((x) => x !== 'Verified').length > 0 && (
+                <MenuItem
+                    sx={{ color: 'var(--text-color)' }}
+                    onClick={() => handleClose('/management')}
+                >
+                    <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                        <SecurityOutlinedIcon fontSize="small" />
+                    </ListItemIcon>
+                    Management
+                </MenuItem>
+            )}
+
+            <MenuItem sx={{ color: 'var(--text-color)' }} onClick={() => handleClose('/settings')}>
+                <ListItemIcon sx={{ color: 'var(--text-color)' }}>
+                    <SettingsOutlined fontSize="small" />
+                </ListItemIcon>
+                Settings
+            </MenuItem>
+
+            <MenuItem
+                onClick={handleLogout}
+                sx={{
+                    color: 'error.main',
+                    '&:hover': {
+                        backgroundColor: 'light',
+                    },
+                }}
+            >
+                <ListItemIcon sx={{ color: 'error.main' }}>
+                    <LogoutOutlined fontSize="small" />
+                </ListItemIcon>
+                Logout
+            </MenuItem>
+        </Menu>
+    );
+}

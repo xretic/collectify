@@ -1,17 +1,17 @@
 'use client';
 
-import { useUser } from '@/context/UserProvider';
+import { useUser } from '@/app/providers/UserProvider';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { useEffect, useRef, useState } from 'react';
 import styles from '@/app/chats/chats.module.css';
 import { Avatar, Box, Button, IconButton, useMediaQuery } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import ChatPage from '@/components/features/chats/ChatPage';
-import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/lib/constans';
-import { useSocket } from '@/context/SocketProvider';
+import ChatPage from '@/features/chat/ui/ChatPage';
+import { CHATS_PAGE_LENGTH, MAX_PREVIEW_MESSAGE_LENGTH } from '@/shared/lib/constants';
+import { useSocket } from '@/app/providers/SocketProvider';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ChatListSkeleton from '@/components/skeletons/ChatsListSkeleton';
+import ChatListSkeleton from '@/shared/ui/skeletons/ChatsListSkeleton';
 import { chatApi } from '@/entities/chat/api/chatApi';
 
 type SocketMessage = MessageInResponse & { chatId: number };

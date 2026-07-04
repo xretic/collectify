@@ -1,11 +1,11 @@
-import { isValidUrl } from '@/helpers/isValidUrl';
+import { isValidUrl } from '@/shared/lib/validation/isValidUrl';
 import {
     COLLECTION_DESCRIPTION_MAX_LENGTH,
     COLLECTION_NAME_MAX_LENGTH,
     ITEM_DESCRIPTION_MAX_LENGTH,
     ITEM_TITLE_MAX_LENGTH,
-} from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+} from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 const requiredFields = [

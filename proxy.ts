@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib/prisma';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 

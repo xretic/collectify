@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser } from '@/context/UserProvider';
+import { useUser } from '@/app/providers/UserProvider';
 import {
     Avatar,
     IconButton,
@@ -21,7 +21,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import styles from '@/app/collections/collections.module.css';
-import { ItemCard } from '@/components/features/items/ItemCard';
+import { ItemCard } from '@/features/item/card/ui/ItemCard';
 import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import {
     closestCenter,
@@ -31,35 +31,35 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import { SortableItemCard } from '@/components/features/items/SortableItemCard';
-import { useDebounce } from '@/lib/useDebounce';
+import { SortableItemCard } from '@/features/item/card/ui/SortableItemCard';
+import { useDebounce } from '@/shared/lib/hooks/useDebounce';
 import AddIcon from '@mui/icons-material/Add';
-import { ItemAddDialog } from '@/components/features/items/ItemAddDialog';
+import { ItemAddDialog } from '@/features/item/create/ui/ItemAddDialog';
 import { useDialogStore } from '@/shared/model/dialogStore';
 import { useCollectionStore } from '@/entities/collection/model/collectionStore';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { CollectionDeleteDialog } from '@/components/features/collections/CollectionDeleteDialog';
+import { CollectionDeleteDialog } from '@/features/collection/delete/ui/CollectionDeleteDialog';
 import { useDeleteDialogStore } from '@/features/collection/delete/model/deleteCollectionDialogStore';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { CollectionEditingDialog } from '@/components/features/collections/CollectionEditingDialog';
+import { CollectionEditingDialog } from '@/features/collection/edit/ui/CollectionEditingDialog';
 import { useEditingDialogStore } from '@/features/collection/edit/model/editCollectionDialogStore';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CollectionPropsAdditional } from '@/types/CollectionField';
-import { Loader } from '@/components/ui/Loader';
+import { Loader } from '@/shared/ui/Loader';
 import TextArea from 'antd/es/input/TextArea';
-import { COMMENT_MAX_LENGTH, COMMENTS_LIMIT } from '@/lib/constans';
+import { COMMENT_MAX_LENGTH, COMMENTS_LIMIT } from '@/shared/lib/constants';
 import { useUIStore } from '@/shared/model/uiStore';
-import { CollectionComment } from '@/components/features/collections/CollectionComment';
+import { CollectionComment } from '@/features/comment/edit/ui/CollectionComment';
 import CloseIcon from '@mui/icons-material/Close';
-import CollectionPageSkeleton from '@/components/skeletons/CollectionPageSkeleton';
+import CollectionPageSkeleton from '@/shared/ui/skeletons/CollectionPageSkeleton';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
 import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
-import CollectionStatsDialog from '@/components/features/collections/CollectionStatsDialog';
+import CollectionStatsDialog from '@/features/collection/stats/ui/CollectionStatsDialog';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { CollectionActionType, CollectionItem } from '@/entities/collection/model/types';
-import { getMutePlaceholder } from '@/lib/restrictions';
-import ReportDialog from '@/components/features/reports/ReportDialog';
+import { getMutePlaceholder } from '@/shared/lib/restrictions';
+import ReportDialog from '@/features/report/create/ui/ReportDialog';
 
 type OrderPayloadItem = { id: number; order: number };
 

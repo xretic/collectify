@@ -1,8 +1,12 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from '@/shared/api/rateLimit';
 
-export async function GET(_: NextRequest, { params }: { params: Promise<{ query: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ query: string }> }) {
     try {
+        const limited = await rateLimit(req, 'search');
+        if (limited) return limited;
+
         const { query } = await params;
 
         const users = await prisma.user.findMany({

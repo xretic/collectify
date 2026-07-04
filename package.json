@@ -26,6 +26,7 @@
         "@tanstack/react-query-persist-client": "^5.90.22",
         "@types/bcrypt": "^6.0.0",
         "@types/ws": "^8.18.1",
+        "@upstash/ratelimit": "^2.0.8",
         "@upstash/redis": "^1.36.2",
         "antd": "^6.2.0",
         "bcrypt": "^6.0.0",

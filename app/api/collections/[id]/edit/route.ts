@@ -1,12 +1,12 @@
-import { collectionActionData } from '@/helpers/collectionActionsData';
-import { getResData } from '@/helpers/getCollectionData';
-import { isProperInteger } from '@/helpers/isProperInteger';
+import { collectionActionData } from '@/entities/collection/api/collectionActionsData';
+import { getResData } from '@/entities/collection/api/getCollectionData';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
 import {
     COLLECTION_DESCRIPTION_MAX_LENGTH,
     COLLECTION_NAME_MAX_LENGTH,
     COMMENTS_LIMIT,
-} from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+} from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 const requiredFields = ['title', 'description', 'bannerUrl', 'isPrivate'] as const;

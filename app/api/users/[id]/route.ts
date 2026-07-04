@@ -1,6 +1,6 @@
-import { getUserRoles } from '@/helpers/getUserRoles';
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { prisma } from '@/lib/prisma';
+import { getUserRoles } from '@/entities/user/api/getUserRoles';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { prisma } from '@/shared/lib/prisma';
 import { UserInResponse } from '@/types/UserInResponse';
 import { NextRequest, NextResponse } from 'next/server';
 

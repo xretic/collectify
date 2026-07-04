@@ -1,5 +1,5 @@
-import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
-import { prisma } from '@/lib/prisma';
+import { getSessionUserResponse } from '@/entities/auth/api/getSessionUserResponse';
+import { prisma } from '@/shared/lib/prisma';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 import { NextRequest, NextResponse } from 'next/server';
 

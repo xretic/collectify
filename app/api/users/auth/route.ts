@@ -1,9 +1,9 @@
-import { isPasswordValid } from '@/helpers/isPasswordValid';
-import { prisma } from '@/lib/prisma';
+import { isPasswordValid } from '@/shared/lib/validation/isPasswordValid';
+import { prisma } from '@/shared/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { SessionUserInResponse } from '@/types/UserInResponse';
-import { getSessionUserResponse } from '@/helpers/getSessionUserResponse';
+import { getSessionUserResponse } from '@/entities/auth/api/getSessionUserResponse';
 
 export async function PATCH(req: NextRequest) {
     try {

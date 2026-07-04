@@ -1,10 +1,10 @@
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { MESSAGES_PAGE_LENGTH } from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { MESSAGES_PAGE_LENGTH } from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
 import { publishChatMessage } from '@/server/socketBus';
-import { getScopedSanctionResponse } from '@/helpers/management';
+import { getScopedSanctionResponse } from '@/entities/management/api/server';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {

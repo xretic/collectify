@@ -206,6 +206,10 @@ model Collection {
     Notification     Notification[]
     ModerationAction ModerationAction[]
     reports          Report[]
+
+    @@index([lowerCaseName])
+    @@index([userId])
+    @@index([private, category, createdAt])
 }
 
 model Comment {
@@ -218,6 +222,9 @@ model Comment {
     createdAt        DateTime           @default(now())
     ModerationAction ModerationAction[]
     reports          Report[]
+
+    @@index([collectionId, createdAt])
+    @@index([userId, createdAt])
 }
 
 model Like {
@@ -226,6 +233,9 @@ model Like {
     collectionId Int
     Collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
     createdAt    DateTime   @default(now())
+
+    @@index([collectionId])
+    @@index([userId])
 }
 
 model Item {

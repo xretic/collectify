@@ -1,0 +1,430 @@
+'use client';
+
+import Image from 'next/image';
+import { Button } from 'antd';
+import { LoginRounded, SvgIconComponent } from '@mui/icons-material';
+import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
+import { useUser } from '@/app/providers/UserProvider';
+import Avatar from '@mui/material/Avatar';
+import { useUIStore } from '@/shared/model/uiStore';
+import HoverMenu from '@/shared/ui/HoverMenu';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import { usePathname, useRouter } from 'next/navigation';
+import HomeIcon from '@mui/icons-material/Home';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SearchIcon from '@mui/icons-material/Search';
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import UserSearchBar from '@/shared/ui/UserSearchBar';
+import {
+    Badge,
+    Box,
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    SxProps,
+    Theme,
+    Tooltip,
+    useMediaQuery,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import styles from './index.module.css';
+import { SessionUserInResponse } from '@/types/UserInResponse';
+import MenuIcon from '@mui/icons-material/Menu';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import EggAltOutlinedIcon from '@mui/icons-material/EggAltOutlined';
+import EggAltIcon from '@mui/icons-material/EggAlt';
+import { useSocket } from '@/app/providers/SocketProvider';
+import { MessageInResponse } from '@/types/ChatInResponse';
+import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
+
+interface NavItem {
+    label: string;
+    href: string;
+    icon: SvgIconComponent;
+    iconOutlined: SvgIconComponent;
+    badge?: number;
+    hide?: boolean;
+}
+
+type SocketMessage = MessageInResponse & { chatId: number };
+
+const navItems = (user: SessionUserInResponse | null): NavItem[] => [
+    {
+        label: 'Home',
+        href: '/',
+        icon: HomeIcon,
+        iconOutlined: HomeOutlinedIcon,
+    },
+    {
+        label: 'Collections',
+        href: '/collections/my',
+        icon: EggAltIcon,
+        iconOutlined: EggAltOutlinedIcon,
+        hide: !user,
+    },
+    {
+        label: 'Profile',
+        href: '/users/me',
+        icon: AccountCircleIcon,
+        iconOutlined: AccountCircleOutlinedIcon,
+        hide: !user,
+    },
+    {
+        label: 'Notifications',
+        href: '/notifications',
+        icon: NotificationsIcon,
+        iconOutlined: NotificationsOutlinedIcon,
+        badge: user?.notifications,
+    },
+];
+
+const badgeSx: SxProps<Theme> = {
+    '.MuiBadge-badge': {
+        minWidth: 13,
+        height: 13,
+        fontSize: 10,
+        padding: 0,
+        transform: 'translate(20%, -20%)',
+    },
+};
+
+export default function NavBar() {
+    const { user, setUser, loading } = useUser();
+    const { anchorEl, setAnchorEl, searchBarOpened, setSearchBarOpened } = useUIStore();
+    const userId = user?.id;
+    const socket = useSocket();
+    const activeChatId = useActiveChatStore((state) => state.activeChatId);
+    const pathname = usePathname();
+    const buttonStyle = { width: 22, height: 22, marginLeft: 2 };
+
+    const usernameRef = useRef<HTMLSpanElement>(null);
+    const [width, setWidth] = useState(0);
+
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const navigation = navItems(user).filter((i) => !i.hide);
+    const isMobile = useMediaQuery('(max-width:1200px)');
+    const router = useRouter();
+
+    const drawerIcon = (
+        <IconButton
+            onClick={() => setDrawerOpen(true)}
+            sx={{ ml: 1, mt: 0.7, color: 'var(--text-color)' }}
+        >
+            <MenuIcon />
+        </IconButton>
+    );
+
+    const messagesIcon = (
+        <Tooltip title="Messages">
+            <IconButton
+                type="button"
+                onClick={() => router.replace('/chats')}
+                sx={{ p: '6px' }}
+                aria-label="messages"
+            >
+                <EmailOutlinedIcon sx={{ color: '#afafaf' }} />
+            </IconButton>
+        </Tooltip>
+    );
+
+    useEffect(() => {
+        if (usernameRef.current) {
+            setWidth(usernameRef.current.offsetWidth);
+        }
+    }, [user?.username]);
+
+    useEffect(() => {
+        if (!socket || !userId) return;
+
+        const onNewMessage = (message: SocketMessage) => {
+            if (message.userId === userId) return;
+            if (message.chatId === activeChatId) return;
+
+            setUser((prev) => (prev ? { ...prev, unreadMessages: prev.unreadMessages + 1 } : prev));
+        };
+
+        socket.on('message:new', onNewMessage);
+
+        return () => {
+            socket.off('message:new', onNewMessage);
+        };
+    }, [activeChatId, setUser, socket, userId]);
+
+    if (loading && !user) return null;
+
+    return (
+        <header>
+            <nav className={styles['nav-bar']}>
+                {isMobile &&
+                    user &&
+                    (user?.notifications > 0 ? (
+                        <Badge
+                            badgeContent={user?.notifications}
+                            max={99}
+                            color="error"
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            sx={{
+                                '.MuiBadge-badge': {
+                                    minWidth: 13,
+                                    height: 13,
+                                    fontSize: 10,
+                                    padding: 0,
+                                    transform: 'translate(0%, 50%)',
+                                },
+                            }}
+                        >
+                            {drawerIcon}
+                        </Badge>
+                    ) : (
+                        drawerIcon
+                    ))}
+
+                <Link href="/">
+                    <Image
+                        className={styles['nav-bar-icon']}
+                        src="/icon.svg"
+                        alt="Collectify icon"
+                        width={35}
+                        height={35}
+                    />
+                </Link>
+
+                <Link className={styles['nav-bar-title']} href="/">
+                    Collectify
+                </Link>
+
+                {user && (
+                    <nav className={styles['nav-bar-navigation']}>
+                        {navItems(user)
+                            .filter((item) => !item.hide)
+                            .map(
+                                ({
+                                    label,
+                                    href,
+                                    icon: Icon,
+                                    iconOutlined: IconOutlined,
+                                    badge,
+                                }) => {
+                                    const isActive = pathname === href;
+
+                                    const content =
+                                        badge !== undefined ? (
+                                            <Badge
+                                                badgeContent={badge}
+                                                max={99}
+                                                color="error"
+                                                anchorOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'right',
+                                                }}
+                                                sx={badgeSx}
+                                            >
+                                                {isActive ? (
+                                                    <Icon sx={buttonStyle} />
+                                                ) : (
+                                                    <IconOutlined sx={buttonStyle} />
+                                                )}
+                                            </Badge>
+                                        ) : isActive ? (
+                                            <Icon sx={buttonStyle} />
+                                        ) : (
+                                            <IconOutlined sx={buttonStyle} />
+                                        );
+
+                                    return (
+                                        <Link
+                                            key={href}
+                                            href={href}
+                                            className={
+                                                styles[
+                                                    isActive
+                                                        ? 'navigation-button-in'
+                                                        : 'navigation-button'
+                                                ]
+                                            }
+                                        >
+                                            {content}
+                                            <span className="nav-text ml-1">{label}</span>
+                                        </Link>
+                                    );
+                                },
+                            )}
+                    </nav>
+                )}
+
+                <div
+                    className={styles['nav-right']}
+                    style={{ display: 'flex', alignItems: 'center', gap: 15 }}
+                >
+                    {user && (
+                        <div
+                            className={styles['auth-panel-search-btn']}
+                            style={{
+                                right: isMobile ? 55 : 65 + width,
+                                top: 25,
+                            }}
+                        >
+                            {searchBarOpened ? (
+                                <UserSearchBar />
+                            ) : (
+                                <>
+                                    <Tooltip title="Create collection">
+                                        <IconButton
+                                            type="button"
+                                            onClick={() => router.replace('/collections/create')}
+                                            sx={{ p: '6px' }}
+                                            aria-label="search"
+                                        >
+                                            <AddIcon sx={{ color: '#afafaf' }} />
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    {user.unreadMessages > 0 ? (
+                                        <Badge
+                                            badgeContent={user?.unreadMessages}
+                                            max={99}
+                                            color="error"
+                                            anchorOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'right',
+                                            }}
+                                            sx={{
+                                                '.MuiBadge-badge': {
+                                                    minWidth: 16,
+                                                    height: 16,
+                                                    fontSize: 10,
+                                                    padding: 0,
+                                                    transform: 'translate(0%, -0%)',
+                                                },
+                                            }}
+                                        >
+                                            {messagesIcon}
+                                        </Badge>
+                                    ) : (
+                                        messagesIcon
+                                    )}
+
+                                    <Tooltip title="Search">
+                                        <IconButton
+                                            onClick={setSearchBarOpened}
+                                            type="button"
+                                            sx={{ p: '6px' }}
+                                            aria-label="search"
+                                        >
+                                            <SearchIcon sx={{ color: '#afafaf' }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                    {user ? (
+                        <div
+                            onClick={(event) =>
+                                setAnchorEl(
+                                    anchorEl === event.currentTarget ? null : event.currentTarget,
+                                )
+                            }
+                            className={styles['username-panel']}
+                            style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                        >
+                            <span ref={usernameRef} className={styles['nav-right-username']}>
+                                {user.username}
+                            </span>
+                            <Avatar
+                                alt={user.username}
+                                src={user.avatarUrl}
+                                sx={{ width: 36, height: 36 }}
+                            >
+                                {user.username}
+                            </Avatar>
+                            <HoverMenu />
+                        </div>
+                    ) : (
+                        <div className={styles['auth-panel']}>
+                            <Button
+                                className={styles['login-btn']}
+                                color="primary"
+                                variant="solid"
+                                icon={isMobile ? null : <LoginRounded />}
+                                size="large"
+                                href="/auth/login"
+                            >
+                                Login
+                            </Button>
+                            <Button
+                                color="primary"
+                                variant="outlined"
+                                icon={isMobile ? null : <ExitToAppOutlinedIcon />}
+                                size="large"
+                                href="/auth/register"
+                                style={{
+                                    backgroundColor: 'var(--container-color)',
+                                    color: 'var(--text-color)',
+                                    borderColor: 'var(--text-color)',
+                                }}
+                            >
+                                Register
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </nav>
+
+            <Drawer
+                slotProps={{
+                    paper: {
+                        sx: {
+                            backgroundColor: 'var(--bg-color)',
+                            color: 'var(--text-color)',
+                            borderRight: '1px solid rgba(255,255,255,0.08)',
+                        },
+                    },
+                }}
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+            >
+                <Box sx={{ width: 260 }}>
+                    <List>
+                        {navigation.map(
+                            ({ label, href, icon: Icon, iconOutlined: IconOutlined, badge }) => {
+                                const isActive = pathname === href;
+
+                                return (
+                                    <ListItem key={href} disablePadding>
+                                        <ListItemButton component={Link} href={href}>
+                                            <ListItemIcon style={{ color: 'var(--text-color)' }}>
+                                                {badge !== undefined ? (
+                                                    <Badge badgeContent={badge} color="error">
+                                                        {isActive ? <Icon /> : <IconOutlined />}
+                                                    </Badge>
+                                                ) : isActive ? (
+                                                    <Icon />
+                                                ) : (
+                                                    <IconOutlined />
+                                                )}
+                                            </ListItemIcon>
+                                            <ListItemText primary={label} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                );
+                            },
+                        )}
+                    </List>
+                </Box>
+            </Drawer>
+        </header>
+    );
+}

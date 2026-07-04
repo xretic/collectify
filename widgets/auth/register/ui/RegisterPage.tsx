@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { useUser } from '@/context/UserProvider';
+import { useUser } from '@/app/providers/UserProvider';
 import { useUIStore } from '@/shared/model/uiStore';
 import CircularProgress from '@mui/material/CircularProgress';
 import {
@@ -14,12 +14,12 @@ import {
     PASSWORD_MIN_LENGTH,
     USERNAME_MAX_LENGTH,
     USERNAME_MIN_LENGTH,
-} from '@/lib/constans';
+} from '@/shared/lib/constants';
 import styles from '@/app/auth/auth.module.css';
 import { IconButton, Snackbar, SnackbarCloseReason, Tooltip, useMediaQuery } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Image from 'next/image';
-import { githubAuth, googleAuth } from '@/lib/authMethods';
+import { githubAuth, googleAuth } from '@/shared/lib/authMethods';
 import CloseIcon from '@mui/icons-material/Close';
 import { authApi } from '@/entities/auth/api/authApi';
 import { SessionUserInResponse } from '@/types/UserInResponse';

@@ -1,6 +1,6 @@
-import { isProperInteger } from '@/helpers/isProperInteger';
-import { CHATS_PAGE_LENGTH } from '@/lib/constans';
-import { prisma } from '@/lib/prisma';
+import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
+import { CHATS_PAGE_LENGTH } from '@/shared/lib/constants';
+import { prisma } from '@/shared/lib/prisma';
 import { ChatInResponse } from '@/types/ChatInResponse';
 import { NextRequest, NextResponse } from 'next/server';
 

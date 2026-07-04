@@ -1,9 +1,9 @@
 'use client';
 
-import { CollectionStepper } from '@/components/features/collections/CollectionStepper';
-import { CollectionCreate } from '@/components/features/collections/CollectionCreate';
+import { CollectionStepper } from '@/features/collection/create/ui/CollectionStepper';
+import { CollectionCreate } from '@/features/collection/create/ui/CollectionCreate';
 import { useCollectionCreateStore } from '@/features/collection/create/model/collectionCreateStore';
-import { ItemCreate } from '@/components/features/items/ItemCreate';
+import { ItemCreate } from '@/features/item/create/ui/ItemCreate';
 
 export default function CreateCollection() {
     const { step } = useCollectionCreateStore();
