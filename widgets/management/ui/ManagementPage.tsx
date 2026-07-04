@@ -28,6 +28,10 @@ export default function ManagementPage() {
                 onRefresh={management.load}
                 onSelectUser={management.setSelectedId}
                 onSelectReport={management.setSelectedReportId}
+                onLoadMoreUsers={management.loadMoreUsers}
+                onLoadMoreReports={management.loadMoreReports}
+                usersHasMore={management.usersNextSkip !== null}
+                reportsHasMore={management.reportsNextSkip !== null}
             />
 
             <section className={styles.panel}>
@@ -82,7 +86,12 @@ export default function ManagementPage() {
                 )}
             </section>
 
-            <AuditPanel audit={management.audit} />
+            <AuditPanel
+                audit={management.audit}
+                busy={management.busy}
+                hasMore={management.auditNextSkip !== null}
+                onLoadMore={management.loadMoreAudit}
+            />
         </main>
     );
 }

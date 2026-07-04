@@ -2,6 +2,8 @@ import { requireManagementAccess } from '@/helpers/management';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
+const REPORTS_TAKE = 20;
+
 export async function GET(req: NextRequest) {
     try {
         const access = await requireManagementAccess(req);
@@ -9,6 +11,15 @@ export async function GET(req: NextRequest) {
 
         const { searchParams } = new URL(req.url);
         const status = searchParams.get('status');
+        const skip = Number(searchParams.get('skip') ?? 0);
+
+        if (!Number.isInteger(skip) || skip < 0) {
+            return NextResponse.json(
+                { message: 'skip must be a non-negative integer.' },
+                { status: 400 },
+            );
+        }
+
         const hiddenTargetIds = new Set<number>([access.context.session.userId]);
 
         if (access.context.isAdmin) {
@@ -24,14 +35,18 @@ export async function GET(req: NextRequest) {
             moderators.forEach((moderator) => hiddenTargetIds.add(moderator.userId));
         }
 
-        const reports = await prisma.report.findMany({
-            where: {
-                status: status === 'CLOSED' ? 'CLOSED' : 'OPEN',
-                targetUserId: { notIn: Array.from(hiddenTargetIds) },
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 10,
-            select: {
+        const where = {
+            status: (status === 'CLOSED' ? 'CLOSED' : 'OPEN') as 'OPEN' | 'CLOSED',
+            targetUserId: { notIn: Array.from(hiddenTargetIds) },
+        };
+
+        const [reports, total] = await prisma.$transaction([
+            prisma.report.findMany({
+                where,
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: REPORTS_TAKE,
+                select: {
                 id: true,
                 reporterId: true,
                 targetUserId: true,
@@ -85,8 +100,12 @@ export async function GET(req: NextRequest) {
                         createdAt: true,
                     },
                 },
-            },
-        });
+                },
+            }),
+            prisma.report.count({ where }),
+        ]);
+
+        const nextSkip = skip + reports.length < total ? skip + reports.length : null;
 
         return NextResponse.json(
             {
@@ -94,6 +113,8 @@ export async function GET(req: NextRequest) {
                     ...report,
                     reviewedAt: null,
                 })),
+                total,
+                nextSkip,
             },
             { status: 200 },
         );

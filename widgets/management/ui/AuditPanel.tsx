@@ -1,15 +1,19 @@
 'use client';
 
 import styles from '@/app/management/management.module.css';
+import { Button } from '@mui/material';
 import { AuditAction } from '@/entities/management/api/managementApi';
 import { formatDateTime } from '../lib/format';
 import { formatAuditAction } from '../lib/audit';
 
 type AuditPanelProps = {
     audit: AuditAction[];
+    busy: boolean;
+    hasMore: boolean;
+    onLoadMore: () => void;
 };
 
-export function AuditPanel({ audit }: AuditPanelProps) {
+export function AuditPanel({ audit, busy, hasMore, onLoadMore }: AuditPanelProps) {
     return (
         <section className={styles.audit}>
             <h2 className={styles.subtitle}>Audit</h2>
@@ -31,6 +35,18 @@ export function AuditPanel({ audit }: AuditPanelProps) {
                             </span>
                         </div>
                     ))
+                )}
+
+                {hasMore && (
+                    <Button
+                        variant="text"
+                        size="small"
+                        disabled={busy}
+                        onClick={onLoadMore}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Load more
+                    </Button>
                 )}
             </div>
         </section>

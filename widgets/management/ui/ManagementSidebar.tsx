@@ -22,6 +22,10 @@ type ManagementSidebarProps = {
     onRefresh: () => void;
     onSelectUser: (id: number) => void;
     onSelectReport: (id: number) => void;
+    onLoadMoreUsers: () => void;
+    onLoadMoreReports: () => void;
+    usersHasMore: boolean;
+    reportsHasMore: boolean;
 };
 
 export function ManagementSidebar({
@@ -37,6 +41,10 @@ export function ManagementSidebar({
     onRefresh,
     onSelectUser,
     onSelectReport,
+    onLoadMoreUsers,
+    onLoadMoreReports,
+    usersHasMore,
+    reportsHasMore,
 }: ManagementSidebarProps) {
     return (
         <aside className={styles.sidebar}>
@@ -108,6 +116,10 @@ export function ManagementSidebar({
             </form>
 
             <div className={styles.userList}>
+                {viewMode === 'users' && users.length === 0 && (
+                    <span className={styles.emptyState}>No users found</span>
+                )}
+
                 {viewMode === 'users' &&
                     users.map((item) => (
                         <button
@@ -156,6 +168,30 @@ export function ManagementSidebar({
                             </button>
                         ))
                     ))}
+
+                {viewMode === 'users' && usersHasMore && (
+                    <Button
+                        variant="text"
+                        size="small"
+                        disabled={busy}
+                        onClick={onLoadMoreUsers}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Load more
+                    </Button>
+                )}
+
+                {viewMode === 'reports' && reportsHasMore && (
+                    <Button
+                        variant="text"
+                        size="small"
+                        disabled={busy}
+                        onClick={onLoadMoreReports}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Load more
+                    </Button>
+                )}
             </div>
         </aside>
     );
