@@ -82,7 +82,15 @@ export default function ManagementPage() {
                 )}
             </section>
 
-            <AuditPanel audit={management.audit} />
+            {management.viewMode === 'users' && management.selected && (
+                <AuditPanel
+                    audit={management.audit}
+                    username={management.selected.username}
+                    loading={management.auditLoading}
+                    hasMore={management.auditNextSkip !== null}
+                    onLoadMore={management.loadMoreAudit}
+                />
+            )}
         </main>
     );
 }

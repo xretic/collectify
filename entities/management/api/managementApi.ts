@@ -150,8 +150,10 @@ export const managementApi = {
             .json<{ data: ManagementUser[]; total: number }>();
     },
 
-    audit() {
-        return api.get('api/management/audit').json<{ data: AuditAction[] }>();
+    audit(userId: number, skip = 0) {
+        return api
+            .get('api/management/audit', { searchParams: { userId, skip } })
+            .json<{ data: AuditAction[]; nextSkip: number | null }>();
     },
 
     reports(status: ReportStatus = 'OPEN') {

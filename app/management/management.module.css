@@ -314,6 +314,8 @@
 
 .auditList {
     margin-top: 16px;
+    max-height: 420px;
+    overflow-y: auto;
 }
 
 .auditRow {

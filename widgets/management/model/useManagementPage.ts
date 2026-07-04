@@ -22,6 +22,8 @@ export function useManagementPage() {
     const initialUserId = Number(searchParams.get('userId'));
     const [users, setUsers] = useState<ManagementUser[]>([]);
     const [audit, setAudit] = useState<AuditAction[]>([]);
+    const [auditNextSkip, setAuditNextSkip] = useState<number | null>(null);
+    const [auditLoading, setAuditLoading] = useState(false);
     const [reports, setReports] = useState<ManagementReport[]>([]);
     const [viewMode, setViewMode] = useState<ViewMode>('users');
     const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -61,14 +63,12 @@ export function useManagementPage() {
         setError('');
 
         try {
-            const [usersData, auditData, reportsData] = await Promise.all([
+            const [usersData, reportsData] = await Promise.all([
                 managementApi.users(query, 0, targetUserId),
-                managementApi.audit(),
                 managementApi.reports('OPEN'),
             ]);
 
             setUsers(usersData.data);
-            setAudit(auditData.data);
             setReports(reportsData.data);
             setSelectedId((current) =>
                 usersData.data.some((item) => item.id === current)
@@ -100,6 +100,50 @@ export function useManagementPage() {
         setMessageNextSkip(0);
         setHistoryOpen(false);
     }, [selected?.id]);
+
+    useEffect(() => {
+        setAudit([]);
+        setAuditNextSkip(null);
+
+        if (!selected) return;
+
+        let cancelled = false;
+        setAuditLoading(true);
+
+        managementApi
+            .audit(selected.id, 0)
+            .then((data) => {
+                if (cancelled) return;
+                setAudit(data.data);
+                setAuditNextSkip(data.nextSkip);
+            })
+            .catch(async (err) => {
+                if (cancelled) return;
+                setError(await getApiErrorMessage(err));
+            })
+            .finally(() => {
+                if (!cancelled) setAuditLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [selected?.id]);
+
+    const loadMoreAudit = async () => {
+        if (!selected || auditNextSkip === null || auditLoading) return;
+        setAuditLoading(true);
+
+        try {
+            const data = await managementApi.audit(selected.id, auditNextSkip);
+            setAudit((prev) => [...prev, ...data.data]);
+            setAuditNextSkip(data.nextSkip);
+        } catch (err) {
+            setError(await getApiErrorMessage(err));
+        } finally {
+            setAuditLoading(false);
+        }
+    };
 
     const reloadAfterAction = async () => {
         await load();
@@ -301,6 +345,9 @@ export function useManagementPage() {
 
     return {
         audit,
+        auditNextSkip,
+        auditLoading,
+        loadMoreAudit,
         busy,
         canManage,
         collectionHistory,
