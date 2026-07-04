@@ -30,10 +30,6 @@ export function useManagementPage() {
     );
     const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
     const [query, setQuery] = useState('');
-    const [debouncedQuery, setDebouncedQuery] = useState('');
-    const [usersNextSkip, setUsersNextSkip] = useState<number | null>(null);
-    const [reportsNextSkip, setReportsNextSkip] = useState<number | null>(null);
-    const [auditNextSkip, setAuditNextSkip] = useState<number | null>(null);
     const [scope, setScope] = useState<SanctionScope>('ACCOUNT');
     const [duration, setDuration] = useState<Duration>('1d');
     const [reason, setReason] = useState('');
@@ -66,17 +62,14 @@ export function useManagementPage() {
 
         try {
             const [usersData, auditData, reportsData] = await Promise.all([
-                managementApi.users(debouncedQuery, 0, targetUserId),
-                managementApi.audit(0),
-                managementApi.reports('OPEN', 0),
+                managementApi.users(query, 0, targetUserId),
+                managementApi.audit(),
+                managementApi.reports('OPEN'),
             ]);
 
             setUsers(usersData.data);
-            setUsersNextSkip(usersData.nextSkip);
             setAudit(auditData.data);
-            setAuditNextSkip(auditData.nextSkip);
             setReports(reportsData.data);
-            setReportsNextSkip(reportsData.nextSkip);
             setSelectedId((current) =>
                 usersData.data.some((item) => item.id === current)
                     ? current
@@ -92,64 +85,11 @@ export function useManagementPage() {
         } finally {
             setBusy(false);
         }
-    }, [debouncedQuery, targetUserId]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setDebouncedQuery(query), 300);
-        return () => clearTimeout(timer);
-    }, [query]);
+    }, [query, targetUserId]);
 
     useEffect(() => {
         if (!loading && canManage) void load();
     }, [loading, canManage, load]);
-
-    const loadMoreUsers = useCallback(async () => {
-        if (usersNextSkip === null || busy) return;
-        setBusy(true);
-        setError('');
-
-        try {
-            const data = await managementApi.users(debouncedQuery, usersNextSkip, targetUserId);
-            setUsers((prev) => [...prev, ...data.data]);
-            setUsersNextSkip(data.nextSkip);
-        } catch (err) {
-            setError(await getApiErrorMessage(err));
-        } finally {
-            setBusy(false);
-        }
-    }, [usersNextSkip, busy, debouncedQuery, targetUserId]);
-
-    const loadMoreReports = useCallback(async () => {
-        if (reportsNextSkip === null || busy) return;
-        setBusy(true);
-        setError('');
-
-        try {
-            const data = await managementApi.reports('OPEN', reportsNextSkip);
-            setReports((prev) => [...prev, ...data.data]);
-            setReportsNextSkip(data.nextSkip);
-        } catch (err) {
-            setError(await getApiErrorMessage(err));
-        } finally {
-            setBusy(false);
-        }
-    }, [reportsNextSkip, busy]);
-
-    const loadMoreAudit = useCallback(async () => {
-        if (auditNextSkip === null || busy) return;
-        setBusy(true);
-        setError('');
-
-        try {
-            const data = await managementApi.audit(auditNextSkip);
-            setAudit((prev) => [...prev, ...data.data]);
-            setAuditNextSkip(data.nextSkip);
-        } catch (err) {
-            setError(await getApiErrorMessage(err));
-        } finally {
-            setBusy(false);
-        }
-    }, [auditNextSkip, busy]);
 
     useEffect(() => {
         setCollectionHistory([]);
@@ -380,12 +320,6 @@ export function useManagementPage() {
         loadComments,
         loadMessageHistory,
         loadMoreMessages,
-        loadMoreUsers,
-        loadMoreReports,
-        loadMoreAudit,
-        usersNextSkip,
-        reportsNextSkip,
-        auditNextSkip,
         loading,
         messageHistory,
         messageNextSkip,

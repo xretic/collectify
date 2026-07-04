@@ -2,7 +2,7 @@ import { getActiveSanctionsForUsers, requireManagementAccess } from '@/helpers/m
 import { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserRolesMap } from '@/helpers/getUserRoles';
+import { getUserRoles } from '@/helpers/getUserRoles';
 
 const TAKE = 30;
 
@@ -83,28 +83,25 @@ export async function GET(req: NextRequest) {
         ]);
 
         const userIds = users.map((user) => user.id);
-        const [sanctions, rolesMap] = await Promise.all([
-            getActiveSanctionsForUsers(userIds),
-            getUserRolesMap(userIds),
-        ]);
+        const sanctions = await getActiveSanctionsForUsers(userIds);
 
-        const data = users.map((user) => ({
-            ...user,
-            roles: rolesMap.get(user.id) ?? [],
-            activeSanctions: sanctions
-                .filter((sanction) => sanction.userId === user.id)
-                .map((sanction) => ({
-                    id: sanction.id,
-                    scope: sanction.scope,
-                    reason: sanction.reason,
-                    expiresAt: sanction.expiresAt,
-                    createdAt: sanction.createdAt,
-                })),
-        }));
+        const data = await Promise.all(
+            users.map(async (user) => ({
+                ...user,
+                roles: await getUserRoles(user.id),
+                activeSanctions: sanctions
+                    .filter((sanction) => sanction.userId === user.id)
+                    .map((sanction) => ({
+                        id: sanction.id,
+                        scope: sanction.scope,
+                        reason: sanction.reason,
+                        expiresAt: sanction.expiresAt,
+                        createdAt: sanction.createdAt,
+                    })),
+            })),
+        );
 
-        const nextSkip = skip + users.length < total ? skip + users.length : null;
-
-        return NextResponse.json({ data, total, nextSkip }, { status: 200 });
+        return NextResponse.json({ data, total }, { status: 200 });
     } catch (e) {
         console.error(e);
         return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });

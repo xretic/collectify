@@ -39,8 +39,6 @@ model User {
     reportsReceived      Report[]           @relation("ReportsReceived")
     reportsReviewed      Report[]           @relation("ReportsReviewed")
     impersonatedSessions Session[]          @relation("ImpersonatedSessions")
-
-    @@index([createdAt])
 }
 
 model Admin {

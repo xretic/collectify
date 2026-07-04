@@ -147,21 +147,19 @@ export const managementApi = {
                     ...(userId ? { userId } : {}),
                 },
             })
-            .json<{ data: ManagementUser[]; total: number; nextSkip: number | null }>();
+            .json<{ data: ManagementUser[]; total: number }>();
     },
 
-    audit(skip = 0) {
-        return api
-            .get('api/management/audit', { searchParams: { skip } })
-            .json<{ data: AuditAction[]; nextSkip: number | null }>();
+    audit() {
+        return api.get('api/management/audit').json<{ data: AuditAction[] }>();
     },
 
-    reports(status: ReportStatus = 'OPEN', skip = 0) {
+    reports(status: ReportStatus = 'OPEN') {
         return api
             .get('api/management/reports', {
-                searchParams: { status, skip },
+                searchParams: { status },
             })
-            .json<{ data: ManagementReport[]; total: number; nextSkip: number | null }>();
+            .json<{ data: ManagementReport[] }>();
     },
 
     reviewReport(
