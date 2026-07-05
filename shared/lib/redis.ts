@@ -11,8 +11,23 @@ export type RedisKV = {
 };
 
 const useUpstash = !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN;
+const hasRedisUrl = !!process.env.REDIS_URL;
 
 let redis: RedisKV;
+
+const noopRedis: RedisKV = {
+    async get() {
+        return null;
+    },
+    async set() {},
+    async del() {
+        return 0;
+    },
+    async getJson() {
+        return null;
+    },
+    async setJson() {},
+};
 
 if (useUpstash) {
     const upstash = new UpstashRedis({
@@ -43,7 +58,7 @@ if (useUpstash) {
             await this.set(key, JSON.stringify(value), opts);
         },
     };
-} else {
+} else if (hasRedisUrl) {
     const client = new IORedis(process.env.REDIS_URL!);
 
     redis = {
@@ -69,6 +84,8 @@ if (useUpstash) {
             opts?.ex ? await client.set(key, raw, 'EX', opts.ex) : await client.set(key, raw);
         },
     };
+} else {
+    redis = noopRedis;
 }
 
 export { redis };
