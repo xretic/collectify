@@ -11,14 +11,29 @@ export async function withCache<T>(
     ttlSeconds: number,
     fetcher: () => Promise<T>,
 ): Promise<T> {
-    const cached = await redis.getJson<T>(key);
-    if (cached !== null) return cached;
+    try {
+        const cached = await redis.getJson<T>(key);
+        if (cached !== null) return cached;
+    } catch (e) {
+        console.error('[cache] read failed, serving fresh:', e);
+        return fetcher();
+    }
 
     const value = await fetcher();
-    await redis.setJson(key, value, { ex: ttlSeconds });
+
+    try {
+        await redis.setJson(key, value, { ex: ttlSeconds });
+    } catch (e) {
+        console.error('[cache] write failed:', e);
+    }
+
     return value;
 }
 
 export async function invalidateCache(key: string): Promise<void> {
-    await redis.del(key);
+    try {
+        await redis.del(key);
+    } catch (e) {
+        console.error('[cache] invalidate failed:', e);
+    }
 }

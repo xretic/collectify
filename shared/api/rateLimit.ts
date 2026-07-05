@@ -65,7 +65,15 @@ export async function rateLimit(
     if (!limiter) return null;
 
     const identifier = extraKey ? `${getClientIp(req)}:${extraKey}` : getClientIp(req);
-    const { success, limit, remaining, reset } = await limiter.limit(identifier);
+
+    let success: boolean, limit: number, remaining: number, reset: number;
+    try {
+        ({ success, limit, remaining, reset } = await limiter.limit(identifier));
+    } catch (e) {
+        // Fail open: don't 500 the request if the rate-limit backend is down.
+        console.error('[rateLimit] limiter failed, allowing request:', e);
+        return null;
+    }
 
     if (success) return null;
 
