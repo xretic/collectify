@@ -39,7 +39,7 @@ export const collectionApi = {
     async search(params: CollectionSearchParams) {
         const searchParams = buildCollectionSearchParams(params);
         const res = await api
-            .get(`api/collections/search/?${searchParams.toString()}`)
+            .get(`api/collections/search?${searchParams.toString()}`)
             .json<{ data: CollectionFieldProps[] }>();
 
         return res.data;
