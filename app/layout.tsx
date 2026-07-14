@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             <SocketProvider>
                                 <NavBar />
                                 <GlobalLoader />
-                                {children}
+                                <div className="app-content">{children}</div>
                                 <Footer />
                             </SocketProvider>
                         </UserProvider>

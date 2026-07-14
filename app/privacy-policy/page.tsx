@@ -69,15 +69,6 @@ export default function PrivacyPolicyPage() {
                     to create your account.
                 </p>
             </section>
-
-            <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Your rights</h2>
-                <p className={styles.text}>
-                    You can request deletion or export of your data at any time by contacting us
-                    at{' '}
-                    <a href="mailto:privacy@collectify.example">privacy@collectify.example</a>.
-                </p>
-            </section>
         </div>
     );
 }
