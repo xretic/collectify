@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import NavBar from '@/widgets/layout/ui/NavBar';
+import Footer from '@/widgets/layout/ui/Footer';
 import localFont from 'next/font/local';
 import './globals.css';
 import { UserProvider } from '@/app/providers/UserProvider';
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                 <NavBar />
                                 <GlobalLoader />
                                 {children}
+                                <Footer />
                             </SocketProvider>
                         </UserProvider>
                     </ThemeProvider>

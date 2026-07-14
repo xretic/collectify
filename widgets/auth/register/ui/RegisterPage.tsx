@@ -21,6 +21,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import Image from 'next/image';
 import { githubAuth, googleAuth } from '@/shared/lib/authMethods';
 import CloseIcon from '@mui/icons-material/Close';
+import Link from 'next/link';
 import { authApi } from '@/entities/auth/api/authApi';
 import { SessionUserInResponse } from '@/types/UserInResponse';
 
@@ -325,6 +326,11 @@ export default function RegisterPage() {
                         </Button>
                     </Tooltip>
                 </div>
+
+                <p className={styles.paragraph} style={{ fontSize: 13 }}>
+                    By signing up you agree to our{' '}
+                    <Link href="/privacy-policy">Privacy Policy</Link>.
+                </p>
             </Box>
             <Snackbar
                 open={errorMsg !== ''}

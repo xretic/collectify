@@ -1,0 +1,43 @@
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+    color: var(--text-color);
+    font-family: var(--font-rubik-medium), rubik-medium;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 34px;
+    margin-bottom: 4px;
+}
+
+.updated {
+    color: var(--soft-text);
+    font-size: 13px;
+    margin-bottom: 24px;
+}
+
+.section {
+    margin-top: 24px;
+}
+
+.sectionTitle {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.text {
+    color: var(--soft-text);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.text ul {
+    margin: 8px 0 0 20px;
+}
+
+.text a {
+    color: var(--text-color);
+}

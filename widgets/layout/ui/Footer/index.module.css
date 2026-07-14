@@ -1,0 +1,22 @@
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 10px;
+    background-color: var(--container-color);
+    border-top: 1px solid var(--border-color);
+    box-sizing: border-box;
+}
+
+.footer-link {
+    color: var(--soft-text);
+    font-family: var(--font-rubik-medium), rubik-medium;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: var(--text-color);
+}
