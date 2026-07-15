@@ -55,7 +55,7 @@ export default function PrivacyPolicyPage() {
                 <h2 className={styles.sectionTitle}>Where your data is stored</h2>
                 <p className={styles.text}>
                     The app is hosted on Vercel. Account and content data is stored in our
-                    PostgreSQL database. Uploaded images (avatars, banners, item images) are
+                    database. Uploaded images (avatars, banners, item images) are
                     stored with our media hosting provider, Uploadcare.
                 </p>
             </section>
