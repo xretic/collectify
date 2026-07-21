@@ -1,4 +1,4 @@
-import MyProfilePage from '@/widgets/user/me/ui/MyProfilePage';
+import MyProfilePage from '@/views/my-profile/ui/MyProfilePage';
 
 export default function MyProfileRoute() {
     return <MyProfilePage />;

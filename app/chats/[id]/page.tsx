@@ -1,6 +1,6 @@
 'use client';
 
-import ChatsPage from '@/widgets/chat/list/ui/ChatsPage';
+import ChatsPage from '@/views/chats/ui/ChatsPage';
 import { useParams } from 'next/navigation';
 
 export default function ChatRoute() {

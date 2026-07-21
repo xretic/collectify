@@ -1,4 +1,4 @@
-import ChatsPage from '@/widgets/chat/list/ui/ChatsPage';
+import ChatsPage from '@/views/chats/ui/ChatsPage';
 
 export default function ChatsRoute() {
     return <ChatsPage />;

@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { isValidUrl } from '@/shared/lib/validation/isValidUrl';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/app/providers/UserProvider';
+import { useUser } from '@/entities/user/model/UserProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { handleUpload } from '@/shared/lib/handleUpload';
 import { collectionApi } from '@/entities/collection/api/collectionApi';

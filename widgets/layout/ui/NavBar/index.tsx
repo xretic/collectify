@@ -4,10 +4,10 @@ import Image from 'next/image';
 import { Button } from 'antd';
 import { LoginRounded, SvgIconComponent } from '@mui/icons-material';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
-import { useUser } from '@/app/providers/UserProvider';
+import { useUser } from '@/entities/user/model/UserProvider';
 import Avatar from '@mui/material/Avatar';
 import { useUIStore } from '@/shared/model/uiStore';
-import HoverMenu from '@/shared/ui/HoverMenu';
+import HoverMenu from '@/widgets/layout/ui/HoverMenu';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { usePathname, useRouter } from 'next/navigation';
 import HomeIcon from '@mui/icons-material/Home';
@@ -18,7 +18,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import UserSearchBar from '@/shared/ui/UserSearchBar';
+import UserSearchBar from '@/widgets/layout/ui/UserSearchBar';
 import {
     Badge,
     Box,
@@ -41,7 +41,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import EggAltOutlinedIcon from '@mui/icons-material/EggAltOutlined';
 import EggAltIcon from '@mui/icons-material/EggAlt';
-import { useSocket } from '@/app/providers/SocketProvider';
+import { useSocket } from '@/entities/chat/model/SocketProvider';
 import { MessageInResponse } from '@/types/ChatInResponse';
 import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
 

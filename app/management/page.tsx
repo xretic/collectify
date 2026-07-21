@@ -1,4 +1,4 @@
-import ManagementPage from '@/widgets/management/ui/ManagementPage';
+import ManagementPage from '@/views/management/ui/ManagementPage';
 import { Suspense } from 'react';
 
 export default function ManagementRoute() {

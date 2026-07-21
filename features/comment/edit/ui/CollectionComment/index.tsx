@@ -2,7 +2,7 @@ import styles from './index.module.css';
 import moment from 'moment';
 import { useUIStore } from '@/shared/model/uiStore';
 import CommentHoverMenu from '@/features/comment/edit/ui/CommentHoverMenu';
-import { useUser } from '@/app/providers/UserProvider';
+import { useUser } from '@/entities/user/model/UserProvider';
 import { useCommentEditStore } from '@/features/comment/edit/model/commentEditStore';
 import { ConfigProvider } from 'antd';
 import { COMMENT_MAX_LENGTH } from '@/shared/lib/constants';

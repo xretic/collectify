@@ -1,4 +1,4 @@
-import SettingsPage from '@/widgets/settings/ui/SettingsPage';
+import SettingsPage from '@/views/settings/ui/SettingsPage';
 
 export default function SettingsRoute() {
     return <SettingsPage />;

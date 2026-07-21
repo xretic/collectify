@@ -1,6 +1,6 @@
 import { Avatar, IconButton, Tooltip } from '@mui/material';
 import styles from './index.module.css';
-import { useUser } from '@/app/providers/UserProvider';
+import { useUser } from '@/entities/user/model/UserProvider';
 import { Loader } from '@/shared/ui/Loader';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';

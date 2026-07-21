@@ -1,4 +1,4 @@
-import MyCollectionsPage from '@/widgets/collection/my/ui/MyCollectionsPage';
+import MyCollectionsPage from '@/views/my-collections/ui/MyCollectionsPage';
 
 export default function MyCollectionsRoute() {
     return <MyCollectionsPage />;

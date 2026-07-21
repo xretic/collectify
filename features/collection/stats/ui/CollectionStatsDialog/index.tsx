@@ -9,7 +9,7 @@ import {
     DialogContentText,
 } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useUser } from '@/app/providers/UserProvider';
+import { useUser } from '@/entities/user/model/UserProvider';
 import { Loader } from '@/shared/ui/Loader';
 import CloseIcon from '@mui/icons-material/Close';
 import { CustomLegend } from './components/CustomLegend';

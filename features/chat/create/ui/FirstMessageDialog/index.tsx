@@ -10,7 +10,7 @@ import { UserInResponse } from '@/types/UserInResponse';
 import { useFirstMessageDialogStore } from '@/features/chat/create/model/firstMessageDialogStore';
 import TextArea from 'antd/es/input/TextArea';
 import { chatApi } from '@/entities/chat/api/chatApi';
-import { useUser } from '@/app/providers/UserProvider';
+import { useUser } from '@/entities/user/model/UserProvider';
 import { getMutePlaceholder } from '@/shared/lib/restrictions';
 
 export default function FirstMessageDialog({ user: targetUser }: { user: UserInResponse }) {
