@@ -1,0 +1,26 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 22px;
+    margin-top: 22px;
+    border-top: 1px solid var(--border-color);
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 18px;
+}
+
+.hint {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--soft-text);
+}

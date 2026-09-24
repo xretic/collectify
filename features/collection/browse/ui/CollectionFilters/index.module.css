@@ -1,0 +1,45 @@
+/* Mobile: one column (center first). Desktop: primary | center | secondary on one row. */
+.filters {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        'center'
+        'primary'
+        'secondary';
+    align-items: center;
+    gap: 12px;
+}
+
+.primary {
+    grid-area: primary;
+}
+
+.center {
+    grid-area: center;
+    justify-self: center;
+}
+
+.secondary {
+    grid-area: secondary;
+    display: flex;
+    gap: 12px;
+}
+
+@media (min-width: 1200px) {
+    .filters {
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-areas: 'primary center secondary';
+    }
+
+    .secondary {
+        justify-self: end;
+    }
+}
+
+/* Slots whose content is marked desktop-only collapse entirely on phones (no empty grid row). */
+@media (max-width: 600px) {
+    .primary:has(> [data-desktop-only]),
+    .center:has(> [data-desktop-only]) {
+        display: none;
+    }
+}

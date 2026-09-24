@@ -1,0 +1,24 @@
+.section {
+    max-width: 1150px;
+    margin: 20px auto 0;
+    padding: 0 16px;
+}
+
+.tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.divider {
+    margin-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Phone: tabs share the full width, labels stay visible. */
+@media (max-width: 600px) {
+    .tabs > * {
+        flex: 1 1 0;
+        min-width: 0 !important;
+        padding-inline: 8px !important;
+    }
+}

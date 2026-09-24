@@ -1,0 +1,58 @@
+.close {
+    position: absolute !important;
+    top: 8px;
+    right: 8px;
+}
+
+.intro {
+    color: var(--soft-text) !important;
+}
+
+.chart {
+    padding: 16px 0;
+}
+
+.axis {
+    font-size: 12px;
+}
+
+.axis :global(.recharts-cartesian-axis-tick-value) {
+    fill: var(--soft-text);
+}
+
+.tooltip :global(.recharts-default-tooltip) {
+    color: var(--text-color);
+    background-color: var(--container-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.legend {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    font-size: 12px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.legendLabel {
+    color: var(--text-color);
+}
+
+.likes {
+    color: #ff2b2e;
+}
+
+.comments {
+    color: #8ab3ff;
+}
+
+.favorites {
+    color: #ff9800;
+}

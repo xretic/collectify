@@ -1,0 +1,34 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1450px;
+    margin: 50px auto 0;
+    padding: 25px 30px;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 19px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.more {
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 700px) {
+    .section {
+        padding: 18px 14px;
+    }
+}

@@ -1,127 +1,108 @@
-### Collectify
+# Collectify
 
-Collectify is a full-stack web application for creating, managing, and
-sharing collections of items.
+Collectify is a full-stack web application for creating, managing, and sharing collections of items.
 
----
+## Features
 
-### Collections & Items
+**Collections & items**
 
-- Create collections with predefined and custom categories
-- Add, update, delete, and reorder items inside a collection
-- Support for extensible item metadata (title, description, optional
-  fields)
-- Messenger with WebSocket
+- Collections with predefined categories, public or private
+- Add, edit, delete and drag-and-drop reorder items
+- Likes, favorites, comments, per-collection statistics
 
-### Social Layer
+**Social**
 
-- Like collections
-- Add collections to favorites
-- Follow users
-- Notification system for social interactions (likes, favorites,
-  follows)
+- Follow users, direct messages in realtime (Socket.IO or Pusher)
+- Notifications for follows, likes, favorites, comments and moderation outcomes
 
-### Discovery
+**Discovery**
 
-- Home feed with pagination
-- Sorting (popular, newest, etc.)
-- Category filtering
-- Search
+- Home feed (followed authors first), category filter, search, sorting
+- Filters and pagination live in the URL, so every view is shareable
 
----
+**Moderation**
+
+- Reports on users, messages, comments and collections, with an evidence snapshot
+- FIFO review queue with context (conversation around a message, prior reports, active sanctions)
+- Atomic report review: sanctions never weaken a stronger one, duplicates close together
+- Sanctions (account ban, comments/messenger mute), roles, audit log, impersonation
 
 ## Screenshots
 
-### Home Feed
+| Home feed                                      | Collection                                                 |
+| ---------------------------------------------- | ---------------------------------------------------------- |
+| ![Home Feed](docs/screenshots/3-home-feed.png) | ![Collection Page](docs/screenshots/1-collection-page.png) |
 
-![Home Feed](docs/screenshots/3-home-feed.png)
+| Chats                                  | Notifications                                          |
+| -------------------------------------- | ------------------------------------------------------ |
+| ![Chats](docs/screenshots/5-chats.png) | ![Notifications](docs/screenshots/2-notifications.png) |
 
-### Collection Page
+## Architecture
 
-![Collection Page](docs/screenshots/1-collection-page.png)
+The code follows [Feature-Sliced Design](https://feature-sliced.design); a layer may import only from
+layers below it.
 
-### Chats
+| Layer       | Contents                                                                                  |
+| ----------- | ----------------------------------------------------------------------------------------- |
+| `app/`      | Next.js routing only: pages, layouts, thin API route handlers                             |
+| `views/`    | Page compositions                                                                         |
+| `widgets/`  | Large self-contained blocks (navbar, chat window, comments section…)                      |
+| `features/` | User actions: UI + `server/` services (report review, sanctions, follow…)                 |
+| `entities/` | Domain models, DTO types, client `api/`, server `server/` queries, presentational `ui/`   |
+| `shared/`   | Framework glue: `server/` (db, http, rate limit, cache), UI primitives, validation, theme |
 
-![Chats](docs/screenshots/5-chats.png)
+Conventions:
 
-### Collection Create
+- Every API route is `route(handler)` + a zod schema (`readBody`/`readQuery`) + a service call.
+  Errors are thrown as `ApiError` and mapped to JSON responses.
+- Server-only modules start with `import 'server-only'`.
+- Styles live in the component's `index.module.css`. One MUI theme (`shared/config/theme.ts`)
+  holds global component overrides; colours are CSS variables from `app/globals.css`.
+  No style objects in `.tsx` files.
+- Server state is React Query; zustand is used only for tiny cross-tree UI state.
 
-![Collection Create](docs/screenshots/4-create-collection.png)
+## Tech stack
 
-### Notifications
+Next.js 16 (App Router, custom server) · React 19 · TypeScript · MUI 7 · TanStack Query ·
+zustand · zod · Prisma 7 (PostgreSQL / Neon) · Redis (Upstash or ioredis) · Socket.IO / Pusher ·
+dnd-kit · Vitest
 
-![Notifications](docs/screenshots/2-notifications.png)
+## Getting started
 
----
-
-### Architecture Overview
-
-The application follows a modular, feature-oriented architecture built
-on top of Next.js App Router.
-
-High-level Flow
-
----
-
-### Tech Stack
-
-### Frontend
-
-- Next.js
-- TypeScript
-- MUI + Ant Design
-- Zustand
-- dnd-kit
-- TanStack Query
-
-### Backend
-
-- Next.js Route Handlers
-- Prisma ORM
-- PostgreSQL
-- Redis
-
-### Infrastructure
-
-- Environment-based configuration
-- Ready for deployment on Vercel
-
----
-
-### Getting Started
-
-### Prerequisites
+Requirements: Node.js ≥ 20.9, PostgreSQL.
 
 ```bash
-- Node.js ≥ 20.9
-- PostgreSQL
-```
-
-### Installation
-
-```bash
-git clone https://github.com/xretic/collectify.git cd collectify
+git clone https://github.com/xretic/collectify.git
+cd collectify
+cp .env.example .env   # fill in DATABASE_URL at least
 npm install
+npm run db:migrate
 npm run dev
 ```
 
----
-
-### Realtime Chat
-
-Real-time chat is served by the application itself. `npm run dev` and
-`npm run start` run `server.mjs`, which starts Next.js and Socket.IO on the
-same origin at `/socketio`.
-
-On Vercel, custom Socket.IO servers are not used by the platform runtime. Set
-these Pusher Channels variables in Vercel instead:
+Grant yourself admin rights (there is intentionally no HTTP endpoint for this):
 
 ```bash
-PUSHER_APP_ID=
-PUSHER_SECRET=
-NEXT_PUBLIC_PUSHER_KEY=
-NEXT_PUBLIC_PUSHER_CLUSTER=
+npm run admin -- grant <username|id>
 ```
 
-The client automatically uses Pusher when `NEXT_PUBLIC_PUSHER_KEY` and
-`NEXT_PUBLIC_PUSHER_CLUSTER` exist. Otherwise it uses local Socket.IO.
+## Scripts
+
+| Script                    | What it does                                        |
+| ------------------------- | --------------------------------------------------- |
+| `npm run dev`             | Next.js + Socket.IO on one origin (`server.mjs`)    |
+| `npm run build` / `start` | Production build / server                           |
+| `npm run lint`            | ESLint                                              |
+| `npm run typecheck`       | Route types + `tsc`                                 |
+| `npm run format:check`    | Prettier                                            |
+| `npm test`                | Vitest (integration tests need `TEST_DATABASE_URL`) |
+| `npm run db:migrate`      | Apply migrations (`prisma migrate deploy`)          |
+| `npm run admin`           | Grant / revoke / list admins                        |
+
+## Realtime
+
+`npm run dev` and `npm start` run `server.mjs`, which serves Next.js and Socket.IO on the same
+origin (`/socketio`). Sockets authenticate with the session cookie directly against the database.
+
+On Vercel the custom server is not used — set the `PUSHER_*` / `NEXT_PUBLIC_PUSHER_*` variables and
+the client switches to Pusher automatically.

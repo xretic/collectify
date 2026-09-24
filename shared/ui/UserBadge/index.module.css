@@ -1,0 +1,20 @@
+.badge {
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 22px !important;
+}
+
+.Verified {
+    background-color: #208fff;
+    padding: 2px;
+}
+
+.Moderator {
+    background-color: #14b8a6;
+    padding: 3px;
+}
+
+.Admin {
+    background-color: #f59e0b;
+    padding: 1px;
+}

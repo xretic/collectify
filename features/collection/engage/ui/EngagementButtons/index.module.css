@@ -1,0 +1,13 @@
+.actions {
+    display: flex;
+    gap: 7px;
+    margin-top: 25px;
+}
+
+.like {
+    color: var(--danger) !important;
+}
+
+.favorite {
+    color: #faad14 !important;
+}

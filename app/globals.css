@@ -1,5 +1,91 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+/* ---------------------------------------------------------------------------
+   Reset (the subset of Tailwind's preflight the UI was built on)
+   --------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+}
+
+html {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+ol,
+ul,
+menu {
+    list-style: none;
+}
+
+img,
+svg,
+video,
+canvas {
+    display: block;
+    vertical-align: middle;
+}
+
+img,
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    border-radius: 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+   --------------------------------------------------------------------------- */
+:root,
+:root[data-theme='light'] {
+    --bg-color: #ffffff;
+    --container-color: #ffffff;
+    --border-color: #d1d5db;
+    --text-color: #343a43;
+    --soft-text: #505050;
+    --muted-icon: #afafaf;
+    --accent: #208fff;
+    --danger: #d32f2f;
+    --favorite: #ffc247;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 24px;
+    color-scheme: light;
+}
 
 :root[data-theme='dark'] {
     --bg-color: #2b303b;
@@ -7,16 +93,8 @@
     --border-color: rgb(90, 90, 90);
     --text-color: #ffffff;
     --soft-text: #c0c0c0;
-    --accent: #208fff;
-}
-
-:root[data-theme='light'] {
-    --bg-color: #ffffff;
-    --container-color: #ffffff;
-    --border-color: #d1d5db;
-    --text-color: #343a43;
-    --soft-text: #505050;
-    --accent: #208fff;
+    --muted-icon: #afafaf;
+    color-scheme: dark;
 }
 
 body {
@@ -31,32 +109,9 @@ body {
     flex: 1 0 auto;
 }
 
-.ant-input-show-count-suffix {
-    color: var(--text-color) !important;
-}
-
-.ant-input-textarea-show-count .ant-input-data-count {
-    color: var(--text-color) !important;
-}
-
-.MuiDialogContent-root {
-    scrollbar-width: thin;
-    scrollbar-color: var(--container-color) transparent;
-}
-
-.MuiDialogContent-root::-webkit-scrollbar {
-    width: 8px;
-}
-
-.MuiDialogContent-root::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.MuiDialogContent-root::-webkit-scrollbar-thumb {
-    background-color: var(--container-color);
-    border-radius: 8px;
-}
-
+/* ---------------------------------------------------------------------------
+   Scrollbars
+   --------------------------------------------------------------------------- */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -72,4 +127,9 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--soft-text);
+}
+
+.MuiDialogContent-root {
+    scrollbar-width: thin;
+    scrollbar-color: var(--container-color) transparent;
 }

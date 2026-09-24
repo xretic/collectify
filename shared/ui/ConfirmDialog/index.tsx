@@ -1,0 +1,59 @@
+'use client';
+
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from '@mui/material';
+import type { ReactNode } from 'react';
+
+type ConfirmDialogProps = {
+    open: boolean;
+    title: string;
+    description?: ReactNode;
+    confirmLabel?: string;
+    destructive?: boolean;
+    pending?: boolean;
+    onConfirm: () => void;
+    onClose: () => void;
+};
+
+export function ConfirmDialog({
+    open,
+    title,
+    description,
+    confirmLabel = 'Confirm',
+    destructive = false,
+    pending = false,
+    onConfirm,
+    onClose,
+}: ConfirmDialogProps) {
+    return (
+        <Dialog open={open} onClose={pending ? undefined : onClose} maxWidth="xs" fullWidth>
+            <DialogTitle>{title}</DialogTitle>
+            {description && (
+                <DialogContent>
+                    <DialogContentText component="div" color="inherit">
+                        {description}
+                    </DialogContentText>
+                </DialogContent>
+            )}
+            <DialogActions>
+                <Button onClick={onClose} disabled={pending}>
+                    Cancel
+                </Button>
+                <Button
+                    variant="contained"
+                    color={destructive ? 'error' : 'primary'}
+                    onClick={onConfirm}
+                    disabled={pending}
+                >
+                    {confirmLabel}
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+}

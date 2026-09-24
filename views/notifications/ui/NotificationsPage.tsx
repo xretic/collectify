@@ -1,184 +1,99 @@
 'use client';
 
-import { Button, Box, SxProps, Theme } from '@mui/material';
-import { useEffect, useState } from 'react';
-import styles from '@/app/notifications/notifications.module.css';
+import { useState, type MouseEvent } from 'react';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
-import { NotificationInResponse } from '@/types/NotificationInResponse';
-import { useUIStore } from '@/shared/model/uiStore';
-import { useUser } from '@/entities/user/model/UserProvider';
-import { useDebounce } from '@/shared/lib/hooks/useDebounce';
-import Notification from '@/widgets/notification/ui/Notification';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import { Typography } from '@mui/material';
 import { notificationApi } from '@/entities/notification/api/notificationApi';
+import { notificationQueryKeys } from '@/entities/notification/model/queryKeys';
+import { NotificationRow } from '@/entities/notification/ui/NotificationRow';
+import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
+import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
+import { toast } from '@/shared/model/toastStore';
+import { EmptyState } from '@/shared/ui/EmptyState';
+import { Spinner } from '@/shared/ui/Spinner';
+import styles from './NotificationsPage.module.css';
 
 type Tab = 'all' | 'unread';
 
-const baseButton: SxProps<Theme> = {
-    borderRadius: 6,
-    height: 36,
-    px: 2,
-    textTransform: 'none',
-    fontWeight: 500,
-    display: 'flex',
-    gap: 1,
-};
-
-const buttonSx = (active: boolean): SxProps<Theme> => ({
-    ...baseButton,
-    borderColor: 'var(--border-color)',
-    color: active ? '#fff' : 'var(--text-color)',
-});
-
-const counterSx = (active: boolean): SxProps<Theme> => ({
-    minWidth: 22,
-    height: 22,
-    px: 0.5,
-    borderRadius: 6,
-    fontSize: 12,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: active ? 'rgba(255,255,255,0.2)' : 'var(--border-color)',
-});
-
 export default function NotificationsPage() {
-    const { loading, refreshUser, user } = useUser();
-    const [active, setActive] = useState<Tab>('all');
-    const [totalAmount, setTotalAmount] = useState(0);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [notifications, setNotifications] = useState<NotificationInResponse[]>([]);
-    const { startLoading, stopLoading } = useUIStore();
+    const queryClient = useQueryClient();
+    const [tab, setTab] = useState<Tab>('all');
 
-    const debouncedTab = useDebounce(active, 500);
+    const query = useInfiniteQuery({
+        queryKey: notificationQueryKeys.list(tab === 'unread'),
+        queryFn: ({ pageParam }) => notificationApi.list(tab === 'unread', pageParam),
+        initialPageParam: null as number | null,
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+    });
 
-    const getNotifications = async (tab: Tab) => {
-        startLoading();
+    const unread = query.data?.pages[0]?.unread ?? 0;
+    const notifications = query.data?.pages.flatMap((page) => page.data) ?? [];
 
-        try {
-            const onlyUnread = tab === 'unread';
+    const markAllRead = useMutation({
+        mutationFn: notificationApi.markAllAsRead,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: notificationQueryKeys.all });
+            queryClient.invalidateQueries({ queryKey: sessionUserQueryKey });
+        },
+        onError: async (error) => toast.error(await getApiErrorMessage(error)),
+    });
 
-            const data = await notificationApi.list(onlyUnread);
-
-            setNotifications(data.data);
-            setTotalAmount(data.totalAmount);
-            setUnreadCount(data.unreadAmount);
-        } catch {
-            return;
-        } finally {
-            stopLoading();
-        }
+    // Following any link from the list counts as having read the notifications.
+    const handleListClick = (event: MouseEvent) => {
+        const clickedLink = (event.target as HTMLElement).closest('a');
+        if (clickedLink && unread > 0 && !markAllRead.isPending) markAllRead.mutate();
     };
-
-    const markAllAsRead = async () => {
-        startLoading();
-        try {
-            const data = await notificationApi.markAllAsRead();
-
-            await refreshUser();
-            setNotifications(data.data);
-            setUnreadCount(0);
-        } catch {
-            return;
-        } finally {
-            stopLoading();
-        }
-    };
-
-    const tabs: Array<{ id: Tab; label: string; count: number; disabled: boolean }> = [
-        { id: 'all', label: 'All', count: totalAmount, disabled: debouncedTab !== active },
-        { id: 'unread', label: 'Unread', count: unreadCount, disabled: debouncedTab !== active },
-    ];
-
-    useEffect(() => {
-        if (loading) return;
-
-        getNotifications(debouncedTab);
-    }, [loading, debouncedTab]);
-
-    if (loading && !user) return null;
 
     return (
         <>
-            <header className={styles['header']}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                    {tabs.map(({ id, label, count, disabled }) => {
-                        const isActive = active === id;
-
-                        return (
-                            <Button
-                                key={id}
-                                disabled={disabled}
-                                onClick={() => setActive(id)}
-                                variant={isActive ? 'contained' : 'outlined'}
-                                sx={buttonSx(isActive)}
-                            >
-                                <span>{label}</span>
-                                <Box sx={counterSx(isActive)}>{count}</Box>
-                            </Button>
-                        );
-                    })}
-
+            <header className={styles.toolbar}>
+                {(['all', 'unread'] as const).map((value) => (
                     <Button
-                        variant="text"
-                        onClick={markAllAsRead}
-                        sx={{
-                            textTransform: 'none',
-                            borderRadius: 6,
-                            marginLeft: 'auto',
-                        }}
-                        disabled={unreadCount === 0}
+                        key={value}
+                        variant={tab === value ? 'contained' : 'outlined'}
+                        onClick={() => setTab(value)}
                     >
-                        <DoneIcon sx={{ width: 18, height: 18 }} />
-                        <span className={styles['mark-as-read-text']}>Mark all as read</span>
+                        {value === 'all' ? 'All' : 'Unread'}
+                        {value === 'unread' && <span className={styles.counter}>{unread}</span>}
                     </Button>
-                </Box>
+                ))}
+
+                <Button
+                    className={styles.markAll}
+                    startIcon={<DoneIcon />}
+                    onClick={() => markAllRead.mutate()}
+                    disabled={unread === 0 || markAllRead.isPending}
+                >
+                    Mark all as read
+                </Button>
             </header>
 
-            <header className={styles['notifications']}>
-                {notifications.length === 0 ? (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 2,
-                            padding: 4,
-                            width: '100%',
-                            height: '300px',
-                            backgroundColor: 'var(--container-color)',
-                            borderRadius: 6,
-                            textAlign: 'center',
-                            color: 'var(--soft-text)',
-                        }}
-                    >
-                        <NotificationsNoneIcon sx={{ fontSize: 60, color: '#9ca3af' }} />
-                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            No unread notifications
-                        </Typography>
-                        <Typography variant="body2">
-                            You&apos;re all caught up! Check back later for new updates.
-                        </Typography>
-                    </Box>
-                ) : (
-                    notifications.map((x, i) => (
-                        <Notification
-                            key={i}
-                            id={x.user.id}
-                            username={x.user.username}
-                            avatarUrl={x.user.avatarUrl}
-                            isRead={x.notification.isRead}
-                            type={x.notification.type}
-                            createdAt={x.notification.createdAt}
-                            collectionName={x.notification.collectionName}
-                            collectionId={x.notification.collectionId}
-                            unreadCount={unreadCount}
-                        />
-                    ))
+            <section className={styles.list} onClickCapture={handleListClick}>
+                {query.isPending && <Spinner />}
+
+                {query.isSuccess && notifications.length === 0 && (
+                    <EmptyState
+                        title={
+                            tab === 'unread' ? 'No unread notifications' : 'No notifications yet'
+                        }
+                        description="You're all caught up! Check back later for new updates."
+                    />
                 )}
-            </header>
+
+                {notifications.map((notification) => (
+                    <NotificationRow key={notification.id} notification={notification} />
+                ))}
+
+                {query.hasNextPage && (
+                    <Button
+                        onClick={() => query.fetchNextPage()}
+                        disabled={query.isFetchingNextPage}
+                    >
+                        Load more
+                    </Button>
+                )}
+            </section>
         </>
     );
 }

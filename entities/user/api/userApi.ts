@@ -1,65 +1,50 @@
 import { api } from '@/shared/api/api';
-import { SessionUserInResponse, UserInResponse } from '@/types/UserInResponse';
+import type { PublicUser, SessionUser, UserPreview } from '@/entities/user/model/types';
 
-export type UserSearchItem = {
-    id: number;
+type UserResponse = { user: SessionUser };
+
+export type UpdateProfilePayload = Partial<{
     username: string;
-    avatarUrl: string;
-};
-
-type UpdateUserProfilePayload = {
     fullName: string;
-    username: string;
     description: string;
-    bannerUrl?: string;
-    avatarUrl?: string;
-};
-
-type UpdatePasswordPayload = {
-    currentPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-};
+    avatarUrl: string;
+    bannerUrl: string;
+}>;
 
 export const userApi = {
-    async getById(userId: string | number) {
-        const data = await api.get(`api/users/${userId}`).json<{ user: UserInResponse }>();
-        return data.user;
+    async getById(userId: number | string) {
+        return (await api.get(`users/${userId}`).json<{ user: PublicUser }>()).user;
     },
 
     async search(query: string) {
-        const data = await api.get(`api/users/search/${query}`).json<{ users: UserSearchItem[] }>();
-        return data.users;
+        return (
+            await api
+                .get('users/search', { searchParams: { q: query } })
+                .json<{ users: UserPreview[] }>()
+        ).users;
     },
 
-    updateProfile(payload: UpdateUserProfilePayload) {
-        return api
-            .patch('api/users/', {
-                json: payload,
-            })
-            .json<{ user: SessionUserInResponse }>();
+    async updateProfile(payload: UpdateProfilePayload) {
+        return (await api.patch('users/me', { json: payload }).json<UserResponse>()).user;
     },
 
-    updatePassword(payload: UpdatePasswordPayload) {
-        return api
-            .patch('api/users/auth', {
-                json: payload,
-            })
-            .json<{ user: SessionUserInResponse }>();
+    async changePassword(payload: {
+        currentPassword?: string;
+        newPassword: string;
+        confirmPassword: string;
+    }) {
+        return (await api.patch('users/me/password', { json: payload }).json<UserResponse>()).user;
     },
 
-    updateFollow(userId: number, action: 'follow' | 'unfollow') {
-        return api.patch('api/users', {
-            searchParams: {
-                followUserId: userId,
-                followAction: action,
-            },
-        });
+    async deleteAccount(confirmation: string) {
+        await api.delete('users/me', { json: { confirmation } });
     },
 
-    deleteAccount(password: string) {
-        return api.delete('api/users/', {
-            json: { password },
-        });
+    async follow(userId: number) {
+        await api.put(`users/${userId}/follow`);
+    },
+
+    async unfollow(userId: number) {
+        await api.delete(`users/${userId}/follow`);
     },
 };

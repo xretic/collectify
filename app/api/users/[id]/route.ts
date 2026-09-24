@@ -1,80 +1,13 @@
-import { getUserRoles } from '@/entities/user/api/getUserRoles';
-import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
-import { prisma } from '@/shared/lib/prisma';
-import { UserInResponse } from '@/types/UserInResponse';
-import { NextRequest, NextResponse } from 'next/server';
+import { json, notFound, parseId, route } from '@/shared/server/http';
+import { getPublicUser } from '@/entities/user/server/profile';
+import { getViewer } from '@/features/auth/server/guards';
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    try {
-        const { id } = await params;
-        const intId = Number(id);
+export const GET = route<{ id: string }>(async (req, params) => {
+    const userId = parseId(params.id, 'user id');
+    const viewer = await getViewer(req);
 
-        if (!isProperInteger(intId)) {
-            return NextResponse.json({ message: 'Invalid user id' }, { status: 400 });
-        }
+    const user = await getPublicUser(userId, viewer?.userId ?? null);
+    if (!user) throw notFound('User not found.');
 
-        const user = await prisma.user.findUnique({
-            where: { id: intId },
-        });
-
-        if (!user) {
-            return NextResponse.json({ user: null }, { status: 404 });
-        }
-
-        const [followersCount, subscriptionsCount] = await prisma.$transaction([
-            prisma.follow.count({
-                where: { followingId: intId },
-            }),
-            prisma.follow.count({
-                where: { followerId: intId },
-            }),
-        ]);
-
-        const sessionId = req.cookies.get('sessionId')?.value;
-        let isFollowed = false;
-
-        if (sessionId) {
-            const session = await prisma.session.findUnique({
-                where: { id: sessionId },
-            });
-
-            if (!session) {
-                return NextResponse.json({ status: 401 });
-            }
-
-            const followCheck = await prisma.follow.findFirst({
-                where: {
-                    followerId: session.userId,
-                    followingId: user.id,
-                },
-            });
-
-            isFollowed = !!followCheck;
-        }
-
-        const roles = await getUserRoles(user.id);
-
-        const responseData: UserInResponse = {
-            id: user.id,
-            avatarUrl: user.avatarUrl,
-            bannerUrl: user.bannerUrl,
-            username: user.username,
-            fullName: user.fullName,
-            description: user.description,
-            followers: followersCount,
-            subscriptions: subscriptionsCount,
-            sessionUserIsFollowed: isFollowed,
-            roles,
-        };
-
-        return NextResponse.json(
-            {
-                user: responseData,
-            },
-            { status: 200 },
-        );
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return json({ user });
+});

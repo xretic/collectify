@@ -1,17 +1,17 @@
-import { prisma } from '@/shared/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { route } from '@/shared/server/http';
+import {
+    clearSessionCookie,
+    deleteSession,
+    readSessionId,
+} from '@/entities/session/server/session';
 
-export async function POST(req: NextRequest) {
-    try {
-        const sessionId = req.cookies.get('sessionId')?.value;
-        await prisma.session.delete({ where: { id: sessionId } });
-        const res = NextResponse.json({ ok: true });
+export const POST = route(async (req) => {
+    const sessionId = readSessionId(req);
+    if (sessionId) await deleteSession(sessionId);
 
-        res.cookies.delete('sessionId');
+    const res = new NextResponse(null, { status: 204 });
+    clearSessionCookie(res);
 
-        return res;
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return res;
+});

@@ -1,0 +1,8 @@
+.composer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background-color: var(--container-color);
+    border-radius: 20px;
+}

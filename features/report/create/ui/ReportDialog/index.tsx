@@ -1,140 +1,115 @@
 'use client';
 
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import {
     Button,
     Dialog,
+    DialogActions,
     DialogContent,
     DialogTitle,
     FormControl,
     InputLabel,
     MenuItem,
     Select,
-    TextField,
 } from '@mui/material';
-import { useState } from 'react';
-import styles from './index.module.css';
-import { reportApi, ReportReason } from '@/entities/report/api/reportApi';
+import { reportApi } from '@/entities/report/api/reportApi';
+import {
+    REPORT_REASON_LABELS,
+    REPORT_REASONS,
+    REPORT_TARGET_LABELS,
+    type ReportReason,
+} from '@/entities/report/model/types';
+import { REPORT_DETAILS_MAX_LENGTH } from '@/shared/lib/constants';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
+import { toast } from '@/shared/model/toastStore';
+import { CountedTextField } from '@/shared/ui/CountedTextField';
+import { useReportDialogStore, type ReportRequest } from '../../model/reportDialogStore';
+import styles from './index.module.css';
 
-type ReportDialogProps = {
-    open: boolean;
-    onClose: () => void;
-    targetUserId: number;
-    targetUsername: string;
-    messageId?: number;
-    messagePreview?: string;
-    commentId?: number;
-    commentPreview?: string;
-    collectionId?: number;
-    collectionPreview?: string;
-};
+/** Mounted once in the root layout; opened through `useReportDialogStore`. */
+export function ReportDialog() {
+    const request = useReportDialogStore((state) => state.request);
+    const close = useReportDialogStore((state) => state.close);
 
-export default function ReportDialog({
-    open,
-    onClose,
-    targetUserId,
-    targetUsername,
-    messageId,
-    messagePreview,
-    commentId,
-    commentPreview,
-    collectionId,
-    collectionPreview,
-}: ReportDialogProps) {
-    const [reason, setReason] = useState<ReportReason>('spam');
+    // Keyed by target so every report starts with a fresh form.
+    return request ? (
+        <ReportForm key={JSON.stringify(request.target)} request={request} onClose={close} />
+    ) : null;
+}
+
+function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () => void }) {
+    const [reason, setReason] = useState<ReportReason | ''>('');
     const [details, setDetails] = useState('');
-    const [error, setError] = useState('');
-    const [busy, setBusy] = useState(false);
+
+    const submit = useMutation({
+        mutationFn: () =>
+            reportApi.create({ target: request.target, reason: reason as ReportReason, details }),
+        onSuccess: () => {
+            toast.success('Report submitted. Moderators will review it soon.');
+            onClose();
+        },
+        onError: async (error) => toast.error(await getApiErrorMessage(error)),
+    });
 
     const handleClose = () => {
-        if (busy) return;
-        setError('');
-        setDetails('');
-        onClose();
-    };
-
-    const handleSubmit = async () => {
-        setBusy(true);
-        setError('');
-
-        try {
-            await reportApi.create({
-                targetUserId,
-                messageId,
-                commentId,
-                collectionId,
-                reason,
-                details,
-            });
-            setError('');
-            setDetails('');
-            onClose();
-        } catch (err) {
-            setError(await getApiErrorMessage(err));
-        } finally {
-            setBusy(false);
-        }
+        if (!submit.isPending) onClose();
     };
 
     return (
-        <Dialog className={styles.dialog} open={open} onClose={handleClose}>
+        <Dialog open onClose={handleClose} fullWidth maxWidth="sm">
             <DialogTitle>
-                {collectionId
-                    ? 'Report collection'
-                    : commentId
-                      ? 'Report comment'
-                      : messageId
-                        ? 'Report message'
-                        : 'Report user'}
+                Report {REPORT_TARGET_LABELS[request.target.type].toLowerCase()}
             </DialogTitle>
-            <DialogContent>
-                <div className={styles.content}>
-                    <div className={styles.target}>
-                        <div className={styles.targetTitle}>@{targetUsername}</div>
-                        {(messagePreview || commentPreview || collectionPreview) && (
-                            <div className={styles.quote}>
-                                {messagePreview || commentPreview || collectionPreview}
-                            </div>
-                        )}
-                    </div>
 
-                    <FormControl size="small" fullWidth>
-                        <InputLabel>Reason</InputLabel>
-                        <Select
-                            label="Reason"
-                            value={reason}
-                            onChange={(event) => setReason(event.target.value as ReportReason)}
-                        >
-                            <MenuItem value="spam">Spam</MenuItem>
-                            <MenuItem value="harassment">Harassment</MenuItem>
-                            <MenuItem value="hate">Hate speech</MenuItem>
-                            <MenuItem value="scam">Scam</MenuItem>
-                            <MenuItem value="adult">Adult content</MenuItem>
-                            <MenuItem value="other">Other</MenuItem>
-                        </Select>
-                    </FormControl>
-
-                    <TextField
-                        label="Details"
-                        value={details}
-                        onChange={(event) => setDetails(event.target.value)}
-                        multiline
-                        minRows={3}
-                        inputProps={{ maxLength: 1000 }}
-                    />
-
-                    {error && <div className={styles.quote}>{error}</div>}
-
-                    <div className={styles.actions}>
-                        <Button variant="outlined" onClick={handleClose} disabled={busy}>
-                            Cancel
-                        </Button>
-                        <Button variant="contained" onClick={handleSubmit} disabled={busy}>
-                            Submit report
-                        </Button>
-                    </div>
+            <DialogContent className={styles.content}>
+                <div className={styles.target}>
+                    <span className={styles.username}>@{request.username}</span>
+                    {request.preview && (
+                        <blockquote className={styles.quote}>{request.preview}</blockquote>
+                    )}
                 </div>
+
+                <FormControl size="small" fullWidth required>
+                    <InputLabel id="report-reason">Reason</InputLabel>
+                    <Select
+                        labelId="report-reason"
+                        label="Reason"
+                        value={reason}
+                        onChange={(event) => setReason(event.target.value as ReportReason)}
+                    >
+                        {REPORT_REASONS.map((value) => (
+                            <MenuItem key={value} value={value}>
+                                {REPORT_REASON_LABELS[value]}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <CountedTextField
+                    label="Details (optional)"
+                    value={details}
+                    onChange={setDetails}
+                    maxLength={REPORT_DETAILS_MAX_LENGTH}
+                    multiline
+                    minRows={3}
+                    fullWidth
+                />
             </DialogContent>
+
+            <DialogActions>
+                <Button onClick={handleClose} disabled={submit.isPending}>
+                    Cancel
+                </Button>
+                <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => submit.mutate()}
+                    disabled={!reason || submit.isPending}
+                >
+                    Submit report
+                </Button>
+            </DialogActions>
         </Dialog>
     );
 }

@@ -1,42 +1,31 @@
 import { api } from '@/shared/api/api';
-import { SessionUserInResponse } from '@/types/UserInResponse';
+import type { SessionUser } from '@/entities/user/model/types';
 
-type LoginPayload = {
-    email: string;
-    password: string;
-};
-
-type RegisterPayload = {
-    email: string;
-    password: string;
-    username: string;
-};
+type UserResponse = { user: SessionUser };
 
 export const authApi = {
-    login(payload: LoginPayload) {
-        return api.post('api/auth/login', {
-            json: payload,
-            throwHttpErrors: false,
-        });
+    async me() {
+        return (await api.get('auth/me').json<UserResponse>()).user;
     },
 
-    register(payload: RegisterPayload) {
-        return api.post('api/auth/register', {
-            json: payload,
-            throwHttpErrors: false,
-        });
+    async login(payload: { email: string; password: string }) {
+        return (await api.post('auth/login', { json: payload }).json<UserResponse>()).user;
     },
 
-    async getMe() {
-        const data = await api.get('api/auth/me').json<{ user: SessionUserInResponse }>();
-        return data.user ?? null;
+    async register(payload: { email: string; username: string; password: string }) {
+        return (await api.post('auth/register', { json: payload }).json<UserResponse>()).user;
     },
 
-    logout() {
-        return api.post('api/auth/logout');
+    async logout() {
+        await api.post('auth/logout');
     },
 
-    stopImpersonation() {
-        return api.post('api/auth/impersonation/stop').json<{ user: SessionUserInResponse }>();
+    async stopImpersonation() {
+        return (await api.post('auth/impersonation/stop').json<UserResponse>()).user;
+    },
+
+    /** Full-page redirect: the server sets the CSRF `state` cookie and forwards to the provider. */
+    oauthUrl(provider: 'google' | 'github') {
+        return `/api/auth/oauth/${provider}`;
     },
 };

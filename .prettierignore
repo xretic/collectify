@@ -1,0 +1,8 @@
+node_modules
+.next
+generated
+collectify-generator
+prisma/migrations
+package-lock.json
+docs
+.claude

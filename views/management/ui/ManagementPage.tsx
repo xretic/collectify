@@ -1,96 +1,82 @@
 'use client';
 
-import styles from '@/app/management/management.module.css';
-import { useManagementPage } from '../model/useManagementPage';
+import { useState } from 'react';
+import type { ReportFilters } from '@/entities/moderation/api/managementApi';
+import { useSessionUser } from '@/entities/user/model/useSessionUser';
+import { EmptyState } from '@/shared/ui/EmptyState';
+import { Spinner } from '@/shared/ui/Spinner';
+import { useManagementUrl } from '../model/useManagementUrl';
 import { AuditPanel } from './AuditPanel';
 import { ManagementSidebar } from './ManagementSidebar';
-import { ReportsPanel } from './ReportsPanel';
-import { UsersPanel } from './UsersPanel';
+import { ReportPanel } from './ReportPanel';
+import { UserPanel } from './UserPanel';
+import styles from './ManagementPage.module.css';
 
 export default function ManagementPage() {
-    const management = useManagementPage();
+    const { user } = useSessionUser();
+    const url = useManagementUrl();
+    const [reportFilters, setReportFilters] = useState<ReportFilters>({ status: 'OPEN' });
 
-    if (management.loading) return null;
-    if (!management.canManage) return null;
+    if (!user) return <Spinner variant="page" />;
+
+    const isAdmin = user.roles.includes('Admin');
+
+    const openUser = (userId: number) => {
+        url.setTab('users');
+        url.selectUser(userId);
+    };
 
     return (
-        <main className={styles.page}>
+        <div className={styles.page}>
             <ManagementSidebar
-                busy={management.busy}
-                users={management.users}
-                reports={management.reports}
-                viewMode={management.viewMode}
-                setViewMode={management.setViewMode}
-                selected={management.selected}
-                selectedReport={management.selectedReport}
-                query={management.query}
-                setQuery={management.setQuery}
-                onRefresh={management.load}
-                onSelectUser={management.setSelectedId}
-                onSelectReport={management.setSelectedReportId}
+                tab={url.tab}
+                onTabChange={url.setTab}
+                userId={url.userId}
+                onSelectUser={url.selectUser}
+                reportId={url.reportId}
+                onSelectReport={url.selectReport}
+                reportFilters={reportFilters}
+                onReportFiltersChange={setReportFilters}
             />
 
-            <section className={styles.panel}>
-                {management.error && <div className={styles.error}>{management.error}</div>}
+            <div className={styles.main}>
+                <section className={styles.panel}>
+                    {url.tab === 'users' &&
+                        (url.userId ? (
+                            <UserPanel
+                                key={url.userId}
+                                userId={url.userId}
+                                isAdmin={isAdmin}
+                                onDeleted={() => url.selectUser(null)}
+                            />
+                        ) : (
+                            <EmptyState
+                                title="Select a user"
+                                description="Search by username, name or email."
+                            />
+                        ))}
 
-                {management.viewMode === 'reports' ? (
-                    <ReportsPanel
-                        busy={management.busy}
-                        isAdmin={management.isAdmin}
-                        selectedReport={management.selectedReport}
-                        reportVerdict={management.reportVerdict}
-                        setReportVerdict={management.setReportVerdict}
-                        reportPunishmentScope={management.reportPunishmentScope}
-                        setReportPunishmentScope={management.setReportPunishmentScope}
-                        reportPunishmentDuration={management.reportPunishmentDuration}
-                        setReportPunishmentDuration={management.setReportPunishmentDuration}
-                        reportResolution={management.reportResolution}
-                        setReportResolution={management.setReportResolution}
-                        onReview={management.reviewReport}
-                    />
-                ) : (
-                    <UsersPanel
-                        busy={management.busy}
-                        isAdmin={management.isAdmin}
-                        selected={management.selected}
-                        selectedRoles={management.selectedRoles}
-                        collectionHistory={management.collectionHistory}
-                        commentHistory={management.commentHistory}
-                        collectionNextSkip={management.collectionNextSkip}
-                        commentNextSkip={management.commentNextSkip}
-                        messageHistory={management.messageHistory}
-                        messageNextSkip={management.messageNextSkip}
-                        historyOpen={management.historyOpen}
-                        setHistoryOpen={management.setHistoryOpen}
-                        onCopyUsername={management.copyUsername}
-                        onRole={management.setRole}
-                        onSanction={management.createSanction}
-                        onRevokeSanction={management.revokeSanction}
-                        onDeleteUser={management.deleteUser}
-                        onImpersonate={management.impersonate}
-                        onLoadCollections={management.loadCollections}
-                        onLoadComments={management.loadComments}
-                        onLoadMessageHistory={management.loadMessageHistory}
-                        onLoadMoreMessages={management.loadMoreMessages}
-                        scope={management.scope}
-                        setScope={management.setScope}
-                        duration={management.duration}
-                        setDuration={management.setDuration}
-                        reason={management.reason}
-                        setReason={management.setReason}
-                    />
+                    {url.tab === 'reports' &&
+                        (url.reportId ? (
+                            <ReportPanel
+                                key={url.reportId}
+                                reportId={url.reportId}
+                                isAdmin={isAdmin}
+                                onManageUser={openUser}
+                                onReviewed={() => url.selectReport(null)}
+                            />
+                        ) : (
+                            <EmptyState
+                                title="Select a report"
+                                description="The oldest open reports are at the top."
+                            />
+                        ))}
+                </section>
+
+                {url.tab === 'users' && url.userId && (
+                    <AuditPanel key={url.userId} userId={url.userId} />
                 )}
-            </section>
-
-            {management.viewMode === 'users' && management.selected && (
-                <AuditPanel
-                    audit={management.audit}
-                    username={management.selected.username}
-                    loading={management.auditLoading}
-                    hasMore={management.auditNextSkip !== null}
-                    onLoadMore={management.loadMoreAudit}
-                />
-            )}
-        </main>
+            </div>
+        </div>
     );
 }

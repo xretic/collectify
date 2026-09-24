@@ -1,35 +1,12 @@
-import { getSessionUserResponse } from '@/entities/auth/api/getSessionUserResponse';
-import { prisma } from '@/shared/lib/prisma';
-import { SessionUserInResponse } from '@/types/UserInResponse';
-import { NextResponse, NextRequest } from 'next/server';
+import { json, route, unauthorized } from '@/shared/server/http';
+import { getSessionUser } from '@/entities/user/server/profile';
+import { requireViewer } from '@/features/auth/server/guards';
 
-export async function GET(req: NextRequest) {
-    try {
-        const sessionId = req.cookies.get('sessionId')?.value;
+export const GET = route(async (req) => {
+    const viewer = await requireViewer(req);
+    const user = await getSessionUser(viewer.userId, viewer.session.impersonatorUserId);
 
-        if (!sessionId) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
+    if (!user) throw unauthorized();
 
-        const session = await prisma.session.findUnique({
-            where: { id: sessionId },
-            include: {
-                user: true,
-            },
-        });
-
-        if (!session) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
-
-        const userInResponse: SessionUserInResponse = await getSessionUserResponse(
-            session.user,
-            session,
-        );
-
-        return NextResponse.json({ user: userInResponse }, { status: 200 });
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return json({ user });
+});

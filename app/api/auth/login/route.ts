@@ -1,80 +1,20 @@
-import { NextResponse, NextRequest } from 'next/server';
-import bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
-import { prisma } from '@/shared/lib/prisma';
-import { SessionUserInResponse } from '@/types/UserInResponse';
-import { getSessionUserResponse } from '@/entities/auth/api/getSessionUserResponse';
-import { SESSION_AGE_IN_DAYS } from '@/shared/lib/constants';
-import { getActiveSanction } from '@/entities/management/api/server';
-import { rateLimit } from '@/shared/api/rateLimit';
+import { NextResponse } from 'next/server';
+import { readBody, route } from '@/shared/server/http';
+import { enforceRateLimit } from '@/shared/server/rateLimit';
+import { createSession, setSessionCookie } from '@/entities/session/server/session';
+import { getSessionUser } from '@/entities/user/server/profile';
+import { verifyCredentials } from '@/features/auth/server/accounts';
+import { loginSchema } from '@/features/auth/model/schemas';
 
-export async function POST(req: NextRequest) {
-    try {
-        const limited = await rateLimit(req, 'auth');
-        if (limited) return limited;
+export const POST = route(async (req) => {
+    await enforceRateLimit(req, 'auth');
 
-        const { email, password } = await req.json();
+    const { email, password } = await readBody(req, loginSchema);
+    const userId = await verifyCredentials(email, password);
+    const session = await createSession(userId);
 
-        if (!email || !password) {
-            return NextResponse.json({ message: 'Missing data.' }, { status: 400 });
-        }
+    const res = NextResponse.json({ user: await getSessionUser(userId, null) });
+    setSessionCookie(res, session);
 
-        const user = await prisma.user.findUnique({ where: { email } });
-
-        if (!user) {
-            return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
-        }
-
-        if (!user.passwordHash) {
-            return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
-        }
-
-        const passwordMatch = await bcrypt.compare(password, user.passwordHash);
-
-        if (!passwordMatch) {
-            return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
-        }
-
-        const accountBan = await getActiveSanction(user.id, 'ACCOUNT');
-
-        if (accountBan) {
-            return NextResponse.json(
-                {
-                    message: accountBan.expiresAt
-                        ? `Account is banned until ${accountBan.expiresAt.toISOString()}.`
-                        : 'Account is permanently banned.',
-                },
-                { status: 403 },
-            );
-        }
-
-        const session = await prisma.session.create({
-            data: {
-                id: randomUUID(),
-                userId: user.id,
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            },
-        });
-
-        const userInResponse: SessionUserInResponse = await getSessionUserResponse(user);
-
-        const response = NextResponse.json({
-            user: userInResponse,
-        });
-
-        response.cookies.set({
-            name: 'sessionId',
-            value: session.id,
-            httpOnly: true,
-            path: '/',
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * SESSION_AGE_IN_DAYS,
-        });
-
-        return response;
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return res;
+});

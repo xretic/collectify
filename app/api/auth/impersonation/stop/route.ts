@@ -1,49 +1,15 @@
-import { getSessionUserResponse } from '@/entities/auth/api/getSessionUserResponse';
-import { prisma } from '@/shared/lib/prisma';
-import { SessionUserInResponse } from '@/types/UserInResponse';
-import { NextRequest, NextResponse } from 'next/server';
+import { json, route, unauthorized } from '@/shared/server/http';
+import { findActiveSession, readSessionId } from '@/entities/session/server/session';
+import { getSessionUser } from '@/entities/user/server/profile';
+import { stopImpersonation } from '@/features/auth/server/accounts';
 
-export async function POST(req: NextRequest) {
-    try {
-        const sessionId = req.cookies.get('sessionId')?.value;
+// Uses the raw session on purpose: an admin impersonating a user who got
+// banned meanwhile must still be able to get back.
+export const POST = route(async (req) => {
+    const session = await findActiveSession(readSessionId(req));
+    if (!session) throw unauthorized();
 
-        if (!sessionId) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
+    const adminId = await stopImpersonation(session);
 
-        const session = await prisma.session.findUnique({
-            where: { id: sessionId },
-            select: {
-                id: true,
-                impersonatorUserId: true,
-            },
-        });
-
-        if (!session) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
-
-        if (!session.impersonatorUserId) {
-            return NextResponse.json({ message: 'Impersonation is not active.' }, { status: 400 });
-        }
-
-        const restoredSession = await prisma.session.update({
-            where: { id: session.id },
-            data: {
-                userId: session.impersonatorUserId,
-                impersonatorUserId: null,
-            },
-            include: { user: true },
-        });
-
-        const userInResponse: SessionUserInResponse = await getSessionUserResponse(
-            restoredSession.user,
-            restoredSession,
-        );
-
-        return NextResponse.json({ user: userInResponse }, { status: 200 });
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return json({ user: await getSessionUser(adminId, null) });
+});

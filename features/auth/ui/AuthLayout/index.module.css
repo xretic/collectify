@@ -1,0 +1,46 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 120px 16px 60px;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 50px;
+}
+
+.subtitle {
+    color: var(--soft-text);
+    text-align: center;
+}
+
+.form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.divider {
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.footer {
+    font-size: 14px;
+    color: var(--soft-text);
+}
+
+.footer a {
+    color: var(--accent);
+}
+
+@media (max-width: 600px) {
+    .page {
+        padding-top: 60px;
+    }
+
+    .title {
+        font-size: 38px;
+    }
+}

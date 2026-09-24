@@ -4,7 +4,7 @@ export default function PrivacyPolicyPage() {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Privacy Policy</h1>
-            <p className={styles.updated}>Last updated: July 14, 2026</p>
+            <p className={styles.updated}>Last updated: September 24, 2026</p>
 
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>What data we collect</h2>
@@ -18,7 +18,10 @@ export default function PrivacyPolicyPage() {
                             plain text), unless you sign up via GitHub or Google, in which case we
                             store a linked account ID instead
                         </li>
-                        <li>Optional profile info you add: avatar image, banner image, bio/description</li>
+                        <li>
+                            Optional profile info you add: avatar image, banner image,
+                            bio/description
+                        </li>
                         <li>
                             Content you create while using the app: collections, items, comments,
                             likes, follows, messages, and notifications
@@ -40,17 +43,32 @@ export default function PrivacyPolicyPage() {
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Cookies</h2>
                 <p className={styles.text}>
-                    We use a single functional session cookie to keep you signed in. We do not use
-                    analytics, tracking, or marketing cookies.
+                    We use a functional session cookie to keep you signed in, and a short-lived
+                    security cookie (about 10 minutes) while you sign in with GitHub or Google. Your
+                    light/dark theme choice is saved in your browser&apos;s local storage. We do not
+                    use analytics, tracking, or marketing cookies.
                 </p>
             </section>
 
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Where your data is stored</h2>
                 <p className={styles.text}>
-                    The app is hosted on Vercel. Account and content data is stored in our
-                    database. Uploaded images (avatars, banners, item images) are
-                    stored with our media hosting provider, Uploadcare.
+                    The app is hosted on Vercel. Account and content data is stored in our database.
+                    Uploaded images (avatars, banners, item images) are stored with our media
+                    hosting provider, Uploadcare.
+                </p>
+            </section>
+
+            <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Reports and moderation</h2>
+                <p className={styles.text}>
+                    When you report content, we keep a copy of the reported message, comment or
+                    collection so moderators can review it even if it is later deleted. Moderators
+                    and administrators may review reported content, the surrounding messages of a
+                    reported conversation, and an account&apos;s activity when handling a report.
+                    Moderation actions are recorded in an internal audit log. When an account is
+                    deleted, its content is deleted too; the audit log keeps only the account ID and
+                    username.
                 </p>
             </section>
 
@@ -59,8 +77,8 @@ export default function PrivacyPolicyPage() {
                 <p className={styles.text}>
                     We do not sell or share your data with third parties for advertising or
                     marketing purposes. If you choose to sign up or log in with GitHub or Google,
-                    those providers share basic profile information (such as your email) with us
-                    to create your account.
+                    those providers share basic profile information (such as your email) with us to
+                    create your account.
                 </p>
             </section>
         </div>

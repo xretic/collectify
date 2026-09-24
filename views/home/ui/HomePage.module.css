@@ -1,0 +1,29 @@
+.page {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 35px 25px;
+}
+
+.greeting {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 25px 0;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 27px;
+}
+
+.avatar {
+    width: 40px !important;
+    height: 40px !important;
+}
+
+@media (max-width: 600px) {
+    .page {
+        padding: 0 16px 25px;
+    }
+
+    .greeting {
+        font-size: 22px;
+    }
+}

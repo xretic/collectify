@@ -1,0 +1,14 @@
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.select {
+    min-width: 170px !important;
+}
+
+.reason {
+    flex: 1 1 200px;
+}

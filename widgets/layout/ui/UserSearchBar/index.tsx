@@ -1,133 +1,82 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import {
     Autocomplete,
-    TextField,
     Avatar,
     ListItem,
     ListItemAvatar,
     ListItemText,
-    Paper,
-    Box,
+    TextField,
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
-import { useUIStore } from '@/shared/model/uiStore';
+import { userApi } from '@/entities/user/api/userApi';
+import { userQueryKeys } from '@/entities/user/model/queryKeys';
+import type { UserPreview } from '@/entities/user/model/types';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce';
 import styles from './index.module.css';
-import { useQuery } from '@tanstack/react-query';
-import { userApi, UserSearchItem } from '@/entities/user/api/userApi';
-import { userQueryKeys } from '@/entities/user/model/queryKeys';
 
-export default function UserSearchBar() {
+export default function UserSearchBar({ onClose }: { onClose: () => void }) {
     const router = useRouter();
-    const { setSearchBarOpened } = useUIStore();
     const [inputValue, setInputValue] = useState('');
-    const debouncedQuery = useDebounce(inputValue, 400);
+    const query = useDebounce(inputValue.trim(), 300);
 
-    const handleSelect = (_: unknown, value: UserSearchItem | string | null) => {
-        if (!value) return;
-
-        if (typeof value !== 'string') {
-            router.push(`/users/${value.id.toString()}`);
-        }
-    };
-    const { data } = useQuery({
-        queryKey: userQueryKeys.search(debouncedQuery),
-        enabled: !!debouncedQuery,
+    const { data: users = [], isFetching } = useQuery({
+        queryKey: userQueryKeys.search(query),
+        enabled: query.length > 0,
         staleTime: 60_000,
-        refetchOnWindowFocus: false,
-        queryFn: () => userApi.search(debouncedQuery),
+        queryFn: () => userApi.search(query),
     });
 
-    const users = data ?? [];
+    const handleSelect = (_: unknown, value: UserPreview | string | null) => {
+        if (!value || typeof value === 'string') return;
+
+        onClose();
+        router.push(`/users/${value.id}`);
+    };
 
     return (
         <Autocomplete
-            className={styles['container']}
+            className={styles.container}
             freeSolo
+            disableClearable
             options={users}
+            loading={isFetching}
+            filterOptions={(options) => options}
+            noOptionsText={query ? 'Nothing found' : 'Start typing a username'}
             getOptionLabel={(option) => (typeof option === 'string' ? option : option.username)}
             inputValue={inputValue}
             onChange={handleSelect}
-            onInputChange={(_, newValue) => setInputValue(newValue)}
-            disableClearable
-            slots={{
-                paper: (props) => (
-                    <Paper
-                        {...props}
-                        sx={{
-                            mt: 1,
-                            backgroundColor: 'var(--container-color)',
-                            overflow: 'hidden',
-                        }}
-                    >
-                        {props.children}
-                        {debouncedQuery && users.length === 0 && (
-                            <Box
-                                sx={{
-                                    px: 2,
-                                    py: 1.5,
-                                    color: 'var(--soft-text)',
-                                    textAlign: 'center',
-                                    borderTop: '1px solid rgba(255,255,255,0.06)',
-                                }}
-                            >
-                                Nothing found
-                            </Box>
-                        )}
-                    </Paper>
-                ),
+            onInputChange={(_, value) => setInputValue(value)}
+            classes={{ paper: styles.paper, option: styles.option }}
+            renderOption={(props, option) => {
+                const { key, ...rest } = props;
+
+                return (
+                    <ListItem key={key} {...rest}>
+                        <ListItemAvatar>
+                            <Avatar src={option.avatarUrl} alt={option.username} />
+                        </ListItemAvatar>
+                        <ListItemText primary={option.username} />
+                    </ListItem>
+                );
             }}
-            renderOption={(props, option) => (
-                <ListItem
-                    sx={{
-                        color: 'var(--text-color) !important',
-                        backgroundColor: 'var(--container-color) !important',
-                        '&:hover': {
-                            backgroundColor: 'var(--accent) !important',
-                            color: 'var(--text-color) !important',
-                        },
-                        '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-                            backgroundColor: 'var(--container-color) !important',
-                            color: 'var(--text-color) !important',
-                        },
-                        '&.Mui-focusVisible': {
-                            backgroundColor: 'var(--container-color) !important',
-                        },
-                        '& .MuiListItemText-primary': {
-                            color: 'var(--text-color) !important',
-                        },
-                    }}
-                    {...props}
-                    key={option.username}
-                >
-                    <ListItemAvatar key={option.id}>
-                        <Avatar src={option.avatarUrl} alt={option.username} />
-                    </ListItemAvatar>
-                    <ListItemText key={option.username} primary={option.username} />
-                </ListItem>
-            )}
             renderInput={(params) => (
                 <TextField
                     {...params}
                     autoFocus
-                    onBlur={() => setSearchBarOpened()}
-                    className={styles.placeholder}
-                    placeholder="Find a user"
-                    variant="outlined"
                     size="small"
+                    placeholder="Find a user"
+                    onBlur={onClose}
                     slotProps={{
                         input: {
                             ...params.InputProps,
                             endAdornment: (
                                 <>
                                     {params.InputProps.endAdornment}
-                                    <CloseIcon
-                                        onClick={() => setSearchBarOpened()}
-                                        sx={{ color: '#afafaf', cursor: 'pointer', ml: 1 }}
-                                    />
+                                    <CloseIcon className={styles.close} onClick={onClose} />
                                 </>
                             ),
                         },

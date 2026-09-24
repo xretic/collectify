@@ -1,147 +1,51 @@
-import { isValidUrl } from '@/shared/lib/validation/isValidUrl';
-import {
-    COLLECTION_DESCRIPTION_MAX_LENGTH,
-    COLLECTION_NAME_MAX_LENGTH,
-    ITEM_DESCRIPTION_MAX_LENGTH,
-    ITEM_TITLE_MAX_LENGTH,
-} from '@/shared/lib/constants';
-import { prisma } from '@/shared/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { json, readBody, readQuery, route } from '@/shared/server/http';
+import { enforceRateLimit } from '@/shared/server/rateLimit';
+import { withCache } from '@/shared/server/cache';
+import { CATEGORIES } from '@/shared/lib/constants';
+import { idSchema } from '@/shared/lib/validation/ids';
+import { COLLECTIONS_CACHE_NAMESPACE, listCollections } from '@/entities/collection/server/queries';
+import { COLLECTION_SORTS } from '@/entities/collection/model/types';
+import { createCollectionSchema } from '@/entities/collection/model/schemas';
+import { getViewer, requireViewer } from '@/features/auth/server/guards';
+import { createCollection } from '@/features/collection/server/collections';
 
-const requiredFields = [
-    'name',
-    'description',
-    'category',
-    'banner',
-    'itemTitle',
-    'itemDescription',
-    'isPrivate',
-] as const;
+const listSchema = z.object({
+    sort: z.enum(COLLECTION_SORTS).default('popular'),
+    page: z.coerce.number().int().min(0).max(10_000).default(0),
+    category: z.enum(CATEGORIES).optional(),
+    query: z.string().trim().max(100).optional(),
+    authorId: idSchema.optional(),
+    visibility: z.enum(['public', 'private']).optional(),
+    favorites: z
+        .enum(['true', 'false'])
+        .optional()
+        .transform((value) => value === 'true'),
+});
 
-export async function POST(req: NextRequest) {
-    try {
-        const sessionId = req.cookies.get('sessionId')?.value;
-        const session = await prisma.session.findUnique({
-            where: { id: sessionId },
-        });
+export const GET = route(async (req) => {
+    await enforceRateLimit(req, 'search');
 
-        if (!session) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
+    const params = readQuery(req, listSchema);
+    const viewer = await getViewer(req);
 
-        const requestData = await req.json();
+    // Only the anonymous public feed is identical for everyone, so only it is cached.
+    const cacheable = !viewer && !params.favorites && params.visibility !== 'private';
 
-        if (!requiredFields.every((field) => field in requestData)) {
-            return NextResponse.json({ message: 'Bad request.' }, { status: 400 });
-        }
+    const page = cacheable
+        ? await withCache(COLLECTIONS_CACHE_NAMESPACE, JSON.stringify(params), 30, () =>
+              listCollections(params, null),
+          )
+        : await listCollections(params, viewer?.userId ?? null);
 
-        const {
-            name,
-            description,
-            category,
-            banner,
-            itemTitle,
-            itemDescription,
-            itemSourceUrl,
-            itemImageUrl,
-            isPrivate,
-        } = requestData;
+    return json(page);
+});
 
-        if (
-            [name, description, category, itemTitle, itemDescription, banner, isPrivate].some(
-                (x) => typeof x !== 'string' || x.trim().length === 0,
-            )
-        ) {
-            return NextResponse.json(
-                { message: 'Required fields are not filled in.' },
-                { status: 400 },
-            );
-        }
+export const POST = route(async (req) => {
+    const viewer = await requireViewer(req);
+    await enforceRateLimit(req, 'create', viewer.userId);
 
-        if (isPrivate !== 'true' && isPrivate !== 'false') {
-            return NextResponse.json(
-                { message: 'Option isPrivate is required and must be true or false.' },
-                { status: 400 },
-            );
-        }
+    const id = await createCollection(viewer.userId, await readBody(req, createCollectionSchema));
 
-        const isPrivateBool = isPrivate === 'true';
-
-        type Rule = {
-            ok: boolean;
-            message: string;
-            status?: number;
-        };
-
-        const badRequest = (message: string, status = 400) =>
-            NextResponse.json({ message }, { status });
-
-        const rules: Rule[] = [
-            {
-                ok: name.length <= COLLECTION_NAME_MAX_LENGTH,
-                message: `Collection title length must be within ${COLLECTION_NAME_MAX_LENGTH}`,
-            },
-            {
-                ok: description.length <= COLLECTION_DESCRIPTION_MAX_LENGTH,
-                message: `Collection description length must be within ${COLLECTION_DESCRIPTION_MAX_LENGTH}`,
-            },
-            {
-                ok: itemTitle.length <= ITEM_TITLE_MAX_LENGTH,
-                message: `Item title length must be within ${ITEM_TITLE_MAX_LENGTH}`,
-            },
-            {
-                ok: itemDescription.length <= ITEM_DESCRIPTION_MAX_LENGTH,
-                message: `Item description length must be within ${ITEM_DESCRIPTION_MAX_LENGTH}`,
-            },
-            {
-                ok: !itemSourceUrl || isValidUrl(itemSourceUrl),
-                message: `Item source URL must be a valid URL.`,
-            },
-            {
-                ok: !itemImageUrl || isValidUrl(itemImageUrl),
-                message: `Image URL must be a valid URL.`,
-            },
-        ];
-
-        const failed = rules.find((x) => !x.ok);
-
-        if (failed) return badRequest(failed.message, failed.status);
-
-        const collection = await prisma.collection.create({
-            data: {
-                userId: session.userId,
-                name,
-                lowerCaseName: name.toLowerCase(),
-                description,
-                category,
-                bannerUrl: banner,
-                private: isPrivateBool,
-            },
-        });
-
-        const itemsCount = await prisma.item.count({
-            where: {
-                collectionId: collection.id,
-            },
-        });
-
-        await prisma.item.create({
-            data: {
-                collectionId: collection.id,
-                title: itemTitle,
-                description: itemDescription,
-                order: itemsCount,
-                ...(itemImageUrl && { imageUrl: itemImageUrl }),
-                ...(itemSourceUrl && { sourceUrl: itemSourceUrl }),
-            },
-        });
-
-        return NextResponse.json(
-            { message: 'Collection created.', id: collection.id },
-            { status: 200 },
-        );
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return json({ id }, 201);
+});

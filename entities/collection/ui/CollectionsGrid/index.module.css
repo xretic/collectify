@@ -1,0 +1,23 @@
+/*
+ * Fixed-width card columns spread edge to edge, so the first and last columns
+ * line up with the filters above (categories on the left, sort on the right).
+ */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 256px);
+    justify-content: space-between;
+    gap: 21px;
+    margin-top: 25px;
+}
+
+@media (max-width: 1000px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, min(356px, 100%));
+    }
+}
+
+@media (max-width: 830px) {
+    .grid {
+        justify-content: center;
+    }
+}

@@ -1,102 +1,59 @@
 'use client';
 
-import { useUser } from '@/entities/user/model/UserProvider';
-import { CATEGORIES, PAGE_SIZE } from '@/shared/lib/constants';
-import { useUIStore } from '@/shared/model/uiStore';
-import { Avatar, Button } from '@mui/material';
-import { Suspense, useMemo, useState } from 'react';
-import CollectionSearchBar from '@/features/collection/search/ui/CollectionSearchBar';
-import { useCollectionSearchStore } from '@/features/collection/search/model/collectionSearchStore';
-import { usePaginationStore } from '@/shared/model/paginationStore';
-import CollectionsWrapper from '@/entities/collection/ui/CollectionsWrapper';
-import SortBy from '@/shared/ui/SortBy';
-import styles from '@/app/(home)/home.module.css';
-import { useQuery } from '@tanstack/react-query';
-import { useDebounce } from '@/shared/lib/hooks/useDebounce';
-import HomePageSkeleton from '@/views/home/ui/HomePageSkeleton';
-import { collectionApi } from '@/entities/collection/api/collectionApi';
-import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { Avatar } from '@mui/material';
+import { useSessionUser } from '@/entities/user/model/useSessionUser';
+import { useCollectionList } from '@/entities/collection/model/useCollectionList';
+import { CollectionsGrid } from '@/entities/collection/ui/CollectionsGrid';
+import { CollectionsGridSkeleton } from '@/entities/collection/ui/CollectionsGridSkeleton';
+import { useCollectionListParams } from '@/features/collection/browse/model/useCollectionListParams';
+import { CollectionFilters } from '@/features/collection/browse/ui/CollectionFilters';
+import { CategoryChips } from '@/features/collection/browse/ui/CategoryChips';
+import { Pagination } from '@/shared/ui/Pagination';
+import styles from './HomePage.module.css';
 
 export default function HomePage() {
-    const { user, loading } = useUser();
+    const { user, loading } = useSessionUser();
+    const list = useCollectionListParams();
 
-    const [category, setCategory] = useState('');
-
-    const { query } = useCollectionSearchStore();
-    const { sortedBy } = useUIStore();
-    const { homePagination } = usePaginationStore();
-
-    const debouncedQuery = useDebounce(query, 400);
-
-    const params = useMemo(() => {
-        const query = (debouncedQuery ?? '').trim();
-
-        return {
-            sortedBy: String(sortedBy),
-            skip: homePagination * PAGE_SIZE,
-            category: category || '',
-            userId: user?.id ?? null,
-            query: query,
-        };
-    }, [sortedBy, homePagination, category, user?.id, debouncedQuery]);
-
-    const { data, isFetching } = useQuery({
-        queryKey: [collectionQueryKeys.search[0], params],
-        enabled: !loading,
-        staleTime: 30_000,
-        queryFn: () => collectionApi.search({ ...params, privateOnly: false }),
-    });
-
-    const collections = data ?? [];
-
-    if (loading && !user) return null;
-    if (isFetching) return <HomePageSkeleton />;
+    const { data, isPending } = useCollectionList(
+        { sort: list.sort, page: list.page, category: list.category, query: list.query },
+        // Wait for the session: signed-in users get followed authors first.
+        !loading,
+    );
 
     return (
-        <Suspense>
-            <div className={styles['container']}>
-                <div>
-                    <div className={styles['title']}>
-                        {user ? (
-                            <>
-                                <Avatar
-                                    src={user.avatarUrl}
-                                    alt={user.username}
-                                    sx={{ width: 40, height: 40 }}
-                                />
-                                <span>Welcome back, {user.username}!</span>
-                            </>
-                        ) : (
-                            <span>Discover collections</span>
-                        )}
-                    </div>
-                </div>
+        <section className={styles.page}>
+            <h1 className={styles.greeting}>
+                {user ? (
+                    <>
+                        <Avatar
+                            src={user.avatarUrl}
+                            alt={user.username}
+                            className={styles.avatar}
+                        />
+                        Welcome back, {user.username}!
+                    </>
+                ) : (
+                    'Discover collections'
+                )}
+            </h1>
 
-                <div className={styles['categories']}>
-                    <Button
-                        onClick={() => setCategory('')}
-                        variant={category === '' ? 'contained' : 'outlined'}
-                        sx={{ borderRadius: 6, height: 35, textTransform: 'none' }}
-                    >
-                        All
-                    </Button>
+            <CollectionFilters
+                sort={list.sort}
+                onSortChange={list.setSort}
+                query={list.queryInput}
+                onQueryChange={list.setQueryInput}
+            >
+                <CategoryChips value={list.category} onChange={list.setCategory} />
+            </CollectionFilters>
 
-                    {CATEGORIES.map((x) => (
-                        <Button
-                            key={x}
-                            onClick={() => setCategory(x)}
-                            variant={category === x ? 'contained' : 'outlined'}
-                            sx={{ borderRadius: 6, height: 35, textTransform: 'none' }}
-                        >
-                            {x}
-                        </Button>
-                    ))}
+            {isPending || !data ? (
+                <CollectionsGridSkeleton />
+            ) : (
+                <CollectionsGrid collections={data.data} />
+            )}
 
-                    <SortBy disabled={collections.length === 0} />
-                    <CollectionSearchBar disabled={query === '' && collections.length === 0} />
-                </div>
-                <CollectionsWrapper collections={collections} page="home" />
-            </div>
-        </Suspense>
+            <Pagination page={list.page} hasMore={data?.hasMore ?? false} onChange={list.setPage} />
+        </section>
     );
 }

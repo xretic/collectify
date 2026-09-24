@@ -1,11 +1,16 @@
 import { api } from '@/shared/api/api';
+import type { CollectionComment } from '../model/types';
 
 export const commentApi = {
-    update(commentId: string | number, text: string) {
-        return api.patch(`api/comments/${commentId}`, { json: { text } });
+    async update(commentId: number, text: string) {
+        return (
+            await api
+                .patch(`comments/${commentId}`, { json: { text } })
+                .json<{ comment: CollectionComment }>()
+        ).comment;
     },
 
-    delete(commentId: string | number) {
-        return api.delete(`api/comments/${commentId}`);
+    async delete(commentId: number) {
+        await api.delete(`comments/${commentId}`);
     },
 };

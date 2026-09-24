@@ -1,0 +1,15 @@
+.field {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+}
+
+@media (min-width: 1200px) {
+    .field {
+        width: 220px;
+    }
+}
+
+.clear {
+    cursor: pointer;
+}

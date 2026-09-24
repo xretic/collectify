@@ -1,0 +1,10 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.intro {
+    color: var(--soft-text) !important;
+    font-size: 14px !important;
+}

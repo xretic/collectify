@@ -1,163 +1,108 @@
 'use client';
 
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    Stack,
-    IconButton,
-    DialogContentText,
-} from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useUser } from '@/entities/user/model/UserProvider';
-import { Loader } from '@/shared/ui/Loader';
+import { Dialog, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { CustomLegend } from './components/CustomLegend';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { useQuery } from '@tanstack/react-query';
-import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
-import { CollectionStats } from '@/entities/collection/model/types';
+import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
+import type { CollectionStats } from '@/entities/collection/model/types';
+import { Spinner } from '@/shared/ui/Spinner';
+import { EmptyState } from '@/shared/ui/EmptyState';
+import styles from './index.module.css';
 
-interface CollectionChartProps {
-    stats: CollectionStats;
+// Line colours are chart props (SVG attributes); the legend reuses them via CSS classes.
+const SERIES = [
+    { key: 'Likes', color: '#ff2b2e', icon: FavoriteBorderIcon, className: styles.likes },
+    { key: 'Comments', color: '#8ab3ff', icon: ForumOutlinedIcon, className: styles.comments },
+    { key: 'Favorites', color: '#ff9800', icon: BookmarkBorderIcon, className: styles.favorites },
+] as const;
+
+function toChartData(stats: CollectionStats) {
+    return stats.days.map((day, index) => ({
+        day,
+        Likes: stats.likes[index] ?? 0,
+        Comments: stats.comments[index] ?? 0,
+        Favorites: stats.favorites[index] ?? 0,
+    }));
 }
 
-function CollectionChart({ stats }: CollectionChartProps) {
-    const chartData = stats.days.map((day, idx) => ({
-        day,
-        Likes: stats.likesData[idx] ?? 0,
-        Comments: stats.commentsData[idx] ?? 0,
-        Favorites: stats.favoritesData[idx] ?? 0,
-    }));
-
+function ChartLegend() {
     return (
-        <Stack sx={{ width: '100%', p: 2 }} spacing={2}>
-            <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                    <XAxis
-                        dataKey="day"
-                        tick={{ fontSize: 12, fill: '#666' }}
-                        axisLine={{ stroke: '#ddd' }}
-                        tickLine={false}
-                    />
-                    <YAxis
-                        tick={{ fontSize: 12, fill: '#666' }}
-                        axisLine={{ stroke: '#ddd' }}
-                        tickLine={false}
-                    />
-                    <Tooltip
-                        contentStyle={{
-                            color: 'var(--text-color)',
-                            backgroundColor: 'var(--container-color)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 4,
-                            fontSize: 12,
-                        }}
-                        labelStyle={{ fontWeight: 'bold' }}
-                    />
-
-                    <Legend content={<CustomLegend />} />
-
-                    <Line
-                        type="monotone"
-                        dataKey="Likes"
-                        stroke="#ff2b2e"
-                        strokeWidth={2}
-                        dot={false}
-                    />
-                    <Line
-                        type="monotone"
-                        dataKey="Comments"
-                        stroke="#8ab3ff"
-                        strokeWidth={2}
-                        dot={true}
-                    />
-                    <Line
-                        type="monotone"
-                        dataKey="Favorites"
-                        stroke="#ff9800"
-                        strokeWidth={2}
-                        dot={false}
-                    />
-                </LineChart>
-            </ResponsiveContainer>
-        </Stack>
+        <div className={styles.legend}>
+            {SERIES.map(({ key, className, icon: Icon }) => (
+                <span key={key} className={`${styles.legendItem} ${className}`}>
+                    <Icon fontSize="inherit" />
+                    <span className={styles.legendLabel}>{key}</span>
+                </span>
+            ))}
+        </div>
     );
 }
 
-interface CollectionStatsDialogProps {
-    id: string;
-    open?: boolean;
-    onClose?: () => void;
-}
+type CollectionStatsDialogProps = {
+    collectionId: number;
+    open: boolean;
+    onClose: () => void;
+};
 
-export default function CollectionStatsDialog({
-    id,
-    open = true,
-    onClose,
-}: CollectionStatsDialogProps) {
-    const { user, loading } = useUser();
-
-    const {
-        data: stats,
-        isError,
-        isLoading,
-    } = useQuery({
-        queryKey: collectionQueryKeys.stats(id),
-        queryFn: () => collectionApi.getStats(id),
-        enabled: open && !!id,
-        retry: false,
+export function CollectionStatsDialog({ collectionId, open, onClose }: CollectionStatsDialogProps) {
+    const { data, isPending, isError } = useQuery({
+        queryKey: collectionQueryKeys.stats(collectionId),
+        queryFn: () => collectionApi.stats(collectionId),
+        enabled: open,
         staleTime: 60_000,
     });
 
-    if (loading && !user) return null;
-
     return (
-        <Dialog
-            slotProps={{
-                paper: {
-                    sx: {
-                        backgroundColor: 'var(--container-color)',
-                        color: 'var(--text-color)',
-                        borderRadius: 3,
-                    },
-                },
-            }}
-            open={open}
-            onClose={onClose}
-            fullWidth
-            maxWidth="md"
-        >
-            <DialogTitle>
-                Statistics
-                {onClose ? (
-                    <IconButton
-                        aria-label="close"
-                        onClick={onClose}
-                        sx={{
-                            position: 'absolute',
-                            right: 8,
-                            top: 8,
-                            color: 'var(--soft-text)',
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                ) : null}
-            </DialogTitle>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+            <DialogTitle>Statistics</DialogTitle>
+
+            <IconButton className={styles.close} onClick={onClose} aria-label="Close">
+                <CloseIcon />
+            </IconButton>
 
             <DialogContent>
-                <DialogContentText sx={{ color: 'var(--soft-text)' }}>
-                    Detailed information about activity on your collection by day
+                <DialogContentText color="inherit" className={styles.intro}>
+                    Activity on your collection by day (UTC).
                 </DialogContentText>
 
-                {isLoading ? <Loader /> : null}
-                {isError ? (
-                    <DialogContentText sx={{ color: 'var(--soft-text)', mt: 2 }}>
-                        Statistics are unavailable for this collection.
-                    </DialogContentText>
-                ) : null}
-                {stats ? <CollectionChart stats={stats} /> : null}
+                {isPending && <Spinner />}
+                {isError && <EmptyState title="Statistics are unavailable right now." />}
+                {data && data.days.length === 0 && <EmptyState title="No activity yet." />}
+
+                {data && data.days.length > 0 && (
+                    <div className={styles.chart}>
+                        <ResponsiveContainer width="100%" height={350}>
+                            <LineChart
+                                data={toChartData(data)}
+                                margin={{ top: 30, right: 20, left: 0, bottom: 5 }}
+                            >
+                                <XAxis dataKey="day" tickLine={false} className={styles.axis} />
+                                <YAxis
+                                    allowDecimals={false}
+                                    tickLine={false}
+                                    className={styles.axis}
+                                />
+                                <Tooltip wrapperClassName={styles.tooltip} />
+                                <Legend content={<ChartLegend />} verticalAlign="top" />
+                                {SERIES.map(({ key, color }) => (
+                                    <Line
+                                        key={key}
+                                        type="monotone"
+                                        dataKey={key}
+                                        stroke={color}
+                                        strokeWidth={2}
+                                        dot={false}
+                                    />
+                                ))}
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     );

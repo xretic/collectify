@@ -1,0 +1,10 @@
+.composer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.send {
+    min-width: 96px !important;
+}

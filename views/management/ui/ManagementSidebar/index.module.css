@@ -1,0 +1,60 @@
+.sidebar {
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 40px);
+    min-height: 680px;
+    padding: 22px 18px;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 28px;
+    line-height: 1.1;
+}
+
+.subtitle {
+    margin-top: 5px;
+    font-size: 14px;
+    color: var(--soft-text);
+}
+
+.tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    border-radius: 10px;
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-weight: 500;
+}
+
+.tabActive {
+    color: #ffffff;
+    background: var(--accent);
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        position: static;
+        min-height: 0;
+        max-height: none;
+    }
+}

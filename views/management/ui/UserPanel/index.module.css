@@ -1,0 +1,66 @@
+.header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.avatar {
+    width: 58px !important;
+    height: 58px !important;
+}
+
+.name {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 24px;
+}
+
+.name:hover {
+    text-decoration: underline;
+}
+
+.username {
+    display: block;
+    color: var(--soft-text);
+    font-size: 14px;
+}
+
+.username:hover {
+    text-decoration: underline;
+}
+
+.email {
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 16px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.stat dt {
+    font-size: 12px;
+    color: var(--soft-text);
+}
+
+.stat dd {
+    font-size: 20px;
+    font-weight: 700;
+}

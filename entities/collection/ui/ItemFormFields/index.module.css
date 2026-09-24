@@ -1,0 +1,16 @@
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 14px;
+}

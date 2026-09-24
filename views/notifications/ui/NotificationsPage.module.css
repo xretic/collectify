@@ -1,0 +1,50 @@
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 1150px;
+    margin: 20px auto 0;
+    padding: 20px 25px;
+    background-color: var(--container-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    margin-left: 8px;
+    padding: 0 4px;
+    border-radius: 11px;
+    font-size: 12px;
+    background-color: color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.markAll {
+    margin-left: auto !important;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px 25px;
+    background-color: var(--container-color);
+    border-radius: 20px;
+}
+
+@media (max-width: 600px) {
+    .toolbar {
+        flex-wrap: wrap;
+        padding: 14px;
+    }
+
+    .list {
+        padding: 12px;
+    }
+}

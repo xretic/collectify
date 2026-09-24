@@ -1,48 +1,10 @@
-import { canModerateTarget, requireManagementAccess, writeModerationAction } from '@/entities/management/api/server';
-import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
-import { prisma } from '@/shared/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { noContent, parseId, route } from '@/shared/server/http';
+import { requireStaff } from '@/features/auth/server/guards';
+import { deleteUserAccount } from '@/features/moderation/server/moderation';
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    try {
-        const access = await requireManagementAccess(req, true);
-        if (access.response || !access.context) return access.response;
+export const DELETE = route<{ id: string }>(async (req, params) => {
+    const ctx = await requireStaff(req, { adminOnly: true });
+    await deleteUserAccount(ctx, parseId(params.id, 'user id'));
 
-        const { id } = await params;
-        const targetUserId = Number(id);
-
-        if (!isProperInteger(targetUserId)) {
-            return NextResponse.json({ message: 'Invalid user id.' }, { status: 400 });
-        }
-
-        const target = await prisma.user.findUnique({ where: { id: targetUserId } });
-
-        if (!target) {
-            return NextResponse.json({ message: 'User does not exist.' }, { status: 404 });
-        }
-
-        const targetAccess = await canModerateTarget(access.context, targetUserId);
-
-        if (!targetAccess.ok) {
-            return NextResponse.json({ message: targetAccess.message }, { status: 403 });
-        }
-
-        await writeModerationAction({
-            actorId: access.context.session.userId,
-            targetUserId,
-            action: 'delete-user',
-            metadata: {
-                targetUserId,
-                username: target.username,
-                email: target.email,
-            },
-        });
-
-        await prisma.user.delete({ where: { id: targetUserId } });
-
-        return NextResponse.json({ message: 'User deleted.' }, { status: 200 });
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return noContent();
+});

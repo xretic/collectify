@@ -1,147 +1,26 @@
-import { isProperInteger } from '@/shared/lib/validation/isProperInteger';
-import { prisma } from '@/shared/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
-import { COMMENT_MAX_LENGTH } from '@/shared/lib/constants';
-import {
-    canModerateTarget,
-    getScopedSanctionResponse,
-    requireManagementAccess,
-    writeModerationAction,
-} from '@/entities/management/api/server';
+import { json, noContent, parseId, readBody, route } from '@/shared/server/http';
+import { enforceRateLimit } from '@/shared/server/rateLimit';
+import { requireViewer } from '@/features/auth/server/guards';
+import { deleteComment, updateComment } from '@/features/comment/server/comments';
+import { commentTextSchema } from '@/features/comment/model/schema';
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    try {
-        const sessionId = req.cookies.get('sessionId')?.value;
+type Params = { id: string };
 
-        if (!sessionId) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
+export const PATCH = route<Params>(async (req, params) => {
+    const viewer = await requireViewer(req);
+    await enforceRateLimit(req, 'comment', viewer.userId);
 
-        const session = await prisma.session.findUnique({
-            where: { id: sessionId },
-        });
+    const { text } = await readBody(req, commentTextSchema);
+    const comment = await updateComment(viewer, parseId(params.id, 'comment id'), text);
 
-        if (!session) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
+    return json({ comment });
+});
 
-        const { id } = await params;
-        const intId = Number(id);
+export const DELETE = route<Params>(async (req, params) => {
+    const viewer = await requireViewer(req);
+    await enforceRateLimit(req, 'mutation', viewer.userId);
 
-        if (!isProperInteger(intId)) {
-            return NextResponse.json({ message: 'Invalid comment id' }, { status: 400 });
-        }
+    await deleteComment(viewer, parseId(params.id, 'comment id'));
 
-        const comment = await prisma.comment.findUnique({
-            where: {
-                id: intId,
-            },
-        });
-
-        if (!comment) {
-            return NextResponse.json({ message: 'Comment not found.' }, { status: 404 });
-        }
-
-        if (session.userId !== comment.userId) {
-            const access = await requireManagementAccess(req);
-
-            if (access.response || !access.context) {
-                return access.response;
-            }
-
-            const targetAccess = await canModerateTarget(access.context, comment.userId);
-
-            if (!targetAccess.ok) {
-                return NextResponse.json({ message: targetAccess.message }, { status: 403 });
-            }
-
-            await writeModerationAction({
-                actorId: access.context.session.userId,
-                targetUserId: comment.userId,
-                targetCommentId: comment.id,
-                action: 'delete-comment',
-            });
-        }
-
-        await prisma.comment.delete({
-            where: {
-                id: comment.id,
-            },
-        });
-
-        return NextResponse.json({ message: 'Comment deleted.' }, { status: 200 });
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
-
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    try {
-        const { text } = await req.json();
-
-        if (!text) {
-            return NextResponse.json({ message: 'Text is required.' }, { status: 400 });
-        }
-
-        if (!text.trim() || text.length === 0 || text.length > COMMENT_MAX_LENGTH) {
-            return NextResponse.json(
-                { message: `Text length should be within this range [0-${COMMENT_MAX_LENGTH}]` },
-                { status: 400 },
-            );
-        }
-
-        const sessionId = req.cookies.get('sessionId')?.value;
-
-        if (!sessionId) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
-
-        const session = await prisma.session.findUnique({
-            where: { id: sessionId },
-        });
-
-        if (!session) {
-            return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-        }
-
-        const sanctionResponse = await getScopedSanctionResponse(session.userId, 'COMMENTS');
-        if (sanctionResponse) return sanctionResponse;
-
-        const { id } = await params;
-        const intId = Number(id);
-
-        if (!isProperInteger(intId)) {
-            return NextResponse.json({ message: 'Invalid comment id' }, { status: 400 });
-        }
-
-        const comment = await prisma.comment.findUnique({
-            where: {
-                id: intId,
-            },
-        });
-
-        if (!comment) {
-            return NextResponse.json({ message: 'Comment not found.' }, { status: 404 });
-        }
-
-        if (session.userId !== comment.userId) {
-            return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
-        }
-
-        await prisma.comment.update({
-            where: {
-                id: comment.id,
-            },
-
-            data: {
-                text,
-            },
-        });
-
-        return NextResponse.json({ message: 'Comment edited.' }, { status: 200 });
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
-    }
-}
+    return noContent();
+});

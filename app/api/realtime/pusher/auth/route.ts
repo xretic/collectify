@@ -1,37 +1,21 @@
-import { prisma } from '@/shared/lib/prisma';
-import { pusher, userChannelName } from '@/server/realtime/pusher';
-import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { ApiError, forbidden, json, parse, route } from '@/shared/server/http';
+import { pusher } from '@/entities/chat/server/realtime';
+import { userChannelName } from '@/entities/chat/model/types';
+import { requireViewer } from '@/features/auth/server/guards';
 
-export async function POST(req: NextRequest) {
-    if (!pusher) {
-        return NextResponse.json(
-            { message: 'Realtime provider is not configured.' },
-            { status: 503 },
-        );
-    }
+const formSchema = z.object({
+    socket_id: z.string().min(1),
+    channel_name: z.string().min(1),
+});
 
-    const sessionId = req.cookies.get('sessionId')?.value;
+export const POST = route(async (req) => {
+    if (!pusher) throw new ApiError(503, 'Realtime provider is not configured.');
 
-    if (!sessionId) {
-        return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-    }
+    const viewer = await requireViewer(req);
+    const form = parse(formSchema, Object.fromEntries(await req.formData()));
 
-    const session = await prisma.session.findUnique({
-        where: { id: sessionId },
-        select: { userId: true },
-    });
+    if (form.channel_name !== userChannelName(viewer.userId)) throw forbidden();
 
-    if (!session) {
-        return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
-    }
-
-    const formData = await req.formData();
-    const socketId = String(formData.get('socket_id') ?? '');
-    const channelName = String(formData.get('channel_name') ?? '');
-
-    if (!socketId || channelName !== userChannelName(session.userId)) {
-        return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
-    }
-
-    return NextResponse.json(pusher.authorizeChannel(socketId, channelName));
-}
+    return json(pusher.authorizeChannel(form.socket_id, form.channel_name));
+});

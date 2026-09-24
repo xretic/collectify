@@ -5,7 +5,22 @@ import nextTs from 'eslint-config-next/typescript';
 const eslintConfig = defineConfig([
     ...nextVitals,
     ...nextTs,
-    globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+    {
+        rules: {
+            // User content (avatars, banners, item images) comes from arbitrary
+            // hosts and is rendered with plain <img>; the Next image optimizer is
+            // deliberately limited to local assets (see next.config.ts).
+            '@next/next/no-img-element': 'off',
+        },
+    },
+    globalIgnores([
+        '.next/**',
+        'out/**',
+        'build/**',
+        'next-env.d.ts',
+        'generated/**',
+        'collectify-generator/**',
+    ]),
 ]);
 
 export default eslintConfig;

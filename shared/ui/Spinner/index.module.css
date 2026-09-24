@@ -1,0 +1,12 @@
+.inline {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+.page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}

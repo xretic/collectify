@@ -1,0 +1,46 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.heading {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.item:hover {
+    border-color: var(--accent);
+}
+
+.itemTitle {
+    font-weight: 600;
+}
+
+.muted {
+    font-size: 12px;
+    color: var(--soft-text);
+}
+
+.text {
+    font-size: 14px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}

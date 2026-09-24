@@ -1,46 +1,37 @@
 import { api } from '@/shared/api/api';
-import { ChatInResponse, MessageInResponse } from '@/types/ChatInResponse';
-
-type Cursor = number | null;
+import type { ChatMessage, ChatMessagesPage, ChatsPage } from '../model/types';
 
 export const chatApi = {
     list(skip: number) {
-        return api
-            .get('api/chats', {
-                searchParams: { skip },
-            })
-            .json<{ data: ChatInResponse[]; total: number }>();
+        return api.get('chats', { searchParams: { skip } }).json<ChatsPage>();
     },
 
-    detail(chatId: string | number, cursor: Cursor) {
+    messages(chatId: number, cursor: number | null) {
         return api
-            .get(`api/chats/${chatId}`, {
-                searchParams: cursor ? { cursor } : {},
-            })
-            .json<{ data: ChatInResponse; nextCursor: Cursor }>();
+            .get(`chats/${chatId}`, { searchParams: cursor ? { cursor } : {} })
+            .json<ChatMessagesPage>();
     },
 
-    sendMessage(chatId: string | number, messageText: string) {
-        return api
-            .post(`api/chats/${chatId}`, { json: { messageText } })
-            .json<{ data: MessageInResponse }>();
+    async send(chatId: number, content: string) {
+        return (
+            await api
+                .post(`chats/${chatId}/messages`, { json: { content } })
+                .json<{ message: ChatMessage }>()
+        ).message;
     },
 
-    markAsRead(chatId: string | number) {
-        return api.patch(`api/chats/${chatId}`);
+    async markAsRead(chatId: number) {
+        await api.patch(`chats/${chatId}/read`);
     },
 
-    getExistence(userId: string | number) {
-        return api
-            .get(`api/chats/${userId}/existence`)
-            .json<{ chatId: number | undefined; result: boolean }>();
+    async findWith(userId: number) {
+        return (await api.get(`chats/with/${userId}`).json<{ chatId: number | null }>()).chatId;
     },
 
-    create(recipientUserId: string | number, message: string) {
+    /** Opens (or reuses) the direct chat with `userId` and sends the first message. */
+    start(userId: number, content: string) {
         return api
-            .post(`api/chats/${recipientUserId}/create`, {
-                json: { message },
-            })
-            .json<{ id: number }>();
+            .post('chats', { json: { userId, content } })
+            .json<{ chatId: number; message: ChatMessage }>();
     },
 };

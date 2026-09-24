@@ -1,0 +1,35 @@
+.page {
+    display: grid;
+    grid-template-columns: 330px minmax(0, 1fr);
+    align-items: start;
+    gap: 20px;
+    width: min(1150px, calc(100% - 32px));
+    margin: 20px auto 48px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.panel {
+    min-height: 680px;
+    padding: 26px 30px;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 900px) {
+    .page {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        min-height: 0;
+        padding: 18px 14px;
+    }
+}

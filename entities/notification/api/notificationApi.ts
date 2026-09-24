@@ -1,16 +1,16 @@
 import { api } from '@/shared/api/api';
-import { NotificationsResponse } from '@/entities/notification/model/types';
+import type { NotificationsPage } from '../model/types';
 
 export const notificationApi = {
-    list(onlyUnread: boolean) {
+    list(onlyUnread: boolean, cursor: number | null) {
         return api
-            .get('api/notifications', {
-                searchParams: { onlyUnread: String(onlyUnread) },
+            .get('notifications', {
+                searchParams: { onlyUnread: String(onlyUnread), ...(cursor ? { cursor } : {}) },
             })
-            .json<NotificationsResponse>();
+            .json<NotificationsPage>();
     },
 
-    markAllAsRead() {
-        return api.patch('api/notifications').json<NotificationsResponse>();
+    async markAllAsRead() {
+        await api.patch('notifications/read');
     },
 };

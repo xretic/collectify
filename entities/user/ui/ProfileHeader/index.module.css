@@ -1,0 +1,156 @@
+.cover {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    background-color: var(--border-color);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* No banner uploaded: blend into the page instead of showing a grey block. */
+.coverEmpty {
+    background-color: var(--bg-color);
+}
+
+.card {
+    position: relative;
+    max-width: 1150px;
+    margin: -80px auto 0;
+    padding: 25px 30px;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 4px;
+}
+
+.identity {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.avatar {
+    flex-shrink: 0;
+    width: 120px !important;
+    height: 120px !important;
+    margin-top: -50px;
+    border: 1px solid var(--border-color);
+    background-color: var(--container-color);
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    /* Lines the name up with the upper half of the avatar, which overlaps the banner. */
+    margin-top: -14px;
+}
+
+.name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.badges {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.username {
+    width: fit-content;
+    color: var(--soft-text);
+    font-size: 14px;
+}
+
+.username:hover {
+    text-decoration: underline;
+}
+
+.description {
+    display: flex;
+    gap: 4px;
+    max-width: 500px;
+    margin-top: 6px;
+    color: var(--soft-text);
+    font-size: 15px;
+    overflow-wrap: anywhere;
+}
+
+.mobileStats {
+    display: none;
+}
+
+/* Phone: centered card, smaller avatar overlapping the banner, actions in the corner. */
+@media (max-width: 600px) {
+    .cover {
+        height: 160px;
+        border-radius: 0;
+    }
+
+    .mobileStats {
+        display: flex;
+        margin-top: 16px;
+    }
+
+    .card {
+        margin: -48px 12px 0;
+        padding: 0 16px 18px;
+    }
+
+    .actions {
+        top: 6px;
+        right: 6px;
+        gap: 0;
+    }
+
+    .identity {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 88px !important;
+        height: 88px !important;
+        margin-top: -44px;
+        border-width: 3px;
+        border-color: var(--container-color);
+    }
+
+    .info {
+        align-items: center;
+        margin-top: 0;
+    }
+
+    .name {
+        justify-content: center;
+        font-size: 22px;
+    }
+
+    .username {
+        margin: 0 auto;
+    }
+
+    .description {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .quoteIcon {
+        display: none !important;
+    }
+}

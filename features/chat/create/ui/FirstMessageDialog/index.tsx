@@ -1,121 +1,77 @@
 'use client';
 
-import { Dialog, DialogContent, DialogTitle, DialogActions, Button, Avatar } from '@mui/material';
-import { ConfigProvider } from 'antd';
-import { DIRECT_MESSAGE_MAX_LENGTH } from '@/shared/lib/constants';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useUIStore } from '@/shared/model/uiStore';
-import { UserInResponse } from '@/types/UserInResponse';
-import { useFirstMessageDialogStore } from '@/features/chat/create/model/firstMessageDialogStore';
-import TextArea from 'antd/es/input/TextArea';
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { chatApi } from '@/entities/chat/api/chatApi';
-import { useUser } from '@/entities/user/model/UserProvider';
-import { getMutePlaceholder } from '@/shared/lib/restrictions';
+import type { UserPreview } from '@/entities/user/model/types';
+import { useSessionUser } from '@/entities/user/model/useSessionUser';
+import { getMutePlaceholder } from '@/entities/user/lib/restrictions';
+import { DIRECT_MESSAGE_MAX_LENGTH } from '@/shared/lib/constants';
+import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
+import { toast } from '@/shared/model/toastStore';
+import { CountedTextField } from '@/shared/ui/CountedTextField';
+import styles from './index.module.css';
 
-export default function FirstMessageDialog({ user: targetUser }: { user: UserInResponse }) {
+type FirstMessageDialogProps = {
+    open: boolean;
+    recipient: UserPreview;
+    onClose: () => void;
+};
+
+export function FirstMessageDialog({ open, recipient, onClose }: FirstMessageDialogProps) {
     const router = useRouter();
-    const { open, setOpen } = useFirstMessageDialogStore();
-    const { startLoading, stopLoading, loadingCount } = useUIStore();
-    const { user } = useUser();
-
+    const { user } = useSessionUser();
     const [message, setMessage] = useState('');
-    const messengerRestriction = user?.restrictions.messenger;
-    const messengerMuted = !!messengerRestriction?.muted;
-    const messagePlaceholder = getMutePlaceholder(
-        messengerRestriction,
-        'messenger',
-        'Write your message',
-    );
 
-    const handleClose = () => {
-        setMessage('');
-        setOpen(false);
-    };
+    const restriction = user?.restrictions.messenger;
+    const muted = Boolean(restriction?.muted);
 
-    const handleConfirm = async () => {
-        if (loadingCount > 0 || messengerMuted) return;
-
-        startLoading();
-
-        try {
-            const data = await chatApi.create(targetUser.id, message);
-
-            handleClose();
-            router.replace('/chats/' + data.id);
-        } catch {
-            return;
-        } finally {
-            stopLoading();
-        }
-    };
+    const send = useMutation({
+        mutationFn: () => chatApi.start(recipient.id, message),
+        onSuccess: ({ chatId }) => {
+            setMessage('');
+            onClose();
+            router.push(`/chats/${chatId}`);
+        },
+        onError: async (error) => toast.error(await getApiErrorMessage(error)),
+    });
 
     return (
-        <Dialog
-            slotProps={{
-                paper: {
-                    sx: {
-                        backgroundColor: 'var(--container-color)',
-                        color: 'var(--text-color)',
-                        borderRadius: 3,
-                    },
-                },
-            }}
-            open={open}
-            onClose={handleClose}
-        >
-            <DialogTitle sx={{ color: 'var(--text-color)' }} className="flex gap-2 mb-5">
+        <Dialog open={open} onClose={send.isPending ? undefined : onClose} fullWidth maxWidth="sm">
+            <DialogTitle className={styles.title}>
                 <Avatar
-                    src={targetUser.avatarUrl}
-                    alt={targetUser.username}
-                    sx={{ width: 35, height: 35 }}
+                    src={recipient.avatarUrl}
+                    alt={recipient.username}
+                    className={styles.avatar}
                 />
-                Send your first message to {targetUser.username}
+                Send your first message to {recipient.username}
             </DialogTitle>
+
             <DialogContent>
-                <ConfigProvider
-                    theme={{
-                        token: {
-                            colorTextPlaceholder: 'var(--soft-text)',
-                            colorIcon: 'var(--soft-text)',
-                        },
-                    }}
-                >
-                    <TextArea
-                        value={messengerMuted ? '' : message}
-                        disabled={messengerMuted}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder={messagePlaceholder}
-                        maxLength={DIRECT_MESSAGE_MAX_LENGTH}
-                        style={{
-                            backgroundColor: 'var(--container-color)',
-                            color: 'var(--text-color)',
-                        }}
-                        autoSize={{ minRows: 2, maxRows: 30 }}
-                        showCount
-                    />
-                </ConfigProvider>
+                <CountedTextField
+                    value={message}
+                    onChange={setMessage}
+                    maxLength={DIRECT_MESSAGE_MAX_LENGTH}
+                    placeholder={getMutePlaceholder(restriction, 'messenger', 'Write your message')}
+                    disabled={muted}
+                    multiline
+                    minRows={2}
+                    maxRows={12}
+                    fullWidth
+                    autoFocus
+                />
             </DialogContent>
 
             <DialogActions>
-                <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={handleClose}
-                    sx={{ marginTop: 3, borderRadius: 6, textTransform: 'none' }}
-                >
+                <Button onClick={onClose} disabled={send.isPending}>
                     Cancel
                 </Button>
                 <Button
                     variant="contained"
-                    size="small"
-                    onClick={handleConfirm}
-                    disabled={messengerMuted || !message.trim()}
-                    sx={{
-                        marginTop: 3,
-                        borderRadius: 6,
-                        textTransform: 'none',
-                    }}
+                    onClick={() => send.mutate()}
+                    disabled={muted || !message.trim() || send.isPending}
                 >
                     Send
                 </Button>

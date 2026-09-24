@@ -1,0 +1,60 @@
+.message {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 4px 8px 4px 0;
+    border-radius: 14px;
+}
+
+.avatar {
+    width: 35px !important;
+    height: 35px !important;
+}
+
+.body {
+    flex: 1;
+    min-width: 0;
+}
+
+.meta {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.username {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 13px;
+}
+
+.username:hover {
+    text-decoration: underline;
+}
+
+.date {
+    color: var(--soft-text);
+    font-size: 13px;
+}
+
+.date::before {
+    content: '·';
+    margin-right: 6px;
+}
+
+.content {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.actions {
+    margin-left: auto;
+    color: var(--soft-text);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.message:hover .actions,
+.actions:focus-within {
+    opacity: 1;
+}

@@ -1,0 +1,38 @@
+.panel {
+    max-width: 1450px;
+    margin: 21px auto 0;
+    padding: 25px 30px;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    color: var(--soft-text);
+}
+
+.description {
+    font-size: 14px;
+    color: var(--soft-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+    .panel {
+        padding: 18px 14px;
+    }
+}

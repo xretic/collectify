@@ -1,0 +1,104 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 4px !important;
+}
+
+/* Banner with the avatar overlapping its bottom edge, like the profile header. */
+.media {
+    position: relative;
+    padding-bottom: 44px;
+}
+
+.banner {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background-color: var(--border-color);
+}
+
+.bannerImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarWrap {
+    position: absolute;
+    left: 20px;
+    bottom: 0;
+}
+
+.avatarButton {
+    position: relative;
+    display: block;
+    border-radius: 50%;
+}
+
+.avatar {
+    width: 96px !important;
+    height: 96px !important;
+    border: 4px solid var(--container-color);
+}
+
+/* Hint shown on hover/focus; always visible while an upload is running. */
+.overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.avatarOverlay {
+    inset: 4px;
+    border-radius: 50%;
+}
+
+.banner:hover .overlay,
+.banner:focus-visible .overlay,
+.banner:disabled .overlay,
+.avatarButton:hover .overlay,
+.avatarButton:focus-visible .overlay,
+.avatarButton:disabled .overlay {
+    opacity: 1;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Small round "×" buttons that clear an image (the profile falls back to defaults). */
+.remove {
+    position: absolute !important;
+    color: #ffffff !important;
+    background-color: rgba(0, 0, 0, 0.55) !important;
+}
+
+.remove:hover {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.removeBanner {
+    top: 8px;
+    right: 8px;
+}
+
+.removeAvatar {
+    top: 0;
+    right: -4px;
+    border: 2px solid var(--container-color) !important;
+}

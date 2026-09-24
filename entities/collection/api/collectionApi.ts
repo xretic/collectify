@@ -1,149 +1,107 @@
 import { api } from '@/shared/api/api';
-import {
-    CollectionActionType,
-    CollectionFieldProps,
+import type { CommentsPage, CollectionComment } from '@/entities/comment/model/types';
+import type {
+    CollectionDetails,
+    CollectionItem,
     CollectionItemPayload,
-    CollectionOrderItem,
-    CollectionPropsAdditional,
-    CollectionSearchParams,
+    CollectionListPage,
+    CollectionListParams,
     CollectionStats,
     CreateCollectionPayload,
-} from '@/entities/collection/model/types';
+    UpdateCollectionPayload,
+} from '../model/types';
 
-type CollectionResponse = {
-    data: CollectionPropsAdditional;
-};
+const url = (collectionId: number | string) => `collections/${collectionId}`;
 
-const collectionUrl = (collectionId: string | number) => `api/collections/${collectionId}`;
-
-function buildCollectionSearchParams(params: CollectionSearchParams) {
-    const searchParams = new URLSearchParams({
-        sortedBy: String(params.sortedBy),
-        skip: String(params.skip),
-        privateOnly: String(params.privateOnly),
-    });
+function toSearchParams(params: CollectionListParams) {
+    const searchParams = new URLSearchParams({ sort: params.sort, page: String(params.page) });
 
     if (params.category) searchParams.set('category', params.category);
-    if (params.userId != null) searchParams.set('userId', String(params.userId));
     if (params.query) searchParams.set('query', params.query);
-    if (params.authorId != null) searchParams.set('authorId', String(params.authorId));
-    if (params.favoritesUserId != null) {
-        searchParams.set('favoritesUserId', String(params.favoritesUserId));
-    }
-    if (params.followed) searchParams.set('followed', 'true');
+    if (params.authorId) searchParams.set('authorId', String(params.authorId));
+    if (params.visibility) searchParams.set('visibility', params.visibility);
+    if (params.favorites) searchParams.set('favorites', 'true');
 
     return searchParams;
 }
 
 export const collectionApi = {
-    async search(params: CollectionSearchParams) {
-        const searchParams = buildCollectionSearchParams(params);
-        const res = await api
-            .get(`api/collections/search?${searchParams.toString()}`)
-            .json<{ data: CollectionFieldProps[] }>();
+    list(params: CollectionListParams) {
+        return api
+            .get('collections', { searchParams: toSearchParams(params) })
+            .json<CollectionListPage>();
+    },
 
-        return res.data;
+    async getById(collectionId: number | string) {
+        return (await api.get(url(collectionId)).json<{ collection: CollectionDetails }>())
+            .collection;
     },
 
     async create(payload: CreateCollectionPayload) {
-        return api.post('api/collections', { json: payload }).json<{ id: number }>();
+        return (await api.post('collections', { json: payload }).json<{ id: number }>()).id;
     },
 
-    async getById(collectionId: string | number, commentsSkip = 0) {
-        const res = await api
-            .get(`${collectionUrl(collectionId)}/action`, {
-                searchParams: { commentsSkip },
-            })
-            .json<CollectionResponse>();
-
-        return res.data;
+    async update(collectionId: number, payload: UpdateCollectionPayload) {
+        return (
+            await api
+                .patch(url(collectionId), { json: payload })
+                .json<{ collection: CollectionDetails }>()
+        ).collection;
     },
 
-    async updateAction(collectionId: string | number, action: CollectionActionType) {
-        const res = await api
-            .patch(`${collectionUrl(collectionId)}/action`, {
-                searchParams: { actionType: action, commentsSkip: 0 },
-            })
-            .json<CollectionResponse>();
-
-        return res.data;
+    async delete(collectionId: number) {
+        await api.delete(url(collectionId));
     },
 
-    async createComment(collectionId: string | number, text: string) {
-        const res = await api
-            .post(`${collectionUrl(collectionId)}/comment`, {
-                json: { text },
-                searchParams: { commentsSkip: 0 },
-            })
-            .json<CollectionResponse>();
-
-        return res.data;
+    async setLiked(collectionId: number, liked: boolean) {
+        const path = `${url(collectionId)}/like`;
+        await (liked ? api.put(path) : api.delete(path));
     },
 
-    async updateOrder(collectionId: string | number, items: CollectionOrderItem[]) {
-        await api.patch(`${collectionUrl(collectionId)}/order`, { json: { items } });
+    async setFavorited(collectionId: number, favorited: boolean) {
+        const path = `${url(collectionId)}/favorite`;
+        await (favorited ? api.put(path) : api.delete(path));
     },
 
-    async createItem(collectionId: string | number, payload: CollectionItemPayload) {
-        const res = await api
-            .post(`${collectionUrl(collectionId)}/items`, {
-                json: payload,
-                searchParams: { commentsSkip: 0 },
-            })
-            .json<CollectionResponse>();
-
-        return res.data;
+    comments(collectionId: number | string, cursor: number | null) {
+        return api
+            .get(`${url(collectionId)}/comments`, { searchParams: cursor ? { cursor } : {} })
+            .json<CommentsPage>();
     },
 
-    async updateItem(
-        collectionId: string | number,
-        itemId: string | number,
-        payload: CollectionItemPayload,
-    ) {
-        const res = await api
-            .patch(`${collectionUrl(collectionId)}/items`, {
-                json: payload,
-                searchParams: { itemId, commentsSkip: 0 },
-            })
-            .json<CollectionResponse>();
-
-        return res.data;
+    async addComment(collectionId: number, text: string) {
+        return (
+            await api
+                .post(`${url(collectionId)}/comments`, { json: { text } })
+                .json<{ comment: CollectionComment }>()
+        ).comment;
     },
 
-    async deleteItem(collectionId: string | number, itemId: string | number) {
-        const res = await api
-            .delete(`${collectionUrl(collectionId)}/items`, {
-                searchParams: { itemId, commentsSkip: 0 },
-            })
-            .json<CollectionResponse>();
-
-        return res.data;
+    async addItem(collectionId: number, payload: CollectionItemPayload) {
+        return (
+            await api
+                .post(`${url(collectionId)}/items`, { json: payload })
+                .json<{ item: CollectionItem }>()
+        ).item;
     },
 
-    async updateDetails(
-        collectionId: string | number,
-        payload: {
-            title: string;
-            description: string;
-            bannerUrl: string | null;
-            isPrivate: boolean;
-        },
-    ) {
-        const res = await api
-            .patch(`${collectionUrl(collectionId)}/edit`, {
-                json: payload,
-                searchParams: { commentsSkip: 0 },
-            })
-            .json<CollectionResponse>();
-
-        return res.data;
+    async updateItem(collectionId: number, itemId: number, payload: CollectionItemPayload) {
+        return (
+            await api
+                .patch(`${url(collectionId)}/items/${itemId}`, { json: payload })
+                .json<{ item: CollectionItem }>()
+        ).item;
     },
 
-    async getStats(collectionId: string | number) {
-        return api.get(`${collectionUrl(collectionId)}/stats`).json<CollectionStats>();
+    async deleteItem(collectionId: number, itemId: number) {
+        await api.delete(`${url(collectionId)}/items/${itemId}`);
     },
 
-    delete(collectionId: string | number) {
-        return api.delete(`${collectionUrl(collectionId)}/delete`);
+    async reorderItems(collectionId: number, itemIds: number[]) {
+        await api.put(`${url(collectionId)}/items/order`, { json: { itemIds } });
+    },
+
+    stats(collectionId: number) {
+        return api.get(`${url(collectionId)}/stats`).json<CollectionStats>();
     },
 };

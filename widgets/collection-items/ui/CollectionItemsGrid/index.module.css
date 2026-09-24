@@ -1,0 +1,35 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+    max-width: 1470px;
+    margin: 20px auto 0;
+    padding: 0 10px;
+}
+
+.sortable {
+    touch-action: manipulation;
+}
+
+.dragging {
+    opacity: 0.6;
+    z-index: 1;
+}
+
+.addItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 89px;
+    color: var(--text-color);
+    border: 1px dashed var(--border-color);
+    border-radius: 14px;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.addItem:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}

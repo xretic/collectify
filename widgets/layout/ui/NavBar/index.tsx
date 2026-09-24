@@ -1,381 +1,129 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
-import { Button } from 'antd';
-import { LoginRounded, SvgIconComponent } from '@mui/icons-material';
-import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
-import { useUser } from '@/entities/user/model/UserProvider';
-import Avatar from '@mui/material/Avatar';
-import { useUIStore } from '@/shared/model/uiStore';
-import HoverMenu from '@/widgets/layout/ui/HoverMenu';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { usePathname, useRouter } from 'next/navigation';
-import HomeIcon from '@mui/icons-material/Home';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
-import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import UserSearchBar from '@/widgets/layout/ui/UserSearchBar';
-import {
-    Badge,
-    Box,
-    Drawer,
-    IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    SxProps,
-    Theme,
-    Tooltip,
-    useMediaQuery,
-} from '@mui/material';
+import { usePathname } from 'next/navigation';
+import { Badge, Button, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import styles from './index.module.css';
-import { SessionUserInResponse } from '@/types/UserInResponse';
-import MenuIcon from '@mui/icons-material/Menu';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import EggAltOutlinedIcon from '@mui/icons-material/EggAltOutlined';
-import EggAltIcon from '@mui/icons-material/EggAlt';
-import { useSocket } from '@/entities/chat/model/SocketProvider';
-import { MessageInResponse } from '@/types/ChatInResponse';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import { useSessionUser } from '@/entities/user/model/useSessionUser';
+import { useRealtimeEvent } from '@/entities/chat/model/RealtimeProvider';
 import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
-
-interface NavItem {
-    label: string;
-    href: string;
-    icon: SvgIconComponent;
-    iconOutlined: SvgIconComponent;
-    badge?: number;
-    hide?: boolean;
-}
-
-type SocketMessage = MessageInResponse & { chatId: number };
-
-const navItems = (user: SessionUserInResponse | null): NavItem[] => [
-    {
-        label: 'Home',
-        href: '/',
-        icon: HomeIcon,
-        iconOutlined: HomeOutlinedIcon,
-    },
-    {
-        label: 'Collections',
-        href: '/collections/my',
-        icon: EggAltIcon,
-        iconOutlined: EggAltOutlinedIcon,
-        hide: !user,
-    },
-    {
-        label: 'Profile',
-        href: '/users/me',
-        icon: AccountCircleIcon,
-        iconOutlined: AccountCircleOutlinedIcon,
-        hide: !user,
-    },
-    {
-        label: 'Notifications',
-        href: '/notifications',
-        icon: NotificationsIcon,
-        iconOutlined: NotificationsOutlinedIcon,
-        badge: user?.notifications,
-    },
-];
-
-const badgeSx: SxProps<Theme> = {
-    '.MuiBadge-badge': {
-        minWidth: 13,
-        height: 13,
-        fontSize: 10,
-        padding: 0,
-        transform: 'translate(20%, -20%)',
-    },
-};
+import UserSearchBar from '../UserSearchBar';
+import { UserMenu } from '../UserMenu';
+import { ImpersonationBanner } from '../ImpersonationBanner';
+import { getNavItems } from './navItems';
+import { NavItemIcon } from './NavItemIcon';
+import { NavDrawer } from './NavDrawer';
+import styles from './index.module.css';
 
 export default function NavBar() {
-    const { user, setUser, loading } = useUser();
-    const { anchorEl, setAnchorEl, searchBarOpened, setSearchBarOpened } = useUIStore();
-    const userId = user?.id;
-    const socket = useSocket();
-    const activeChatId = useActiveChatStore((state) => state.activeChatId);
     const pathname = usePathname();
-    const buttonStyle = { width: 22, height: 22, marginLeft: 2 };
-
-    const usernameRef = useRef<HTMLSpanElement>(null);
-    const [width, setWidth] = useState(0);
-
+    const { user, loading, setUser } = useSessionUser();
+    const activeChatId = useActiveChatStore((state) => state.activeChatId);
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const navigation = navItems(user).filter((i) => !i.hide);
-    const isMobile = useMediaQuery('(max-width:1200px)');
-    const router = useRouter();
+    const [searchOpen, setSearchOpen] = useState(false);
 
-    const drawerIcon = (
-        <IconButton
-            onClick={() => setDrawerOpen(true)}
-            sx={{ ml: 1, mt: 0.7, color: 'var(--text-color)' }}
-        >
-            <MenuIcon />
-        </IconButton>
-    );
+    const items = getNavItems(user);
 
-    const messagesIcon = (
-        <Tooltip title="Messages">
-            <IconButton
-                type="button"
-                onClick={() => router.replace('/chats')}
-                sx={{ p: '6px' }}
-                aria-label="messages"
-            >
-                <EmailOutlinedIcon sx={{ color: '#afafaf' }} />
-            </IconButton>
-        </Tooltip>
-    );
-
-    useEffect(() => {
-        if (usernameRef.current) {
-            setWidth(usernameRef.current.offsetWidth);
-        }
-    }, [user?.username]);
-
-    useEffect(() => {
-        if (!socket || !userId) return;
-
-        const onNewMessage = (message: SocketMessage) => {
-            if (message.userId === userId) return;
-            if (message.chatId === activeChatId) return;
-
-            setUser((prev) => (prev ? { ...prev, unreadMessages: prev.unreadMessages + 1 } : prev));
-        };
-
-        socket.on('message:new', onNewMessage);
-
-        return () => {
-            socket.off('message:new', onNewMessage);
-        };
-    }, [activeChatId, setUser, socket, userId]);
-
-    if (loading && !user) return null;
+    useRealtimeEvent('message:new', (message) => {
+        if (message.author.id === user?.id || message.chatId === activeChatId) return;
+        setUser((prev) => (prev ? { ...prev, unreadMessages: prev.unreadMessages + 1 } : prev));
+    });
 
     return (
-        <header>
-            <nav className={styles['nav-bar']}>
-                {isMobile &&
-                    user &&
-                    (user?.notifications > 0 ? (
-                        <Badge
-                            badgeContent={user?.notifications}
-                            max={99}
-                            color="error"
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            sx={{
-                                '.MuiBadge-badge': {
-                                    minWidth: 13,
-                                    height: 13,
-                                    fontSize: 10,
-                                    padding: 0,
-                                    transform: 'translate(0%, 50%)',
-                                },
-                            }}
-                        >
-                            {drawerIcon}
-                        </Badge>
-                    ) : (
-                        drawerIcon
-                    ))}
+        <header className={styles.header}>
+            {user?.impersonatorUserId && <ImpersonationBanner username={user.username} />}
 
-                <Link href="/">
-                    <Image
-                        className={styles['nav-bar-icon']}
-                        src="/icon.svg"
-                        alt="Collectify icon"
-                        width={35}
-                        height={35}
-                    />
-                </Link>
-
-                <Link className={styles['nav-bar-title']} href="/">
-                    Collectify
-                </Link>
-
-                {user && (
-                    <nav className={styles['nav-bar-navigation']}>
-                        {navItems(user)
-                            .filter((item) => !item.hide)
-                            .map(
-                                ({
-                                    label,
-                                    href,
-                                    icon: Icon,
-                                    iconOutlined: IconOutlined,
-                                    badge,
-                                }) => {
-                                    const isActive = pathname === href;
-
-                                    const content =
-                                        badge !== undefined ? (
-                                            <Badge
-                                                badgeContent={badge}
-                                                max={99}
-                                                color="error"
-                                                anchorOrigin={{
-                                                    vertical: 'top',
-                                                    horizontal: 'right',
-                                                }}
-                                                sx={badgeSx}
-                                            >
-                                                {isActive ? (
-                                                    <Icon sx={buttonStyle} />
-                                                ) : (
-                                                    <IconOutlined sx={buttonStyle} />
-                                                )}
-                                            </Badge>
-                                        ) : isActive ? (
-                                            <Icon sx={buttonStyle} />
-                                        ) : (
-                                            <IconOutlined sx={buttonStyle} />
-                                        );
-
-                                    return (
-                                        <Link
-                                            key={href}
-                                            href={href}
-                                            className={
-                                                styles[
-                                                    isActive
-                                                        ? 'navigation-button-in'
-                                                        : 'navigation-button'
-                                                ]
-                                            }
-                                        >
-                                            {content}
-                                            <span className="nav-text ml-1">{label}</span>
-                                        </Link>
-                                    );
-                                },
-                            )}
-                    </nav>
-                )}
-
-                <div
-                    className={styles['nav-right']}
-                    style={{ display: 'flex', alignItems: 'center', gap: 15 }}
-                >
+            <nav className={styles.bar}>
+                <div className={styles.brand}>
                     {user && (
-                        <div
-                            className={styles['auth-panel-search-btn']}
-                            style={{
-                                right: isMobile ? 55 : 65 + width,
-                                top: 25,
-                            }}
+                        <IconButton
+                            className={styles.drawerToggle}
+                            onClick={() => setDrawerOpen(true)}
+                            aria-label="Open menu"
                         >
-                            {searchBarOpened ? (
-                                <UserSearchBar />
-                            ) : (
-                                <>
-                                    <Tooltip title="Create collection">
-                                        <IconButton
-                                            type="button"
-                                            onClick={() => router.replace('/collections/create')}
-                                            sx={{ p: '6px' }}
-                                            aria-label="search"
-                                        >
-                                            <AddIcon sx={{ color: '#afafaf' }} />
-                                        </IconButton>
-                                    </Tooltip>
-
-                                    {user.unreadMessages > 0 ? (
-                                        <Badge
-                                            badgeContent={user?.unreadMessages}
-                                            max={99}
-                                            color="error"
-                                            anchorOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right',
-                                            }}
-                                            sx={{
-                                                '.MuiBadge-badge': {
-                                                    minWidth: 16,
-                                                    height: 16,
-                                                    fontSize: 10,
-                                                    padding: 0,
-                                                    transform: 'translate(0%, -0%)',
-                                                },
-                                            }}
-                                        >
-                                            {messagesIcon}
-                                        </Badge>
-                                    ) : (
-                                        messagesIcon
-                                    )}
-
-                                    <Tooltip title="Search">
-                                        <IconButton
-                                            onClick={setSearchBarOpened}
-                                            type="button"
-                                            sx={{ p: '6px' }}
-                                            aria-label="search"
-                                        >
-                                            <SearchIcon sx={{ color: '#afafaf' }} />
-                                        </IconButton>
-                                    </Tooltip>
-                                </>
-                            )}
-                        </div>
+                            <Badge color="error" variant="dot" invisible={!user.notifications}>
+                                <MenuIcon />
+                            </Badge>
+                        </IconButton>
                     )}
 
-                    {user ? (
-                        <div
-                            onClick={(event) =>
-                                setAnchorEl(
-                                    anchorEl === event.currentTarget ? null : event.currentTarget,
-                                )
-                            }
-                            className={styles['username-panel']}
-                            style={{ display: 'flex', alignItems: 'center', gap: 8 }}
-                        >
-                            <span ref={usernameRef} className={styles['nav-right-username']}>
-                                {user.username}
-                            </span>
-                            <Avatar
-                                alt={user.username}
-                                src={user.avatarUrl}
-                                sx={{ width: 36, height: 36 }}
-                            >
-                                {user.username}
-                            </Avatar>
-                            <HoverMenu />
-                        </div>
-                    ) : (
-                        <div className={styles['auth-panel']}>
-                            <Button
-                                className={styles['login-btn']}
-                                color="primary"
-                                variant="solid"
-                                icon={isMobile ? null : <LoginRounded />}
-                                size="large"
-                                href="/auth/login"
-                            >
+                    <Link href="/" className={styles.logo}>
+                        <Image src="/icon.svg" alt="" width={35} height={35} priority />
+                        <span className={styles.title}>Collectify</span>
+                    </Link>
+                </div>
+
+                {user && (
+                    <div className={styles.links}>
+                        {items.map((item) => {
+                            const active = pathname === item.href;
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`${styles.link} ${active ? styles.linkActive : ''}`}
+                                    aria-current={active ? 'page' : undefined}
+                                >
+                                    <NavItemIcon item={item} active={active} />
+                                    <span>{item.label}</span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
+
+                <div className={styles.actions}>
+                    {user && searchOpen && <UserSearchBar onClose={() => setSearchOpen(false)} />}
+
+                    {user && !searchOpen && (
+                        <>
+                            <Tooltip title="Create collection">
+                                <IconButton
+                                    component={Link}
+                                    href="/collections/create"
+                                    aria-label="Create collection"
+                                >
+                                    <AddIcon />
+                                </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Messages">
+                                <IconButton component={Link} href="/chats" aria-label="Messages">
+                                    <Badge
+                                        badgeContent={user.unreadMessages}
+                                        max={99}
+                                        color="error"
+                                    >
+                                        <EmailOutlinedIcon />
+                                    </Badge>
+                                </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Find a user">
+                                <IconButton
+                                    onClick={() => setSearchOpen(true)}
+                                    aria-label="Find a user"
+                                >
+                                    <SearchIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </>
+                    )}
+
+                    {user && <UserMenu user={user} />}
+
+                    {!user && !loading && (
+                        <div className={styles.auth}>
+                            <Button variant="contained" component={Link} href="/auth/login">
                                 Login
                             </Button>
-                            <Button
-                                color="primary"
-                                variant="outlined"
-                                icon={isMobile ? null : <ExitToAppOutlinedIcon />}
-                                size="large"
-                                href="/auth/register"
-                                style={{
-                                    backgroundColor: 'var(--container-color)',
-                                    color: 'var(--text-color)',
-                                    borderColor: 'var(--text-color)',
-                                }}
-                            >
+                            <Button variant="outlined" component={Link} href="/auth/register">
                                 Register
                             </Button>
                         </div>
@@ -383,48 +131,14 @@ export default function NavBar() {
                 </div>
             </nav>
 
-            <Drawer
-                slotProps={{
-                    paper: {
-                        sx: {
-                            backgroundColor: 'var(--bg-color)',
-                            color: 'var(--text-color)',
-                            borderRight: '1px solid rgba(255,255,255,0.08)',
-                        },
-                    },
-                }}
-                open={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
-            >
-                <Box sx={{ width: 260 }}>
-                    <List>
-                        {navigation.map(
-                            ({ label, href, icon: Icon, iconOutlined: IconOutlined, badge }) => {
-                                const isActive = pathname === href;
-
-                                return (
-                                    <ListItem key={href} disablePadding>
-                                        <ListItemButton component={Link} href={href}>
-                                            <ListItemIcon style={{ color: 'var(--text-color)' }}>
-                                                {badge !== undefined ? (
-                                                    <Badge badgeContent={badge} color="error">
-                                                        {isActive ? <Icon /> : <IconOutlined />}
-                                                    </Badge>
-                                                ) : isActive ? (
-                                                    <Icon />
-                                                ) : (
-                                                    <IconOutlined />
-                                                )}
-                                            </ListItemIcon>
-                                            <ListItemText primary={label} />
-                                        </ListItemButton>
-                                    </ListItem>
-                                );
-                            },
-                        )}
-                    </List>
-                </Box>
-            </Drawer>
+            {user && (
+                <NavDrawer
+                    open={drawerOpen}
+                    items={items}
+                    pathname={pathname}
+                    onClose={() => setDrawerOpen(false)}
+                />
+            )}
         </header>
     );
 }

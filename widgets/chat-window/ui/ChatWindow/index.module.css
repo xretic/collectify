@@ -1,0 +1,62 @@
+.window {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.header {
+    padding: 18px 20px;
+    background-color: var(--container-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.peer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+}
+
+.peerAvatar {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 14px !important;
+}
+
+.peerName {
+    display: block;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 16px;
+}
+
+.peer:hover .peerName {
+    text-decoration: underline;
+}
+
+.peerSubtitle {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 650px;
+    padding: 18px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--container-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 980px) {
+    .messages {
+        height: calc(100vh - 260px);
+    }
+}

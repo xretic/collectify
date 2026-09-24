@@ -1,148 +1,54 @@
-import { prisma } from '@/shared/lib/prisma';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
-type RouteRule = {
-    pattern: RegExp;
-    methods: string[];
-};
+const SESSION_COOKIE = 'sessionId';
+const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
-function compilePath(path: string): RegExp {
-    const regex = path.replace(/:[^/]+/g, '[^/]+').replace(/\//g, '\\/');
-
-    return new RegExp(`^${regex}$`);
-}
-
-function createRule(path: string, methods: string[]): RouteRule {
-    return {
-        pattern: compilePath(path),
-        methods,
-    };
-}
-
-const protectedRoutes: RouteRule[] = [
-    createRule('/api/collections/:id/action', ['PATCH']),
-    createRule('/api/collections/:id/items', ['POST', 'DELETE']),
-    createRule('/api/comments/:id', ['DELETE', 'PATCH']),
-    createRule('/api/chats/:id', ['POST', 'GET', 'PATCH']),
-    createRule('/api/chats/:id/existence', ['GET']),
-    createRule('/api/chats/:id/create', ['POST']),
-    createRule('/api/collections/:id/order', ['PATCH']),
-    createRule('/api/collections/:id/comment', ['POST']),
-    createRule('/api/collections/:id/edit', ['PATCH']),
-    createRule('/api/collections/:id/delete', ['DELETE']),
-    createRule('/api/collections/:id/items', ['POST', 'DELETE', 'PATCH']),
-    createRule('/api/collections', ['POST']),
-    createRule('/api/management/users', ['GET']),
-    createRule('/api/management/users/:id', ['DELETE']),
-    createRule('/api/management/users/:id/roles', ['PATCH']),
-    createRule('/api/management/users/:id/sanctions', ['POST']),
-    createRule('/api/management/users/:id/impersonate', ['POST']),
-    createRule('/api/management/users/:id/messages', ['GET']),
-    createRule('/api/management/users/:id/collections', ['GET']),
-    createRule('/api/management/users/:id/comments', ['GET']),
-    createRule('/api/management/sanctions/:id', ['DELETE']),
-    createRule('/api/management/audit', ['GET']),
-    createRule('/api/management/reports', ['GET']),
-    createRule('/api/management/reports/:id', ['PATCH']),
-    createRule('/api/reports', ['POST']),
-    createRule('/api/users/search/:query', ['GET']),
-    createRule('/api/users/auth', ['PATCH']),
-    createRule('/api/users', ['DELETE', 'PATCH']),
-    createRule('/api/auth/logout', ['POST']),
-    createRule('/api/auth/me', ['GET']),
-    createRule('/api/notifications', ['GET', 'PATCH']),
+/** Pages that need a signed-in user. Real authorization happens in the API. */
+const PRIVATE_PAGES = [
+    /^\/users\/me$/,
+    /^\/collections\/(create|my)$/,
+    /^\/notifications$/,
+    /^\/settings$/,
+    /^\/chats(\/.*)?$/,
+    /^\/management$/,
 ];
 
-function isProtected(pathname: string, method: string): boolean {
-    return protectedRoutes.some(
-        (rule) => rule.methods.includes(method) && rule.pattern.test(pathname),
-    );
+function isCrossSite(req: NextRequest) {
+    const origin = req.headers.get('origin');
+    if (!origin) return false;
+
+    try {
+        return new URL(origin).host !== req.headers.get('host');
+    } catch {
+        return true;
+    }
 }
 
-const publicPages: RegExp[] = [/^\/$/, /^\/users\/[^/]+$/, /^\/collections\/(?!create$|my$)[^/]+$/];
+export function proxy(req: NextRequest) {
+    const { pathname } = req.nextUrl;
 
-export async function proxy(request: NextRequest) {
-    const { pathname } = request.nextUrl;
-    const { method } = request;
-
-    const sessionId = request.cookies.get('sessionId')?.value;
-    const isApiProtected = isProtected(pathname, method);
-
-    if (pathname.startsWith('/api') && isApiProtected) {
-        const valid = await isSessionValid(request);
-
-        if (!valid) {
-            return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+    if (pathname.startsWith('/api/')) {
+        // Defense in depth on top of SameSite=Lax cookies.
+        if (MUTATING_METHODS.has(req.method) && isCrossSite(req)) {
+            return NextResponse.json({ message: 'Cross-site request blocked.' }, { status: 403 });
         }
+
+        return NextResponse.next();
     }
 
-    const isPublicPage = publicPages.some((x) => x.test(pathname));
+    const hasSession = Boolean(req.cookies.get(SESSION_COOKIE)?.value);
 
-    if (!pathname.startsWith('/api') && !isPublicPage) {
-        if (!sessionId) {
-            return NextResponse.redirect(new URL('/', request.url));
-        }
-
-        const valid = await isSessionValid(request);
-
-        if (!valid) {
-            const response = NextResponse.redirect(new URL('/', request.url));
-            response.cookies.delete('sessionId');
-
-            return response;
-        }
+    if (!hasSession && PRIVATE_PAGES.some((page) => page.test(pathname))) {
+        const login = new URL('/auth/login', req.url);
+        login.searchParams.set('next', pathname);
+        return NextResponse.redirect(login);
     }
 
     return NextResponse.next();
 }
 
-async function isSessionValid(request: NextRequest): Promise<boolean> {
-    const sessionId = request.cookies.get('sessionId')?.value;
-    if (!sessionId) return false;
-
-    const session = await prisma.session.findUnique({
-        where: { id: sessionId },
-        include: { user: true },
-    });
-
-    if (!session || session.expiresAt < new Date()) {
-        return false;
-    }
-
-    const accountBan = await prisma.accountSanction.findFirst({
-        where: {
-            userId: session.userId,
-            scope: 'ACCOUNT',
-            revokedAt: null,
-            OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
-        },
-        select: { id: true },
-    });
-
-    if (accountBan) {
-        return false;
-    }
-
-    return true;
-}
-
 export const config = {
     matcher: [
-        '/api/users/:path*',
-        '/api/collections/:path*',
-        '/api/auth/:path*',
-        '/api/notifications/:path*',
-        '/api/chats/:path*',
-        '/api/comments/:path*',
-        '/api/management/:path*',
-        '/api/reports/:path*',
-        '/users/:path*',
-        '/collections/:path*',
-        '/notifications',
-        '/settings',
-        '/chats',
-        '/management',
-        '/',
+        '/((?!_next/static|_next/image|favicon.ico|icon.svg|fonts/|.*\\.(?:png|jpg|svg|ico)$).*)',
     ],
 };

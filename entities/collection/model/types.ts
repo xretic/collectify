@@ -1,10 +1,65 @@
-import type { CollectionPropsAdditional } from '@/types/CollectionField';
+import type { UserPreview } from '@/entities/user/model/types';
 
-export type { CollectionFieldProps, CollectionPropsAdditional } from '@/types/CollectionField';
+export type CollectionAuthor = UserPreview & { fullName: string };
 
-export type CollectionItem = CollectionPropsAdditional['items'][number];
+export type CollectionItem = {
+    id: number;
+    title: string;
+    description: string;
+    sourceUrl: string | null;
+    imageUrl: string | null;
+    order: number;
+};
 
-export type CollectionActionType = 'like' | 'dislike' | 'favorite' | 'unfavorite';
+/** Card in lists (home, profiles, "my collections"). */
+export type CollectionCard = {
+    id: number;
+    name: string;
+    bannerUrl: string;
+    category: string;
+    isPrivate: boolean;
+    author: CollectionAuthor | null;
+    likes: number;
+    favorites: number;
+    items: number;
+    comments: number;
+};
+
+export type CollectionDetails = {
+    id: number;
+    name: string;
+    description: string;
+    bannerUrl: string;
+    category: string;
+    isPrivate: boolean;
+    createdAt: string;
+    author: CollectionAuthor;
+    items: CollectionItem[];
+    likes: number;
+    favorites: number;
+    comments: number;
+    liked: boolean;
+    favorited: boolean;
+};
+
+export type CollectionSort = 'popular' | 'newest' | 'old';
+
+export const COLLECTION_SORTS: readonly CollectionSort[] = ['popular', 'newest', 'old'];
+
+export type CollectionListParams = {
+    sort: CollectionSort;
+    page: number;
+    category?: string;
+    query?: string;
+    authorId?: number;
+    visibility?: 'public' | 'private';
+    favorites?: boolean;
+};
+
+export type CollectionListPage = {
+    data: CollectionCard[];
+    hasMore: boolean;
+};
 
 export type CollectionItemPayload = {
     title: string;
@@ -13,38 +68,25 @@ export type CollectionItemPayload = {
     imageUrl: string | null;
 };
 
-export type CollectionSearchParams = {
-    sortedBy: string | number;
-    skip: number;
-    privateOnly: boolean;
-    category?: string;
-    userId?: number | null;
-    query?: string;
-    authorId?: number | null;
-    favoritesUserId?: number | null;
-    followed?: boolean;
-};
-
 export type CreateCollectionPayload = {
     name: string;
     description: string;
     category: string;
-    banner: string;
-    itemTitle: string;
-    itemDescription: string;
-    itemImageUrl: string | null;
-    itemSourceUrl: string | null;
-    isPrivate: string;
+    bannerUrl: string;
+    isPrivate: boolean;
+    item: CollectionItemPayload;
 };
 
-export type CollectionOrderItem = {
-    id: number;
-    order: number;
+export type UpdateCollectionPayload = {
+    name: string;
+    description: string;
+    bannerUrl: string;
+    isPrivate: boolean;
 };
 
 export type CollectionStats = {
     days: string[];
-    likesData: number[];
-    commentsData: number[];
-    favoritesData: number[];
+    likes: number[];
+    comments: number[];
+    favorites: number[];
 };

@@ -1,0 +1,31 @@
+.trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.trigger:hover {
+    background-color: var(--border-color);
+}
+
+.username {
+    font-weight: 500;
+}
+
+.avatar {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.logout {
+    color: var(--danger) !important;
+}
+
+@media (max-width: 1200px) {
+    .username {
+        display: none;
+    }
+}
