@@ -44,3 +44,7 @@ next-env.d.ts
 
 /generated/prisma
 /.idea
+
+# local tooling
+/.claude
+/.github/workflows/ci.yml
