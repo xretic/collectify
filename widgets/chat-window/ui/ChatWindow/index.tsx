@@ -34,11 +34,16 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
     const listRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef({ initialised: false, stickToBottom: true, heightBeforeOlder: 0 });
 
+    // Background bookkeeping: a failure (e.g. the chat no longer exists) must not break the page;
+    // the messages query already shows "not available" in that case.
     const markRead = () => {
-        void chatApi.markAsRead(chatId).then(() => {
-            queryClient.invalidateQueries({ queryKey: sessionUserQueryKey });
-            queryClient.invalidateQueries({ queryKey: chatQueryKeys.lists() });
-        });
+        chatApi
+            .markAsRead(chatId)
+            .then(() => {
+                queryClient.invalidateQueries({ queryKey: sessionUserQueryKey });
+                queryClient.invalidateQueries({ queryKey: chatQueryKeys.lists() });
+            })
+            .catch(() => undefined);
     };
 
     const onChatOpened = useEffectEvent(() => markRead());
