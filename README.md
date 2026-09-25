@@ -21,12 +21,12 @@ books, records, games, places, gear.
 [![License: source-available, non-commercial](https://img.shields.io/badge/license-non--commercial-orange.svg)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-[**Features**](#-features) · [**Quick start**](#-quick-start) · [**Documentation**](docs/README.md) ·
-[**Architecture**](docs/ARCHITECTURE.md) · [**Contributing**](CONTRIBUTING.md)
+[**Features**](#-features) · [**Quick start**](#-quick-start) · [**Architecture**](docs/ARCHITECTURE.md) ·
+[**Deployment**](docs/DEPLOYMENT.md) · [**Contributing**](CONTRIBUTING.md)
 
 <br />
 
-<img src="docs/images/hero.jpg" alt="Collectify — home feed" width="100%" />
+<img src="docs/presentation/01-hero.jpg" alt="Collectify" width="100%" />
 
 </div>
 
@@ -34,80 +34,19 @@ books, records, games, places, gear.
 
 ## ✨ Features
 
-<table>
-<tr>
-<td width="50%" valign="top">
+<img src="docs/presentation/02-collections.jpg" alt="Collections" width="100%" />
 
-### 📚 Collections
+<img src="docs/presentation/03-masonry.jpg" alt="Items" width="100%" />
 
-- Cover, description, category and up to **10 tags**
-- Public or private, with likes, saves and stats
-- Pinterest-style masonry in **S · M · L · XL** cards
-- Drag-and-drop ordering and a full-screen item viewer
+<img src="docs/presentation/04-discovery.jpg" alt="Discovery" width="100%" />
 
-</td>
-<td width="50%" valign="top">
+<img src="docs/presentation/05-social.jpg" alt="Social" width="100%" />
 
-### 🧭 Discovery
-
-- **For you** feed ranked by your likes, saves, views and follows
-- **Boards** of saved collections, each with a "more like this" feed
-- **Explore** by category, tag, search and sort — all in the URL
-- Onboarding that seeds the feed with your interests
-
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-### 💬 Social
-
-- Follows, followers and **People you may know**
-- Threaded comments with replies, edits and author hearts
-- **Realtime** direct messages with read receipts and presence
-- Live notifications and pop-ups (Socket.IO or Pusher)
-
-</td>
-<td width="50%" valign="top">
-
-### 🛡️ Trust & safety
-
-- Reports on users, comments and collections, with evidence snapshots
-- FIFO review queue with context and atomic verdicts
-- Sanctions: account bans, comment and messenger mutes
-- Roles, audit log, impersonation, category and tag management
-
-</td>
-</tr>
-</table>
-
-<div align="center">
-
-**45 color themes** — every pixel is a theme token.
+<img src="docs/presentation/06-moderation.jpg" alt="Moderation" width="100%" />
 
 <img src="docs/presentation/07-themes.jpg" alt="Themes" width="100%" />
 
-</div>
-
-## 📸 Screenshots
-
-| Collection                                           | Items                                                  |
-| ---------------------------------------------------- | ------------------------------------------------------ |
-| ![Collection page](docs/screenshots/collection.png)  | ![Masonry grid](docs/screenshots/collection-items.png) |
-| **Profile**                                          | **Chats**                                              |
-| ![Profile](docs/screenshots/profile.png)             | ![Chats](docs/screenshots/chats.png)                   |
-| **Notifications**                                    | **Moderation**                                         |
-| ![Notifications](docs/screenshots/notifications.png) | ![Reports](docs/screenshots/management-reports.png)    |
-
-<p align="center">
-  <img src="docs/screenshots/mobile-home.png" width="30%" alt="Mobile — explore" />
-  &nbsp;
-  <img src="docs/screenshots/mobile-collection.png" width="30%" alt="Mobile — collection" />
-  &nbsp;
-  <img src="docs/screenshots/mobile-chat.png" width="30%" alt="Mobile — chat" />
-</p>
-
-<p align="center"><a href="docs/FEATURES.md"><b>→ Take the full product tour</b></a></p>
+<img src="docs/presentation/08-mobile.jpg" alt="Mobile" width="100%" />
 
 ## 🚀 Quick start
 
@@ -175,10 +114,8 @@ data model, recommendation ranking, realtime and security model.
 
 | Guide                                | What's inside                                            |
 | ------------------------------------ | -------------------------------------------------------- |
-| [Product tour](docs/FEATURES.md)     | Every screen, with screenshots                           |
 | [Architecture](docs/ARCHITECTURE.md) | Layers, request lifecycle, data model, realtime, ranking |
 | [Deployment](docs/DEPLOYMENT.md)     | Environment variables, Vercel vs. custom server, Redis   |
-| [Presentation](docs/PRESENTATION.md) | Ready-made presentation slides                           |
 | [Contributing](CONTRIBUTING.md)      | Workflow, conventions and pull request checklist         |
 | [Security policy](SECURITY.md)       | How to report a vulnerability                            |
 
