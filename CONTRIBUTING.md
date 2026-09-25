@@ -84,8 +84,7 @@ of `.tsx` files. Global MUI overrides belong in `shared/config/theme.ts`.
 [`shared/i18n/messages/en.json`](shared/i18n/messages/en.json), read them with `useTranslations`
 (or `getTranslations` on the server), and add the same keys to every other locale file. API errors
 throw a key from the `errors` namespace (`notFound('collectionNotFound')`), zod schemas use
-`validation.*` keys — both are translated for the viewer. `npm run i18n:check` verifies that every
-locale has all keys, valid ICU syntax and matching placeholders.
+`validation.*` keys — both are translated for the viewer.
 
 **State.** Server state is TanStack Query. Reach for zustand only for small cross-tree UI state.
 
@@ -107,7 +106,7 @@ Common types: `feat`, `fix`, `refactor`, `perf`, `docs`, `chore`, `test`.
 ## Pull request checklist
 
 - [ ] The PR does one thing and explains why
-- [ ] `npm run lint`, `npm run typecheck`, `npm run format:check` and `npm run i18n:check` pass
+- [ ] `npm run lint`, `npm run typecheck` and `npm run format:check` pass
 - [ ] Layer boundaries are respected
 - [ ] New API input is validated with zod and rate limited where it makes sense
 - [ ] UI works in light and dark themes and on mobile

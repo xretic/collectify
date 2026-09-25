@@ -216,7 +216,6 @@ data model, recommendation ranking, realtime and security model.
 | `npm run lint`            | ESLint                                           |
 | `npm run typecheck`       | Route types + `tsc --noEmit`                     |
 | `npm run format:check`    | Prettier                                         |
-| `npm run i18n:check`      | Verify translations against `en.json`            |
 | `npm run db:migrate`      | Apply migrations (`prisma migrate deploy`)       |
 | `npm run admin`           | Grant / revoke / list admins                     |
 
