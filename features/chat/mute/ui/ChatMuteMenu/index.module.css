@@ -1,0 +1,95 @@
+.buttonOpen {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.paper {
+    min-width: 232px !important;
+    overflow: hidden !important;
+    border: 1px solid var(--border-color);
+    border-radius: 14px !important;
+    background-color: color-mix(in srgb, var(--container-color) 88%, transparent) !important;
+    backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22) !important;
+}
+
+.list {
+    padding: 6px !important;
+}
+
+.view {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.forward {
+    animation: forward-in 0.2s ease both;
+}
+
+.backIn {
+    animation: back-in 0.2s ease both;
+}
+
+.status {
+    padding: 6px 12px 8px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 4px;
+    color: var(--soft-text);
+    font-size: 12px;
+}
+
+.item {
+    gap: 2px;
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: background-color 0.12s ease;
+}
+
+.item:hover {
+    background-color: color-mix(in srgb, var(--text-color) 7%, transparent) !important;
+}
+
+.icon {
+    min-width: 32px !important;
+    color: var(--soft-text) !important;
+}
+
+.chevron {
+    margin-left: 12px;
+    color: var(--soft-text);
+}
+
+.back {
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 10px 10px 4px 4px;
+    color: var(--soft-text);
+}
+
+.danger,
+.danger .icon {
+    color: var(--danger) !important;
+}
+
+@keyframes forward-in {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+}
+
+@keyframes back-in {
+    from {
+        opacity: 0;
+        transform: translateX(-24px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .view {
+        animation: none;
+    }
+}

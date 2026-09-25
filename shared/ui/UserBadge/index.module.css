@@ -5,7 +5,8 @@
 }
 
 .Verified {
-    background-color: #208fff;
+    color: var(--on-accent);
+    background-color: var(--accent);
     padding: 2px;
 }
 

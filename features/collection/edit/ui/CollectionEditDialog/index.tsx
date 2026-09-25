@@ -17,6 +17,8 @@ import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import { toCollectionDraft, toCollectionPayload } from '@/entities/collection/model/drafts';
 import { CollectionDetailsFields } from '@/entities/collection/ui/CollectionDetailsFields';
+import { CategorySelect } from '@/entities/category/ui/CategorySelect';
+import { TagPicker } from '@/features/tag/pick/ui/TagPicker';
 import styles from './index.module.css';
 
 type CollectionEditDialogProps = {
@@ -52,6 +54,25 @@ export function CollectionEditDialog({ collection, onClose }: CollectionEditDial
                 </DialogContentText>
 
                 <CollectionDetailsFields value={draft} onChange={setDraft} />
+
+                <CategorySelect
+                    required
+                    value={draft.categoryId}
+                    // Tags belong to a category, so switching it clears them.
+                    onChange={(categoryId) =>
+                        setDraft({
+                            ...draft,
+                            categoryId,
+                            tags: categoryId === draft.categoryId ? draft.tags : [],
+                        })
+                    }
+                />
+
+                <TagPicker
+                    categoryId={draft.categoryId}
+                    value={draft.tags}
+                    onChange={(tags) => setDraft({ ...draft, tags })}
+                />
             </DialogContent>
 
             <DialogActions>

@@ -4,9 +4,8 @@ import { db } from '@/shared/server/db';
 import { notFound } from '@/shared/server/http';
 import { getActiveSanctions } from '@/entities/sanction/server/sanctions';
 import type { ActiveSanction } from '@/entities/sanction/model/types';
-import { nonAdminUserFilter, nonStaffUserFilter } from '@/entities/user/server/roles';
+import { nonStaffUserFilter } from '@/entities/user/server/roles';
 import type {
-    ReportContextMessage,
     ReportDetails,
     ReportListItem,
     ReportReason,
@@ -17,7 +16,6 @@ import type {
 } from '../model/types';
 
 const REPORTS_PAGE_SIZE = 20;
-const CONTEXT_MESSAGES_EACH_SIDE = 5;
 
 const userPreview = { select: { id: true, username: true, avatarUrl: true } } as const;
 
@@ -57,15 +55,17 @@ function toActiveSanction(sanction: {
 export type ReportViewer = { userId: number; isAdmin: boolean };
 
 /**
- * Which reports a staff member may see: never their own reports or reports
- * about themselves; moderators only see reports about regular users, admins
- * also see reports about moderators. Admins cannot be reported at all.
+ * Which reports a staff member may see: admins see every report, including
+ * their own; moderators never see their own reports or reports about
+ * themselves, and only see reports about regular users.
  */
 export function visibleReportsFilter(viewer: ReportViewer): Prisma.ReportWhereInput {
+    if (viewer.isAdmin) return {};
+
     return {
         reporterId: { not: viewer.userId },
         targetUserId: { not: viewer.userId },
-        targetUser: viewer.isAdmin ? nonAdminUserFilter : nonStaffUserFilter,
+        targetUser: nonStaffUserFilter,
     };
 }
 
@@ -110,42 +110,6 @@ export async function listReports(
     };
 }
 
-async function getMessageContext(
-    messageId: number,
-    chatId: number,
-): Promise<ReportContextMessage[]> {
-    const select = {
-        id: true,
-        content: true,
-        createdAt: true,
-        user: { select: { id: true, username: true } },
-    } as const;
-
-    const [before, after] = await Promise.all([
-        db.message.findMany({
-            where: { chatId, id: { lte: messageId } },
-            orderBy: { id: 'desc' },
-            take: CONTEXT_MESSAGES_EACH_SIDE + 1,
-            select,
-        }),
-        db.message.findMany({
-            where: { chatId, id: { gt: messageId } },
-            orderBy: { id: 'asc' },
-            take: CONTEXT_MESSAGES_EACH_SIDE,
-            select,
-        }),
-    ]);
-
-    return [...before.reverse(), ...after].map((message) => ({
-        id: message.id,
-        authorId: message.user.id,
-        authorUsername: message.user.username,
-        content: message.content,
-        createdAt: message.createdAt.toISOString(),
-        reported: message.id === messageId,
-    }));
-}
-
 export async function getReportDetails(
     viewer: ReportViewer,
     reportId: number,
@@ -162,10 +126,8 @@ export async function getReportDetails(
             contentSnapshot: true,
             targetUserId: true,
             reporterId: true,
-            messageId: true,
             commentId: true,
             collectionId: true,
-            message: { select: { id: true, chatId: true } },
             comment: { select: { id: true, collectionId: true } },
             collection: { select: { id: true } },
             sanction: {
@@ -176,28 +138,19 @@ export async function getReportDetails(
 
     if (!report) throw notFound('Report not found.');
 
-    const [
-        targetSanctions,
-        targetReports,
-        targetGuiltyReports,
-        reporterReports,
-        reporterRejected,
-        messages,
-    ] = await Promise.all([
-        getActiveSanctions([report.targetUserId]),
-        db.report.count({ where: { targetUserId: report.targetUserId } }),
-        db.report.count({ where: { targetUserId: report.targetUserId, verdict: 'GUILTY' } }),
-        db.report.count({ where: { reporterId: report.reporterId } }),
-        db.report.count({
-            where: {
-                reporterId: report.reporterId,
-                verdict: { in: ['NO_VIOLATION', 'INSUFFICIENT_EVIDENCE'] },
-            },
-        }),
-        report.message
-            ? getMessageContext(report.message.id, report.message.chatId)
-            : Promise.resolve([]),
-    ]);
+    const [targetSanctions, targetReports, targetGuiltyReports, reporterReports, reporterRejected] =
+        await Promise.all([
+            getActiveSanctions([report.targetUserId]),
+            db.report.count({ where: { targetUserId: report.targetUserId } }),
+            db.report.count({ where: { targetUserId: report.targetUserId, verdict: 'GUILTY' } }),
+            db.report.count({ where: { reporterId: report.reporterId } }),
+            db.report.count({
+                where: {
+                    reporterId: report.reporterId,
+                    verdict: { in: ['NO_VIOLATION', 'INSUFFICIENT_EVIDENCE'] },
+                },
+            }),
+        ]);
 
     const contentLink =
         report.targetType === 'USER'
@@ -209,8 +162,7 @@ export async function getReportDetails(
                 : null;
 
     const contentExists =
-        report.targetType === 'USER' ||
-        Boolean(report.message ?? report.comment ?? report.collection);
+        report.targetType === 'USER' || Boolean(report.comment ?? report.collection);
 
     return {
         ...toListItem(report),
@@ -229,7 +181,6 @@ export async function getReportDetails(
             targetGuiltyReports,
             reporterReports,
             reporterRejectedReports: reporterRejected,
-            messages,
         },
     };
 }

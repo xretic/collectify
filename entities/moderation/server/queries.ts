@@ -11,7 +11,6 @@ import {
 import type {
     AuditPage,
     HistoryPage,
-    ManagedChat,
     ManagedCollection,
     ManagedComment,
     ManagementUsersPage,
@@ -20,8 +19,6 @@ import type {
 const USERS_PAGE_SIZE = 30;
 const AUDIT_PAGE_SIZE = 20;
 const HISTORY_PAGE_SIZE = 10;
-const CHATS_PAGE_SIZE = 10;
-const CHAT_MESSAGES = 10;
 
 const preview = { select: { id: true, username: true, avatarUrl: true } } as const;
 
@@ -173,7 +170,7 @@ export async function listUserCollections(
             select: {
                 id: true,
                 name: true,
-                category: true,
+                category: { select: { name: true } },
                 private: true,
                 createdAt: true,
                 _count: { select: { items: true, comments: true, likes: true } },
@@ -188,7 +185,7 @@ export async function listUserCollections(
         data: rows.map((row) => ({
             id: row.id,
             name: row.name,
-            category: row.category,
+            category: row.category.name,
             isPrivate: row.private,
             createdAt: row.createdAt.toISOString(),
             counts: row._count,
@@ -222,54 +219,5 @@ export async function listUserComments(
         total,
         nextSkip: nextSkip(skip, HISTORY_PAGE_SIZE, total),
         data: rows.map((row) => ({ ...row, createdAt: row.createdAt.toISOString() })),
-    };
-}
-
-export async function listUserChats(
-    userId: number,
-    skip: number,
-): Promise<HistoryPage<ManagedChat>> {
-    const where = { users: { some: { id: userId } } };
-
-    const [rows, total] = await Promise.all([
-        db.chat.findMany({
-            where,
-            orderBy: [{ lastMessageAt: 'desc' }, { id: 'desc' }],
-            skip,
-            take: CHATS_PAGE_SIZE,
-            select: {
-                id: true,
-                users: preview,
-                messages: {
-                    orderBy: { id: 'desc' },
-                    take: CHAT_MESSAGES,
-                    select: {
-                        id: true,
-                        content: true,
-                        createdAt: true,
-                        read: true,
-                        user: { select: { id: true, username: true } },
-                    },
-                },
-            },
-        }),
-        db.chat.count({ where }),
-    ]);
-
-    return {
-        total,
-        nextSkip: nextSkip(skip, CHATS_PAGE_SIZE, total),
-        data: rows.map((chat) => ({
-            id: chat.id,
-            users: chat.users,
-            messages: chat.messages.reverse().map((message) => ({
-                id: message.id,
-                authorId: message.user.id,
-                authorUsername: message.user.username,
-                content: message.content,
-                createdAt: message.createdAt.toISOString(),
-                read: message.read,
-            })),
-        })),
     };
 }

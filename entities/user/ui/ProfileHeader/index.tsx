@@ -2,7 +2,8 @@
 
 import type { ReactNode } from 'react';
 import Avatar from '@mui/material/Avatar';
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import { countryName } from '@/shared/lib/geo/countries';
 import { UserBadges } from '@/shared/ui/UserBadge';
 import { toast } from '@/shared/model/toastStore';
 import type { UserRole } from '../../model/types';
@@ -15,6 +16,8 @@ export type ProfileHeaderUser = {
     avatarUrl: string;
     bannerUrl: string;
     roles: UserRole[];
+    country: string | null;
+    city: string | null;
 };
 
 type ProfileHeaderProps = {
@@ -26,6 +29,10 @@ type ProfileHeaderProps = {
 };
 
 export function ProfileHeader({ user, actions, stats }: ProfileHeaderProps) {
+    const location = [user.city, user.country && countryName(user.country)]
+        .filter(Boolean)
+        .join(', ');
+
     const copyUsername = async () => {
         try {
             await navigator.clipboard.writeText(user.username);
@@ -50,26 +57,32 @@ export function ProfileHeader({ user, actions, stats }: ProfileHeaderProps) {
                     <Avatar className={styles.avatar} src={user.avatarUrl} alt={user.username} />
 
                     <div className={styles.info}>
-                        <h1 className={styles.name}>
-                            {user.fullName}
-                            <span className={styles.badges}>
-                                <UserBadges roles={user.roles} />
-                            </span>
-                        </h1>
+                        <div className={styles.head}>
+                            <h1 className={styles.name}>
+                                {user.fullName}
+                                <span className={styles.badges}>
+                                    <UserBadges roles={user.roles} />
+                                </span>
+                            </h1>
 
-                        <button
-                            type="button"
-                            className={styles.username}
-                            onClick={copyUsername}
-                            title="Copy username"
-                        >
-                            @{user.username}
-                        </button>
+                            <button
+                                type="button"
+                                className={styles.username}
+                                onClick={copyUsername}
+                                title="Copy username"
+                            >
+                                @{user.username}
+                            </button>
+                        </div>
 
-                        <p className={styles.description}>
-                            <FormatQuoteIcon fontSize="small" className={styles.quoteIcon} />
-                            {user.description || 'No bio yet'}
-                        </p>
+                        <p className={styles.description}>{user.description || 'No bio yet'}</p>
+
+                        {location && (
+                            <p className={styles.location}>
+                                <PlaceOutlinedIcon fontSize="small" />
+                                {location}
+                            </p>
+                        )}
                     </div>
                 </div>
 

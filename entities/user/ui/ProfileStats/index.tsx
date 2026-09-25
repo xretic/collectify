@@ -1,3 +1,4 @@
+import type { FollowListKind } from '../../model/types';
 import styles from './index.module.css';
 
 type ProfileStatsProps = {
@@ -5,23 +6,42 @@ type ProfileStatsProps = {
     subscriptions: number;
     /** `pill` in the filter toolbar; `card` as the footer of the profile card on phones. */
     variant?: 'pill' | 'card';
+    /** Makes the counters clickable (opens the followers / following list). */
+    onSelect?: (kind: FollowListKind) => void;
 };
 
 /** Follower / following counters. */
-export function ProfileStats({ followers, subscriptions, variant = 'pill' }: ProfileStatsProps) {
+export function ProfileStats({
+    followers,
+    subscriptions,
+    variant = 'pill',
+    onSelect,
+}: ProfileStatsProps) {
+    const stat = (kind: FollowListKind, label: string, value: number) =>
+        onSelect ? (
+            <button
+                type="button"
+                className={`${styles.stat} ${styles.clickable}`}
+                onClick={() => onSelect(kind)}
+                aria-label={`${value} ${label}`}
+            >
+                <span className={styles.label}>{label}</span>
+                <span className={styles.number}>{value}</span>
+            </button>
+        ) : (
+            <div className={styles.stat}>
+                <dt className={styles.label}>{label}</dt>
+                <dd className={styles.number}>{value}</dd>
+            </div>
+        );
+
+    const Wrapper = onSelect ? 'div' : 'dl';
+
     return (
-        <dl className={`${styles.stats} ${styles[variant]}`}>
-            <div className={styles.stat}>
-                <dt className={styles.label}>following</dt>
-                <dd className={styles.number}>{subscriptions}</dd>
-            </div>
-
+        <Wrapper className={`${styles.stats} ${styles[variant]}`}>
+            {stat('following', 'following', subscriptions)}
             <div className={styles.divider} />
-
-            <div className={styles.stat}>
-                <dt className={styles.label}>followers</dt>
-                <dd className={styles.number}>{followers}</dd>
-            </div>
-        </dl>
+            {stat('followers', 'followers', followers)}
+        </Wrapper>
     );
 }

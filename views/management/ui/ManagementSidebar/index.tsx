@@ -1,11 +1,11 @@
 'use client';
 
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
 import type { ReportFilters } from '@/entities/moderation/api/managementApi';
 import type { ManagementTab } from '../../model/useManagementUrl';
 import { UsersList } from '../UsersList';
 import { ReportsQueue } from '../ReportsQueue';
+import { CategoriesList } from '../CategoriesList';
+import { TabIndicator } from '@/shared/ui/TabIndicator';
 import styles from './index.module.css';
 
 type ManagementSidebarProps = {
@@ -17,15 +17,15 @@ type ManagementSidebarProps = {
     onSelectReport: (reportId: number) => void;
     reportFilters: ReportFilters;
     onReportFiltersChange: (filters: ReportFilters) => void;
+    categoryId: number | 'new' | null;
+    onSelectCategory: (categoryId: number | 'new') => void;
+    isAdmin: boolean;
 };
 
 const TABS = [
-    { value: 'users', label: 'Users', icon: <PeopleAltOutlinedIcon fontSize="small" /> },
-    {
-        value: 'reports',
-        label: 'Reports',
-        icon: <ReportGmailerrorredOutlinedIcon fontSize="small" />,
-    },
+    { value: 'users', label: 'Users' },
+    { value: 'reports', label: 'Reports' },
+    { value: 'categories', label: 'Categories', adminOnly: true },
 ] as const;
 
 export function ManagementSidebar(props: ManagementSidebarProps) {
@@ -33,11 +33,11 @@ export function ManagementSidebar(props: ManagementSidebarProps) {
         <aside className={styles.sidebar}>
             <div>
                 <h1 className={styles.title}>Management</h1>
-                <p className={styles.subtitle}>Users, reports, sanctions</p>
+                <p className={styles.subtitle}>Users, reports, sanctions, categories</p>
             </div>
 
             <div className={styles.tabs} role="tablist">
-                {TABS.map((tab) => (
+                {TABS.filter((tab) => !('adminOnly' in tab) || props.isAdmin).map((tab) => (
                     <button
                         key={tab.value}
                         type="button"
@@ -46,21 +46,27 @@ export function ManagementSidebar(props: ManagementSidebarProps) {
                         className={`${styles.tab} ${props.tab === tab.value ? styles.tabActive : ''}`}
                         onClick={() => props.onTabChange(tab.value)}
                     >
-                        {tab.icon}
                         {tab.label}
                     </button>
                 ))}
+                <TabIndicator />
             </div>
 
-            {props.tab === 'users' ? (
+            {props.tab === 'users' && (
                 <UsersList selectedId={props.userId} onSelect={props.onSelectUser} />
-            ) : (
+            )}
+
+            {props.tab === 'reports' && (
                 <ReportsQueue
                     filters={props.reportFilters}
                     onFiltersChange={props.onReportFiltersChange}
                     selectedId={props.reportId}
                     onSelect={props.onSelectReport}
                 />
+            )}
+
+            {props.tab === 'categories' && props.isAdmin && (
+                <CategoriesList selectedId={props.categoryId} onSelect={props.onSelectCategory} />
             )}
         </aside>
     );

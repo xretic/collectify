@@ -87,7 +87,7 @@ function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () 
                 </FormControl>
 
                 <CountedTextField
-                    label="Details (optional)"
+                    label="Details"
                     value={details}
                     onChange={setDetails}
                     maxLength={REPORT_DETAILS_MAX_LENGTH}

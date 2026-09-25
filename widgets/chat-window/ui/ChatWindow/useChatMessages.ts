@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useInfiniteQuery, useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { chatApi } from '@/entities/chat/api/chatApi';
 import { chatQueryKeys } from '@/entities/chat/model/queryKeys';
-import type { ChatMessage, ChatMessagesPage } from '@/entities/chat/model/types';
+import type { ChatMessage, ChatMessagesPage, ChatSeenReceipt } from '@/entities/chat/model/types';
 
 /**
  * Messages of one chat. Page 0 holds the newest messages; older pages are
@@ -22,9 +22,10 @@ export function useChatMessages(chatId: number) {
         staleTime: Infinity,
     });
 
-    const messages = query.data
-        ? [...query.data.pages].reverse().flatMap((page) => page.messages)
-        : [];
+    const messages = useMemo(
+        () => (query.data ? [...query.data.pages].reverse().flatMap((page) => page.messages) : []),
+        [query.data],
+    );
 
     const setPages = useCallback(
         (transform: (pages: ChatMessagesPage[]) => ChatMessagesPage[]) =>
@@ -64,11 +65,22 @@ export function useChatMessages(chatId: number) {
         [setPages],
     );
 
+    /** Live "Seen" receipt (the chat header lives on page 0). */
+    const setSeen = useCallback(
+        (seen: ChatSeenReceipt) =>
+            setPages(([newest, ...older]) => [
+                { ...newest, chat: { ...newest.chat, seen } },
+                ...older,
+            ]),
+        [setPages],
+    );
+
     return {
         chat: query.data?.pages[0]?.chat ?? null,
         messages,
         query,
         append,
         removeMessage,
+        setSeen,
     };
 }

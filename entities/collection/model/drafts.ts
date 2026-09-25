@@ -1,10 +1,19 @@
 import { itemSchema, updateCollectionSchema } from './schemas';
-import type { CollectionDetails, CollectionItemPayload, UpdateCollectionPayload } from './types';
+import type { TagRef } from '@/entities/tag/model/types';
+import { optionalHttpUrlSchema } from '@/shared/lib/validation/schemas';
+import type {
+    CollectionDetails,
+    CollectionItemPayload,
+    ItemSize,
+    UpdateCollectionPayload,
+} from './types';
 
 /** Form state of the collection / item editors (strings, not yet validated). */
 export type CollectionDraft = {
     name: string;
     description: string;
+    categoryId: number | null;
+    tags: TagRef[];
     bannerUrl: string;
     isPrivate: boolean;
 };
@@ -12,6 +21,8 @@ export type CollectionDraft = {
 export const emptyCollectionDraft: CollectionDraft = {
     name: '',
     description: '',
+    categoryId: null,
+    tags: [],
     bannerUrl: '',
     isPrivate: false,
 };
@@ -19,12 +30,17 @@ export const emptyCollectionDraft: CollectionDraft = {
 export const toCollectionDraft = (collection: CollectionDetails): CollectionDraft => ({
     name: collection.name,
     description: collection.description,
+    categoryId: collection.category.id,
+    tags: collection.tags,
     bannerUrl: collection.bannerUrl,
     isPrivate: collection.isPrivate,
 });
 
 export function toCollectionPayload(draft: CollectionDraft): UpdateCollectionPayload | null {
-    const result = updateCollectionSchema.safeParse(draft);
+    const result = updateCollectionSchema.safeParse({
+        ...draft,
+        tagIds: draft.tags.map((tag) => tag.id),
+    });
     return result.success ? result.data : null;
 }
 
@@ -33,6 +49,7 @@ export type ItemDraft = {
     description: string;
     sourceUrl: string;
     imageUrl: string;
+    size: ItemSize;
 };
 
 export const emptyItemDraft: ItemDraft = {
@@ -40,6 +57,7 @@ export const emptyItemDraft: ItemDraft = {
     description: '',
     sourceUrl: '',
     imageUrl: '',
+    size: 'M',
 };
 
 export function toItemDraft(item: Partial<CollectionItemPayload>): ItemDraft {
@@ -48,6 +66,7 @@ export function toItemDraft(item: Partial<CollectionItemPayload>): ItemDraft {
         description: item.description ?? '',
         sourceUrl: item.sourceUrl ?? '',
         imageUrl: item.imageUrl ?? '',
+        size: item.size ?? 'M',
     };
 }
 
@@ -59,7 +78,6 @@ export function toItemPayload(draft: ItemDraft): CollectionItemPayload | null {
 
 export function isSourceUrlInvalid(draft: ItemDraft) {
     return (
-        draft.sourceUrl.trim() !== '' &&
-        !itemSchema.shape.sourceUrl.safeParse(draft.sourceUrl).success
+        draft.sourceUrl.trim() !== '' && !optionalHttpUrlSchema.safeParse(draft.sourceUrl).success
     );
 }

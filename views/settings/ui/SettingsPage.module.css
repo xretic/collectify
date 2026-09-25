@@ -31,7 +31,7 @@
 }
 
 .danger {
-    border-color: #ff6e70;
+    border-color: var(--danger);
 }
 
 .sectionTitle {

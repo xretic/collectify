@@ -76,3 +76,13 @@
     width: 1px;
     height: 32px;
 }
+
+.clickable {
+    border-radius: var(--radius-sm);
+    transition: color 0.15s ease;
+}
+
+.clickable:hover .number,
+.clickable:hover .label {
+    color: var(--accent);
+}

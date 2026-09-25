@@ -1,0 +1,11 @@
+.editor {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}

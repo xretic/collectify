@@ -10,6 +10,11 @@ export const notificationApi = {
             .json<NotificationsPage>();
     },
 
+    async markAsRead(notificationId: number) {
+        return (await api.patch(`notifications/${notificationId}/read`).json<{ unread: number }>())
+            .unread;
+    },
+
     async markAllAsRead() {
         await api.patch('notifications/read');
     },

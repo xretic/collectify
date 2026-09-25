@@ -11,5 +11,4 @@ export const managementQueryKeys = {
     audit: (userId: number) => [...managementQueryKeys.all, 'audit', userId] as const,
     collections: (userId: number) => [...managementQueryKeys.all, 'collections', userId] as const,
     comments: (userId: number) => [...managementQueryKeys.all, 'comments', userId] as const,
-    chats: (userId: number) => [...managementQueryKeys.all, 'chats', userId] as const,
 };

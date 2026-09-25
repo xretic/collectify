@@ -1,0 +1,52 @@
+.paper {
+    overflow: hidden;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* react-easy-crop fills its nearest positioned ancestor. */
+.stage {
+    position: relative;
+    height: 380px;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background-color: #111;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.zoom {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 12px;
+}
+
+.rotate {
+    display: flex;
+    gap: 4px;
+}
+
+.muted {
+    color: var(--soft-text);
+}
+
+.aspects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+@media (max-width: 600px) {
+    .stage {
+        height: 300px;
+    }
+}

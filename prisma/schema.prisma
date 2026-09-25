@@ -8,42 +8,59 @@ datasource db {
 }
 
 model User {
-    id                   Int                @id
-    email                String             @unique
+    id                   Int                 @id
+    email                String              @unique
     passwordHash         String?
-    avatarUrl            String             @default("")
-    bannerUrl            String             @default("")
-    username             String             @unique
+    avatarUrl            String              @default("")
+    bannerUrl            String              @default("")
+    username             String              @unique
     fullName             String
-    description          String             @default("")
-    githubId             String?            @unique
-    googleId             String?            @unique
-    createdAt            DateTime           @default(now())
+    description          String              @default("")
+    /// ISO 3166-1 alpha-2 code.
+    country              String?
+    city                 String?
+    /// Lower-cased, whitespace-collapsed `city` used to match people nearby.
+    cityKey              String?
+    /// Private; users must be 18+ when it is set.
+    birthDate            DateTime?           @db.Date
+    /// Order of the home feed tabs: "for-you", "explore", "board:<id>".
+    feedTabOrder         String[]            @default([])
+    githubId             String?             @unique
+    googleId             String?             @unique
+    createdAt            DateTime            @default(now())
     collections          Collection[]
-    subscriptions        Follow[]           @relation("Subscriptions")
-    followers            Follow[]           @relation("Followers")
-    notifications        Notification[]     @relation("ReceivedNotifications")
-    sentNotifications    Notification[]     @relation("SentNotifications")
+    subscriptions        Follow[]            @relation("Subscriptions")
+    followers            Follow[]            @relation("Followers")
+    notifications        Notification[]      @relation("ReceivedNotifications")
+    sentNotifications    Notification[]      @relation("SentNotifications")
     sessions             Session[]
     likes                Like[]
     favorites            Favorite[]
-    comments             Comment[]
+    comments             Comment[]           @relation("CommentAuthor")
+    commentReplyTargets  Comment[]           @relation("CommentReplyTargets")
     chats                Chat[]
-    messages             Message[]          @relation("SentMessages")
-    receivedMessages     Message[]          @relation("ReceivedMessages")
+    messages             Message[]           @relation("SentMessages")
+    receivedMessages     Message[]           @relation("ReceivedMessages")
     admin                Admin?
     verified             Verified?
     moderator            Moderator?
-    sanctions            AccountSanction[]  @relation("UserSanctions")
-    issuedSanctions      AccountSanction[]  @relation("IssuedSanctions")
-    moderationActions    ModerationAction[] @relation("ModerationActionsActor")
-    moderationTargets    ModerationAction[] @relation("ModerationActionsTargetUser")
-    reportsMade          Report[]           @relation("ReportsMade")
-    reportsReceived      Report[]           @relation("ReportsReceived")
-    reportsReviewed      Report[]           @relation("ReportsReviewed")
-    impersonatedSessions Session[]          @relation("ImpersonatedSessions")
+    sanctions            AccountSanction[]   @relation("UserSanctions")
+    issuedSanctions      AccountSanction[]   @relation("IssuedSanctions")
+    moderationActions    ModerationAction[]  @relation("ModerationActionsActor")
+    moderationTargets    ModerationAction[]  @relation("ModerationActionsTargetUser")
+    reportsMade          Report[]            @relation("ReportsMade")
+    reportsReceived      Report[]            @relation("ReportsReceived")
+    reportsReviewed      Report[]            @relation("ReportsReviewed")
+    impersonatedSessions Session[]           @relation("ImpersonatedSessions")
+    createdTags          Tag[]
+    boards               Board[]
+    collectionViews      CollectionView[]
+    engagedCollections   EngagedCollection[]
+    interests            UserInterest[]
+    chatMutes            ChatMute[]
 
     @@index([createdAt])
+    @@index([country, cityKey])
     @@index([username(ops: raw("gin_trgm_ops"))], map: "User_username_trgm_idx", type: Gin)
     @@index([fullName(ops: raw("gin_trgm_ops"))], map: "User_fullName_trgm_idx", type: Gin)
     @@index([email(ops: raw("gin_trgm_ops"))], map: "User_email_trgm_idx", type: Gin)
@@ -73,34 +90,52 @@ model Moderator {
 }
 
 model Chat {
-    id            Int       @id @default(autoincrement())
-    createdAt     DateTime  @default(now())
-    lastMessageAt DateTime  @default(now())
+    id            Int        @id @default(autoincrement())
+    createdAt     DateTime   @default(now())
+    lastMessageAt DateTime   @default(now())
     /// "<smallerUserId>:<biggerUserId>" — one direct chat per pair of users.
-    pairKey       String?   @unique
+    pairKey       String?    @unique
     users         User[]
     messages      Message[]
+    mutes         ChatMute[]
 
     @@index([lastMessageAt])
 }
 
+/// A participant silenced message notifications of a chat.
+model ChatMute {
+    userId    Int
+    chatId    Int
+    /// `null` mutes until turned back on.
+    until     DateTime?
+    createdAt DateTime  @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+    @@id([userId, chatId])
+    @@index([chatId])
+}
+
 model Message {
-    id              Int      @id @default(autoincrement())
+    id              Int       @id @default(autoincrement())
     chatId          Int
     userId          Int
     recipientUserId Int
     content         String
-    read            Boolean  @default(false)
-    createdAt       DateTime @default(now())
+    read            Boolean   @default(false)
+    /// When the recipient saw the message ("Seen" receipts).
+    readAt          DateTime?
+    createdAt       DateTime  @default(now())
 
-    chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-    user      User     @relation("SentMessages", fields: [userId], references: [id], onDelete: Cascade)
-    recipient User     @relation("ReceivedMessages", fields: [recipientUserId], references: [id], onDelete: Cascade)
-    reports   Report[]
+    chat      Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    user      User @relation("SentMessages", fields: [userId], references: [id], onDelete: Cascade)
+    recipient User @relation("ReceivedMessages", fields: [recipientUserId], references: [id], onDelete: Cascade)
 
     @@index([chatId, createdAt])
     @@index([userId, createdAt])
     @@index([recipientUserId, read])
+    @@index([chatId, userId, readAt])
 }
 
 model Notification {
@@ -109,13 +144,23 @@ model Notification {
     recipientUserId Int
     createdAt       DateTime         @default(now())
     isRead          Boolean          @default(false)
+    /// Set when the sender undid the action (unfollow, unlike...). The row is kept
+    /// hidden so redoing the action restores it instead of notifying again.
+    retractedAt     DateTime?
     type            NotificationType
     collectionId    Int?
+    /// Comment the notification is about (new comment, reply, author's like).
+    commentId       Int?
     collection      Collection?      @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    comment         Comment?         @relation(fields: [commentId], references: [id], onDelete: Cascade)
     recipientUser   User             @relation("ReceivedNotifications", fields: [recipientUserId], references: [id], onDelete: Cascade)
     senderUser      User?            @relation("SentNotifications", fields: [senderUserId], references: [id], onDelete: Cascade)
 
     @@index([recipientUserId, createdAt])
+    @@index([recipientUserId, isRead])
+    /// Social notification dedupe (one per sender, recipient, type and target).
+    @@index([recipientUserId, senderUserId, type])
+    @@index([commentId])
 }
 
 model AccountSanction {
@@ -143,7 +188,6 @@ model ModerationAction {
     targetUserId       Int?
     targetCollectionId Int?
     targetCommentId    Int?
-    targetMessageId    Int?
     action             String
     reason             String   @default("")
     metadata           Json?
@@ -163,7 +207,6 @@ model Report {
     reporterId      Int
     targetUserId    Int
     targetType      ReportTargetType
-    messageId       Int?
     commentId       Int?
     collectionId    Int?
     contentSnapshot Json?
@@ -184,7 +227,6 @@ model Report {
     reporter    User             @relation("ReportsMade", fields: [reporterId], references: [id], onDelete: Cascade)
     targetUser  User             @relation("ReportsReceived", fields: [targetUserId], references: [id], onDelete: Cascade)
     reviewedBy  User?            @relation("ReportsReviewed", fields: [reviewedById], references: [id], onDelete: SetNull)
-    message     Message?         @relation(fields: [messageId], references: [id], onDelete: SetNull)
     comment     Comment?         @relation(fields: [commentId], references: [id], onDelete: SetNull)
     collection  Collection?      @relation(fields: [collectionId], references: [id], onDelete: SetNull)
     duplicateOf Report?          @relation("ReportDuplicates", fields: [duplicateOfId], references: [id], onDelete: SetNull)
@@ -194,7 +236,6 @@ model Report {
     @@index([status, createdAt])
     @@index([targetUserId, createdAt])
     @@index([reporterId, createdAt])
-    @@index([messageId])
     @@index([commentId])
     @@index([collectionId])
 }
@@ -205,8 +246,10 @@ model Follow {
     follower    User @relation("Subscriptions", fields: [followerId], references: [id], onDelete: Cascade)
     following   User @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
 
+    /// The primary key serves "who X follows" (keyset by followingId); this
+    /// index serves "who follows X" (keyset by followerId).
     @@id([followerId, followingId])
-    @@index([followingId])
+    @@index([followingId, followerId])
 }
 
 model Session {
@@ -223,16 +266,19 @@ model Session {
 }
 
 model Collection {
-    id                Int                @id @default(autoincrement())
+    id                Int                 @id @default(autoincrement())
     name              String
     lowerCaseName     String
-    description       String             @default("")
+    description       String              @default("")
     bannerUrl         String
-    category          String
+    categoryId        Int
+    category          Category            @relation(fields: [categoryId], references: [id], onDelete: Restrict)
     userId            Int?
-    createdAt         DateTime           @default(now())
-    private           Boolean            @default(false)
-    user              User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt         DateTime            @default(now())
+    private           Boolean             @default(false)
+    /// Number of "Like" rows, kept in sync by a DB trigger (see migration `scale_fixes`).
+    likeCount         Int                 @default(0)
+    user              User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
     items             Item[]
     likes             Like[]
     favorites         Favorite[]
@@ -240,23 +286,155 @@ model Collection {
     notifications     Notification[]
     moderationActions ModerationAction[]
     reports           Report[]
+    tags              CollectionTag[]
+    boards            BoardCollection[]
+    views             CollectionView[]
+    engagedBy         EngagedCollection[]
 
     @@index([lowerCaseName])
     @@index([userId])
-    @@index([private, category, createdAt])
+    @@index([private, categoryId, createdAt])
+    @@index([private, likeCount(sort: Desc)])
+    @@index([private, categoryId, likeCount(sort: Desc)])
+}
+
+/// Managed by admins. Archived categories (`isActive = false`) keep their
+/// collections but are hidden from pickers and filters.
+model Category {
+    id          Int            @id @default(autoincrement())
+    slug        String         @unique
+    name        String         @unique
+    description String         @default("")
+    position    Int            @default(0)
+    isActive    Boolean        @default(true)
+    createdAt   DateTime       @default(now())
+    collections Collection[]
+    tags        Tag[]
+    interested  UserInterest[]
+
+    @@index([isActive, position])
+}
+
+/// User-created, global within its category. `usageCount` (maintained by a
+/// trigger on "CollectionTag") is the popularity used to rank suggestions.
+model Tag {
+    id          Int             @id @default(autoincrement())
+    name        String
+    /// Lower-cased, whitespace-collapsed `name`; unique per category.
+    normalized  String
+    categoryId  Int
+    usageCount  Int             @default(0)
+    createdById Int?
+    createdAt   DateTime        @default(now())
+    category    Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    createdBy   User?           @relation(fields: [createdById], references: [id], onDelete: SetNull)
+    collections CollectionTag[]
+
+    @@unique([categoryId, normalized])
+    @@index([categoryId, usageCount(sort: Desc)])
+    @@index([createdById, createdAt])
+    @@index([normalized(ops: raw("gin_trgm_ops"))], map: "Tag_normalized_trgm_idx", type: Gin)
+}
+
+/// A user's own grouping of saved collections (Pinterest-like board).
+/// Every collection on a board is also in the user's favorites ("All").
+model Board {
+    id          Int               @id @default(autoincrement())
+    userId      Int
+    name        String
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @default(now()) @updatedAt
+    user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    collections BoardCollection[]
+
+    @@unique([userId, name])
+    @@index([userId, createdAt])
+}
+
+model BoardCollection {
+    boardId      Int
+    collectionId Int
+    createdAt    DateTime   @default(now())
+    board        Board      @relation(fields: [boardId], references: [id], onDelete: Cascade)
+    collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+    @@id([boardId, collectionId])
+    @@index([collectionId])
+    @@index([boardId, createdAt])
+}
+
+/// Signed-in views, a recommendation signal (counted at most once per 10 minutes).
+model CollectionView {
+    userId       Int
+    collectionId Int
+    count        Int        @default(1)
+    lastViewedAt DateTime   @default(now())
+    user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+    @@id([userId, collectionId])
+    @@index([collectionId])
+}
+
+/// Collections the user has ever liked or favorited. Kept after unliking, so
+/// they are never recommended again.
+model EngagedCollection {
+    userId       Int
+    collectionId Int
+    createdAt    DateTime   @default(now())
+    user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+    @@id([userId, collectionId])
+    @@index([collectionId])
+}
+
+/// Categories picked at sign-up; seeds recommendations before there is activity.
+model UserInterest {
+    userId     Int
+    categoryId Int
+    createdAt  DateTime @default(now())
+    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@id([userId, categoryId])
+}
+
+model CollectionTag {
+    collectionId Int
+    tagId        Int
+    createdAt    DateTime   @default(now())
+    collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    tag          Tag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+    @@id([collectionId, tagId])
+    @@index([tagId, collectionId])
 }
 
 model Comment {
     id                Int                @id @default(autoincrement())
     userId            Int
     collectionId      Int
+    /// Root comment of the thread; replies are one level deep.
+    parentId          Int?
+    /// Who a reply answers (shown as @username), may differ from the root's author.
+    replyToUserId     Int?
     text              String
     createdAt         DateTime           @default(now())
-    user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+    editedAt          DateTime?
+    /// Heart from the collection owner ("liked by the author").
+    likedByAuthor     Boolean            @default(false)
+    user              User               @relation("CommentAuthor", fields: [userId], references: [id], onDelete: Cascade)
+    replyToUser       User?              @relation("CommentReplyTargets", fields: [replyToUserId], references: [id], onDelete: SetNull)
     collection        Collection         @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    parent            Comment?           @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+    replies           Comment[]          @relation("CommentReplies")
     moderationActions ModerationAction[]
     reports           Report[]
+    notifications     Notification[]
 
+    @@index([collectionId, parentId, id])
+    @@index([parentId, id])
     @@index([collectionId, createdAt])
     @@index([userId, createdAt])
 }
@@ -286,15 +464,25 @@ model Favorite {
 
 model Item {
     id           Int         @id @default(autoincrement())
-    title        String
-    description  String
+    /// Optional when the item has an image.
+    title        String      @default("")
+    description  String      @default("")
     collectionId Int?
     sourceUrl    String?
     imageUrl     String?
+    size         ItemSize    @default(M)
     order        Int
     collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
 
     @@index([collectionId, order])
+}
+
+/// Footprint of an item card in the collection's masonry grid.
+enum ItemSize {
+    S
+    M
+    L
+    XL
 }
 
 enum NotificationType {
@@ -304,6 +492,8 @@ enum NotificationType {
     FAVORITE
     REPORT_RESOLVED
     SANCTION
+    COMMENT_REPLY
+    COMMENT_LIKED
 }
 
 enum SanctionScope {
@@ -336,7 +526,6 @@ enum ReportReason {
 
 enum ReportTargetType {
     USER
-    MESSAGE
     COMMENT
     COLLECTION
 }

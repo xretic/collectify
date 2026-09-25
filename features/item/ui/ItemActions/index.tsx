@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import type { CollectionItem } from '@/entities/collection/model/types';
-import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { toItemDraft } from '@/entities/collection/model/drafts';
+import { ActionsMenu, type ActionsMenuItem } from '@/shared/ui/ActionsMenu';
+import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { ItemFormDialog } from '../ItemFormDialog';
 import { useItemMutations } from '../../model/useItemMutations';
 
@@ -17,37 +17,34 @@ type ItemActionsProps = {
     canDelete: boolean;
 };
 
-/** Owner's edit / delete controls on an item card. */
+/** Owner's "⋯" menu on an item card: edit / delete. */
 export function ItemActions({ collectionId, item, canDelete }: ItemActionsProps) {
     const { update, remove } = useItemMutations(collectionId);
     const [editing, setEditing] = useState(false);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
 
+    const items: ActionsMenuItem[] = [
+        {
+            key: 'edit',
+            label: 'Edit item',
+            icon: <EditOutlinedIcon fontSize="small" />,
+            onClick: () => setEditing(true),
+        },
+    ];
+
+    if (canDelete) {
+        items.push({
+            key: 'delete',
+            label: 'Delete item',
+            icon: <DeleteOutlineOutlinedIcon fontSize="small" />,
+            onClick: () => setConfirmingDelete(true),
+            danger: true,
+        });
+    }
+
     return (
         <>
-            <Tooltip title="Edit item">
-                <IconButton
-                    size="small"
-                    color="inherit"
-                    onClick={() => setEditing(true)}
-                    aria-label="Edit item"
-                >
-                    <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
-
-            {canDelete && (
-                <Tooltip title="Delete item">
-                    <IconButton
-                        size="small"
-                        color="inherit"
-                        onClick={() => setConfirmingDelete(true)}
-                        aria-label="Delete item"
-                    >
-                        <DeleteOutlineOutlinedIcon fontSize="small" />
-                    </IconButton>
-                </Tooltip>
-            )}
+            <ActionsMenu items={items} label="Item actions" />
 
             {editing && (
                 <ItemFormDialog
@@ -66,7 +63,7 @@ export function ItemActions({ collectionId, item, canDelete }: ItemActionsProps)
 
             <ConfirmDialog
                 open={confirmingDelete}
-                title={`Delete “${item.title}”?`}
+                title={item.title ? `Delete “${item.title}”?` : 'Delete this item?'}
                 description="This item will be removed from the collection."
                 confirmLabel="Delete"
                 destructive

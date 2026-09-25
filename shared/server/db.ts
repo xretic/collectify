@@ -2,22 +2,16 @@ import 'server-only';
 import ws from 'ws';
 import { neonConfig } from '@neondatabase/serverless';
 import { PrismaNeon } from '@prisma/adapter-neon';
-import { PrismaPg } from '@prisma/adapter-pg';
 import { Prisma, PrismaClient } from '@/generated/prisma/client';
 import { serverEnv } from './env';
 
 export type Tx = Prisma.TransactionClient;
 
 function createClient() {
-    const connectionString = serverEnv.DATABASE_URL;
-
-    // Neon (serverless) in production, plain Postgres locally / in Docker.
-    if (new URL(connectionString).hostname.endsWith('.neon.tech')) {
-        neonConfig.webSocketConstructor = ws;
-        return new PrismaClient({ adapter: new PrismaNeon({ connectionString }) });
-    }
-
-    return new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+    neonConfig.webSocketConstructor = ws;
+    return new PrismaClient({
+        adapter: new PrismaNeon({ connectionString: serverEnv.DATABASE_URL }),
+    });
 }
 
 const globalForDb = globalThis as unknown as { __collectifyDb?: PrismaClient };

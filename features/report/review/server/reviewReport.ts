@@ -7,8 +7,7 @@ import { assertCanModerate, type StaffContext } from '@/features/auth/server/gua
 import { issueSanction } from '@/entities/sanction/server/sanctions';
 import { expiresAtFromDuration } from '@/entities/sanction/model/types';
 import { writeAudit } from '@/entities/moderation/server/audit';
-import { notifySystem } from '@/entities/notification/server/notifications';
-import { publishToUsers } from '@/entities/chat/server/realtime';
+import { deliverNotifications, notifySystem } from '@/entities/notification/server/notifications';
 import { COLLECTIONS_CACHE_NAMESPACE } from '@/entities/collection/server/queries';
 import type { ReviewReportPayload } from '@/entities/report/model/types';
 
@@ -36,16 +35,16 @@ export async function reviewReport(
             targetUserId: true,
             targetType: true,
             reason: true,
-            messageId: true,
             commentId: true,
             collectionId: true,
-            message: { select: { chatId: true, userId: true, recipientUserId: true } },
         },
     });
 
     if (!report) throw notFound('Report not found.');
     if (report.status === 'CLOSED') throw conflict('Report is already closed.');
-    if (report.reporterId === ctx.userId) throw forbidden('You cannot review your own report.');
+    if (report.reporterId === ctx.userId && !ctx.isAdmin) {
+        throw forbidden('You cannot review your own report.');
+    }
 
     await assertCanModerate(ctx, report.targetUserId);
 
@@ -78,13 +77,14 @@ export async function reviewReport(
 
     const contentFilter: Prisma.ReportWhereInput = {
         targetType: report.targetType,
-        messageId: report.messageId,
         commentId: report.commentId,
         collectionId: report.collectionId,
         ...(report.targetType === 'USER' ? { targetUserId: report.targetUserId } : {}),
     };
 
     let sanctionApplied = false;
+
+    const notificationIds: number[] = [];
 
     try {
         await db.$transaction(async (tx) => {
@@ -142,8 +142,6 @@ export async function reviewReport(
             }
 
             if (payload.removeContent) {
-                if (report.messageId)
-                    await tx.message.deleteMany({ where: { id: report.messageId } });
                 if (report.commentId)
                     await tx.comment.deleteMany({ where: { id: report.commentId } });
                 if (report.collectionId) {
@@ -159,7 +157,6 @@ export async function reviewReport(
                     targetUserId: report.targetUserId,
                     targetCollectionId: payload.removeContent ? null : report.collectionId,
                     targetCommentId: payload.removeContent ? null : report.commentId,
-                    targetMessageId: report.messageId,
                     metadata: {
                         reportId: report.id,
                         targetType: report.targetType,
@@ -174,8 +171,10 @@ export async function reviewReport(
                 tx,
             );
 
-            await notifySystem(report.reporterId, 'REPORT_RESOLVED', tx);
-            if (sanctionApplied) await notifySystem(report.targetUserId, 'SANCTION', tx);
+            notificationIds.push(await notifySystem(report.reporterId, 'REPORT_RESOLVED', tx));
+            if (sanctionApplied) {
+                notificationIds.push(await notifySystem(report.targetUserId, 'SANCTION', tx));
+            }
         });
     } catch (error) {
         if (error instanceof ReportAlreadyReviewed) {
@@ -184,15 +183,9 @@ export async function reviewReport(
         throw error;
     }
 
-    if (payload.removeContent) {
-        if (report.message && report.messageId) {
-            await publishToUsers(
-                [report.message.userId, report.message.recipientUserId],
-                'message:deleted',
-                { chatId: report.message.chatId, messageId: report.messageId },
-            );
-        }
+    await deliverNotifications(notificationIds);
 
+    if (payload.removeContent) {
         if (report.collectionId || report.commentId) {
             await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
         }

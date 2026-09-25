@@ -1,0 +1,82 @@
+.stack {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1400;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    width: min(380px, calc(100vw - 32px));
+    pointer-events: none;
+}
+
+.toast {
+    position: relative;
+    overflow: hidden;
+    padding-right: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background-color: var(--container-color);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    pointer-events: auto;
+    animation: enter 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.leaving {
+    animation: leave 0.22s ease-in forwards;
+}
+
+.close {
+    align-self: flex-start;
+    margin-top: 6px !important;
+}
+
+/* 5 s countdown along the bottom edge; freezes while hovered. */
+.progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background-color: var(--accent);
+    transform-origin: left;
+    animation: countdown 5s linear forwards;
+}
+
+.paused .progress {
+    animation-play-state: paused;
+}
+
+@keyframes enter {
+    from {
+        opacity: 0;
+        transform: translateX(40px) scale(0.96);
+    }
+}
+
+@keyframes leave {
+    to {
+        opacity: 0;
+        transform: translateX(40px) scale(0.96);
+    }
+}
+
+@keyframes countdown {
+    to {
+        transform: scaleX(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .stack {
+        right: 16px;
+        bottom: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast,
+    .leaving {
+        animation-duration: 0.01s;
+    }
+}

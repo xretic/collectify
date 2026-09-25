@@ -36,6 +36,7 @@ function readCookie(header, name) {
 
 /**
  * Resolves the user of a valid, non-expired session whose account is not banned.
+ * Impersonated sessions are refused: the user room carries direct messages.
  * Prisma stores `TIMESTAMP(3)` in UTC, hence `NOW() AT TIME ZONE 'UTC'`.
  */
 async function authenticate(sessionId) {
@@ -44,6 +45,7 @@ async function authenticate(sessionId) {
          FROM "Session" s
          WHERE s.id = $1
            AND s."expiresAt" > (NOW() AT TIME ZONE 'UTC')
+           AND s."impersonatorUserId" IS NULL
            AND NOT EXISTS (
                SELECT 1 FROM "AccountSanction" a
                WHERE a."userId" = s."userId"
@@ -97,8 +99,53 @@ io.use(async (socket, nextMiddleware) => {
     }
 });
 
+/** Offline is announced after a grace period so page reloads do not flicker. */
+const OFFLINE_GRACE_MS = 5_000;
+const offlineTimers = new Map();
+
+const userRoom = (userId) => `user:${userId}`;
+const isConnected = (userId) => (io.sockets.adapter.rooms.get(userRoom(userId))?.size ?? 0) > 0;
+
+/** Tells everyone the user chats with that they came online / went offline. */
+async function announcePresence(userId, online) {
+    try {
+        const { rows } = await db.query(
+            `SELECT DISTINCT other."B" AS id
+             FROM "_ChatToUser" own
+             JOIN "_ChatToUser" other ON other."A" = own."A" AND other."B" <> own."B"
+             WHERE own."B" = $1`,
+            [userId],
+        );
+
+        if (rows.length > 0) {
+            io.to(rows.map((row) => userRoom(row.id))).emit('presence:changed', { userId, online });
+        }
+    } catch (error) {
+        console.error('[socket] presence failed:', error);
+    }
+}
+
 io.on('connection', (socket) => {
-    socket.join(`user:${socket.data.userId}`);
+    const { userId } = socket.data;
+    const wasOnline = isConnected(userId) || offlineTimers.has(userId);
+
+    clearTimeout(offlineTimers.get(userId));
+    offlineTimers.delete(userId);
+    socket.join(userRoom(userId));
+
+    if (!wasOnline) void announcePresence(userId, true);
+
+    socket.on('disconnect', () => {
+        if (isConnected(userId)) return;
+
+        offlineTimers.set(
+            userId,
+            setTimeout(() => {
+                offlineTimers.delete(userId);
+                if (!isConnected(userId)) void announcePresence(userId, false);
+            }, OFFLINE_GRACE_MS),
+        );
+    });
 });
 
 httpServer.listen(port, hostname, () => {

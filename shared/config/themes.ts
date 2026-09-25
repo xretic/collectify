@@ -1,0 +1,55 @@
+/** Must match the `[data-theme]` blocks in `app/themes.css`. */
+export const THEMES = [
+    { id: 'light', name: 'Light', scheme: 'light' },
+    { id: 'dark', name: 'Dark', scheme: 'dark' },
+    { id: 'serika-dark', name: 'Serika Dark', scheme: 'dark' },
+    { id: 'serika', name: 'Serika', scheme: 'light' },
+    { id: 'nord', name: 'Nord', scheme: 'dark' },
+    { id: 'nord-light', name: 'Nord Light', scheme: 'light' },
+    { id: 'dracula', name: 'Dracula', scheme: 'dark' },
+    { id: 'gruvbox', name: 'Gruvbox', scheme: 'dark' },
+    { id: 'solarized-light', name: 'Solarized Light', scheme: 'light' },
+    { id: 'solarized-dark', name: 'Solarized Dark', scheme: 'dark' },
+    { id: 'catppuccin', name: 'Catppuccin', scheme: 'dark' },
+    { id: 'rose-pine', name: 'Rosé Pine', scheme: 'dark' },
+    { id: 'rose-pine-dawn', name: 'Rosé Pine Dawn', scheme: 'light' },
+    { id: 'olivia', name: 'Olivia', scheme: 'dark' },
+    { id: 'botanical', name: 'Botanical', scheme: 'dark' },
+    { id: 'matrix', name: 'Matrix', scheme: 'dark' },
+    { id: 'carbon', name: 'Carbon', scheme: 'dark' },
+    { id: 'lavender', name: 'Lavender', scheme: 'light' },
+    { id: 'mint', name: 'Mint', scheme: 'light' },
+    { id: 'ocean', name: 'Ocean', scheme: 'dark' },
+    { id: 'sunset', name: 'Sunset', scheme: 'dark' },
+    { id: 'paper', name: 'Paper', scheme: 'light' },
+    { id: 'sakura', name: 'Sakura', scheme: 'light' },
+    { id: 'peach', name: 'Peach', scheme: 'light' },
+    { id: 'lemon', name: 'Lemon', scheme: 'light' },
+    { id: 'forest', name: 'Forest', scheme: 'dark' },
+    { id: 'espresso', name: 'Espresso', scheme: 'dark' },
+    { id: 'synthwave', name: 'Synthwave', scheme: 'dark' },
+    { id: 'aurora', name: 'Aurora', scheme: 'dark' },
+    { id: 'amoled', name: 'Amoled', scheme: 'dark' },
+    { id: 'tokyo-night', name: 'Tokyo Night', scheme: 'dark' },
+    { id: 'monokai', name: 'Monokai', scheme: 'dark' },
+    { id: 'one-dark', name: 'One Dark', scheme: 'dark' },
+    { id: 'everforest', name: 'Everforest', scheme: 'dark' },
+    { id: 'kanagawa', name: 'Kanagawa', scheme: 'dark' },
+    { id: 'cyberpunk', name: 'Cyberpunk', scheme: 'dark' },
+    { id: 'iceberg', name: 'Iceberg', scheme: 'dark' },
+    { id: 'amber', name: 'Amber', scheme: 'dark' },
+    { id: 'github', name: 'GitHub', scheme: 'light' },
+    { id: 'latte', name: 'Latte', scheme: 'light' },
+    { id: 'gruvbox-light', name: 'Gruvbox Light', scheme: 'light' },
+    { id: 'desert', name: 'Desert', scheme: 'light' },
+    { id: 'sky', name: 'Sky', scheme: 'light' },
+    { id: 'slate', name: 'Slate', scheme: 'light' },
+    { id: 'sage', name: 'Sage', scheme: 'light' },
+] as const;
+
+export type ThemeId = (typeof THEMES)[number]['id'];
+
+export const DEFAULT_THEME: ThemeId = 'light';
+
+export const isThemeId = (value: unknown): value is ThemeId =>
+    THEMES.some((theme) => theme.id === value);

@@ -185,14 +185,18 @@ function usernameCandidate(login: string, fallback: number) {
         : `user${fallback}`.slice(0, USERNAME_MAX_LENGTH);
 }
 
-async function findOrCreateUser(provider: OAuthProvider, profile: OAuthProfile) {
+/** Returns the account id and whether it was just created (new accounts get onboarding). */
+async function findOrCreateUser(
+    provider: OAuthProvider,
+    profile: OAuthProfile,
+): Promise<{ id: number; created: boolean }> {
     const providerField = provider === 'google' ? 'googleId' : 'githubId';
 
     const linked = await db.user.findFirst({
         where: { [providerField]: profile.providerId },
         select: { id: true },
     });
-    if (linked) return linked.id;
+    if (linked) return { id: linked.id, created: false };
 
     // Link to an existing account only through a provider-verified email.
     if (profile.verifiedEmail) {
@@ -209,7 +213,7 @@ async function findOrCreateUser(provider: OAuthProvider, profile: OAuthProfile) 
                     avatarUrl: byEmail.avatarUrl || profile.avatarUrl,
                 },
             });
-            return byEmail.id;
+            return { id: byEmail.id, created: false };
         }
     }
 
@@ -232,7 +236,7 @@ async function findOrCreateUser(provider: OAuthProvider, profile: OAuthProfile) 
         });
     }
 
-    return id;
+    return { id, created: true };
 }
 
 /** Handles the provider redirect: verifies state, signs the user in, redirects home. */
@@ -248,6 +252,7 @@ export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
     if (!code || !stateMatches(req)) return fail('oauth-state');
 
     let userId: number;
+    let created: boolean;
 
     try {
         const profile =
@@ -255,7 +260,7 @@ export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
                 ? await fetchGoogleProfile(req, code)
                 : await fetchGithubProfile(req, code);
 
-        userId = await findOrCreateUser(provider, profile);
+        ({ id: userId, created } = await findOrCreateUser(provider, profile));
     } catch (error) {
         console.error(`[oauth:${provider}]`, error);
         return fail('oauth-failed');
@@ -264,7 +269,7 @@ export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
     if (await getActiveSanction(userId, 'ACCOUNT')) return fail('account-banned');
 
     const session = await createSession(userId);
-    const res = NextResponse.redirect(home);
+    const res = NextResponse.redirect(created ? new URL('/onboarding', home) : home);
     res.cookies.delete({ name: STATE_COOKIE, path: '/api/auth/callback' });
     setSessionCookie(res, session);
 

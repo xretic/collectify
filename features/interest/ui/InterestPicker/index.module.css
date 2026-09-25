@@ -1,0 +1,70 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.tile {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    outline: 3px solid transparent;
+    outline-offset: 2px;
+    transition:
+        outline-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.tile:hover {
+    transform: translateY(-2px);
+}
+
+.selected {
+    outline-color: var(--accent);
+}
+
+.cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder {
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, #000));
+}
+
+.shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1) 60%);
+}
+
+.selected .shade {
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.75),
+        color-mix(in srgb, var(--accent) 40%, transparent)
+    );
+}
+
+.name {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 10px;
+    color: #ffffff;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 17px;
+    text-align: left;
+}
+
+.check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #ffffff;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}

@@ -6,7 +6,7 @@ import type {
 import type { UserPreview } from '@/entities/user/model/types';
 
 export type ReportReason = 'SPAM' | 'HARASSMENT' | 'HATE' | 'SCAM' | 'ADULT' | 'OTHER';
-export type ReportTargetType = 'USER' | 'MESSAGE' | 'COMMENT' | 'COLLECTION';
+export type ReportTargetType = 'USER' | 'COMMENT' | 'COLLECTION';
 export type ReportStatus = 'OPEN' | 'CLOSED';
 export type ReportVerdict =
     | 'PENDING'
@@ -25,12 +25,7 @@ export const REPORT_REASONS: readonly ReportReason[] = [
     'OTHER',
 ];
 
-export const REPORT_TARGET_TYPES: readonly ReportTargetType[] = [
-    'USER',
-    'MESSAGE',
-    'COMMENT',
-    'COLLECTION',
-];
+export const REPORT_TARGET_TYPES: readonly ReportTargetType[] = ['USER', 'COMMENT', 'COLLECTION'];
 
 export const REVIEW_VERDICTS: readonly ReviewVerdict[] = [
     'GUILTY',
@@ -50,7 +45,6 @@ export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
 
 export const REPORT_TARGET_LABELS: Record<ReportTargetType, string> = {
     USER: 'User',
-    MESSAGE: 'Message',
     COMMENT: 'Comment',
     COLLECTION: 'Collection',
 };
@@ -66,14 +60,12 @@ export const REPORT_VERDICT_LABELS: Record<ReportVerdict, string> = {
 /** The sanction scope that usually fits a report about this kind of content. */
 export const DEFAULT_SCOPE_FOR_TARGET: Record<ReportTargetType, SanctionScope> = {
     USER: 'ACCOUNT',
-    MESSAGE: 'MESSENGER',
     COMMENT: 'COMMENTS',
     COLLECTION: 'ACCOUNT',
 };
 
 export type ReportTarget =
     | { type: 'USER'; userId: number }
-    | { type: 'MESSAGE'; messageId: number }
     | { type: 'COMMENT'; commentId: number }
     | { type: 'COLLECTION'; collectionId: number };
 
@@ -91,7 +83,6 @@ export type ReportSnapshot = {
     category?: string;
     createdAt?: string;
     collectionId?: number;
-    chatId?: number;
 };
 
 export type ReportListItem = {
@@ -111,15 +102,6 @@ export type ReportsPage = {
     nextCursor: number | null;
 };
 
-export type ReportContextMessage = {
-    id: number;
-    authorId: number;
-    authorUsername: string;
-    content: string;
-    createdAt: string;
-    reported: boolean;
-};
-
 export type ReportDetails = ReportListItem & {
     details: string;
     resolution: string;
@@ -137,15 +119,13 @@ export type ReportDetails = ReportListItem & {
         targetGuiltyReports: number;
         reporterReports: number;
         reporterRejectedReports: number;
-        /** Messages around a reported direct message (empty for other targets). */
-        messages: ReportContextMessage[];
     };
 };
 
 export type ReviewReportPayload = {
     verdict: ReviewVerdict;
     resolution: string;
-    /** Delete the reported message/comment/collection. Only allowed with GUILTY. */
+    /** Delete the reported comment/collection. Only allowed with GUILTY. */
     removeContent: boolean;
     punishment: { scope: SanctionScope; duration: SanctionDuration } | null;
     duplicateOfId: number | null;

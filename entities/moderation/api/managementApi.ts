@@ -11,7 +11,6 @@ import type { SanctionDuration, SanctionScope } from '@/entities/sanction/model/
 import type {
     AuditPage,
     HistoryPage,
-    ManagedChat,
     ManagedCollection,
     ManagedComment,
     ManagementUsersPage,
@@ -70,12 +69,6 @@ export const managementApi = {
         return api
             .get(`management/users/${userId}/comments`, { searchParams: { skip } })
             .json<HistoryPage<ManagedComment>>();
-    },
-
-    chats(userId: number, skip: number) {
-        return api
-            .get(`management/users/${userId}/messages`, { searchParams: { skip } })
-            .json<HistoryPage<ManagedChat>>();
     },
 
     async setRole(

@@ -1,9 +1,11 @@
 import { json, parseId, route } from '@/shared/server/http';
-import { requireViewer } from '@/features/auth/server/guards';
+import { enforceRateLimit } from '@/shared/server/rateLimit';
+import { requireChatViewer } from '@/features/auth/server/guards';
 import { findChatWith } from '@/features/chat/server/chats';
 
 export const GET = route<{ userId: string }>(async (req, params) => {
-    const viewer = await requireViewer(req);
+    const viewer = await requireChatViewer(req);
+    await enforceRateLimit(req, 'search', viewer.userId);
 
-    return json({ chatId: await findChatWith(viewer.userId, parseId(params.userId, 'user id')) });
+    return json(await findChatWith(viewer.userId, parseId(params.userId, 'user id')));
 });

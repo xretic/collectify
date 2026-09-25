@@ -10,6 +10,7 @@ import { AuditPanel } from './AuditPanel';
 import { ManagementSidebar } from './ManagementSidebar';
 import { ReportPanel } from './ReportPanel';
 import { UserPanel } from './UserPanel';
+import { CategoryPanel } from './CategoryPanel';
 import styles from './ManagementPage.module.css';
 
 export default function ManagementPage() {
@@ -37,6 +38,9 @@ export default function ManagementPage() {
                 onSelectReport={url.selectReport}
                 reportFilters={reportFilters}
                 onReportFiltersChange={setReportFilters}
+                categoryId={url.categoryId}
+                onSelectCategory={url.selectCategory}
+                isAdmin={isAdmin}
             />
 
             <div className={styles.main}>
@@ -69,6 +73,20 @@ export default function ManagementPage() {
                             <EmptyState
                                 title="Select a report"
                                 description="The oldest open reports are at the top."
+                            />
+                        ))}
+
+                    {url.tab === 'categories' &&
+                        isAdmin &&
+                        (url.categoryId ? (
+                            <CategoryPanel
+                                categoryId={url.categoryId}
+                                onSelect={url.selectCategory}
+                            />
+                        ) : (
+                            <EmptyState
+                                title="Select a category"
+                                description="Or create a new one. Archived categories keep their collections."
                             />
                         ))}
                 </section>

@@ -2,8 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 256px;
-    max-width: 100%;
+    width: 100%;
     background-color: var(--container-color);
     border-radius: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -23,10 +22,14 @@
 
 .banner {
     position: relative;
-    height: 160px;
+    flex: 0 0 auto;
+    aspect-ratio: 16 / 10;
 }
 
+/* Out of the flow: a tall image must not stretch the 16:10 banner (and the grid row). */
 .bannerImage {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -35,6 +38,7 @@
 
 .category {
     position: absolute;
+    z-index: 1;
     top: 8px;
     left: 8px;
     padding: 2px 12px;
@@ -48,6 +52,7 @@
 
 .content {
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 10px;
     padding: 16px;
@@ -82,6 +87,7 @@
 
 .footer {
     display: flex;
+    margin-top: auto;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
@@ -106,10 +112,4 @@
 
 .icon {
     font-size: 16px !important;
-}
-
-@media (max-width: 1000px) {
-    .card {
-        width: 356px;
-    }
 }

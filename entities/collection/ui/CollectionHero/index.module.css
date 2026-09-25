@@ -1,7 +1,7 @@
 .hero {
     position: relative;
     width: 100%;
-    height: 300px !important;
+    height: clamp(240px, 28vw, 380px) !important;
     overflow: hidden;
 }
 
@@ -15,16 +15,16 @@
 
 .shade {
     position: absolute;
-    inset: 50% 0 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+    inset: 30% 0 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
     pointer-events: none;
 }
 
 .overlay {
     position: absolute;
-    left: 45px;
-    right: 20px;
-    bottom: 26px;
+    left: 28px;
+    right: 28px;
+    bottom: 28px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -48,8 +48,9 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     font-family: var(--font-google-sans), sans-serif;
-    font-size: 50px;
+    font-size: clamp(32px, 4vw, 56px);
     line-height: 1.1;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .author {
@@ -73,9 +74,5 @@
 @media (max-width: 700px) {
     .overlay {
         left: 20px;
-    }
-
-    .title {
-        font-size: 34px;
     }
 }

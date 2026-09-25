@@ -1,35 +1,96 @@
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 18px;
-    max-width: 1470px;
-    margin: 20px auto 0;
-    padding: 0 10px;
+.wrapper {
+    container-type: inline-size;
+    min-width: 0;
 }
 
-.sortable {
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.count {
+    margin-left: 6px;
+    font-size: 16px;
+    color: var(--soft-text);
+}
+
+.addButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 500;
+    transition: filter 0.15s ease;
+}
+
+.addButton:hover {
+    filter: brightness(1.08);
+}
+
+/*
+ * Bento grid: fixed row height, every size is a whole number of cells, so all
+ * tiles line up. `dense` back-fills holes left by wide tiles.
+ *   S = 1×1 · M = 1×2 · L = 2×2 · XL = full width × 2
+ */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 170px;
+    grid-auto-flow: row dense;
+    gap: 14px;
+}
+
+.cell {
+    min-width: 0;
     touch-action: manipulation;
 }
 
+.sizeS {
+    grid-row: span 1;
+}
+
+.sizeM {
+    grid-row: span 2;
+}
+
+.sizeL {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.sizeXL {
+    grid-column: 1 / -1;
+    grid-row: span 2;
+}
+
 .dragging {
-    opacity: 0.6;
-    z-index: 1;
+    z-index: 2;
+    opacity: 0.7;
 }
 
-.addItem {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 89px;
-    color: var(--text-color);
-    border: 1px dashed var(--border-color);
-    border-radius: 14px;
-    transition:
-        color 0.2s ease,
-        border-color 0.2s ease;
+@container (max-width: 1000px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
-.addItem:hover {
-    color: var(--accent);
-    border-color: var(--accent);
+@container (max-width: 700px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 140px;
+        gap: 10px;
+    }
 }

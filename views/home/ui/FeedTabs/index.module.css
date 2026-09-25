@@ -1,0 +1,74 @@
+.row {
+    margin: 0 -4px 20px;
+}
+
+.tabs {
+    gap: 6px;
+    padding: 4px 4px 8px;
+}
+
+.tab {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    white-space: nowrap;
+    touch-action: pan-x;
+    user-select: none;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.tab:hover {
+    color: var(--text-color);
+    background-color: color-mix(in srgb, var(--text-color) 7%, transparent);
+}
+
+/* Board tabs: the wrapper is the drag handle, the inner button the tab. */
+.boardTab {
+    padding: 0;
+}
+
+.tabButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 0 16px;
+}
+
+/* Room for the "⋯" menu that only the selected board shows. */
+.active .tabButton {
+    padding-right: 4px;
+}
+
+.menu {
+    margin-right: 4px !important;
+}
+
+.dragging {
+    z-index: 1;
+    cursor: grabbing;
+    background-color: var(--container-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+.active {
+    color: var(--text-color);
+}
+
+.cover {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    margin-left: -8px;
+    object-fit: cover;
+    border-radius: 50%;
+}

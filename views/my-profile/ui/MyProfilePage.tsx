@@ -7,12 +7,15 @@ import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import { ProfileHeader } from '@/entities/user/ui/ProfileHeader';
 import { ProfileStats } from '@/entities/user/ui/ProfileStats';
 import { EditProfileDialog } from '@/features/user/edit-profile/ui/EditProfileDialog';
+import { FollowListDialog } from '@/features/user/follow/ui/FollowListDialog';
+import type { FollowListKind } from '@/entities/user/model/types';
 import { ProfileCollections } from '@/widgets/profile-collections/ui/ProfileCollections';
 import { Spinner } from '@/shared/ui/Spinner';
 
 export default function MyProfilePage() {
     const { user, loading } = useSessionUser();
     const [editing, setEditing] = useState(false);
+    const [followList, setFollowList] = useState<FollowListKind | null>(null);
 
     if (loading || !user) return <Spinner variant="page" />;
 
@@ -25,6 +28,7 @@ export default function MyProfilePage() {
                         followers={user.followers}
                         subscriptions={user.subscriptions}
                         variant="card"
+                        onSelect={setFollowList}
                     />
                 }
                 actions={
@@ -39,12 +43,25 @@ export default function MyProfilePage() {
             <ProfileCollections
                 authorId={user.id}
                 stats={
-                    <ProfileStats followers={user.followers} subscriptions={user.subscriptions} />
+                    <ProfileStats
+                        followers={user.followers}
+                        subscriptions={user.subscriptions}
+                        onSelect={setFollowList}
+                    />
                 }
                 own
             />
 
             {editing && <EditProfileDialog open user={user} onClose={() => setEditing(false)} />}
+
+            {followList && (
+                <FollowListDialog
+                    userId={user.id}
+                    kind={followList}
+                    onKindChange={setFollowList}
+                    onClose={() => setFollowList(null)}
+                />
+            )}
         </>
     );
 }

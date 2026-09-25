@@ -102,3 +102,19 @@
     right: -4px;
     border: 2px solid var(--container-color) !important;
 }
+
+.row {
+    display: flex;
+    gap: 12px;
+}
+
+.grow {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .row {
+        flex-direction: column;
+    }
+}

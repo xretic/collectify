@@ -4,13 +4,14 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Badge, Button, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import { useSessionUser } from '@/entities/user/model/useSessionUser';
-import { useRealtimeEvent } from '@/entities/chat/model/RealtimeProvider';
+import { sessionUserQueryKey, useSessionUser } from '@/entities/user/model/useSessionUser';
+import { useRealtimeEvent } from '@/shared/lib/realtime/RealtimeProvider';
 import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
 import UserSearchBar from '../UserSearchBar';
 import { UserMenu } from '../UserMenu';
@@ -22,6 +23,7 @@ import styles from './index.module.css';
 
 export default function NavBar() {
     const pathname = usePathname();
+    const queryClient = useQueryClient();
     const { user, loading, setUser } = useSessionUser();
     const activeChatId = useActiveChatStore((state) => state.activeChatId);
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -30,8 +32,15 @@ export default function NavBar() {
     const items = getNavItems(user);
 
     useRealtimeEvent('message:new', (message) => {
-        if (message.author.id === user?.id || message.chatId === activeChatId) return;
+        if (message.author.id === user?.id) return;
+        // An open chat reads it right away, unless the tab is in the background.
+        if (message.chatId === activeChatId && document.visibilityState === 'visible') return;
         setUser((prev) => (prev ? { ...prev, unreadMessages: prev.unreadMessages + 1 } : prev));
+    });
+
+    // Read in another tab / device.
+    useRealtimeEvent('chat:read', ({ readerId }) => {
+        if (readerId === user?.id) queryClient.invalidateQueries({ queryKey: sessionUserQueryKey });
     });
 
     return (
@@ -93,8 +102,8 @@ export default function NavBar() {
                                 </IconButton>
                             </Tooltip>
 
-                            <Tooltip title="Messages">
-                                <IconButton component={Link} href="/chats" aria-label="Messages">
+                            <Tooltip title="Chats">
+                                <IconButton component={Link} href="/chats" aria-label="Chats">
                                     <Badge
                                         badgeContent={user.unreadMessages}
                                         max={99}

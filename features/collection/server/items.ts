@@ -16,6 +16,7 @@ const itemSelect = {
     description: true,
     sourceUrl: true,
     imageUrl: true,
+    size: true,
     order: true,
 } as const;
 

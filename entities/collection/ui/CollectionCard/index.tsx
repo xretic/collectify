@@ -17,7 +17,7 @@ export function CollectionCard({ collection }: { collection: CollectionCardData 
             <Link href={`/collections/${id}`} className={styles.cover} aria-label={name} />
 
             <div className={styles.banner}>
-                <span className={styles.category}>{category}</span>
+                <span className={styles.category}>{category.name}</span>
                 <img src={bannerUrl} alt="" className={styles.bannerImage} loading="lazy" />
             </div>
 

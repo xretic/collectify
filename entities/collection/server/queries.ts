@@ -3,6 +3,8 @@ import type { Prisma } from '@/generated/prisma/client';
 import { db, type Tx } from '@/shared/server/db';
 import { forbidden, notFound } from '@/shared/server/http';
 import { PAGE_SIZE } from '@/shared/lib/constants';
+import { categoryRefSelect } from '@/entities/category/server/queries';
+import { tagRefSelect } from '@/entities/tag/server/queries';
 import type {
     CollectionCard,
     CollectionDetails,
@@ -24,7 +26,7 @@ const cardSelect = {
     id: true,
     name: true,
     bannerUrl: true,
-    category: true,
+    category: { select: categoryRefSelect },
     private: true,
     user: { select: authorSelect },
     _count: { select: { likes: true, favorites: true, items: true, comments: true } },
@@ -51,7 +53,7 @@ function toCard(row: CardRow): CollectionCard {
 const ORDER_BY: Record<CollectionSort, Prisma.CollectionOrderByWithRelationInput[]> = {
     newest: [{ createdAt: 'desc' }, { id: 'desc' }],
     old: [{ createdAt: 'asc' }, { id: 'asc' }],
-    popular: [{ likes: { _count: 'desc' } }, { id: 'desc' }],
+    popular: [{ likeCount: 'desc' }, { id: 'desc' }],
 };
 
 async function findCards(
@@ -73,6 +75,16 @@ async function findCards(
     return rows.map(toCard);
 }
 
+/** Cards for ids in the given order (e.g. ranked by a recommendation query). */
+export async function findCardsByIds(ids: number[]): Promise<CollectionCard[]> {
+    if (ids.length === 0) return [];
+
+    const rows = await db.collection.findMany({ where: { id: { in: ids } }, select: cardSelect });
+    const byId = new Map(rows.map((row) => [row.id, toCard(row)]));
+
+    return ids.map((id) => byId.get(id)).filter((card) => card !== undefined);
+}
+
 function toPage(cards: CollectionCard[]): CollectionListPage {
     return { data: cards.slice(0, PAGE_SIZE), hasMore: cards.length > PAGE_SIZE };
 }
@@ -90,9 +102,23 @@ export async function listCollections(
     const take = PAGE_SIZE + 1;
 
     const base: Prisma.CollectionWhereInput = {
-        ...(params.category ? { category: params.category } : {}),
+        ...(params.category ? { category: { slug: params.category } } : {}),
+        ...(params.tags?.length
+            ? { AND: params.tags.map((tagId) => ({ tags: { some: { tagId } } })) }
+            : {}),
         ...(params.query ? { lowerCaseName: { contains: params.query.toLowerCase() } } : {}),
     };
+
+    if (params.board) {
+        if (!viewerId) throw forbidden('Sign in to see your boards.');
+
+        const where = {
+            ...base,
+            private: false,
+            boards: { some: { boardId: params.board, board: { userId: viewerId } } },
+        };
+        return toPage(await findCards(where, params.sort, skip, take));
+    }
 
     if (params.favorites) {
         if (!viewerId) throw forbidden('Sign in to see favorites.');
@@ -142,15 +168,22 @@ export async function getCollectionDetails(
             name: true,
             description: true,
             bannerUrl: true,
-            category: true,
+            category: { select: categoryRefSelect },
             private: true,
             createdAt: true,
             userId: true,
             user: { select: authorSelect },
+            tags: {
+                select: { tag: { select: tagRefSelect } },
+                orderBy: { tag: { usageCount: 'desc' } },
+            },
             items: { orderBy: [{ order: 'asc' }, { id: 'asc' }] },
             _count: { select: { likes: true, favorites: true, comments: true } },
             likes: viewerId ? { where: { userId: viewerId }, select: { id: true } } : false,
             favorites: viewerId ? { where: { userId: viewerId }, select: { userId: true } } : false,
+            boards: viewerId
+                ? { where: { board: { userId: viewerId } }, select: { boardId: true } }
+                : false,
         },
     });
 
@@ -166,12 +199,14 @@ export async function getCollectionDetails(
         isPrivate: row.private,
         createdAt: row.createdAt.toISOString(),
         author: row.user,
-        items: row.items.map(({ id, title, description, sourceUrl, imageUrl, order }) => ({
+        tags: row.tags.map(({ tag }) => tag),
+        items: row.items.map(({ id, title, description, sourceUrl, imageUrl, size, order }) => ({
             id,
             title,
             description,
             sourceUrl,
             imageUrl,
+            size,
             order,
         })),
         likes: row._count.likes,
@@ -179,6 +214,7 @@ export async function getCollectionDetails(
         comments: row._count.comments,
         liked: Array.isArray(row.likes) && row.likes.length > 0,
         favorited: Array.isArray(row.favorites) && row.favorites.length > 0,
+        boardIds: Array.isArray(row.boards) ? row.boards.map((entry) => entry.boardId) : [],
     };
 }
 

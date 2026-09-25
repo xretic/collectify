@@ -1,0 +1,47 @@
+.trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    max-width: 100%;
+    padding: 0 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    background-color: var(--container-color);
+    color: var(--text-color);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    transition:
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.trigger:hover {
+    border-color: var(--soft-text);
+}
+
+.active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.menu {
+    width: 280px;
+    max-height: 420px !important;
+}
+
+.search {
+    padding: 8px 12px !important;
+    background-color: var(--container-color) !important;
+    line-height: normal !important;
+}
+
+.item {
+    flex: 1;
+}

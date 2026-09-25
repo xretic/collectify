@@ -6,7 +6,7 @@ import { getCollectionDetails } from '@/entities/collection/server/queries';
 import { listComments } from '@/entities/comment/server/queries';
 import { getViewer, requireViewer } from '@/features/auth/server/guards';
 import { createComment } from '@/features/comment/server/comments';
-import { commentTextSchema } from '@/features/comment/model/schema';
+import { createCommentSchema } from '@/features/comment/model/schema';
 
 type Params = { id: string };
 
@@ -28,8 +28,8 @@ export const POST = route<Params>(async (req, params) => {
     const viewer = await requireViewer(req);
     await enforceRateLimit(req, 'comment', viewer.userId);
 
-    const { text } = await readBody(req, commentTextSchema);
-    const comment = await createComment(viewer, parseId(params.id), text);
+    const { text, replyToId } = await readBody(req, createCommentSchema);
+    const comment = await createComment(viewer, parseId(params.id), text, replyToId);
 
     return json({ comment }, 201);
 });

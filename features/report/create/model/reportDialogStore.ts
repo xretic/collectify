@@ -15,7 +15,7 @@ type ReportDialogState = {
     close: () => void;
 };
 
-/** One report dialog for the whole app instead of one per message/comment. */
+/** One report dialog for the whole app instead of one per comment. */
 export const useReportDialogStore = create<ReportDialogState>((set) => ({
     request: null,
     open: (request) => set({ request }),

@@ -15,7 +15,7 @@ import styles from '../authForm.module.css';
 type RegisterValues = { email: string; username: string; password: string };
 
 export function RegisterForm() {
-    const onSuccess = useAuthSuccess();
+    const onSuccess = useAuthSuccess('/onboarding');
     const { register, handleSubmit, formState } = useForm<RegisterValues>({
         resolver: zodResolver(registerSchema),
         defaultValues: { email: '', username: '', password: '' },

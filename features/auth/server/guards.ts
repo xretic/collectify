@@ -63,6 +63,19 @@ export async function requireViewer(req: NextRequest): Promise<Viewer> {
     throw unauthorized();
 }
 
+/**
+ * Like `requireViewer`, but also refuses impersonated sessions: direct messages
+ * stay private, so staff signed in as a user can neither read nor send them.
+ */
+export async function requireChatViewer(req: NextRequest): Promise<Viewer> {
+    const viewer = await requireViewer(req);
+    if (viewer.session.impersonatorUserId) {
+        throw forbidden('Chats are not available while signed in as another user.');
+    }
+
+    return viewer;
+}
+
 export type StaffContext = Viewer & {
     roles: UserRole[];
     isAdmin: boolean;

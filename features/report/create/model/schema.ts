@@ -6,7 +6,6 @@ import { idSchema } from '@/shared/lib/validation/ids';
 export const createReportSchema = z.object({
     target: z.discriminatedUnion('type', [
         z.object({ type: z.literal('USER'), userId: idSchema }),
-        z.object({ type: z.literal('MESSAGE'), messageId: idSchema }),
         z.object({ type: z.literal('COMMENT'), commentId: idSchema }),
         z.object({ type: z.literal('COLLECTION'), collectionId: idSchema }),
     ]),

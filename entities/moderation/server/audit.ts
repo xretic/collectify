@@ -17,7 +17,6 @@ export type AuditEntry = {
     targetUserId?: number | null;
     targetCollectionId?: number | null;
     targetCommentId?: number | null;
-    targetMessageId?: number | null;
     metadata?: Prisma.InputJsonValue;
 };
 
@@ -31,7 +30,6 @@ export async function writeAudit(actor: ModerationActor, entry: AuditEntry, clie
             targetUserId: entry.targetUserId ?? null,
             targetCollectionId: entry.targetCollectionId ?? null,
             targetCommentId: entry.targetCommentId ?? null,
-            targetMessageId: entry.targetMessageId ?? null,
             metadata: entry.metadata,
         },
     });

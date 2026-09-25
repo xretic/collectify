@@ -10,7 +10,8 @@ function safeNext(value: string | null) {
     return value && value.startsWith('/') && !value.startsWith('//') ? value : '/';
 }
 
-export function useAuthSuccess() {
+/** `redirectTo` overrides `?next=` (e.g. new accounts go to onboarding first). */
+export function useAuthSuccess(redirectTo?: string) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const next = safeNext(useSearchParams().get('next'));
@@ -18,6 +19,6 @@ export function useAuthSuccess() {
     return (user: SessionUser) => {
         queryClient.clear();
         queryClient.setQueryData(sessionUserQueryKey, user);
-        router.replace(next);
+        router.replace(redirectTo ?? next);
     };
 }

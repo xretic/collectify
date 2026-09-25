@@ -6,16 +6,16 @@ const isDev = process.env.NODE_ENV !== 'production';
  * Enforced CSP (the single source — no duplicate in vercel.json).
  * - 'unsafe-inline' scripts: Next.js bootstrap + the theme init script.
  * - 'unsafe-eval' only in development (React Refresh).
- * - Uploadcare widget is loaded on demand from ucarecdn.com.
+ * - Images are uploaded straight to upload.uploadcare.com (covered by connect-src https:).
  */
 const contentSecurityPolicy = [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://ucarecdn.com`,
-    "style-src 'self' 'unsafe-inline' https://ucarecdn.com",
+    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
+    "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "connect-src 'self' https: wss:" + (isDev ? ' ws:' : ''),
-    "frame-src 'self' https://*.uploadcare.com",
+    "frame-src 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
@@ -34,6 +34,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+    // Reads its bundled cities.pbf from disk, so it must stay a plain Node require.
+    serverExternalPackages: ['all-the-cities'],
     // User images are rendered with plain <img>, so the image optimizer only
     // serves local assets and cannot be abused as an open proxy.
     images: { remotePatterns: [] },

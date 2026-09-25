@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -12,8 +12,9 @@ import { userQueryKeys } from '@/entities/user/model/queryKeys';
 import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import { ProfileHeader } from '@/entities/user/ui/ProfileHeader';
 import { ProfileStats } from '@/entities/user/ui/ProfileStats';
-import type { PublicUser, SessionUser } from '@/entities/user/model/types';
+import type { FollowListKind, PublicUser, SessionUser } from '@/entities/user/model/types';
 import { FollowButton } from '@/features/user/follow/ui/FollowButton';
+import { FollowListDialog } from '@/features/user/follow/ui/FollowListDialog';
 import { MessageButton } from '@/features/chat/create/ui/MessageButton';
 import { ReportButton } from '@/features/report/create/ui/ReportButton';
 import { ProfileCollections } from '@/widgets/profile-collections/ui/ProfileCollections';
@@ -29,6 +30,7 @@ export default function UserProfilePage() {
     const router = useRouter();
     const userId = Number(useParams<{ id: string }>().id);
     const { user: viewer } = useSessionUser();
+    const [followList, setFollowList] = useState<FollowListKind | null>(null);
 
     const {
         data: profile,
@@ -62,6 +64,7 @@ export default function UserProfilePage() {
                         followers={profile.followers}
                         subscriptions={profile.subscriptions}
                         variant="card"
+                        onSelect={setFollowList}
                     />
                 }
                 actions={
@@ -94,9 +97,19 @@ export default function UserProfilePage() {
                     <ProfileStats
                         followers={profile.followers}
                         subscriptions={profile.subscriptions}
+                        onSelect={setFollowList}
                     />
                 }
             />
+
+            {followList && (
+                <FollowListDialog
+                    userId={profile.id}
+                    kind={followList}
+                    onKindChange={setFollowList}
+                    onClose={() => setFollowList(null)}
+                />
+            )}
         </>
     );
 }

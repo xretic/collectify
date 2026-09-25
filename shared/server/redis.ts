@@ -40,15 +40,33 @@ function createIORedisStore(url: string): KeyValueStore {
 
     client.on('error', (error) => console.error('[redis]', error.message));
 
+    // Once `retryStrategy` gives up the client stays closed; reopen it on the
+    // next call (the circuit breaker below keeps that to one try per cooldown).
+    // Concurrent callers share one attempt: a second `connect()` while the first
+    // is in progress rejects, which would trip the breaker again.
+    let reconnecting: Promise<void> | null = null;
+
+    async function ensureOpen() {
+        if (client.status !== 'end' && !reconnecting) return;
+
+        reconnecting ??= client.connect().finally(() => {
+            reconnecting = null;
+        });
+        await reconnecting;
+    }
+
     return {
         async get(key) {
+            await ensureOpen();
             return client.get(key);
         },
         async set(key, value, ttlSeconds) {
+            await ensureOpen();
             if (ttlSeconds) await client.set(key, value, 'EX', ttlSeconds);
             else await client.set(key, value);
         },
         async incr(key, ttlSeconds) {
+            await ensureOpen();
             const value = await client.incr(key);
             if (ttlSeconds && value === 1) await client.expire(key, ttlSeconds);
             return value;
@@ -68,5 +86,32 @@ function createStore(): KeyValueStore | null {
     return null;
 }
 
-/** `null` when no Redis is configured. */
-export const redis = createStore();
+const COOLDOWN_MS = 30_000;
+let unavailableUntil = 0;
+
+/** Any failure takes the store out of rotation for `COOLDOWN_MS`. */
+function withCircuitBreaker(store: KeyValueStore): KeyValueStore {
+    const guard =
+        <A extends unknown[], R>(op: (...args: A) => Promise<R>) =>
+        async (...args: A): Promise<R> => {
+            try {
+                return await op(...args);
+            } catch (error) {
+                unavailableUntil = Date.now() + COOLDOWN_MS;
+                throw error;
+            }
+        };
+
+    return { get: guard(store.get), set: guard(store.set), incr: guard(store.incr) };
+}
+
+const rawStore = createStore();
+const store = rawStore && withCircuitBreaker(rawStore);
+
+/**
+ * `null` when no Redis is configured or it failed within the last
+ * `COOLDOWN_MS`, so callers skip it instead of waiting on a dead connection.
+ */
+export function getRedis(): KeyValueStore | null {
+    return store && Date.now() >= unavailableUntil ? store : null;
+}

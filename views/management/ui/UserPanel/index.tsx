@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { Avatar, Button, Chip } from '@mui/material';
+import { Avatar, Chip } from '@mui/material';
 import { formatSanction } from '@/entities/sanction/lib/format';
 import { RoleToggles } from '@/features/moderation/ui/RoleToggles';
 import { SanctionForm } from '@/features/moderation/ui/SanctionForm';
@@ -12,7 +11,6 @@ import { toast } from '@/shared/model/toastStore';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import { ActivityHistory } from '../ActivityHistory';
-import { ChatHistory } from '../ChatHistory';
 import { useManagedUser } from '../../model/useManagedUser';
 import { Section } from '../Section';
 import styles from './index.module.css';
@@ -24,8 +22,6 @@ type UserPanelProps = {
 };
 
 export function UserPanel({ userId, isAdmin, onDeleted }: UserPanelProps) {
-    const [showChats, setShowChats] = useState(false);
-
     const { user, isPending } = useManagedUser(userId);
 
     if (isPending) return <Spinner />;
@@ -106,24 +102,6 @@ export function UserPanel({ userId, isAdmin, onDeleted }: UserPanelProps) {
             <Section title="Activity" hint="Collections and comments, newest first.">
                 <ActivityHistory userId={user.id} />
             </Section>
-
-            {isAdmin && (
-                <Section
-                    title="Conversations"
-                    hint="Private messages. Open only when needed for a case."
-                    action={
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            onClick={() => setShowChats((open) => !open)}
-                        >
-                            {showChats ? 'Hide' : 'Show'}
-                        </Button>
-                    }
-                >
-                    {showChats && <ChatHistory userId={user.id} />}
-                </Section>
-            )}
 
             {isAdmin && (
                 <Section title="Danger zone">

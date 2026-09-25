@@ -14,3 +14,20 @@
     font-family: var(--font-google-sans), sans-serif;
     font-size: 14px;
 }
+
+.size {
+    min-width: 52px;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+    font-weight: 600 !important;
+}
+
+.size:global(.Mui-selected) {
+    color: var(--on-accent) !important;
+    background-color: var(--accent) !important;
+}
+
+.hint {
+    font-size: 13px;
+    color: var(--soft-text);
+}

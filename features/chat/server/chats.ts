@@ -4,13 +4,16 @@ import { forbidden, notFound } from '@/shared/server/http';
 import { CHATS_PAGE_SIZE, MESSAGES_PAGE_SIZE } from '@/shared/lib/constants';
 import { assertNotMuted } from '@/entities/sanction/server/sanctions';
 import {
+    activeMute,
     getChatForParticipant,
+    isChatMuted,
     messageSelect,
     pairKey,
     toChatMessage,
 } from '@/entities/chat/server/queries';
-import { publishToUsers } from '@/entities/chat/server/realtime';
-import type { ChatMessagesPage, ChatsPage } from '@/entities/chat/model/types';
+import { publishToUsers } from '@/shared/server/realtime';
+import { getOnlineUserIds } from '@/shared/server/presence';
+import type { ChatMessagesPage, ChatsPage, ChatWith } from '@/entities/chat/model/types';
 
 export async function listChats(userId: number, skip: number): Promise<ChatsPage> {
     // Only chats where the other participant still exists.
@@ -27,6 +30,7 @@ export async function listChats(userId: number, skip: number): Promise<ChatsPage
             select: {
                 id: true,
                 lastMessageAt: true,
+                mutes: { where: { userId }, select: { until: true } },
                 users: {
                     where: { id: { not: userId } },
                     select: { id: true, username: true, avatarUrl: true },
@@ -34,37 +38,42 @@ export async function listChats(userId: number, skip: number): Promise<ChatsPage
                 messages: {
                     orderBy: { id: 'desc' },
                     take: 1,
-                    select: { content: true, createdAt: true },
+                    select: { content: true, createdAt: true, userId: true },
                 },
             },
         }),
         db.chat.count({ where }),
     ]);
 
-    const unread = await db.message.groupBy({
-        by: ['chatId'],
-        where: {
-            chatId: { in: chats.map((chat) => chat.id) },
-            recipientUserId: userId,
-            read: false,
-        },
-        _count: { _all: true },
-    });
+    const [unread, online] = await Promise.all([
+        db.message.groupBy({
+            by: ['chatId'],
+            where: {
+                chatId: { in: chats.map((chat) => chat.id) },
+                recipientUserId: userId,
+                read: false,
+            },
+            _count: { _all: true },
+        }),
+        getOnlineUserIds(chats.flatMap((chat) => chat.users.map((user) => user.id))),
+    ]);
     const unreadByChat = new Map(unread.map((row) => [row.chatId, row._count._all]));
 
     return {
         total,
         data: chats.map((chat) => ({
             id: chat.id,
-            user: chat.users[0] ?? null,
+            user: chat.users[0] ? { ...chat.users[0], online: online.has(chat.users[0].id) } : null,
             lastMessage: chat.messages[0]
                 ? {
                       content: chat.messages[0].content,
                       createdAt: chat.messages[0].createdAt.toISOString(),
+                      authorId: chat.messages[0].userId,
                   }
                 : null,
             lastMessageAt: chat.lastMessageAt.toISOString(),
             unread: unreadByChat.get(chat.id) ?? 0,
+            mute: activeMute(chat.mutes[0]),
         })),
     };
 }
@@ -75,30 +84,53 @@ export async function getChatMessages(
     cursor: number | null,
 ): Promise<ChatMessagesPage> {
     const chat = await getChatForParticipant(chatId, viewerId);
+    const peerId = chat.otherUser?.id;
 
-    const rows = await db.message.findMany({
-        where: { chatId, ...(cursor ? { id: { lt: cursor } } : {}) },
-        orderBy: { id: 'desc' },
-        take: MESSAGES_PAGE_SIZE + 1,
-        select: messageSelect,
-    });
+    const [rows, seen, online] = await Promise.all([
+        db.message.findMany({
+            where: { chatId, ...(cursor ? { id: { lt: cursor } } : {}) },
+            orderBy: { id: 'desc' },
+            take: MESSAGES_PAGE_SIZE + 1,
+            select: messageSelect,
+        }),
+        db.message.findFirst({
+            where: { chatId, userId: viewerId, readAt: { not: null } },
+            orderBy: { id: 'desc' },
+            select: { id: true, readAt: true },
+        }),
+        getOnlineUserIds(peerId ? [peerId] : []),
+    ]);
 
     const page = rows.slice(0, MESSAGES_PAGE_SIZE);
 
     return {
-        chat: { id: chat.id, user: chat.otherUser },
+        chat: {
+            id: chat.id,
+            user: chat.otherUser && { ...chat.otherUser, online: online.has(chat.otherUser.id) },
+            seen: seen?.readAt ? { messageId: seen.id, readAt: seen.readAt.toISOString() } : null,
+        },
         messages: page.reverse().map(toChatMessage),
         nextCursor: rows.length > MESSAGES_PAGE_SIZE ? page[0].id : null,
     };
 }
 
-export async function findChatWith(viewerId: number, userId: number) {
-    const chat = await db.chat.findUnique({
-        where: { pairKey: pairKey(viewerId, userId) },
-        select: { id: true },
-    });
+/** The existing chat with `userId` (if any) and their preview, for opening a draft chat. */
+export async function findChatWith(viewerId: number, userId: number): Promise<ChatWith> {
+    if (viewerId === userId) throw forbidden('You cannot message yourself.');
 
-    return chat?.id ?? null;
+    const [user, chat] = await Promise.all([
+        db.user.findUnique({
+            where: { id: userId },
+            select: { id: true, username: true, avatarUrl: true },
+        }),
+        db.chat.findUnique({ where: { pairKey: pairKey(viewerId, userId) }, select: { id: true } }),
+    ]);
+    if (!user) throw notFound('User not found.');
+
+    // Online status is only visible to people the user already chats with.
+    const online = chat ? (await getOnlineUserIds([user.id])).has(user.id) : false;
+
+    return { chatId: chat?.id ?? null, user: { ...user, online } };
 }
 
 async function persistMessage(
@@ -117,6 +149,9 @@ async function persistMessage(
 
     const payload = toChatMessage(message);
     await publishToUsers([senderId, recipientId], 'message:new', payload);
+    if (!(await isChatMuted(recipientId, chatId))) {
+        await publishToUsers([recipientId], 'message:notify', payload);
+    }
 
     return payload;
 }
@@ -165,11 +200,36 @@ export async function startChat(senderId: number, recipientId: number, content: 
     return { chatId, message };
 }
 
+/** Marks the chat as seen and sends the "Seen" receipt to the other participant. */
 export async function markChatRead(chatId: number, viewerId: number) {
-    await getChatForParticipant(chatId, viewerId);
+    const chat = await getChatForParticipant(chatId, viewerId);
 
-    await db.message.updateMany({
+    const latest = await db.message.findFirst({
         where: { chatId, recipientUserId: viewerId, read: false },
-        data: { read: true },
+        orderBy: { id: 'desc' },
+        select: { id: true },
     });
+    if (!latest) return;
+
+    const readAt = new Date();
+    await db.message.updateMany({
+        where: { chatId, recipientUserId: viewerId, read: false, id: { lte: latest.id } },
+        data: { read: true, readAt },
+    });
+
+    // The reader's other tabs clear the unread badge, the sender shows "Seen".
+    await publishToUsers(chat.otherUser ? [viewerId, chat.otherUser.id] : [viewerId], 'chat:read', {
+        chatId,
+        readerId: viewerId,
+        messageId: latest.id,
+        readAt: readAt.toISOString(),
+    });
+}
+
+/** Tells the other participant the viewer is typing (ephemeral, nothing is stored). */
+export async function notifyTyping(chatId: number, viewerId: number) {
+    const chat = await getChatForParticipant(chatId, viewerId);
+    if (!chat.otherUser) return;
+
+    await publishToUsers([chat.otherUser.id], 'chat:typing', { chatId, userId: viewerId });
 }

@@ -5,12 +5,16 @@ import { Button } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
+import InterestsIcon from '@mui/icons-material/Interests';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import { EditProfileDialog } from '@/features/user/edit-profile/ui/EditProfileDialog';
 import { ChangePasswordForm } from '@/features/user/change-password/ui/ChangePasswordForm';
 import { DeleteAccountButton } from '@/features/user/delete-account/ui/DeleteAccountButton';
-import { ThemeSelect } from '@/features/theme/ui/ThemeSelect';
+import { ThemePicker } from '@/features/theme/ui/ThemePicker';
+import { InterestsEditor } from '@/features/interest/ui/InterestsEditor';
+import { PeopleWidgetToggle } from '@/widgets/people-you-may-know/ui/PeopleWidgetToggle';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './SettingsPage.module.css';
 
@@ -70,8 +74,28 @@ export default function SettingsPage() {
                 <ChangePasswordForm hasPassword={user.hasPassword} />
             </Section>
 
-            <Section icon={<ColorLensIcon className={styles.icon} />} title="Appearance">
-                <ThemeSelect />
+            <Section
+                icon={<InterestsIcon className={styles.icon} />}
+                title="Interests"
+                description="Categories you like. They shape your “For you” feed."
+            >
+                <InterestsEditor />
+            </Section>
+
+            <Section
+                icon={<ColorLensIcon className={styles.icon} />}
+                title="Appearance"
+                description="Pick a theme. It applies instantly and is remembered on this device."
+            >
+                <ThemePicker />
+            </Section>
+
+            <Section
+                icon={<HomeOutlinedIcon className={styles.icon} />}
+                title="Home page"
+                description="Widgets next to your feed."
+            >
+                <PeopleWidgetToggle />
             </Section>
 
             <Section

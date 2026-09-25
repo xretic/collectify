@@ -2,18 +2,24 @@ import { z } from 'zod';
 import { json, readBody, readQuery, route } from '@/shared/server/http';
 import { enforceRateLimit } from '@/shared/server/rateLimit';
 import { withCache } from '@/shared/server/cache';
-import { CATEGORIES } from '@/shared/lib/constants';
 import { idSchema } from '@/shared/lib/validation/ids';
+import { FEED_TAGS_LIMIT } from '@/shared/lib/constants';
 import { COLLECTIONS_CACHE_NAMESPACE, listCollections } from '@/entities/collection/server/queries';
 import { COLLECTION_SORTS } from '@/entities/collection/model/types';
 import { createCollectionSchema } from '@/entities/collection/model/schemas';
+import { categorySlugSchema } from '@/entities/category/model/schemas';
 import { getViewer, requireViewer } from '@/features/auth/server/guards';
 import { createCollection } from '@/features/collection/server/collections';
 
 const listSchema = z.object({
     sort: z.enum(COLLECTION_SORTS).default('popular'),
     page: z.coerce.number().int().min(0).max(10_000).default(0),
-    category: z.enum(CATEGORIES).optional(),
+    category: categorySlugSchema.optional(),
+    /** Comma-separated tag ids (`?tags=3,7`); a collection must have all of them. */
+    tags: z.preprocess(
+        (value) => (typeof value === 'string' && value ? [...new Set(value.split(','))] : []),
+        z.array(idSchema).max(FEED_TAGS_LIMIT),
+    ),
     query: z.string().trim().max(100).optional(),
     authorId: idSchema.optional(),
     visibility: z.enum(['public', 'private']).optional(),
@@ -21,6 +27,7 @@ const listSchema = z.object({
         .enum(['true', 'false'])
         .optional()
         .transform((value) => value === 'true'),
+    board: idSchema.optional(),
 });
 
 export const GET = route(async (req) => {
@@ -30,7 +37,8 @@ export const GET = route(async (req) => {
     const viewer = await getViewer(req);
 
     // Only the anonymous public feed is identical for everyone, so only it is cached.
-    const cacheable = !viewer && !params.favorites && params.visibility !== 'private';
+    const cacheable =
+        !viewer && !params.favorites && !params.board && params.visibility !== 'private';
 
     const page = cacheable
         ? await withCache(COLLECTIONS_CACHE_NAMESPACE, JSON.stringify(params), 30, () =>

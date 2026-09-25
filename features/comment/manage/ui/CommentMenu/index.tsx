@@ -1,81 +1,61 @@
 'use client';
 
-import { useState, type MouseEvent } from 'react';
-import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { useState } from 'react';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { ActionsMenu, type ActionsMenuItem } from '@/shared/ui/ActionsMenu';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
-import styles from './index.module.css';
 
 type CommentMenuProps = {
     canEdit: boolean;
+    canDelete: boolean;
     /** Staff deleting someone else's comment. */
     asModerator: boolean;
     deleting: boolean;
     onEdit: () => void;
     onDelete: () => void;
+    /** Extra entries, e.g. "Report comment". */
+    extraItems?: ActionsMenuItem[];
 };
 
 /** Per-comment actions menu: its own anchor, so only the clicked menu opens. */
 export function CommentMenu({
     canEdit,
+    canDelete,
     asModerator,
     deleting,
     onEdit,
     onDelete,
+    extraItems = [],
 }: CommentMenuProps) {
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [confirming, setConfirming] = useState(false);
 
-    const close = () => setAnchorEl(null);
+    const items: ActionsMenuItem[] = [];
+
+    if (canEdit) {
+        items.push({
+            key: 'edit',
+            label: 'Edit',
+            icon: <EditOutlinedIcon fontSize="small" />,
+            onClick: onEdit,
+        });
+    }
+
+    if (canDelete) {
+        items.push({
+            key: 'delete',
+            label: asModerator ? 'Delete as moderator' : 'Delete',
+            icon: <DeleteOutlineOutlinedIcon fontSize="small" />,
+            onClick: () => setConfirming(true),
+            danger: true,
+        });
+    }
+
+    items.push(...extraItems);
 
     return (
         <>
-            <IconButton
-                size="small"
-                color="inherit"
-                onClick={(event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)}
-                aria-label="Comment actions"
-                aria-haspopup="menu"
-            >
-                <MoreHorizIcon fontSize="small" />
-            </IconButton>
-
-            <Menu
-                anchorEl={anchorEl}
-                open={anchorEl !== null}
-                onClose={close}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            >
-                {canEdit && (
-                    <MenuItem
-                        onClick={() => {
-                            close();
-                            onEdit();
-                        }}
-                    >
-                        <ListItemIcon>
-                            <EditOutlinedIcon fontSize="small" />
-                        </ListItemIcon>
-                        Edit
-                    </MenuItem>
-                )}
-
-                <MenuItem
-                    className={styles.danger}
-                    onClick={() => {
-                        close();
-                        setConfirming(true);
-                    }}
-                >
-                    <ListItemIcon>
-                        <DeleteOutlineOutlinedIcon fontSize="small" />
-                    </ListItemIcon>
-                    {asModerator ? 'Delete as moderator' : 'Delete'}
-                </MenuItem>
-            </Menu>
+            <ActionsMenu items={items} label="Comment actions" />
 
             <ConfirmDialog
                 open={confirming}

@@ -1,44 +1,86 @@
 import 'server-only';
 import { db } from '@/shared/server/db';
 import { forbidden, notFound } from '@/shared/server/http';
-import { bumpCacheNamespace } from '@/shared/server/cache';
-import { COMMENTS_PER_USER_LIMIT } from '@/shared/lib/constants';
+import { COMMENTS_PER_USER_LIMIT, REPLIES_PER_USER_LIMIT } from '@/shared/lib/constants';
 import { assertNotMuted } from '@/entities/sanction/server/sanctions';
-import {
-    COLLECTIONS_CACHE_NAMESPACE,
-    getInteractableCollection,
-} from '@/entities/collection/server/queries';
+import { getInteractableCollection } from '@/entities/collection/server/queries';
 import { commentSelect, toComment } from '@/entities/comment/server/queries';
-import { notifyComment } from '@/entities/notification/server/notifications';
+import {
+    deliverNotifications,
+    notifyComment,
+    notifySocial,
+    retractSocial,
+} from '@/entities/notification/server/notifications';
 import { writeAudit } from '@/entities/moderation/server/audit';
 import { assertCanModerate, toStaffContext, type Viewer } from '@/features/auth/server/guards';
 
-export async function createComment(viewer: Viewer, collectionId: number, text: string) {
+/**
+ * Top-level comment, or a reply when `replyToId` is set. Replies join the
+ * thread of the answered comment (one level deep) and mention its author.
+ */
+export async function createComment(
+    viewer: Viewer,
+    collectionId: number,
+    text: string,
+    replyToId?: number,
+) {
     await assertNotMuted(viewer.userId, 'COMMENTS');
 
     const collection = await getInteractableCollection(collectionId);
 
-    const written = await db.comment.count({ where: { userId: viewer.userId, collectionId } });
-    if (written >= COMMENTS_PER_USER_LIMIT) {
+    const target = replyToId
+        ? await db.comment.findFirst({
+              where: { id: replyToId, collectionId },
+              select: { id: true, parentId: true, userId: true },
+          })
+        : null;
+    if (replyToId && !target) throw notFound('Comment not found.');
+
+    // Top-level comments and replies have separate per-collection limits, so a
+    // conversation has room to go on but nobody can flood a thread (each reply
+    // notifies the answered author).
+    const written = await db.comment.count({
+        where: { userId: viewer.userId, collectionId, parentId: target ? { not: null } : null },
+    });
+    if (!target && written >= COMMENTS_PER_USER_LIMIT) {
         throw forbidden(
             `You can leave at most ${COMMENTS_PER_USER_LIMIT} comments on a collection.`,
         );
     }
+    if (target && written >= REPLIES_PER_USER_LIMIT) {
+        throw forbidden(`You can leave at most ${REPLIES_PER_USER_LIMIT} replies on a collection.`);
+    }
 
     const comment = await db.comment.create({
-        data: { userId: viewer.userId, collectionId, text },
+        data: {
+            userId: viewer.userId,
+            collectionId,
+            text,
+            parentId: target ? (target.parentId ?? target.id) : null,
+            // "@username" only when answering a reply; answering the root is implied by the thread.
+            replyToUserId: target?.parentId ? target.userId : null,
+        },
         select: commentSelect,
     });
 
-    if (collection.userId) {
-        await notifyComment({
-            senderUserId: viewer.userId,
-            recipientUserId: collection.userId,
-            collectionId,
-        });
-    }
+    const notificationId = target
+        ? await notifyComment({
+              type: 'COMMENT_REPLY',
+              senderUserId: viewer.userId,
+              recipientUserId: target.userId,
+              collectionId,
+              commentId: comment.id,
+          })
+        : collection.userId &&
+          (await notifyComment({
+              type: 'COMMENT',
+              senderUserId: viewer.userId,
+              recipientUserId: collection.userId,
+              collectionId,
+              commentId: comment.id,
+          }));
 
-    await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
+    await deliverNotifications([notificationId || null]);
 
     return toComment(comment);
 }
@@ -48,18 +90,53 @@ export async function updateComment(viewer: Viewer, commentId: number, text: str
 
     const comment = await db.comment.findUnique({
         where: { id: commentId },
-        select: { userId: true },
+        select: { userId: true, text: true },
     });
     if (!comment) throw notFound('Comment not found.');
     if (comment.userId !== viewer.userId) throw forbidden('You can only edit your own comments.');
 
     const updated = await db.comment.update({
         where: { id: commentId },
-        data: { text },
+        data: comment.text === text ? {} : { text, editedAt: new Date() },
         select: commentSelect,
     });
 
     return toComment(updated);
+}
+
+/** The collection owner hearts (or un-hearts) a comment, like YouTube's creator heart. */
+export async function setAuthorLike(viewer: Viewer, commentId: number, liked: boolean) {
+    const comment = await db.comment.findUnique({
+        where: { id: commentId },
+        select: {
+            id: true,
+            userId: true,
+            collectionId: true,
+            collection: { select: { userId: true, private: true } },
+        },
+    });
+    if (!comment || comment.collection.private) throw notFound('Comment not found.');
+    if (comment.collection.userId !== viewer.userId) {
+        throw forbidden('Only the collection owner can heart comments.');
+    }
+
+    // Only the request that actually flips the heart notifies (or retracts).
+    const { count } = await db.comment.updateMany({
+        where: { id: commentId, likedByAuthor: !liked },
+        data: { likedByAuthor: liked },
+    });
+    if (count === 0) return;
+
+    const notification = {
+        type: 'COMMENT_LIKED' as const,
+        senderUserId: viewer.userId,
+        recipientUserId: comment.userId,
+        collectionId: comment.collectionId,
+        commentId: comment.id,
+    };
+
+    if (liked) await deliverNotifications([await notifySocial(notification)]);
+    else await retractSocial(notification);
 }
 
 /** Authors delete their own comments; staff may delete others' (audited). */
@@ -90,6 +167,4 @@ export async function deleteComment(viewer: Viewer, commentId: number) {
             await tx.comment.delete({ where: { id: comment.id } });
         });
     }
-
-    await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
 }

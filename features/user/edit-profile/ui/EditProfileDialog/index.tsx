@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import {
+    Autocomplete,
     Avatar,
     Button,
     CircularProgress,
@@ -11,6 +12,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
+    TextField,
     Tooltip,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -21,12 +23,21 @@ import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import {
     DESCRIPTION_MAX_LENGTH,
     FULLNAME_MAX_LENGTH,
+    MIN_USER_AGE,
     USERNAME_MAX_LENGTH,
 } from '@/shared/lib/constants';
-import { fullNameSchema, usernameSchema } from '@/shared/lib/validation/schemas';
+import { COUNTRIES } from '@/shared/lib/geo/countries';
+import {
+    birthDateSchema,
+    citySchema,
+    fullNameSchema,
+    usernameSchema,
+} from '@/shared/lib/validation/schemas';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { CityAutocomplete } from '@/shared/ui/CityAutocomplete';
 import { CountedTextField } from '@/shared/ui/CountedTextField';
+import { DateField } from '@/shared/ui/DateField';
 import { useImagePicker } from '@/shared/lib/hooks/useImagePicker';
 import styles from './index.module.css';
 
@@ -36,7 +47,17 @@ type EditProfileDialogProps = {
     onClose: () => void;
 };
 
-type Draft = Pick<SessionUser, 'fullName' | 'username' | 'description' | 'avatarUrl' | 'bannerUrl'>;
+type Draft = Pick<
+    SessionUser,
+    | 'fullName'
+    | 'username'
+    | 'description'
+    | 'avatarUrl'
+    | 'bannerUrl'
+    | 'country'
+    | 'city'
+    | 'birthDate'
+>;
 
 const pickDraft = (user: SessionUser): Draft => ({
     fullName: user.fullName,
@@ -44,7 +65,20 @@ const pickDraft = (user: SessionUser): Draft => ({
     description: user.description,
     avatarUrl: user.avatarUrl,
     bannerUrl: user.bannerUrl,
+    country: user.country,
+    city: user.city,
+    birthDate: user.birthDate,
 });
+
+/** Latest allowed birth date: exactly `MIN_USER_AGE` years ago. */
+function latestBirthDate() {
+    const today = new Date();
+    return new Date(
+        Date.UTC(today.getUTCFullYear() - MIN_USER_AGE, today.getUTCMonth(), today.getUTCDate()),
+    )
+        .toISOString()
+        .slice(0, 10);
+}
 
 export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProps) {
     const { setUser } = useSessionUser();
@@ -53,11 +87,16 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
     const set = <K extends keyof Draft>(key: K, value: Draft[K]) =>
         setDraft((prev) => ({ ...prev, [key]: value }));
 
-    const avatarPicker = useImagePicker((url) => set('avatarUrl', url));
-    const bannerPicker = useImagePicker((url) => set('bannerUrl', url));
+    const avatarPicker = useImagePicker((url) => set('avatarUrl', url), {
+        aspect: 1,
+        round: true,
+    });
+    const bannerPicker = useImagePicker((url) => set('bannerUrl', url), { aspect: 4 });
 
     const usernameCheck = usernameSchema.safeParse(draft.username);
     const fullNameValid = fullNameSchema.safeParse(draft.fullName).success;
+    const cityValid = citySchema.safeParse(draft.city).success;
+    const birthDateCheck = birthDateSchema.safeParse(draft.birthDate);
 
     const changes = Object.fromEntries(
         (Object.keys(draft) as (keyof Draft)[])
@@ -190,6 +229,54 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                         minRows={2}
                         fullWidth
                     />
+
+                    <div className={styles.row}>
+                        <Autocomplete
+                            options={COUNTRIES}
+                            value={
+                                COUNTRIES.find((country) => country.code === draft.country) ?? null
+                            }
+                            onChange={(_, country) => {
+                                const code = country?.code ?? null;
+                                if (code === draft.country) return;
+                                // The city most likely belongs to the old country.
+                                setDraft((prev) => ({ ...prev, country: code, city: null }));
+                            }}
+                            getOptionLabel={(country) => country.name}
+                            isOptionEqualToValue={(option, value) => option.code === value.code}
+                            renderInput={(params) => <TextField {...params} label="Country" />}
+                            className={styles.grow}
+                        />
+
+                        <CityAutocomplete
+                            label="City"
+                            value={draft.city}
+                            country={draft.country}
+                            onChange={(city, country) =>
+                                setDraft((prev) => ({
+                                    ...prev,
+                                    city,
+                                    country: country ?? prev.country,
+                                }))
+                            }
+                            error={!cityValid}
+                            className={styles.grow}
+                        />
+                    </div>
+
+                    <DateField
+                        label="Birth date"
+                        value={draft.birthDate}
+                        onChange={(value) => set('birthDate', value)}
+                        max={latestBirthDate()}
+                        error={!birthDateCheck.success}
+                        helperText={
+                            birthDateCheck.success
+                                ? undefined
+                                : birthDateCheck.error.issues[0]?.message
+                        }
+                        fullWidth
+                    />
                 </div>
             </DialogContent>
 
@@ -204,6 +291,8 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                         save.isPending ||
                         !usernameCheck.success ||
                         !fullNameValid ||
+                        !cityValid ||
+                        !birthDateCheck.success ||
                         Object.keys(changes).length === 0
                     }
                 >

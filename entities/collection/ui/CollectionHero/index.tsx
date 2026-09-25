@@ -10,7 +10,7 @@ export function CollectionHero({ collection }: { collection: CollectionDetails }
             <div className={styles.shade} />
 
             <div className={styles.overlay}>
-                <span className={styles.category}>{collection.category}</span>
+                <span className={styles.category}>{collection.category.name}</span>
                 <h1 className={styles.title}>{collection.name}</h1>
 
                 <Link href={`/users/${collection.author.id}`} className={styles.author}>

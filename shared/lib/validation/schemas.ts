@@ -1,6 +1,10 @@
 import { z } from 'zod';
+import { isCountryCode } from '@/shared/lib/geo/countries';
 import {
+    CITY_MAX_LENGTH,
     DESCRIPTION_MAX_LENGTH,
+    MAX_USER_AGE,
+    MIN_USER_AGE,
     EMAIL_MAX_LENGTH,
     FULLNAME_MAX_LENGTH,
     PASSWORD_MAX_LENGTH,
@@ -50,6 +54,59 @@ export const httpUrlSchema = z.string().trim().refine(isHttpUrl, 'Must be a vali
 export const optionalHttpUrlSchema = z
     .union([httpUrlSchema, z.literal(''), z.null()])
     .optional()
+    .transform((value) => value || null);
+
+/** Optional country: ISO code, `null`/'' clears it. */
+export const countrySchema = z
+    .union([
+        z.string().trim().toUpperCase().refine(isCountryCode, 'Unknown country.'),
+        z.literal(''),
+        z.null(),
+    ])
+    .transform((value) => value || null);
+
+/** Optional city: free text, `null`/'' clears it. */
+export const citySchema = z
+    .union([
+        z
+            .string()
+            .transform((value) => value.trim().replace(/\s+/g, ' '))
+            .pipe(
+                z
+                    .string()
+                    .max(CITY_MAX_LENGTH)
+                    .regex(
+                        /^[\p{L}\p{M}\p{N} .,'‘’ʼ`/()-]*$/u,
+                        "Use letters, spaces and - . , ' / ( )",
+                    ),
+            ),
+        z.null(),
+    ])
+    .transform((value) => value || null);
+
+/** Age in full years on `today` (UTC calendar dates). */
+export function ageOn(birthDate: string, today = new Date()): number {
+    const [year, month, day] = birthDate.split('-').map(Number);
+    const hadBirthday =
+        today.getUTCMonth() + 1 > month ||
+        (today.getUTCMonth() + 1 === month && today.getUTCDate() >= day);
+
+    return today.getUTCFullYear() - year - (hadBirthday ? 0 : 1);
+}
+
+/** Optional `YYYY-MM-DD` birth date; the user must be at least 18. */
+export const birthDateSchema = z
+    .union([
+        z.iso
+            .date('Enter a valid date.')
+            .refine(
+                (value) => ageOn(value) >= MIN_USER_AGE,
+                `You must be at least ${MIN_USER_AGE}.`,
+            )
+            .refine((value) => ageOn(value) <= MAX_USER_AGE, 'Enter a valid date.'),
+        z.literal(''),
+        z.null(),
+    ])
     .transform((value) => value || null);
 
 export const isUsernameValid = (value: string) => usernameSchema.safeParse(value).success;

@@ -1,0 +1,127 @@
+.trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    background-color: var(--container-color);
+    color: var(--text-color);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.trigger svg {
+    font-size: 20px;
+}
+
+.trigger:hover:not(:disabled) {
+    border-color: var(--favorite);
+    color: var(--favorite);
+}
+
+.trigger:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.active {
+    border-color: var(--favorite);
+    background-color: color-mix(in srgb, var(--favorite) 14%, var(--container-color));
+    color: var(--favorite);
+}
+
+.count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.85;
+}
+
+.popover {
+    width: 300px;
+    padding: 12px 8px 8px;
+    border-radius: var(--radius-lg) !important;
+    border: 1px solid var(--border-color);
+}
+
+.title {
+    padding: 0 10px 8px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+.boards {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 4px 2px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.row:hover {
+    background-color: color-mix(in srgb, var(--text-color) 6%, transparent);
+}
+
+.cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 10px;
+    color: var(--soft-text);
+    background-color: var(--border-color);
+}
+
+.allCover {
+    color: #ffffff;
+    background-color: var(--favorite);
+}
+
+.name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.divider {
+    margin: 6px 0 !important;
+}
+
+.hint {
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.create {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    padding: 4px 4px 4px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+}
+
+.input {
+    flex: 1;
+    color: var(--text-color) !important;
+    font-size: 14px !important;
+}

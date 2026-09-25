@@ -1,3 +1,6 @@
 export const commentQueryKeys = {
-    byCollection: (collectionId: number) => ['comments', collectionId] as const,
+    all: ['comments'] as const,
+    byCollection: (collectionId: number) => [...commentQueryKeys.all, collectionId] as const,
+    replies: (collectionId: number, commentId: number) =>
+        [...commentQueryKeys.byCollection(collectionId), 'replies', commentId] as const,
 };

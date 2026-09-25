@@ -1,20 +1,25 @@
 'use client';
 
-import { useEffect, useEffectEvent, useLayoutEffect, useRef } from 'react';
-import Link from 'next/link';
+import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Avatar } from '@mui/material';
+import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import { chatApi } from '@/entities/chat/api/chatApi';
 import { chatQueryKeys } from '@/entities/chat/model/queryKeys';
-import { useRealtimeEvent } from '@/entities/chat/model/RealtimeProvider';
+import { useIsOnline, useSyncPresence } from '@/entities/chat/model/presenceStore';
+import { useIsTyping } from '@/entities/chat/model/typingStore';
+import { layoutMessages } from '@/entities/chat/lib/layoutMessages';
+import { useRealtimeEvent } from '@/shared/lib/realtime/RealtimeProvider';
 import { MessageBubble } from '@/entities/chat/ui/MessageBubble';
 import type { SessionUser } from '@/entities/user/model/types';
 import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
 import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
 import { MessageComposer } from '@/features/chat/send/ui/MessageComposer';
-import { ReportButton } from '@/features/report/create/ui/ReportButton';
 import { EmptyState } from '@/shared/ui/EmptyState';
+import { RelativeTime } from '@/shared/ui/RelativeTime';
 import { Spinner } from '@/shared/ui/Spinner';
+import { formatChatTimestamp } from '@/shared/lib/format/date';
+import { ChatHeader, ChatIntro } from './ChatHeader';
 import { useChatMessages } from './useChatMessages';
 import styles from './index.module.css';
 
@@ -29,29 +34,47 @@ type ChatWindowProps = {
 export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
     const queryClient = useQueryClient();
     const setActiveChatId = useActiveChatStore((state) => state.setActiveChatId);
-    const { chat, messages, query, append, removeMessage } = useChatMessages(chatId);
+    const { chat, messages, query, append, removeMessage, setSeen } = useChatMessages(chatId);
+
+    const peer = chat?.user ?? null;
+    const peers = useMemo(() => (peer ? [peer] : undefined), [peer]);
+    useSyncPresence(peers, query.dataUpdatedAt);
+    const online = useIsOnline(peer);
+    const typing = useIsTyping(chatId);
+
+    const rows = useMemo(() => layoutMessages(messages), [messages]);
+    const lastMessage = messages.at(-1);
+    const lastIsOwn = lastMessage?.author.id === viewer.id;
+    const seen =
+        lastIsOwn && chat?.seen && chat.seen.messageId >= lastMessage.id ? chat.seen : null;
 
     const listRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef({ initialised: false, stickToBottom: true, heightBeforeOlder: 0 });
 
-    // Background bookkeeping: a failure (e.g. the chat no longer exists) must not break the page;
-    // the messages query already shows "not available" in that case.
+    // Only a visible tab counts as "seen". Background bookkeeping: a failure (e.g. the chat
+    // no longer exists) must not break the page; the messages query shows "not available".
     const markRead = () => {
+        if (document.visibilityState !== 'visible') return;
+
         chatApi
             .markAsRead(chatId)
-            .then(() => {
-                queryClient.invalidateQueries({ queryKey: sessionUserQueryKey });
-                queryClient.invalidateQueries({ queryKey: chatQueryKeys.lists() });
-            })
+            .then(() => queryClient.invalidateQueries({ queryKey: sessionUserQueryKey }))
             .catch(() => undefined);
     };
 
-    const onChatOpened = useEffectEvent(() => markRead());
+    const onChatShown = useEffectEvent(() => markRead());
 
     useEffect(() => {
         setActiveChatId(chatId);
-        onChatOpened();
-        return () => setActiveChatId(null);
+        onChatShown();
+
+        const handleVisibility = () => onChatShown();
+        document.addEventListener('visibilitychange', handleVisibility);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibility);
+            setActiveChatId(null);
+        };
     }, [chatId, setActiveChatId]);
 
     useRealtimeEvent('message:new', (message) => {
@@ -67,6 +90,10 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
 
     useRealtimeEvent('message:deleted', ({ chatId: deletedFrom, messageId }) => {
         if (deletedFrom === chatId) removeMessage(messageId);
+    });
+
+    useRealtimeEvent('chat:read', ({ chatId: readChatId, readerId, messageId, readAt }) => {
+        if (readChatId === chatId && readerId !== viewer.id) setSeen({ messageId, readAt });
     });
 
     // Keeps the view anchored: bottom on first load / new messages, same spot when older ones load.
@@ -86,6 +113,14 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
         }
     }, [messages.length]);
 
+    // The "Seen" line appears under the last message: keep it in view when already at the bottom.
+    useLayoutEffect(() => {
+        const list = listRef.current;
+        if (list && list.scrollHeight - list.scrollTop - list.clientHeight < NEAR_BOTTOM_PX) {
+            list.scrollTop = list.scrollHeight;
+        }
+    }, [seen?.messageId]);
+
     const handleScroll = () => {
         const list = listRef.current;
         if (!list || list.scrollTop > LOAD_OLDER_AT_PX) return;
@@ -101,60 +136,78 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
         queryClient.invalidateQueries({ queryKey: chatQueryKeys.lists() });
     };
 
-    if (query.isError) return <EmptyState title="This chat is not available." />;
-
     return (
-        <main className={styles.window}>
-            <header className={styles.header}>
-                {chat?.user ? (
-                    <Link href={`/users/${chat.user.id}`} className={styles.peer}>
-                        <Avatar
-                            className={styles.peerAvatar}
-                            src={chat.user.avatarUrl}
-                            alt={chat.user.username}
-                        />
-                        <span>
-                            <span className={styles.peerName}>{chat.user.username}</span>
-                            <span className={styles.peerSubtitle}>Direct messages</span>
-                        </span>
-                    </Link>
-                ) : (
-                    <span className={styles.peerName}>{chat ? 'Deleted account' : ''}</span>
-                )}
-            </header>
+        <section className={styles.window} aria-label="Conversation">
+            <ChatHeader
+                peer={peer}
+                deleted={chat !== null && !peer}
+                online={online}
+                typing={typing}
+            />
 
-            <div className={styles.messages} ref={listRef} onScroll={handleScroll}>
-                {query.isFetchingNextPage && <Spinner size={20} />}
-                {query.isPending && <Spinner />}
+            {query.isError ? (
+                <div className={styles.messages}>
+                    <EmptyState title="This chat is not available." />
+                </div>
+            ) : (
+                <div className={styles.messages} ref={listRef} onScroll={handleScroll}>
+                    <div className={styles.thread}>
+                        {query.isPending && <Spinner />}
+                        {query.isFetchingNextPage && <Spinner size={20} />}
 
-                {!query.isPending && messages.length === 0 && (
-                    <EmptyState title="No messages yet" description="Start the conversation." />
-                )}
+                        {!query.isPending && !query.hasNextPage && peer && (
+                            <ChatIntro peer={peer} />
+                        )}
 
-                {messages.map((message) => (
-                    <MessageBubble
-                        key={message.id}
-                        message={message}
-                        actions={
-                            message.author.id !== viewer.id && (
-                                <ReportButton
-                                    size="small"
-                                    target={{ type: 'MESSAGE', messageId: message.id }}
-                                    username={message.author.username}
-                                    preview={message.content}
+                        {rows.map(({ message, position, showTimestamp }) => (
+                            <div key={message.id}>
+                                {showTimestamp && (
+                                    <time
+                                        className={styles.timestamp}
+                                        dateTime={message.createdAt}
+                                        suppressHydrationWarning
+                                    >
+                                        {formatChatTimestamp(message.createdAt)}
+                                    </time>
+                                )}
+
+                                <MessageBubble
+                                    message={message}
+                                    own={message.author.id === viewer.id}
+                                    position={position}
                                 />
-                            )
-                        }
-                    />
-                ))}
-            </div>
+                            </div>
+                        ))}
+
+                        {lastIsOwn && (
+                            <p
+                                className={`${styles.receipt} ${seen ? styles.receiptSeen : ''}`}
+                                aria-live="polite"
+                            >
+                                {seen ? (
+                                    <>
+                                        <DoneAllRoundedIcon className={styles.receiptIcon} />
+                                        Seen <RelativeTime value={seen.readAt} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <DoneRoundedIcon className={styles.receiptIcon} />
+                                        Sent
+                                    </>
+                                )}
+                            </p>
+                        )}
+                    </div>
+                </div>
+            )}
 
             <MessageComposer
-                chatId={chatId}
+                sendMessage={(content) => chatApi.send(chatId, content)}
                 restriction={viewer.restrictions.messenger}
-                disabled={chat !== null && !chat.user}
+                disabled={query.isError || (chat !== null && !chat.user)}
                 onSent={handleSent}
+                onTyping={() => void chatApi.typing(chatId).catch(() => undefined)}
             />
-        </main>
+        </section>
     );
 }

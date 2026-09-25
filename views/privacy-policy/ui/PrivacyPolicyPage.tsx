@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
                         </li>
                         <li>
                             Optional profile info you add: avatar image, banner image,
-                            bio/description
+                            bio/description, country and city, and date of birth
                         </li>
                         <li>
                             Content you create while using the app: collections, items, comments,
@@ -37,6 +37,47 @@ export default function PrivacyPolicyPage() {
                     log in, keep you signed in between visits (session management), and to provide
                     the core features of the app — collections, following other users, comments,
                     likes, and messaging.
+                </p>
+            </section>
+
+            <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Location and date of birth</h2>
+                <div className={styles.text}>
+                    Both are optional and can be changed or removed at any time in your profile.
+                    <ul>
+                        <li>
+                            <strong>Country and city</strong> are shown on your public profile and
+                            are used to suggest people you may know who live in the same city. We do
+                            not collect your precise location or IP-based location.
+                        </li>
+                        <li>
+                            <strong>Date of birth</strong> is private: it is never shown to other
+                            users. It is used only to confirm that you meet the minimum age.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Recommendations</h2>
+                <p className={styles.text}>
+                    To build your &ldquo;For you&rdquo; feed, board suggestions and &ldquo;People
+                    you may know&rdquo;, we use the categories you pick as interests, the
+                    collections you like, save, put on boards or open while signed in, the tags and
+                    categories of those collections, the people you follow and who follow you, and
+                    the city in your profile. We remember which collections you have liked or saved
+                    even after you undo it, so they are not suggested to you again. This happens
+                    inside Collectify only; boards and your viewing history are never shown to other
+                    users.
+                </p>
+            </section>
+
+            <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Minimum age</h2>
+                <p className={styles.text}>
+                    Collectify is intended for people who are 18 or older. A date of birth that
+                    makes you younger than 18 cannot be saved. If we learn that an account belongs
+                    to someone under 18, we may suspend it and delete its data.
                 </p>
             </section>
 
@@ -62,13 +103,13 @@ export default function PrivacyPolicyPage() {
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Reports and moderation</h2>
                 <p className={styles.text}>
-                    When you report content, we keep a copy of the reported message, comment or
-                    collection so moderators can review it even if it is later deleted. Moderators
-                    and administrators may review reported content, the surrounding messages of a
-                    reported conversation, and an account&apos;s activity when handling a report.
-                    Moderation actions are recorded in an internal audit log. When an account is
-                    deleted, its content is deleted too; the audit log keeps only the account ID and
-                    username.
+                    When you report content, we keep a copy of the reported comment or collection so
+                    moderators can review it even if it is later deleted. Moderators and
+                    administrators may review reported content and an account&apos;s public activity
+                    when handling a report. Direct messages cannot be reported, and moderators and
+                    administrators cannot read your conversations. Moderation actions are recorded
+                    in an internal audit log. When an account is deleted, its content is deleted
+                    too; the audit log keeps only the account ID and username.
                 </p>
             </section>
 

@@ -13,9 +13,10 @@
         background-color 0.2s ease;
 }
 
-.dropzone:hover:not(:disabled) {
+.dropzone:hover:not(:disabled),
+.dragging {
     border-color: var(--accent);
-    background-color: rgba(32, 143, 255, 0.04);
+    background-color: color-mix(in srgb, var(--accent) 5%, transparent);
 }
 
 .preview {

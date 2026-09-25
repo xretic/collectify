@@ -1,13 +1,66 @@
 .actions {
     display: flex;
-    gap: 7px;
-    margin-top: 25px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.like {
-    color: var(--danger) !important;
+.toggle {
+    --tone: var(--danger);
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    background-color: var(--container-color);
+    color: var(--text-color);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        transform 0.1s ease;
 }
 
-.favorite {
-    color: #faad14 !important;
+.toggle svg {
+    font-size: 20px;
+    transition: transform 0.2s ease;
+}
+
+.toggle:hover:not(:disabled) {
+    border-color: var(--tone);
+    color: var(--tone);
+}
+
+.toggle:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+.toggle:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.active {
+    border-color: var(--tone);
+    background-color: color-mix(in srgb, var(--tone) 14%, var(--container-color));
+    color: var(--tone);
+}
+
+.active svg {
+    animation: pop 0.3s ease;
+}
+
+.count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.85;
+}
+
+@keyframes pop {
+    50% {
+        transform: scale(1.25);
+    }
 }

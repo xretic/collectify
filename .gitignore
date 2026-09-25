@@ -47,4 +47,4 @@ next-env.d.ts
 
 # local tooling
 /.claude
-/.github/workflows/ci.yml
+.husky/_/

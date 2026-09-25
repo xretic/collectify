@@ -3,13 +3,19 @@
 import { createTheme } from '@mui/material/styles';
 
 /**
- * One MUI theme for the whole app. Colours come from the CSS variables in
- * `app/globals.css`, so light/dark switching is a single `data-theme`
- * attribute and never re-renders React.
+ * One MUI theme for the whole app. Colours come from the theme tokens in
+ * `app/themes.css`, so switching themes is a single `data-theme` attribute and
+ * never re-renders React. `nativeColor` makes MUI derive hover/disabled shades
+ * with CSS relative colors, which is what allows `var(...)` in the palette.
  */
 export const theme = createTheme({
+    cssVariables: { nativeColor: true },
     palette: {
-        primary: { main: '#208fff' },
+        primary: { main: 'var(--accent)', contrastText: 'var(--on-accent)' },
+        error: { main: 'var(--danger)', contrastText: '#ffffff' },
+        text: { primary: 'var(--text-color)', secondary: 'var(--soft-text)' },
+        background: { default: 'var(--bg-color)', paper: 'var(--container-color)' },
+        divider: 'var(--border-color)',
     },
     typography: {
         fontFamily: 'inherit',
@@ -54,6 +60,23 @@ export const theme = createTheme({
                     '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
                         borderColor: 'var(--border-color)',
                     },
+                },
+                input: {
+                    '&::placeholder': { color: 'var(--soft-text)', opacity: 1 },
+                    '&.Mui-disabled': { WebkitTextFillColor: 'var(--soft-text)' },
+                },
+            },
+        },
+        // `variant="standard"`: the underline defaults to MUI's light palette (black).
+        MuiInput: {
+            styleOverrides: {
+                root: {
+                    color: 'var(--text-color)',
+                    '&::before': { borderBottomColor: 'var(--border-color)' },
+                    '&:hover:not(.Mui-disabled):not(.Mui-error)::before': {
+                        borderBottomColor: 'var(--soft-text)',
+                    },
+                    '&.Mui-disabled::before': { borderBottomStyle: 'solid', opacity: 0.6 },
                 },
                 input: {
                     '&::placeholder': { color: 'var(--soft-text)', opacity: 1 },

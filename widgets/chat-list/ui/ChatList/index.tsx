@@ -1,115 +1,237 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo } from 'react';
 import Link from 'next/link';
-import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Avatar, Skeleton } from '@mui/material';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { Skeleton } from '@mui/material';
 import { chatApi } from '@/entities/chat/api/chatApi';
 import { chatQueryKeys } from '@/entities/chat/model/queryKeys';
-import { useRealtimeEvent } from '@/entities/chat/model/RealtimeProvider';
-import type { ChatsPage } from '@/entities/chat/model/types';
-import { CHATS_PAGE_SIZE } from '@/shared/lib/constants';
-import { Pagination } from '@/shared/ui/Pagination';
-import { EmptyState } from '@/shared/ui/EmptyState';
+import { useSyncPresence } from '@/entities/chat/model/presenceStore';
+import { useTypingStore } from '@/entities/chat/model/typingStore';
+import { isMuteActive, patchChat, type ChatPages } from '@/entities/chat/model/chatListCache';
+import { PeerAvatar } from '@/entities/chat/ui/PeerAvatar';
+import { TypingIndicator } from '@/entities/chat/ui/TypingIndicator';
+import { ChatMuteMenu } from '@/features/chat/mute/ui/ChatMuteMenu';
+import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
+import { useRealtimeEvent } from '@/shared/lib/realtime/RealtimeProvider';
+import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll';
+import { useNow } from '@/shared/lib/hooks/useNow';
+import { formatShortRelative } from '@/shared/lib/format/date';
 import styles from './index.module.css';
+
+/** Missed realtime events are caught up by refetching. */
+const REFRESH_MS = 60_000;
+const SKELETON_ROWS = 8;
 
 type ChatListProps = {
     activeChatId: number | null;
-    viewerId: number;
+    viewer: { id: number; username: string };
 };
 
-export function ChatList({ activeChatId, viewerId }: ChatListProps) {
+export function ChatList({ activeChatId, viewer }: ChatListProps) {
     const queryClient = useQueryClient();
-    const [page, setPage] = useState(0);
-    const skip = page * CHATS_PAGE_SIZE;
+    const key = chatQueryKeys.lists();
+    const now = useNow();
+    const typingChats = useTypingStore((state) => state.typing);
 
-    const { data, isPending } = useQuery({
-        queryKey: chatQueryKeys.list(skip),
-        queryFn: () => chatApi.list(skip),
-        placeholderData: keepPreviousData,
+    const query = useInfiniteQuery({
+        queryKey: key,
+        queryFn: ({ pageParam }) => chatApi.list(pageParam),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, pages) => {
+            const loaded = pages.reduce((count, page) => count + page.data.length, 0);
+            return loaded < lastPage.total ? loaded : undefined;
+        },
+        refetchInterval: REFRESH_MS,
+    });
+
+    // Offsets shift while chats move to the top, so a chat can come twice.
+    const chats = useMemo(() => {
+        const seen = new Set<number>();
+        return (query.data?.pages ?? [])
+            .flatMap((page) => page.data)
+            .filter((chat) => !seen.has(chat.id) && seen.add(chat.id));
+    }, [query.data]);
+
+    const totalUnread = chats.reduce(
+        (sum, chat) => sum + (chat.id === activeChatId ? 0 : chat.unread),
+        0,
+    );
+
+    const peers = useMemo(() => chats.map((chat) => chat.user), [chats]);
+    useSyncPresence(peers, query.dataUpdatedAt);
+
+    const loadMoreRef = useInfiniteScroll({
+        hasMore: query.hasNextPage,
+        loading: query.isFetchingNextPage,
+        onLoadMore: () => void query.fetchNextPage(),
+        rootMargin: '200px 0px',
     });
 
     // Move the chat to the top with the new preview; unknown chats trigger a refetch.
     useRealtimeEvent('message:new', (message) => {
-        const key = chatQueryKeys.list(skip);
-        const current = queryClient.getQueryData<ChatsPage>(key);
-        const chat = current?.data.find((item) => item.id === message.chatId);
+        const data = queryClient.getQueryData<ChatPages>(key);
+        const known = data?.pages.some((page) => page.data.some((c) => c.id === message.chatId));
 
-        if (!current || !chat || page !== 0) {
-            queryClient.invalidateQueries({ queryKey: chatQueryKeys.lists() });
+        if (!data || !known) {
+            queryClient.invalidateQueries({ queryKey: key });
             return;
         }
 
-        const unread =
-            message.author.id !== viewerId && message.chatId !== activeChatId
-                ? chat.unread + 1
-                : chat.unread;
+        // An open chat reads it right away, unless the tab is in the background.
+        const incoming =
+            message.author.id !== viewer.id &&
+            (message.chatId !== activeChatId || document.visibilityState !== 'visible');
 
-        queryClient.setQueryData<ChatsPage>(key, {
-            ...current,
-            data: [
-                {
-                    ...chat,
-                    unread,
-                    lastMessage: { content: message.content, createdAt: message.createdAt },
-                    lastMessageAt: message.createdAt,
-                },
-                ...current.data.filter((item) => item.id !== chat.id),
-            ],
-        });
+        queryClient.setQueryData<ChatPages>(key, (current) =>
+            current
+                ? patchChat(
+                      current,
+                      message.chatId,
+                      (chat) => ({
+                          ...chat,
+                          unread: incoming ? chat.unread + 1 : chat.unread,
+                          lastMessage: {
+                              content: message.content,
+                              createdAt: message.createdAt,
+                              authorId: message.author.id,
+                          },
+                          lastMessageAt: message.createdAt,
+                      }),
+                      true,
+                  )
+                : current,
+        );
+    });
+
+    // (Un)muted here or in another tab of the viewer.
+    useRealtimeEvent('chat:muted', ({ chatId, mute }) => {
+        queryClient.setQueryData<ChatPages>(key, (current) =>
+            current ? patchChat(current, chatId, (chat) => ({ ...chat, mute })) : current,
+        );
+    });
+
+    // Read here or in another tab of the viewer.
+    useRealtimeEvent('chat:read', ({ chatId, readerId }) => {
+        if (readerId !== viewer.id) return;
+        queryClient.setQueryData<ChatPages>(key, (current) =>
+            current ? patchChat(current, chatId, (chat) => ({ ...chat, unread: 0 })) : current,
+        );
     });
 
     return (
         <aside className={styles.sidebar}>
             <header className={styles.header}>
                 <h1 className={styles.title}>Chats</h1>
+                {totalUnread > 0 && (
+                    <span className={styles.headerBadge} aria-label={`${totalUnread} unread`}>
+                        {totalUnread}
+                    </span>
+                )}
             </header>
 
             <nav className={styles.list} aria-label="Chats">
-                {isPending &&
-                    Array.from({ length: CHATS_PAGE_SIZE }, (_, index) => (
+                {query.isPending &&
+                    Array.from({ length: SKELETON_ROWS }, (_, index) => (
                         <div key={index} className={styles.item}>
-                            <Skeleton variant="circular" width={42} height={42} />
-                            <Skeleton width={180} />
+                            <Skeleton variant="rounded" className={styles.avatar} />
+                            <span className={styles.meta}>
+                                <Skeleton width="45%" />
+                                <Skeleton width="70%" />
+                            </span>
                         </div>
                     ))}
 
-                {data?.data.length === 0 && <EmptyState title="No chats yet" />}
+                {!query.isPending && chats.length === 0 && (
+                    <p className={styles.empty}>No chats yet.</p>
+                )}
 
-                {data?.data.map((chat) => (
-                    <Link
-                        key={chat.id}
-                        href={`/chats/${chat.id}`}
-                        className={`${styles.item} ${chat.id === activeChatId ? styles.itemActive : ''}`}
-                        aria-current={chat.id === activeChatId ? 'page' : undefined}
-                    >
-                        <Avatar
-                            className={styles.avatar}
-                            src={chat.user?.avatarUrl}
-                            alt={chat.user?.username}
-                        />
+                {chats.map((chat) => {
+                    const active = chat.id === activeChatId;
+                    const unread = chat.unread > 0 && !active;
+                    const own = chat.lastMessage?.authorId === viewer.id;
+                    const muted = isMuteActive(chat.mute, now);
 
-                        <span className={styles.meta}>
-                            <span className={styles.username}>
-                                {chat.user?.username ?? 'Deleted account'}
-                            </span>
-                            <span className={styles.preview}>
-                                {chat.lastMessage?.content ?? ''}
-                            </span>
-                        </span>
+                    return (
+                        <div key={chat.id} className={styles.row}>
+                            <Link
+                                href={`/chats/${chat.id}`}
+                                className={`${styles.item} ${active ? styles.itemActive : ''} ${unread ? styles.itemUnread : ''}`}
+                                aria-current={active ? 'page' : undefined}
+                                title={chat.user?.username}
+                            >
+                                <PeerAvatar user={chat.user} className={styles.avatar} />
 
-                        {chat.unread > 0 && chat.id !== activeChatId && (
-                            <span className={styles.badge}>{chat.unread}</span>
-                        )}
-                    </Link>
-                ))}
+                                <span className={styles.meta}>
+                                    <span className={styles.line}>
+                                        <span className={styles.username}>
+                                            {chat.user?.username ?? 'Deleted account'}
+                                        </span>
+                                        {muted && (
+                                            <NotificationsOffIcon
+                                                className={styles.mutedIcon}
+                                                aria-label="Muted"
+                                            />
+                                        )}
+                                        {chat.lastMessage && (
+                                            <time
+                                                className={styles.time}
+                                                dateTime={chat.lastMessage.createdAt}
+                                            >
+                                                {formatShortRelative(
+                                                    chat.lastMessage.createdAt,
+                                                    now,
+                                                )}
+                                            </time>
+                                        )}
+                                    </span>
+
+                                    <span className={styles.line}>
+                                        {typingChats[chat.id] ? (
+                                            <TypingIndicator className={styles.typing} />
+                                        ) : (
+                                            <span className={styles.preview}>
+                                                {chat.lastMessage &&
+                                                    (own
+                                                        ? `You: ${chat.lastMessage.content}`
+                                                        : chat.lastMessage.content)}
+                                            </span>
+                                        )}
+                                        {unread && (
+                                            <span
+                                                className={`${styles.badge} ${muted ? styles.badgeMuted : ''}`}
+                                                aria-label={`${chat.unread} unread`}
+                                            >
+                                                {chat.unread > 99 ? '99+' : chat.unread}
+                                            </span>
+                                        )}
+                                    </span>
+                                </span>
+
+                                {unread && (
+                                    <span
+                                        className={`${styles.compactDot} ${muted ? styles.badgeMuted : ''}`}
+                                        aria-hidden
+                                    />
+                                )}
+                            </Link>
+
+                            <ChatMuteMenu
+                                chatId={chat.id}
+                                mute={muted ? chat.mute : null}
+                                className={styles.menuButton}
+                            />
+                        </div>
+                    );
+                })}
+
+                <div ref={loadMoreRef} className={styles.sentinel} />
+                {query.isFetchingNextPage && (
+                    <div className={styles.item}>
+                        <Skeleton variant="rounded" className={styles.avatar} />
+                    </div>
+                )}
             </nav>
-
-            <Pagination
-                page={page}
-                hasMore={skip + CHATS_PAGE_SIZE < (data?.total ?? 0)}
-                onChange={setPage}
-            />
         </aside>
     );
 }

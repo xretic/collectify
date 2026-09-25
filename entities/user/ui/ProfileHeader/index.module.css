@@ -93,64 +93,78 @@
     display: none;
 }
 
-/* Phone: centered card, smaller avatar overlapping the banner, actions in the corner. */
+/* Phone: one row of avatar, name and actions, all vertically centered; bio and stats below. */
 @media (max-width: 600px) {
     .cover {
         height: 160px;
         border-radius: 0;
     }
 
-    .mobileStats {
-        display: flex;
-        margin-top: 16px;
-    }
-
     .card {
-        margin: -48px 12px 0;
-        padding: 0 16px 18px;
-    }
-
-    .actions {
-        top: 6px;
-        right: 6px;
-        gap: 0;
-    }
-
-    .identity {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            'avatar head actions'
+            'bio bio bio'
+            'stats stats stats';
         align-items: center;
-        gap: 10px;
-        text-align: center;
+        column-gap: 14px;
+        margin: -48px 12px 0;
+        padding: 16px;
+    }
+
+    /* Flatten so avatar, name block and bio become grid items of the card. */
+    .identity,
+    .info {
+        display: contents;
     }
 
     .avatar {
-        width: 88px !important;
-        height: 88px !important;
-        margin-top: -44px;
-        border-width: 3px;
-        border-color: var(--container-color);
-    }
-
-    .info {
-        align-items: center;
+        grid-area: avatar;
+        width: 68px !important;
+        height: 68px !important;
         margin-top: 0;
     }
 
-    .name {
-        justify-content: center;
-        font-size: 22px;
+    .head {
+        grid-area: head;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
     }
 
-    .username {
-        margin: 0 auto;
+    .actions {
+        position: static;
+        grid-area: actions;
+        gap: 0;
+        margin-right: -8px;
+    }
+
+    .name {
+        gap: 6px;
+        font-size: 20px;
+        overflow-wrap: anywhere;
     }
 
     .description {
-        justify-content: center;
-        text-align: center;
+        grid-area: bio;
+        max-width: none;
+        margin-top: 14px;
     }
 
-    .quoteIcon {
-        display: none !important;
+    .mobileStats {
+        display: flex;
+        grid-area: stats;
+        margin-top: 14px;
     }
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--soft-text);
 }

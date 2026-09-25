@@ -1,79 +1,119 @@
-// Uploadcare returns jQuery-style promises: `done` on success, `fail` on
-// cancel/error. Both must be handled or a closed dialog never settles.
-type UploadcarePromise<T> = {
-    done: (callback: (value: T) => void) => UploadcarePromise<T>;
-    fail: (callback: (error?: unknown) => void) => UploadcarePromise<T>;
-};
-type UploadcareFile = UploadcarePromise<{ cdnUrl: string }>;
-type UploadcareDialog = UploadcarePromise<UploadcareFile | null>;
-type UploadcareClient = {
-    openDialog: (
-        file: null,
-        options: { imagesOnly: boolean; multiple: boolean; crop: string },
-    ) => UploadcareDialog;
-};
+// Direct upload to Uploadcare's Upload API: no third-party widget script,
+// the user gets the native file picker on click.
 
-const WIDGET_SRC = 'https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js';
-const LOAD_TIMEOUT_MS = 15_000;
+import { editImage, type ImageCropOptions } from '@/shared/model/imageEditorStore';
 
-let loading: Promise<UploadcareClient> | null = null;
+const UPLOAD_URL = 'https://upload.uploadcare.com/base/';
 
-/** Loads the Uploadcare widget on first use instead of blocking every page. */
-function loadUploadcare(): Promise<UploadcareClient> {
-    const existing = (window as Window & { uploadcare?: UploadcareClient }).uploadcare;
-    if (existing) return Promise.resolve(existing);
+export const IMAGE_MAX_BYTES = 10 * 1024 * 1024;
+const ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/avif'];
 
-    loading ??= new Promise<UploadcareClient>((resolve, reject) => {
-        (window as Window & { UPLOADCARE_PUBLIC_KEY?: string }).UPLOADCARE_PUBLIC_KEY =
-            process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY;
+const publicKey = () => process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY?.trim() ?? '';
 
-        const script = document.createElement('script');
-        script.src = WIDGET_SRC;
-        script.async = true;
+let cdnBase: Promise<string> | null = null;
 
-        const timeout = setTimeout(
-            () => reject(new Error('Uploadcare took too long to load.')),
-            LOAD_TIMEOUT_MS,
-        );
-
-        script.onload = () => {
-            clearTimeout(timeout);
-            const client = (window as Window & { uploadcare?: UploadcareClient }).uploadcare;
-            if (client) resolve(client);
-            else reject(new Error('Uploadcare failed to initialise.'));
-        };
-        script.onerror = () => {
-            clearTimeout(timeout);
-            reject(new Error('Uploadcare failed to load.'));
-        };
-
-        document.body.appendChild(script);
-    }).catch((error) => {
-        loading = null;
-        throw error;
+/**
+ * Projects are served from `https://<prefix>.ucarecd.net`, where the prefix is
+ * the first 10 base-36 digits of SHA-256(public key) — the same derivation as
+ * Uploadcare's `@uploadcare/cname-prefix`. (The legacy `ucarecdn.com` host
+ * returns 404 for newer projects.)
+ */
+function getCdnBase(key: string): Promise<string> {
+    cdnBase ??= crypto.subtle.digest('SHA-256', new TextEncoder().encode(key)).then((digest) => {
+        const hex = [...new Uint8Array(digest)]
+            .map((byte) => byte.toString(16).padStart(2, '0'))
+            .join('');
+        return `https://${BigInt(`0x${hex}`).toString(36).slice(0, 10)}.ucarecd.net`;
     });
 
-    return loading;
+    return cdnBase;
 }
 
-/** Opens the image picker; resolves with the CDN URL, or `null` if cancelled. */
-export async function pickImage(): Promise<string | null> {
-    const uploadcare = await loadUploadcare();
+/** Opens the native file dialog; resolves with the chosen file or `null` if cancelled. */
+function chooseFile(): Promise<File | null> {
+    return new Promise((resolve) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = ACCEPTED_TYPES.join(',');
+        input.hidden = true;
+        // Some browsers (Safari) ignore detached file inputs.
+        document.body.appendChild(input);
 
-    return new Promise((resolve, reject) => {
-        uploadcare
-            .openDialog(null, { imagesOnly: true, multiple: false, crop: 'free' })
-            .done((file) => {
-                if (!file) {
-                    resolve(null);
-                    return;
-                }
+        let settled = false;
+        const finish = (file: File | null) => {
+            if (settled) return;
+            settled = true;
+            window.removeEventListener('focus', onFocus);
+            input.remove();
+            resolve(file);
+        };
 
-                file.done((info) => resolve(info.cdnUrl)).fail(() =>
-                    reject(new Error('Image upload failed.')),
-                );
-            })
-            // Closing the dialog without choosing a file lands here.
-            .fail(() => resolve(null));
+        // Browsers without the `cancel` event: the window regains focus when the
+        // dialog closes; if no file arrived shortly after, treat it as cancelled.
+        const onFocus = () => setTimeout(() => finish(input.files?.[0] ?? null), 500);
+
+        input.addEventListener('change', () => finish(input.files?.[0] ?? null));
+        input.addEventListener('cancel', () => finish(null));
+        window.addEventListener('focus', onFocus, { once: true });
+
+        input.click();
     });
+}
+
+/** Throws a user-facing error for files that cannot be uploaded. */
+export function assertUploadableImage(file: File) {
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+        throw new Error('Choose a PNG, JPG, WEBP or GIF image.');
+    }
+    if (file.size > IMAGE_MAX_BYTES) throw new Error('The image must be 10MB or smaller.');
+}
+
+/** Uploads an image and returns its CDN URL. */
+export async function uploadImage(file: File): Promise<string> {
+    const key = publicKey();
+    if (!key) throw new Error('Image uploads are not configured.');
+
+    assertUploadableImage(file);
+
+    const body = new FormData();
+    body.append('UPLOADCARE_PUB_KEY', key);
+    body.append('UPLOADCARE_STORE', 'auto');
+    body.append('file', file);
+
+    let response: Response;
+
+    try {
+        response = await fetch(UPLOAD_URL, { method: 'POST', body });
+    } catch {
+        throw new Error('Image upload failed. Check your connection.');
+    }
+
+    if (!response.ok) throw new Error('Image upload failed.');
+
+    const { file: uuid } = (await response.json()) as { file?: string };
+    if (!uuid) throw new Error('Image upload failed.');
+
+    return `${await getCdnBase(key)}/${uuid}/`;
+}
+
+/**
+ * Lets the user crop / rotate `file` in the image editor, then uploads the
+ * result; `null` when the editor is cancelled. GIFs are uploaded as they are,
+ * since re-encoding would drop the animation.
+ */
+export async function editAndUploadImage(
+    file: File,
+    crop?: ImageCropOptions,
+): Promise<string | null> {
+    assertUploadableImage(file);
+    if (file.type === 'image/gif') return uploadImage(file);
+
+    const edited = await editImage(file, crop);
+    return edited ? uploadImage(edited) : null;
+}
+
+/** Lets the user choose, edit and upload an image; `null` when any step is cancelled. */
+export async function pickImage(crop?: ImageCropOptions): Promise<string | null> {
+    const file = await chooseFile();
+    return file ? editAndUploadImage(file, crop) : null;
 }

@@ -3,19 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-    Button,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    Step,
-    StepLabel,
-    Stepper,
-} from '@mui/material';
+import { Button, Step, StepLabel, Stepper } from '@mui/material';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
-import { CATEGORIES, type Category } from '@/shared/lib/constants';
+import { CategorySelect } from '@/entities/category/ui/CategorySelect';
+import { TagPicker } from '@/features/tag/pick/ui/TagPicker';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import {
@@ -38,7 +30,6 @@ export default function CreateCollectionPage() {
 
     const [step, setStep] = useState(0);
     const [details, setDetails] = useState<CollectionDraft>(emptyCollectionDraft);
-    const [category, setCategory] = useState<Category | ''>('');
     const [item, setItem] = useState<ItemDraft>(emptyItemDraft);
 
     const detailsPayload = toCollectionPayload(details);
@@ -48,7 +39,6 @@ export default function CreateCollectionPage() {
         mutationFn: () =>
             collectionApi.create({
                 ...detailsPayload!,
-                category: category as Category,
                 item: itemPayload!,
             }),
         onSuccess: (id) => {
@@ -84,21 +74,21 @@ export default function CreateCollectionPage() {
                     <>
                         <CollectionDetailsFields value={details} onChange={setDetails} />
 
-                        <FormControl fullWidth required className={styles.category}>
-                            <InputLabel id="collection-category">Category</InputLabel>
-                            <Select
-                                labelId="collection-category"
-                                label="Category"
-                                value={category}
-                                onChange={(event) => setCategory(event.target.value as Category)}
-                            >
-                                {CATEGORIES.map((value) => (
-                                    <MenuItem key={value} value={value}>
-                                        {value}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <CategorySelect
+                            required
+                            className={styles.category}
+                            value={details.categoryId}
+                            // Tags belong to a category, so switching it clears them.
+                            onChange={(categoryId) =>
+                                setDetails({ ...details, categoryId, tags: [] })
+                            }
+                        />
+
+                        <TagPicker
+                            categoryId={details.categoryId}
+                            value={details.tags}
+                            onChange={(tags) => setDetails({ ...details, tags })}
+                        />
                     </>
                 ) : (
                     <ItemFormFields value={item} onChange={setItem} />
@@ -110,7 +100,7 @@ export default function CreateCollectionPage() {
                             <Button onClick={() => router.back()}>Cancel</Button>
                             <Button
                                 variant="contained"
-                                disabled={!detailsPayload || !category}
+                                disabled={!detailsPayload}
                                 onClick={() => setStep(1)}
                             >
                                 Next

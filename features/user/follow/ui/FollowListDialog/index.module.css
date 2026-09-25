@@ -1,0 +1,104 @@
+.paper {
+    height: min(620px, calc(100vh - 64px));
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 12px 8px 16px !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tabs {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    padding-bottom: 6px;
+}
+
+.tab {
+    height: 34px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.tab:hover {
+    color: var(--text-color);
+    background-color: color-mix(in srgb, var(--text-color) 7%, transparent);
+}
+
+.active {
+    color: var(--text-color);
+}
+
+.list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 6px 12px 12px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 4px;
+}
+
+.identity {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.avatar {
+    width: 44px !important;
+    height: 44px !important;
+}
+
+.names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.fullName,
+.username {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.fullName {
+    font-family: var(--font-google-sans), sans-serif;
+}
+
+.identity:hover .fullName {
+    text-decoration: underline;
+}
+
+.username {
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.follow {
+    flex-shrink: 0;
+    min-width: 96px !important;
+}
+
+.more {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+}

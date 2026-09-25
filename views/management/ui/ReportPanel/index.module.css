@@ -60,26 +60,6 @@
     color: var(--accent);
 }
 
-.conversation {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 360px;
-    overflow-y: auto;
-}
-
-.message {
-    padding: 8px 10px;
-    border-radius: var(--radius-sm);
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-
-.reported {
-    border: 1px solid var(--danger);
-    background: color-mix(in srgb, var(--danger) 8%, transparent);
-}
-
 .facts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

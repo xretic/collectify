@@ -1,0 +1,10 @@
+.option {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.country {
+    font-size: 12px;
+    color: var(--soft-text);
+}

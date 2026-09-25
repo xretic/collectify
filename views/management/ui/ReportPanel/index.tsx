@@ -162,22 +162,6 @@ export function ReportPanel({ reportId, isAdmin, onManageUser, onReviewed }: Rep
 
             <Section title="Evidence">
                 <Evidence report={report} />
-
-                {context.messages.length > 0 && (
-                    <div className={styles.conversation}>
-                        {context.messages.map((message) => (
-                            <div
-                                key={message.id}
-                                className={`${styles.message} ${message.reported ? styles.reported : ''}`}
-                            >
-                                <span className={styles.muted}>
-                                    @{message.authorUsername} · {formatDateTime(message.createdAt)}
-                                </span>
-                                <p>{message.content}</p>
-                            </div>
-                        ))}
-                    </div>
-                )}
             </Section>
 
             <Section title="Context">

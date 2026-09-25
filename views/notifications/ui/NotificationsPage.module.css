@@ -1,50 +1,87 @@
-.toolbar {
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: min(720px, calc(100% - 32px));
+    margin: 24px auto 40px;
+}
+
+.header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    max-width: 1150px;
-    margin: 20px auto 0;
-    padding: 20px 25px;
-    background-color: var(--container-color);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 28px;
+}
+
+.tabs {
+    position: relative;
+    display: flex;
+    gap: 6px;
+    padding-bottom: 6px;
+}
+
+/* Same pills as the rest of Collectify: accent when active, outlined otherwise. */
+.tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    color: var(--soft-text);
+    font-weight: 500;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.tab:hover {
+    color: var(--text-color);
+    background-color: color-mix(in srgb, var(--text-color) 7%, transparent);
+}
+
+.tabActive {
+    color: var(--text-color);
 }
 
 .counter {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 22px;
-    height: 22px;
-    margin-left: 8px;
-    padding: 0 4px;
-    border-radius: 11px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
     font-size: 12px;
-    background-color: color-mix(in srgb, currentColor 20%, transparent);
+    line-height: 20px;
+    text-align: center;
+    color: var(--on-accent);
+    background-color: var(--accent);
 }
 
-.markAll {
-    margin-left: auto !important;
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.groupTitle {
+    padding: 8px 12px 2px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    color: var(--soft-text);
 }
 
 .list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px 25px;
-    background-color: var(--container-color);
-    border-radius: 20px;
+    gap: 2px;
 }
 
-@media (max-width: 600px) {
-    .toolbar {
-        flex-wrap: wrap;
-        padding: 14px;
-    }
-
-    .list {
-        padding: 12px;
-    }
+.more {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
 }

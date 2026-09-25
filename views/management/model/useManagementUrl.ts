@@ -3,7 +3,9 @@
 import { useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export type ManagementTab = 'users' | 'reports';
+export type ManagementTab = 'users' | 'reports' | 'categories';
+
+const TABS: readonly ManagementTab[] = ['users', 'reports', 'categories'];
 
 const positiveInt = (value: string | null) => {
     const number = Number(value);
@@ -16,9 +18,13 @@ export function useManagementUrl() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const tab: ManagementTab = searchParams.get('tab') === 'reports' ? 'reports' : 'users';
+    const tabParam = searchParams.get('tab') as ManagementTab | null;
+    const tab: ManagementTab = tabParam && TABS.includes(tabParam) ? tabParam : 'users';
     const userId = positiveInt(searchParams.get('userId'));
     const reportId = positiveInt(searchParams.get('reportId'));
+    const categoryParam = searchParams.get('categoryId');
+    const categoryId: number | 'new' | null =
+        categoryParam === 'new' ? 'new' : positiveInt(categoryParam);
 
     const update = useCallback(
         (changes: Record<string, string | number | null>) => {
@@ -38,8 +44,10 @@ export function useManagementUrl() {
         tab,
         userId,
         reportId,
+        categoryId,
         setTab: (value: ManagementTab) => update({ tab: value === 'users' ? null : value }),
         selectUser: (id: number | null) => update({ userId: id }),
         selectReport: (id: number | null) => update({ reportId: id }),
+        selectCategory: (id: number | 'new' | null) => update({ categoryId: id }),
     };
 }

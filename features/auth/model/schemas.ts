@@ -1,5 +1,8 @@
 import { z } from 'zod';
 import {
+    birthDateSchema,
+    citySchema,
+    countrySchema,
     emailSchema,
     fullNameSchema,
     httpUrlSchema,
@@ -26,6 +29,9 @@ export const updateProfileSchema = z
         description: profileDescriptionSchema,
         avatarUrl: z.union([httpUrlSchema, z.literal('')]),
         bannerUrl: z.union([httpUrlSchema, z.literal('')]),
+        country: countrySchema,
+        city: citySchema,
+        birthDate: birthDateSchema,
     })
     .partial()
     .strict();

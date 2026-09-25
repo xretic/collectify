@@ -4,18 +4,17 @@
     "private": true,
     "scripts": {
         "postinstall": "prisma generate",
-        "dev": "node server.mjs",
+        "dev": "NODE_OPTIONS=--disable-warning=DEP0169 node server.mjs",
         "build": "prisma generate && next build",
         "start": "NODE_ENV=production node server.mjs",
         "lint": "eslint .",
         "typecheck": "next typegen && tsc --noEmit",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "test": "vitest run",
-        "test:watch": "vitest",
         "db:migrate": "prisma migrate deploy",
         "db:migrate:dev": "prisma migrate dev",
-        "admin": "node scripts/admin.mjs"
+        "admin": "node scripts/admin.mjs",
+        "prepare": "husky"
     },
     "dependencies": {
         "@dnd-kit/core": "^6.3.1",
@@ -30,11 +29,12 @@
         "@mui/material-nextjs": "^7.3.10",
         "@neondatabase/serverless": "^1.1.0",
         "@prisma/adapter-neon": "^7.8.0",
-        "@prisma/adapter-pg": "^7.8.0",
         "@prisma/client": "^7.8.0",
         "@tanstack/react-query": "^5.90.20",
         "@upstash/redis": "^1.36.2",
+        "all-the-cities": "^3.1.0",
         "bcrypt": "^6.0.0",
+        "countries-list": "^3.4.1",
         "dotenv": "^17.2.3",
         "ioredis": "^5.9.2",
         "ky": "^1.14.3",
@@ -44,6 +44,7 @@
         "pusher-js": "^8.5.0",
         "react": "19.2.3",
         "react-dom": "19.2.3",
+        "react-easy-crop": "^6.2.3",
         "react-hook-form": "^7.71.2",
         "recharts": "^3.8.0",
         "server-only": "^0.0.1",
@@ -62,11 +63,12 @@
         "@types/ws": "^8.18.1",
         "eslint": "^9",
         "eslint-config-next": "16.1.2",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.5.1",
         "prettier": "^3.8.0",
         "prettier-plugin-prisma": "^5.0.0",
         "prisma": "^7.8.0",
-        "typescript": "^5",
-        "vitest": "^5.0.1"
+        "typescript": "^5"
     },
     "engines": {
         "node": ">=20.9"

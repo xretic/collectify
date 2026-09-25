@@ -1,31 +1,50 @@
 import 'server-only';
 import { NextRequest } from 'next/server';
 import { ApiError } from './http';
-import { redis } from './redis';
+import { getRedis } from './redis';
 
 export type RateLimitPreset =
     | 'auth'
     | 'search'
+    | 'autocomplete'
     | 'mutation'
     | 'report'
     | 'message'
+    | 'realtime'
     | 'comment'
     | 'create';
 
 const PRESETS: Record<RateLimitPreset, { limit: number; windowSeconds: number }> = {
     auth: { limit: 8, windowSeconds: 60 },
     search: { limit: 60, windowSeconds: 60 },
+    autocomplete: { limit: 180, windowSeconds: 60 },
     mutation: { limit: 60, windowSeconds: 60 },
     report: { limit: 5, windowSeconds: 60 },
     message: { limit: 30, windowSeconds: 60 },
+    /** Typing pings (at most one a second per chat while typing). */
+    realtime: { limit: 120, windowSeconds: 60 },
     comment: { limit: 10, windowSeconds: 60 },
     create: { limit: 10, windowSeconds: 60 },
 };
 
 const memoryBuckets = new Map<string, { count: number; resetAt: number }>();
 
+/** Expired buckets are dropped at most this often, so the map cannot grow without bound. */
+const SWEEP_INTERVAL_MS = 60_000;
+let nextSweepAt = 0;
+
+function sweepExpired(now: number) {
+    if (now < nextSweepAt) return;
+    nextSweepAt = now + SWEEP_INTERVAL_MS;
+
+    for (const [key, bucket] of memoryBuckets) {
+        if (bucket.resetAt <= now) memoryBuckets.delete(key);
+    }
+}
+
 function memoryIncr(key: string, windowSeconds: number) {
     const now = Date.now();
+    sweepExpired(now);
     const bucket = memoryBuckets.get(key);
 
     if (!bucket || bucket.resetAt <= now) {
@@ -60,6 +79,7 @@ export async function enforceRateLimit(
     const window = Math.floor(Date.now() / (windowSeconds * 1000));
     const key = `ratelimit:${preset}:${subject}:${window}`;
 
+    const redis = getRedis();
     let count: number;
 
     try {

@@ -1,0 +1,16 @@
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 24px;
+}
+
+.hint {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--soft-text);
+}

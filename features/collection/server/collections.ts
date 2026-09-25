@@ -8,6 +8,8 @@ import {
     getOwnedCollection,
 } from '@/entities/collection/server/queries';
 import { writeAudit } from '@/entities/moderation/server/audit';
+import { assertActiveCategory } from '@/entities/category/server/queries';
+import { assertTagsInCategory, setCollectionTags } from '@/entities/tag/server/queries';
 import { assertCanModerate, toStaffContext, type Viewer } from '@/features/auth/server/guards';
 import type {
     CreateCollectionPayload,
@@ -20,16 +22,20 @@ export async function createCollection(userId: number, input: CreateCollectionPa
         throw forbidden(`You can have at most ${COLLECTIONS_PER_USER_LIMIT} collections.`);
     }
 
+    await assertActiveCategory(input.categoryId);
+    const tagIds = await assertTagsInCategory(input.tagIds, input.categoryId);
+
     const collection = await db.collection.create({
         data: {
             userId,
             name: input.name,
             lowerCaseName: input.name.toLowerCase(),
             description: input.description,
-            category: input.category,
+            categoryId: input.categoryId,
             bannerUrl: input.bannerUrl,
             private: input.isPrivate,
             items: { create: { ...input.item, order: 0 } },
+            tags: { create: tagIds.map((tagId) => ({ tagId })) },
         },
         select: { id: true },
     });
@@ -46,15 +52,29 @@ export async function updateCollection(
 ) {
     await getOwnedCollection(collectionId, userId);
 
-    await db.collection.update({
+    const current = await db.collection.findUnique({
         where: { id: collectionId },
-        data: {
-            name: input.name,
-            lowerCaseName: input.name.toLowerCase(),
-            description: input.description,
-            bannerUrl: input.bannerUrl,
-            private: input.isPrivate,
-        },
+        select: { categoryId: true },
+    });
+    // Keeping an archived category is fine; switching into one is not.
+    if (current?.categoryId !== input.categoryId) await assertActiveCategory(input.categoryId);
+
+    await db.$transaction(async (tx) => {
+        const tagIds = await assertTagsInCategory(input.tagIds, input.categoryId, tx);
+
+        await tx.collection.update({
+            where: { id: collectionId },
+            data: {
+                name: input.name,
+                lowerCaseName: input.name.toLowerCase(),
+                description: input.description,
+                categoryId: input.categoryId,
+                bannerUrl: input.bannerUrl,
+                private: input.isPrivate,
+            },
+        });
+
+        await setCollectionTags(tx, collectionId, tagIds);
     });
 
     await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);

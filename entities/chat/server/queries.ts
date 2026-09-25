@@ -44,3 +44,37 @@ export async function getChatForParticipant(chatId: number, viewerId: number) {
         otherUser: chat.users.find((user) => user.id !== viewerId) ?? null,
     };
 }
+
+/** Presence is only tracked for this many most recently active chats. */
+const PRESENCE_CHATS_LIMIT = 200;
+
+/**
+ * The other participants of the user's most recently active direct chats (who
+ * see their online status). Bounded so presence fan-out stays cheap for users
+ * with a very long chat list.
+ */
+export async function getChatPartnerIds(userId: number): Promise<number[]> {
+    const chats = await db.chat.findMany({
+        where: { users: { some: { id: userId } } },
+        orderBy: [{ lastMessageAt: 'desc' }, { id: 'desc' }],
+        take: PRESENCE_CHATS_LIMIT,
+        select: { users: { where: { id: { not: userId } }, select: { id: true } } },
+    });
+
+    return [...new Set(chats.flatMap((chat) => chat.users.map((user) => user.id)))];
+}
+
+/** Mute that is still in effect (not expired), as `{ until }`, otherwise `null`. */
+export function activeMute(row: { until: Date | null } | null | undefined, now = new Date()) {
+    if (!row || (row.until && row.until <= now)) return null;
+    return { until: row.until?.toISOString() ?? null };
+}
+
+export async function isChatMuted(userId: number, chatId: number) {
+    const row = await db.chatMute.findUnique({
+        where: { userId_chatId: { userId, chatId } },
+        select: { until: true },
+    });
+
+    return activeMute(row) !== null;
+}

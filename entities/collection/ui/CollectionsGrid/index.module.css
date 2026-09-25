@@ -1,23 +1,13 @@
-/*
- * Fixed-width card columns spread edge to edge, so the first and last columns
- * line up with the filters above (categories on the left, sort on the right).
- */
+/* Fluid columns: more cards on wide screens, a single column on phones. */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 256px);
-    justify-content: space-between;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 21px;
     margin-top: 25px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 560px) {
     .grid {
-        grid-template-columns: repeat(auto-fill, min(356px, 100%));
-    }
-}
-
-@media (max-width: 830px) {
-    .grid {
-        justify-content: center;
+        grid-template-columns: 1fr;
     }
 }

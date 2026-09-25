@@ -5,8 +5,37 @@
 }
 
 .tabs {
+    position: relative;
     display: flex;
     gap: 6px;
+    padding-bottom: 6px;
+}
+
+.tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-weight: 500;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.tab:hover {
+    color: var(--text-color);
+    background-color: color-mix(in srgb, var(--text-color) 7%, transparent);
+}
+
+.active,
+.active:hover {
+    color: var(--text-color);
 }
 
 .divider {
@@ -18,7 +47,7 @@
 @media (max-width: 600px) {
     .tabs > * {
         flex: 1 1 0;
-        min-width: 0 !important;
-        padding-inline: 8px !important;
+        min-width: 0;
+        padding-inline: 8px;
     }
 }

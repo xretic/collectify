@@ -1,30 +1,39 @@
-import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@mui/material';
-import { RelativeTime } from '@/shared/ui/RelativeTime';
+import { formatDateTime } from '@/shared/lib/format/date';
+import type { BubblePosition } from '../../lib/layoutMessages';
 import type { ChatMessage } from '../../model/types';
 import styles from './index.module.css';
 
-export function MessageBubble({ message, actions }: { message: ChatMessage; actions?: ReactNode }) {
+type MessageBubbleProps = {
+    message: ChatMessage;
+    /** Sent by the viewer: right side, accent color, no avatar. */
+    own: boolean;
+    position: BubblePosition;
+};
+
+export function MessageBubble({ message, own, position }: MessageBubbleProps) {
+    const showAvatar = !own && (position === 'single' || position === 'last');
+
     return (
-        <div className={styles.message}>
-            <Avatar
-                src={message.author.avatarUrl}
-                alt={message.author.username}
-                className={styles.avatar}
-            />
+        <div className={`${styles.row} ${own ? styles.own : ''} ${styles[position]}`}>
+            {!own && (
+                <span className={styles.avatarSlot}>
+                    {showAvatar && (
+                        <Link href={`/users/${message.author.id}`} tabIndex={-1}>
+                            <Avatar
+                                src={message.author.avatarUrl}
+                                alt={message.author.username}
+                                className={styles.avatar}
+                            />
+                        </Link>
+                    )}
+                </span>
+            )}
 
-            <div className={styles.body}>
-                <p className={styles.meta}>
-                    <Link href={`/users/${message.author.id}`} className={styles.username}>
-                        {message.author.username}
-                    </Link>
-                    <RelativeTime value={message.createdAt} className={styles.date} />
-                </p>
-                <p className={styles.content}>{message.content}</p>
-            </div>
-
-            {actions && <div className={styles.actions}>{actions}</div>}
+            <p className={styles.bubble} title={formatDateTime(message.createdAt)}>
+                {message.content}
+            </p>
         </div>
     );
 }

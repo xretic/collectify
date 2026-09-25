@@ -17,10 +17,12 @@ function toSearchParams(params: CollectionListParams) {
     const searchParams = new URLSearchParams({ sort: params.sort, page: String(params.page) });
 
     if (params.category) searchParams.set('category', params.category);
+    if (params.tags?.length) searchParams.set('tags', params.tags.join(','));
     if (params.query) searchParams.set('query', params.query);
     if (params.authorId) searchParams.set('authorId', String(params.authorId));
     if (params.visibility) searchParams.set('visibility', params.visibility);
     if (params.favorites) searchParams.set('favorites', 'true');
+    if (params.board) searchParams.set('board', String(params.board));
 
     return searchParams;
 }
@@ -29,6 +31,15 @@ export const collectionApi = {
     list(params: CollectionListParams) {
         return api
             .get('collections', { searchParams: toSearchParams(params) })
+            .json<CollectionListPage>();
+    },
+
+    /** Personal feed, or collections similar to one of the viewer's boards. */
+    recommendations(page: number, board?: number) {
+        return api
+            .get('recommendations', {
+                searchParams: { page, ...(board ? { board } : {}) },
+            })
             .json<CollectionListPage>();
     },
 
@@ -69,10 +80,10 @@ export const collectionApi = {
             .json<CommentsPage>();
     },
 
-    async addComment(collectionId: number, text: string) {
+    async addComment(collectionId: number, text: string, replyToId?: number) {
         return (
             await api
-                .post(`${url(collectionId)}/comments`, { json: { text } })
+                .post(`${url(collectionId)}/comments`, { json: { text, replyToId } })
                 .json<{ comment: CollectionComment }>()
         ).comment;
     },

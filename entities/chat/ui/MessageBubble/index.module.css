@@ -1,60 +1,83 @@
-.message {
-    position: relative;
+/* Runs of one author's messages share a column with tight inner corners. */
+.row {
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 4px 8px 4px 0;
-    border-radius: 14px;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.middle,
+.last {
+    margin-top: 2px;
+}
+
+.own {
+    flex-direction: row-reverse;
+}
+
+.avatarSlot {
+    flex: 0 0 28px;
+    width: 28px;
 }
 
 .avatar {
-    width: 35px !important;
-    height: 35px !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
 }
 
-.body {
-    flex: 1;
-    min-width: 0;
-}
-
-.meta {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-
-.username {
-    font-family: var(--font-google-sans), sans-serif;
-    font-size: 13px;
-}
-
-.username:hover {
-    text-decoration: underline;
-}
-
-.date {
-    color: var(--soft-text);
-    font-size: 13px;
-}
-
-.date::before {
-    content: '·';
-    margin-right: 6px;
-}
-
-.content {
+.bubble {
+    max-width: min(60%, 560px);
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 15px;
+    line-height: 1.35;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+    background: color-mix(in srgb, var(--text-color) 8%, var(--container-color));
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-.actions {
-    margin-left: auto;
-    color: var(--soft-text);
-    opacity: 0;
-    transition: opacity 0.18s ease;
+.own .bubble {
+    color: var(--on-accent);
+    background: var(--accent);
 }
 
-.message:hover .actions,
-.actions:focus-within {
-    opacity: 1;
+/* Inner corners of a group (left for the partner, right for the viewer). */
+.first .bubble {
+    border-bottom-left-radius: 6px;
+}
+
+.middle .bubble {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.last .bubble {
+    border-top-left-radius: 6px;
+}
+
+.own.first .bubble,
+.own.middle .bubble,
+.own.last .bubble {
+    border-radius: 18px;
+}
+
+.own.first .bubble {
+    border-bottom-right-radius: 6px;
+}
+
+.own.middle .bubble {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.own.last .bubble {
+    border-top-right-radius: 6px;
+}
+
+@media (max-width: 767px) {
+    .bubble {
+        max-width: 78%;
+    }
 }

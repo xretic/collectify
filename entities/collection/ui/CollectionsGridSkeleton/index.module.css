@@ -1,12 +1,6 @@
 .card {
-    width: 256px !important;
-    max-width: 100%;
-    height: 256px !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1;
     border-radius: 20px !important;
-}
-
-@media (max-width: 1000px) {
-    .card {
-        width: 356px !important;
-    }
 }

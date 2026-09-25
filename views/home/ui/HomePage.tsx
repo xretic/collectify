@@ -1,59 +1,134 @@
 'use client';
 
-import { Avatar } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
+import { Button } from '@mui/material';
 import { useSessionUser } from '@/entities/user/model/useSessionUser';
-import { useCollectionList } from '@/entities/collection/model/useCollectionList';
+import { useCollectionFeed } from '@/entities/collection/model/useCollectionFeed';
+import { useRecommendations } from '@/entities/collection/model/useRecommendations';
 import { CollectionsGrid } from '@/entities/collection/ui/CollectionsGrid';
 import { CollectionsGridSkeleton } from '@/entities/collection/ui/CollectionsGridSkeleton';
+import { CategoryMenu } from '@/entities/category/ui/CategoryMenu';
+import { useCategories } from '@/entities/category/model/useCategories';
 import { useCollectionListParams } from '@/features/collection/browse/model/useCollectionListParams';
 import { CollectionFilters } from '@/features/collection/browse/ui/CollectionFilters';
-import { CategoryChips } from '@/features/collection/browse/ui/CategoryChips';
-import { Pagination } from '@/shared/ui/Pagination';
+import { TagFilter } from '@/features/tag/filter/ui/TagFilter';
+import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll';
+import { EmptyState } from '@/shared/ui/EmptyState';
+import { Spinner } from '@/shared/ui/Spinner';
+import { PeopleYouMayKnow } from '@/widgets/people-you-may-know/ui/PeopleYouMayKnow';
+import { FeedTabs, type Feed } from './FeedTabs';
 import styles from './HomePage.module.css';
+
+/** Feed from the URL: signed-in users land on "For you"; filters and tags imply "Explore". */
+function useFeed(signedIn: boolean): Feed {
+    const searchParams = useSearchParams();
+    const board = Number(searchParams.get('board'));
+
+    if (!signedIn) return { kind: 'explore' };
+    if (Number.isInteger(board) && board > 0) return { kind: 'board', boardId: board };
+
+    const filtered = ['category', 'tag', 'q', 'sort'].some((key) => searchParams.has(key));
+    if (searchParams.get('feed') === 'explore' || filtered) return { kind: 'explore' };
+
+    return { kind: 'for-you' };
+}
 
 export default function HomePage() {
     const { user, loading } = useSessionUser();
     const list = useCollectionListParams();
+    const feed = useFeed(Boolean(user));
+    const { bySlug } = useCategories();
+    const categoryId = list.category ? (bySlug.get(list.category)?.id ?? null) : null;
 
-    const { data, isPending } = useCollectionList(
-        { sort: list.sort, page: list.page, category: list.category, query: list.query },
+    const explore = useCollectionFeed(
+        { sort: list.sort, category: list.category, tags: list.tags, query: list.query },
         // Wait for the session: signed-in users get followed authors first.
-        !loading,
+        !loading && feed.kind === 'explore',
     );
+
+    const recommended = useRecommendations(
+        feed.kind === 'board' ? feed.boardId : undefined,
+        Boolean(user) && feed.kind !== 'explore',
+    );
+
+    const active = feed.kind === 'explore' ? explore : recommended;
+
+    const loadMoreRef = useInfiniteScroll({
+        hasMore: active.hasNextPage,
+        loading: active.isFetchingNextPage,
+        onLoadMore: active.fetchNextPage,
+    });
+
+    const selectFeed = (next: Feed) =>
+        list.update({
+            feed: next.kind === 'explore' ? 'explore' : undefined,
+            board: next.kind === 'board' ? next.boardId : undefined,
+            category: undefined,
+            tag: undefined,
+            q: undefined,
+            sort: undefined,
+        });
 
     return (
         <section className={styles.page}>
-            <h1 className={styles.greeting}>
-                {user ? (
-                    <>
-                        <Avatar
-                            src={user.avatarUrl}
-                            alt={user.username}
-                            className={styles.avatar}
-                        />
-                        Welcome back, {user.username}!
-                    </>
-                ) : (
-                    'Discover collections'
-                )}
-            </h1>
-
-            <CollectionFilters
-                sort={list.sort}
-                onSortChange={list.setSort}
-                query={list.queryInput}
-                onQueryChange={list.setQueryInput}
-            >
-                <CategoryChips value={list.category} onChange={list.setCategory} />
-            </CollectionFilters>
-
-            {isPending || !data ? (
-                <CollectionsGridSkeleton />
+            {user ? (
+                <FeedTabs value={feed} onChange={selectFeed} />
             ) : (
-                <CollectionsGrid collections={data.data} />
+                <h1 className={styles.greeting}>Discover collections</h1>
             )}
 
-            <Pagination page={list.page} hasMore={data?.hasMore ?? false} onChange={list.setPage} />
+            <div className={styles.layout}>
+                <div className={styles.feed}>
+                    {feed.kind === 'explore' && (
+                        <CollectionFilters
+                            sort={list.sort}
+                            onSortChange={list.setSort}
+                            query={list.queryInput}
+                            onQueryChange={list.setQueryInput}
+                        >
+                            <div className={styles.filters}>
+                                <CategoryMenu value={list.category} onChange={list.setCategory} />
+                                <TagFilter
+                                    categoryId={categoryId}
+                                    value={list.tags}
+                                    onChange={list.setTags}
+                                />
+                            </div>
+                        </CollectionFilters>
+                    )}
+
+                    {active.isPending || loading ? (
+                        <CollectionsGridSkeleton />
+                    ) : active.collections.length === 0 && feed.kind !== 'explore' ? (
+                        <EmptyState
+                            title="Nothing to suggest yet"
+                            description={
+                                feed.kind === 'board'
+                                    ? 'Save a few collections with tags to this board first.'
+                                    : 'Like and save collections to tune your feed.'
+                            }
+                        />
+                    ) : (
+                        <CollectionsGrid collections={active.collections} />
+                    )}
+
+                    {active.hasNextPage && (
+                        <div ref={loadMoreRef} className={styles.more}>
+                            {active.isFetchingNextPage ? (
+                                <Spinner />
+                            ) : (
+                                <Button onClick={() => active.fetchNextPage()}>Load more</Button>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {user && (
+                    <aside className={styles.aside}>
+                        <PeopleYouMayKnow />
+                    </aside>
+                )}
+            </div>
         </section>
     );
 }

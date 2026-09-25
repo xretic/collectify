@@ -10,7 +10,7 @@ import {
     type SanctionScope,
 } from '@/entities/sanction/model/types';
 import { writeAudit } from '@/entities/moderation/server/audit';
-import { notifySystem } from '@/entities/notification/server/notifications';
+import { deliverNotifications, notifySystem } from '@/entities/notification/server/notifications';
 import { getUserRoles } from '@/entities/user/server/roles';
 import { COLLECTIONS_CACHE_NAMESPACE } from '@/entities/collection/server/queries';
 
@@ -31,7 +31,9 @@ export async function issueManualSanction(
     if (expiresAt === null && !ctx.isAdmin)
         throw forbidden('Only admins can issue permanent sanctions.');
 
-    return db.$transaction(async (tx) => {
+    let notificationId: number | null = null;
+
+    const outcome = await db.$transaction(async (tx) => {
         const result = await issueSanction(tx, {
             userId: targetUserId,
             moderatorId: ctx.userId,
@@ -56,10 +58,13 @@ export async function issueManualSanction(
             tx,
         );
 
-        if (result.applied) await notifySystem(targetUserId, 'SANCTION', tx);
+        if (result.applied) notificationId = await notifySystem(targetUserId, 'SANCTION', tx);
 
         return result;
     });
+
+    await deliverNotifications([notificationId]);
+    return outcome;
 }
 
 /**

@@ -47,17 +47,4 @@ export type ManagedComment = {
     collection: { id: number; name: string };
 };
 
-export type ManagedChat = {
-    id: number;
-    users: UserPreview[];
-    messages: {
-        id: number;
-        authorId: number;
-        authorUsername: string;
-        content: string;
-        createdAt: string;
-        read: boolean;
-    }[];
-};
-
 export type HistoryPage<T> = { data: T[]; total: number; nextSkip: number | null };

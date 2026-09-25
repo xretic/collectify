@@ -1,15 +1,25 @@
+/* Fills its grid cell; the cell decides the footprint (see CollectionItemsGrid). */
 .card {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     height: 100%;
     overflow: hidden;
-    background: var(--container-color);
     border: 1px solid var(--border-color);
-    border-radius: 14px;
-    transition: border-color 200ms ease;
+    border-radius: var(--radius-md);
+    background-color: var(--container-color);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
 }
 
 .card:hover {
-    border-color: var(--accent);
+    border-color: var(--soft-text);
+}
+
+.card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .image {
@@ -18,80 +28,162 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.85;
 }
 
 .body {
-    position: relative;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 0;
+    padding: 14px 16px;
 }
 
 .withImage .body {
+    position: relative;
+    margin-top: auto;
+    padding-top: 36px;
     color: #ffffff;
-    background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.35) 0%,
-        rgba(0, 0, 0, 0.15) 40%,
-        rgba(0, 0, 0, 0) 100%
-    );
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 8px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
 }
 
 .title {
-    font-size: 18px;
-    line-height: 1.2;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-}
-
-.headerActions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-}
-
-.dragHandle,
-.sourceLink {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    color: inherit;
-    transition: background 200ms ease;
-}
-
-.dragHandle {
-    cursor: grab;
-    touch-action: none;
-}
-
-.dragHandle:active {
-    cursor: grabbing;
-}
-
-.dragHandle:hover,
-.sourceLink:hover {
-    background: color-mix(in srgb, currentColor 12%, transparent);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 16px;
+    line-height: 1.3;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .description {
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.45;
     display: -webkit-box;
     line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     overflow-wrap: anywhere;
+}
+
+.textOnly .description {
+    color: var(--soft-text);
+    line-clamp: 5;
+    -webkit-line-clamp: 5;
+}
+
+.withImage .description {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.source {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--accent);
+}
+
+.withImage .source {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Text cards: the text sits in the middle and grows with the tile. */
+.textOnly .body {
+    flex: 1;
+    justify-content: center;
+    gap: 8px;
+    padding: 18px 20px;
+}
+
+.textOnly .title {
+    white-space: normal;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.textOnly.sizeL .title,
+.textOnly.sizeXL .title {
+    font-size: 24px;
+}
+
+.textOnly.sizeL .description,
+.textOnly.sizeXL .description {
+    max-width: 640px;
+    font-size: 15px;
+    line-clamp: 8;
+    -webkit-line-clamp: 8;
+}
+
+.textOnly.sizeS .description {
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+}
+
+.sourceIcon {
+    font-size: 14px !important;
+}
+
+.source span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.source:hover span {
+    text-decoration: underline;
+}
+
+/* Owner controls appear on hover (always on touch screens). */
+.controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.card:hover .controls,
+.card:focus-within .controls {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .controls {
+        opacity: 1;
+    }
+}
+
+.control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+    background-color: var(--container-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.control :global(.MuiIconButton-root) {
+    color: inherit;
+}
+
+button.control {
+    cursor: grab;
+    touch-action: none;
+}
+
+button.control:active {
+    cursor: grabbing;
 }

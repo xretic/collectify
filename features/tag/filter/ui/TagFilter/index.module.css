@@ -1,0 +1,44 @@
+.field {
+    flex: 1 1 260px;
+    min-width: 220px;
+    max-width: 480px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+}
+
+.name {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+
+.category {
+    font-size: 12px;
+    color: var(--soft-text);
+    white-space: nowrap;
+}
+
+.usage {
+    font-size: 12px;
+    color: var(--soft-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.icon {
+    margin-left: 4px;
+    font-size: 18px !important;
+    color: var(--soft-text);
+}
+
+@media (max-width: 600px) {
+    .field {
+        max-width: none;
+    }
+}

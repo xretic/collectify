@@ -14,7 +14,7 @@ type ResolvedTarget = {
     targetUserId: number;
     targetId: number;
     snapshot: ReportSnapshot | null;
-    relation: Pick<Prisma.ReportUncheckedCreateInput, 'messageId' | 'commentId' | 'collectionId'>;
+    relation: Pick<Prisma.ReportUncheckedCreateInput, 'commentId' | 'collectionId'>;
 };
 
 /** Finds what is being reported, checks the reporter can see it and snapshots it. */
@@ -28,35 +28,6 @@ async function resolveTarget(target: ReportTarget, reporterId: number): Promise<
             if (!user) throw notFound('User not found.');
 
             return { targetUserId: user.id, targetId: user.id, snapshot: null, relation: {} };
-        }
-
-        case 'MESSAGE': {
-            const message = await db.message.findUnique({
-                where: { id: target.messageId },
-                select: {
-                    id: true,
-                    userId: true,
-                    chatId: true,
-                    content: true,
-                    createdAt: true,
-                    chat: {
-                        select: { users: { where: { id: reporterId }, select: { id: true } } },
-                    },
-                },
-            });
-            if (!message) throw notFound('Message not found.');
-            if (message.chat.users.length === 0) throw forbidden();
-
-            return {
-                targetUserId: message.userId,
-                targetId: message.id,
-                snapshot: {
-                    text: message.content,
-                    chatId: message.chatId,
-                    createdAt: message.createdAt.toISOString(),
-                },
-                relation: { messageId: message.id },
-            };
         }
 
         case 'COMMENT': {
@@ -97,7 +68,7 @@ async function resolveTarget(target: ReportTarget, reporterId: number): Promise<
                     private: true,
                     name: true,
                     description: true,
-                    category: true,
+                    category: { select: { name: true } },
                     createdAt: true,
                 },
             });
@@ -113,7 +84,7 @@ async function resolveTarget(target: ReportTarget, reporterId: number): Promise<
                 snapshot: {
                     name: collection.name,
                     description: collection.description,
-                    category: collection.category,
+                    category: collection.category.name,
                     createdAt: collection.createdAt.toISOString(),
                 },
                 relation: { collectionId: collection.id },

@@ -1,8 +1,21 @@
+# dependencies & lockfiles
 node_modules
+package-lock.json
+
+# build output
 .next
+out
+build
+coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# generated
 generated
 collectify-generator
 prisma/migrations
-package-lock.json
-docs
+
+# local tooling
 .claude
+.idea
+docs

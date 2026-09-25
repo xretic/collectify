@@ -1,16 +1,22 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce';
-import { CATEGORIES, type Category } from '@/shared/lib/constants';
+import { FEED_TAGS_LIMIT } from '@/shared/lib/constants';
 import { COLLECTION_SORTS, type CollectionSort } from '@/entities/collection/model/types';
 
 const isSort = (value: string | null): value is CollectionSort =>
     COLLECTION_SORTS.includes(value as CollectionSort);
 
-const isCategory = (value: string | null): value is Category =>
-    CATEGORIES.includes(value as Category);
+/** `?tag=3,7` → [3, 7]: valid, unique ids, at most `FEED_TAGS_LIMIT`. */
+function parseTagIds(value: string) {
+    const ids = value
+        .split(',')
+        .map(Number)
+        .filter((id) => Number.isInteger(id) && id > 0);
+    return [...new Set(ids)].slice(0, FEED_TAGS_LIMIT);
+}
 
 /**
  * Sort / page / category / search of a collection list, kept in the URL so
@@ -26,7 +32,9 @@ export function useCollectionListParams() {
     const urlQuery = searchParams.get('q') ?? '';
 
     const sort: CollectionSort = isSort(sortParam) ? sortParam : 'popular';
-    const category: Category | undefined = isCategory(categoryParam) ? categoryParam : undefined;
+    const category = categoryParam?.trim() || undefined;
+    const tagParam = searchParams.get('tag') ?? '';
+    const tags = useMemo(() => parseTagIds(tagParam), [tagParam]);
     const page = Math.max(0, Number(searchParams.get('page')) || 0);
 
     // The input updates instantly; the URL (and the request) follows after a debounce.
@@ -58,12 +66,15 @@ export function useCollectionListParams() {
         sort,
         page,
         category,
+        tags,
         query: urlQuery,
         queryInput,
         setQueryInput,
         setSort: (value: CollectionSort) =>
             update({ sort: value === 'popular' ? undefined : value }),
-        setCategory: (value: Category | undefined) => update({ category: value }),
+        // Tags only make sense inside their category, so changing it drops them.
+        setCategory: (value: string | undefined) => update({ category: value, tag: undefined }),
+        setTags: (value: number[]) => update({ tag: value.join(',') }),
         setPage: (value: number) => update({ page: value }, false),
         update,
     };

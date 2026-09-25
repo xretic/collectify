@@ -1,0 +1,36 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: min(1100px, calc(100% - 32px));
+    margin: 32px auto 0;
+    padding-bottom: 96px;
+}
+
+.header {
+    text-align: center;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 34px;
+}
+
+.subtitle {
+    margin-top: 6px;
+    color: var(--soft-text);
+}
+
+/* Actions stay reachable while scrolling through the categories. */
+.footer {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 0 -16px;
+    padding: 14px 16px;
+    border-top: 1px solid var(--border-color);
+    background-color: color-mix(in srgb, var(--bg-color) 92%, transparent);
+    backdrop-filter: blur(8px);
+}

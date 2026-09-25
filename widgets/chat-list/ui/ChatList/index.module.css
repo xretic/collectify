@@ -1,76 +1,114 @@
 .sidebar {
-    position: sticky;
-    top: 20px;
     display: flex;
     flex-direction: column;
-    height: 725px;
-    padding: 18px;
-    background-color: var(--container-color);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    min-height: 0;
 }
 
 .header {
-    padding: 6px 6px 14px;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+    margin: 0 18px;
+    padding: 18px 4px 14px;
     border-bottom: 1px solid var(--border-color);
 }
 
 .title {
     font-family: var(--font-google-sans), sans-serif;
-    font-size: 16px;
+    font-size: 22px;
+}
+
+.headerBadge {
+    padding: 1px 9px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 13px;
+    color: var(--on-accent);
+    background: var(--accent);
 }
 
 .list {
-    flex: 1;
-    margin-top: 12px;
-    padding-right: 6px;
-    overflow: auto;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 0;
+    padding: 10px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.row {
+    position: relative;
+    flex: 0 0 auto;
 }
 
 .item {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
     width: 100%;
     padding: 10px;
-    border: 1px solid transparent;
-    border-radius: 16px;
-    transition:
-        background 150ms ease,
-        border-color 150ms ease;
+    border-radius: var(--radius-lg);
+    transition: background-color 0.15s ease;
 }
 
-a.item:hover,
-.itemActive {
-    background: color-mix(in srgb, var(--text-color) 5%, transparent);
-    border-color: var(--border-color);
+.row:hover a.item {
+    background-color: color-mix(in srgb, var(--text-color) 6%, transparent);
+}
+
+.itemActive,
+.row:hover a.itemActive {
+    background-color: color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .avatar {
+    width: 48px !important;
+    height: 48px !important;
     flex: 0 0 auto;
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 14px !important;
+    border-radius: 50% !important;
 }
 
 .meta {
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
+    min-width: 0;
+}
+
+.line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     min-width: 0;
 }
 
 .username,
 .preview {
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .username {
+    flex: 0 1 auto;
     font-family: var(--font-google-sans), sans-serif;
-    font-size: 14px;
+    font-size: 15px;
+}
+
+.time {
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: var(--soft-text);
+    font-size: 12px;
 }
 
 .preview {
@@ -78,23 +116,154 @@ a.item:hover,
     font-size: 13px;
 }
 
-.badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
-    background: color-mix(in srgb, var(--soft-text) 30%, transparent);
+.typing {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
 }
 
-@media (max-width: 980px) {
-    .sidebar {
-        position: relative;
-        top: 0;
-        height: auto;
+.itemUnread .preview {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.itemUnread .time {
+    color: var(--accent);
+}
+
+.badge {
+    flex: 0 0 auto;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    color: var(--on-accent);
+    background: var(--accent);
+}
+
+.compactDot {
+    display: none;
+}
+
+.mutedIcon {
+    flex: 0 0 auto;
+    width: 15px !important;
+    height: 15px !important;
+    margin-left: -4px;
+    color: var(--soft-text);
+}
+
+.badgeMuted {
+    color: var(--container-color);
+    background: var(--soft-text);
+}
+
+/* "⋯" chat actions: over the time, shown while the row is hovered or focused. */
+.menuButton {
+    position: absolute !important;
+    top: 6px;
+    right: 6px;
+    width: 30px;
+    height: 30px;
+    color: var(--soft-text) !important;
+    background-color: var(--container-color) !important;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.menuButton:hover {
+    color: var(--text-color) !important;
+    background-color: color-mix(in srgb, var(--text-color) 8%, var(--container-color)) !important;
+}
+
+.row:hover .menuButton,
+.row:focus-within .menuButton {
+    opacity: 1;
+    visibility: visible;
+}
+
+.row:hover .time,
+.row:focus-within .time {
+    visibility: hidden;
+}
+
+/* Touch screens have no hover: keep the button, move the time away from it. */
+@media (hover: none) {
+    .menuButton {
+        opacity: 1;
+        visibility: visible;
+        background-color: transparent !important;
+    }
+
+    .item .line:first-child {
+        padding-right: 30px;
+    }
+
+    .row:focus-within .time {
+        visibility: visible;
+    }
+}
+
+.empty {
+    padding: 24px;
+    color: var(--soft-text);
+    font-size: 14px;
+    text-align: center;
+}
+
+.sentinel {
+    height: 1px;
+    flex: 0 0 auto;
+}
+
+/* Tablet: avatars only. */
+@media (min-width: 768px) and (max-width: 1099px) {
+    .header,
+    .meta,
+    .empty {
+        display: none;
+    }
+
+    .list {
+        padding: 10px 8px;
+    }
+
+    .item {
+        justify-content: center;
+        padding: 8px 0;
+    }
+
+    .menuButton {
+        display: none !important;
+    }
+
+    .compactDot {
+        position: absolute;
+        top: 6px;
+        right: 8px;
+        display: block;
+        width: 10px;
+        height: 10px;
+        border: 2px solid var(--container-color);
+        border-radius: 50%;
+        background: var(--accent);
+    }
+}
+
+@media (max-width: 767px) {
+    .header {
+        margin: 0 14px;
+        padding: 14px 4px 12px;
+    }
+
+    .list {
+        padding: 8px;
     }
 }

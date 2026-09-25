@@ -11,6 +11,7 @@ const PRIVATE_PAGES = [
     /^\/settings$/,
     /^\/chats(\/.*)?$/,
     /^\/management$/,
+    /^\/onboarding$/,
 ];
 
 function isCrossSite(req: NextRequest) {

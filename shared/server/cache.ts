@@ -1,5 +1,8 @@
 import 'server-only';
-import { redis } from './redis';
+import { getRedis } from './redis';
+
+/** Cache fills in progress in this process, by full key. */
+const inflight = new Map<string, Promise<unknown>>();
 
 /**
  * Cache-aside for responses that do not depend on the viewer. Keys live under
@@ -12,6 +15,7 @@ export async function withCache<T>(
     ttlSeconds: number,
     fetcher: () => Promise<T>,
 ): Promise<T> {
+    const redis = getRedis();
     if (!redis) return fetcher();
 
     let fullKey: string;
@@ -27,18 +31,30 @@ export async function withCache<T>(
         return fetcher();
     }
 
-    const value = await fetcher();
+    // Concurrent misses of one key in this process share a single fetch, so an
+    // expiring hot key does not send every waiting request to the database.
+    const pending = inflight.get(fullKey);
+    if (pending) return pending as Promise<T>;
 
-    try {
-        await redis.set(fullKey, JSON.stringify(value), ttlSeconds);
-    } catch (error) {
-        console.error('[cache] write failed:', error);
-    }
+    const cacheKey = fullKey;
+    const fill = (async () => {
+        const value = await fetcher();
 
-    return value;
+        try {
+            await redis.set(cacheKey, JSON.stringify(value), ttlSeconds);
+        } catch (error) {
+            console.error('[cache] write failed:', error);
+        }
+
+        return value;
+    })().finally(() => inflight.delete(cacheKey));
+
+    inflight.set(cacheKey, fill);
+    return fill;
 }
 
 export async function bumpCacheNamespace(namespace: string): Promise<void> {
+    const redis = getRedis();
     if (!redis) return;
 
     try {

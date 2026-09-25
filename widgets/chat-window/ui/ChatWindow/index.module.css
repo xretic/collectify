@@ -1,62 +1,181 @@
+/* Card layout: header and composer separated by the same divider as collection cards. */
 .window {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    height: 100%;
     min-width: 0;
+    min-height: 0;
 }
 
 .header {
-    padding: 18px 20px;
-    background-color: var(--container-color);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    margin: 0 18px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.back {
+    display: none !important;
+    margin-left: -8px !important;
+    color: var(--text-color) !important;
 }
 
 .peer {
     display: flex;
     align-items: center;
     gap: 12px;
-    width: fit-content;
+    min-width: 0;
 }
 
 .peerAvatar {
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 14px !important;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+}
+
+.peerText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 .peerName {
-    display: block;
+    overflow: hidden;
     font-family: var(--font-google-sans), sans-serif;
-    font-size: 16px;
+    font-size: 17px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .peer:hover .peerName {
-    text-decoration: underline;
+    color: var(--accent);
 }
 
-.peerSubtitle {
-    display: block;
-    margin-top: 2px;
-    font-size: 13px;
+.peerStatus {
     color: var(--soft-text);
+    font-size: 12px;
+}
+
+.peerOnline {
+    color: #3bd16f;
+}
+
+.peerTyping {
+    font-size: 12px;
 }
 
 .messages {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    height: 650px;
-    padding: 18px 20px;
-    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-x: hidden;
-    background-color: var(--container-color);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
 }
 
-@media (max-width: 980px) {
-    .messages {
-        height: calc(100vh - 260px);
+/* Short threads sit at the bottom, next to the composer. */
+.thread {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 100%;
+    padding: 16px 22px 8px;
+}
+
+.intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 20px 0 28px;
+    margin-bottom: auto;
+}
+
+.introAvatar {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+}
+
+.introName {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 22px;
+}
+
+/* Same outlined pill as the category filters on the home page. */
+.introLink {
+    margin-top: 10px;
+    padding: 5px 16px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-pill);
+    color: var(--accent);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 14px;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.introLink:hover {
+    color: var(--on-accent);
+    background-color: var(--accent);
+}
+
+/* Same chip as the category badge on collection cards. */
+.timestamp {
+    align-self: center;
+    display: block;
+    width: fit-content;
+    margin: 18px auto 10px;
+    padding: 2px 12px;
+    border-radius: 999px;
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 12px;
+    background: color-mix(in srgb, var(--text-color) 7%, transparent);
+}
+
+.receipt {
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    gap: 3px;
+    margin: 4px 2px 0;
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 12px;
+}
+
+.receiptSeen {
+    color: var(--accent);
+}
+
+.receiptIcon {
+    font-size: 15px !important;
+}
+
+@media (max-width: 767px) {
+    .header {
+        margin: 0;
+        padding: 8px 12px;
+    }
+
+    .back {
+        display: inline-flex !important;
+    }
+
+    .peerAvatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+    }
+
+    .thread {
+        padding: 12px 10px 6px;
     }
 }

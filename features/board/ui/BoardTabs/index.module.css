@@ -1,0 +1,131 @@
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px -4px 0;
+}
+
+.row {
+    flex: 1;
+}
+
+.tabs {
+    gap: 6px;
+    padding: 4px 4px 8px;
+}
+
+.tab {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 40px;
+    border-radius: var(--radius-pill);
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    white-space: nowrap;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+    touch-action: pan-x;
+    user-select: none;
+}
+
+button.tab {
+    gap: 8px;
+    padding: 0 16px 0 6px;
+}
+
+.dragging {
+    z-index: 2;
+    cursor: grabbing;
+    background-color: var(--container-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+.tab:hover {
+    color: var(--text-color);
+    background-color: color-mix(in srgb, var(--text-color) 7%, transparent);
+}
+
+.active {
+    color: var(--text-color);
+}
+
+.tabButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    padding: 0 16px 0 6px;
+}
+
+/* Room for the "⋯" menu that only the active board shows. */
+.active .tabButton {
+    padding-right: 4px;
+}
+
+.menu {
+    margin-right: 4px !important;
+}
+
+.cover {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: color-mix(in srgb, var(--text-color) 12%, transparent);
+}
+
+.allCover {
+    color: var(--on-accent);
+    background-color: var(--accent);
+}
+
+.name {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.count {
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    text-align: center;
+    color: var(--soft-text);
+    background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
+}
+
+.active .count {
+    color: var(--text-color);
+}
+
+.add {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 4px;
+    height: 40px;
+    margin: 0 4px 4px 0;
+    padding: 0 14px;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-pill);
+    color: var(--soft-text);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    white-space: nowrap;
+    transition:
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.add:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}

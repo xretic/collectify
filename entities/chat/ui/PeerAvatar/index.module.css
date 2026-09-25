@@ -1,0 +1,28 @@
+/* The parent's class sets the size; avatars are circles. */
+.root {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    border-radius: 50%;
+}
+
+.avatar {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit !important;
+}
+
+.dot {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 28%;
+    height: 28%;
+    min-width: 11px;
+    min-height: 11px;
+    max-width: 16px;
+    max-height: 16px;
+    background: #3bd16f;
+    border: 2px solid var(--container-color);
+    border-radius: 50%;
+}

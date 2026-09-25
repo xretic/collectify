@@ -26,6 +26,7 @@ export function CollectionDetailsFields({ value, onChange }: CollectionDetailsFi
                     value={value.bannerUrl || null}
                     onChange={(url) => set('bannerUrl', url)}
                     label="Click to upload cover image"
+                    crop={{ aspect: 16 / 10 }}
                 />
             </div>
 
