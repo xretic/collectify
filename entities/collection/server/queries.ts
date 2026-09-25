@@ -28,25 +28,61 @@ const cardSelect = {
     bannerUrl: true,
     category: { select: categoryRefSelect },
     private: true,
+    likeCount: true,
     user: { select: authorSelect },
-    _count: { select: { likes: true, favorites: true, items: true, comments: true } },
 } satisfies Prisma.CollectionSelect;
 
 type CardRow = Prisma.CollectionGetPayload<{ select: typeof cardSelect }>;
 
-function toCard(row: CardRow): CollectionCard {
-    return {
+type CardCounts = { favorites: number; items: number; comments: number };
+
+/**
+ * Relation counts for the given collections only. Prisma's `_count` on a list
+ * aggregates the whole related table (GROUP BY over every row) before joining,
+ * which takes seconds once there are many favorites / likes.
+ */
+async function countsFor(ids: number[]): Promise<Map<number, CardCounts>> {
+    const where = { collectionId: { in: ids } };
+    const [favorites, items, comments] = await Promise.all([
+        db.favorite.groupBy({ by: ['collectionId'], where, _count: { _all: true } }),
+        db.item.groupBy({ by: ['collectionId'], where, _count: { _all: true } }),
+        db.comment.groupBy({ by: ['collectionId'], where, _count: { _all: true } }),
+    ]);
+
+    const counts = new Map<number, CardCounts>(
+        ids.map((id) => [id, { favorites: 0, items: 0, comments: 0 }]),
+    );
+    const fill = (
+        key: keyof CardCounts,
+        rows: { collectionId: number | null; _count: { _all: number } }[],
+    ) => {
+        for (const row of rows) {
+            const entry = row.collectionId === null ? undefined : counts.get(row.collectionId);
+            if (entry) entry[key] = row._count._all;
+        }
+    };
+    fill('favorites', favorites);
+    fill('items', items);
+    fill('comments', comments);
+
+    return counts;
+}
+
+async function toCards(rows: CardRow[]): Promise<CollectionCard[]> {
+    if (rows.length === 0) return [];
+
+    const counts = await countsFor(rows.map((row) => row.id));
+
+    return rows.map((row) => ({
         id: row.id,
         name: row.name,
         bannerUrl: row.bannerUrl,
         category: row.category,
         isPrivate: row.private,
         author: row.user,
-        likes: row._count.likes,
-        favorites: row._count.favorites,
-        items: row._count.items,
-        comments: row._count.comments,
-    };
+        likes: row.likeCount,
+        ...counts.get(row.id)!,
+    }));
 }
 
 // `id` is the tie-breaker so offset pagination is deterministic.
@@ -72,7 +108,7 @@ async function findCards(
         take,
     });
 
-    return rows.map(toCard);
+    return toCards(rows);
 }
 
 /** Cards for ids in the given order (e.g. ranked by a recommendation query). */
@@ -80,7 +116,7 @@ export async function findCardsByIds(ids: number[]): Promise<CollectionCard[]> {
     if (ids.length === 0) return [];
 
     const rows = await db.collection.findMany({ where: { id: { in: ids } }, select: cardSelect });
-    const byId = new Map(rows.map((row) => [row.id, toCard(row)]));
+    const byId = new Map((await toCards(rows)).map((card) => [card.id, card]));
 
     return ids.map((id) => byId.get(id)).filter((card) => card !== undefined);
 }
@@ -110,7 +146,7 @@ export async function listCollections(
     };
 
     if (params.board) {
-        if (!viewerId) throw forbidden('Sign in to see your boards.');
+        if (!viewerId) throw forbidden('signInForBoards');
 
         const where = {
             ...base,
@@ -121,7 +157,7 @@ export async function listCollections(
     }
 
     if (params.favorites) {
-        if (!viewerId) throw forbidden('Sign in to see favorites.');
+        if (!viewerId) throw forbidden('signInForFavorites');
 
         const where = { ...base, private: false, favorites: { some: { userId: viewerId } } };
         return toPage(await findCards(where, params.sort, skip, take));
@@ -144,8 +180,10 @@ export async function listCollections(
     const followedWhere = { ...publicWhere, ...followedFilter };
     const othersWhere = { ...publicWhere, NOT: followedFilter };
 
-    const followedCount = await db.collection.count({ where: followedWhere });
-    const followed = await findCards(followedWhere, params.sort, skip, take);
+    const [followedCount, followed] = await Promise.all([
+        db.collection.count({ where: followedWhere }),
+        findCards(followedWhere, params.sort, skip, take),
+    ]);
     const others = await findCards(
         othersWhere,
         params.sort,
@@ -187,8 +225,8 @@ export async function getCollectionDetails(
         },
     });
 
-    if (!row || !row.user) throw notFound('Collection not found.');
-    if (row.private && row.userId !== viewerId) throw notFound('Collection not found.');
+    if (!row || !row.user) throw notFound('collectionNotFound');
+    if (row.private && row.userId !== viewerId) throw notFound('collectionNotFound');
 
     return {
         id: row.id,
@@ -225,9 +263,8 @@ export async function getOwnedCollection(collectionId: number, viewerId: number)
         select: { id: true, userId: true, private: true },
     });
 
-    if (!collection) throw notFound('Collection not found.');
-    if (collection.userId !== viewerId)
-        throw forbidden('Only the owner can change this collection.');
+    if (!collection) throw notFound('collectionNotFound');
+    if (collection.userId !== viewerId) throw forbidden('ownerOnly');
 
     return collection;
 }
@@ -239,7 +276,7 @@ export async function getInteractableCollection(collectionId: number) {
         select: { id: true, userId: true, private: true },
     });
 
-    if (!collection || collection.private) throw notFound('Collection not found.');
+    if (!collection || collection.private) throw notFound('collectionNotFound');
 
     return collection;
 }

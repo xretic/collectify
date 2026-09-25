@@ -1,6 +1,6 @@
 import 'server-only';
 import { NextRequest } from 'next/server';
-import { ApiError } from './http';
+import { apiError } from './http';
 import { getRedis } from './redis';
 
 export type RateLimitPreset =
@@ -90,7 +90,7 @@ export async function enforceRateLimit(
     }
 
     if (count > limit) {
-        throw new ApiError(429, 'Too many requests. Please try again later.', {
+        throw apiError(429, 'tooManyRequests', undefined, {
             'Retry-After': String(windowSeconds),
         });
     }

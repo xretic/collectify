@@ -9,6 +9,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import type { CollectionItem } from '@/entities/collection/model/types';
 import { sourceHost } from '@/entities/collection/ui/ItemCard';
 import styles from './ItemViewer.module.css';
+import { useTranslations } from 'next-intl';
 
 type ItemViewerProps = {
     items: CollectionItem[];
@@ -19,6 +20,8 @@ type ItemViewerProps = {
 
 /** Full view of one item with previous / next navigation (also ← → keys). */
 export function ItemViewer({ items, index, onIndexChange, onClose }: ItemViewerProps) {
+    const t = useTranslations('items');
+    const tc = useTranslations('common');
     const item = items[index];
     const hasPrevious = index > 0;
     const hasNext = index < items.length - 1;
@@ -42,7 +45,7 @@ export function ItemViewer({ items, index, onIndexChange, onClose }: ItemViewerP
             maxWidth="lg"
             fullWidth
             classes={{ paper: styles.paper }}
-            aria-label={item.title || 'Item'}
+            aria-label={item.title || t('item')}
         >
             <div className={`${styles.layout} ${item.imageUrl ? '' : styles.noImage}`}>
                 {item.imageUrl && (
@@ -56,7 +59,7 @@ export function ItemViewer({ items, index, onIndexChange, onClose }: ItemViewerP
                         <span className={styles.position}>
                             {index + 1} / {items.length}
                         </span>
-                        <IconButton onClick={onClose} aria-label="Close" color="inherit">
+                        <IconButton onClick={onClose} aria-label={tc('close')} color="inherit">
                             <CloseIcon />
                         </IconButton>
                     </header>
@@ -80,7 +83,7 @@ export function ItemViewer({ items, index, onIndexChange, onClose }: ItemViewerP
                         <IconButton
                             onClick={() => onIndexChange(index - 1)}
                             disabled={!hasPrevious}
-                            aria-label="Previous item"
+                            aria-label={t('previous')}
                             color="inherit"
                         >
                             <ChevronLeftIcon />
@@ -88,7 +91,7 @@ export function ItemViewer({ items, index, onIndexChange, onClose }: ItemViewerP
                         <IconButton
                             onClick={() => onIndexChange(index + 1)}
                             disabled={!hasNext}
-                            aria-label="Next item"
+                            aria-label={t('next')}
                             color="inherit"
                         >
                             <ChevronRightIcon />

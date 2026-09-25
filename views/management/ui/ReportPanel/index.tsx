@@ -5,35 +5,30 @@ import { useQuery } from '@tanstack/react-query';
 import { Avatar, Chip } from '@mui/material';
 import { managementApi } from '@/entities/moderation/api/managementApi';
 import { managementQueryKeys } from '@/entities/moderation/model/queryKeys';
-import {
-    REPORT_REASON_LABELS,
-    REPORT_TARGET_LABELS,
-    REPORT_VERDICT_LABELS,
-    type ReportDetails,
-} from '@/entities/report/model/types';
-import { formatSanction } from '@/entities/sanction/lib/format';
+import type { ReportDetails } from '@/entities/report/model/types';
+import { useFormatSanction } from '@/entities/sanction/lib/format';
 import { ReviewReportForm } from '@/features/report/review/ui/ReviewReportForm';
-import { formatDateTime } from '@/shared/lib/format/date';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import { Section } from '../Section';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 function Evidence({ report }: { report: ReportDetails }) {
+    const t = useTranslations('management.report');
+    const tr = useTranslations('reports');
+    const format = useFormatters();
     const { snapshot } = report;
 
     if (report.targetType === 'USER') {
-        return <p className={styles.muted}>The report is about the account itself.</p>;
+        return <p className={styles.muted}>{t('aboutAccount')}</p>;
     }
 
     return (
         <div className={styles.evidence}>
             {!report.contentExists && (
-                <Chip
-                    size="small"
-                    color="warning"
-                    label="Deleted since — showing the snapshot taken at report time"
-                />
+                <Chip size="small" color="warning" label={t('deletedSince')} />
             )}
 
             {snapshot?.name && <strong>{snapshot.name}</strong>}
@@ -44,12 +39,14 @@ function Evidence({ report }: { report: ReportDetails }) {
                 </blockquote>
             )}
             {snapshot?.createdAt && (
-                <span className={styles.muted}>Posted {formatDateTime(snapshot.createdAt)}</span>
+                <span className={styles.muted}>
+                    {t('posted', { date: format.dateTime(snapshot.createdAt) })}
+                </span>
             )}
 
             {report.contentExists && report.contentLink && (
                 <Link href={report.contentLink} target="_blank" className={styles.link}>
-                    Open {REPORT_TARGET_LABELS[report.targetType].toLowerCase()}
+                    {tr(`openTarget.${report.targetType}`)}
                 </Link>
             )}
         </div>
@@ -57,38 +54,43 @@ function Evidence({ report }: { report: ReportDetails }) {
 }
 
 function ClosedSummary({ report }: { report: ReportDetails }) {
+    const t = useTranslations('management.report');
+    const tr = useTranslations('reports');
+    const format = useFormatters();
+    const formatSanction = useFormatSanction();
+
     return (
         <dl className={styles.summary}>
-            <dt>Verdict</dt>
-            <dd>{REPORT_VERDICT_LABELS[report.verdict]}</dd>
+            <dt>{t('verdict')}</dt>
+            <dd>{tr(`verdicts.${report.verdict}`)}</dd>
 
             {report.reviewedBy && (
                 <>
-                    <dt>Reviewed by</dt>
+                    <dt>{t('reviewedBy')}</dt>
                     <dd>
                         @{report.reviewedBy.username}
-                        {report.reviewedAt && ` · ${formatDateTime(report.reviewedAt)}`}
+                        {report.reviewedAt && ` · ${format.dateTime(report.reviewedAt)}`}
                     </dd>
                 </>
             )}
 
             {report.sanction && (
                 <>
-                    <dt>Sanction</dt>
+                    <dt>{t('sanction')}</dt>
                     <dd>{formatSanction(report.sanction)}</dd>
                 </>
             )}
 
             {report.duplicateOfId && (
                 <>
-                    <dt>Duplicate of</dt>
+                    <dt>{t('duplicateOf')}</dt>
                     <dd>#{report.duplicateOfId}</dd>
                 </>
             )}
 
             {report.resolution && (
                 <>
-                    <dt>Resolution</dt>
+                    <dt>{t('resolution')}</dt>
                     <dd>{report.resolution}</dd>
                 </>
             )}
@@ -104,6 +106,10 @@ type ReportPanelProps = {
 };
 
 export function ReportPanel({ reportId, isAdmin, onManageUser, onReviewed }: ReportPanelProps) {
+    const t = useTranslations('management.report');
+    const tr = useTranslations('reports');
+    const format = useFormatters();
+    const formatSanction = useFormatSanction();
     const {
         data: report,
         isPending,
@@ -114,7 +120,7 @@ export function ReportPanel({ reportId, isAdmin, onManageUser, onReviewed }: Rep
     });
 
     if (isPending) return <Spinner />;
-    if (isError || !report) return <EmptyState title="Report not found" />;
+    if (isError || !report) return <EmptyState title={t('notFound')} />;
 
     const { context } = report;
 
@@ -128,18 +134,26 @@ export function ReportPanel({ reportId, isAdmin, onManageUser, onReviewed }: Rep
                 />
                 <div>
                     <h2 className={styles.title}>
-                        Report #{report.id} on{' '}
-                        <button
-                            type="button"
-                            className={styles.userLink}
-                            onClick={() => onManageUser(report.targetUser.id)}
-                        >
-                            @{report.targetUser.username}
-                        </button>
+                        {t.rich('title', {
+                            id: report.id,
+                            username: report.targetUser.username,
+                            user: (chunks) => (
+                                <button
+                                    type="button"
+                                    className={styles.userLink}
+                                    onClick={() => onManageUser(report.targetUser.id)}
+                                >
+                                    {chunks}
+                                </button>
+                            ),
+                        })}
                     </h2>
                     <p className={styles.muted}>
-                        {REPORT_TARGET_LABELS[report.targetType]} · reported by @
-                        {report.reporter.username} · {formatDateTime(report.createdAt)}
+                        {t('subtitle', {
+                            target: tr(`targets.${report.targetType}`),
+                            username: report.reporter.username,
+                            date: format.dateTime(report.createdAt),
+                        })}
                     </p>
                 </div>
             </header>
@@ -147,50 +161,55 @@ export function ReportPanel({ reportId, isAdmin, onManageUser, onReviewed }: Rep
             <div className={styles.chips}>
                 <Chip
                     size="small"
-                    label={REPORT_REASON_LABELS[report.reason]}
+                    label={tr(`reasons.${report.reason}`)}
                     color="error"
                     variant="outlined"
                 />
                 <Chip
                     size="small"
-                    label={report.status === 'OPEN' ? 'Open' : 'Closed'}
+                    label={report.status === 'OPEN' ? t('open') : t('closed')}
                     variant="outlined"
                 />
             </div>
 
             {report.details && <p className={styles.details}>{report.details}</p>}
 
-            <Section title="Evidence">
+            <Section title={t('evidence')}>
                 <Evidence report={report} />
             </Section>
 
-            <Section title="Context">
+            <Section title={t('context')}>
                 <dl className={styles.facts}>
                     <div>
-                        <dt>Reports against @{report.targetUser.username}</dt>
+                        <dt>{t('against', { username: report.targetUser.username })}</dt>
                         <dd>
-                            {context.targetReports} total · {context.targetGuiltyReports} guilty
+                            {t('againstCounts', {
+                                total: context.targetReports,
+                                guilty: context.targetGuiltyReports,
+                            })}
                         </dd>
                     </div>
                     <div>
-                        <dt>Reports filed by @{report.reporter.username}</dt>
+                        <dt>{t('filedBy', { username: report.reporter.username })}</dt>
                         <dd>
-                            {context.reporterReports} total · {context.reporterRejectedReports}{' '}
-                            rejected
+                            {t('filedCounts', {
+                                total: context.reporterReports,
+                                rejected: context.reporterRejectedReports,
+                            })}
                         </dd>
                     </div>
                     <div>
-                        <dt>Active sanctions</dt>
+                        <dt>{t('activeSanctions')}</dt>
                         <dd>
                             {context.targetActiveSanctions.length === 0
-                                ? 'None'
+                                ? t('none')
                                 : context.targetActiveSanctions.map(formatSanction).join(', ')}
                         </dd>
                     </div>
                 </dl>
             </Section>
 
-            <Section title={report.status === 'OPEN' ? 'Decision' : 'Outcome'}>
+            <Section title={report.status === 'OPEN' ? t('decision') : t('outcome')}>
                 {report.status === 'OPEN' ? (
                     <ReviewReportForm
                         key={report.id}

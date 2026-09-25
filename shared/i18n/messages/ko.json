@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "잘못된 요청입니다.",
+        "unauthorized": "계속하려면 로그인하세요.",
+        "forbidden": "이 작업을 할 권한이 없습니다.",
+        "notFound": "찾을 수 없습니다.",
+        "internal": "서버 내부 오류가 발생했습니다.",
+        "invalidInput": "입력값이 올바르지 않습니다.",
+        "invalidField": "잘못된 값: {field}",
+        "invalidJson": "요청 본문이 올바르지 않습니다.",
+        "invalidId": "잘못된 ID입니다.",
+        "tooManyRequests": "요청이 너무 많습니다. 잠시 후 다시 시도하세요.",
+        "realtimeUnavailable": "실시간 서비스가 설정되지 않았습니다.",
+        "invalidWebhookSignature": "웹훅 서명이 올바르지 않습니다.",
+        "oauthNotConfigured": "이 로그인 방식은 설정되지 않았습니다.",
+        "userNotFound": "사용자를 찾을 수 없습니다.",
+        "commentNotFound": "댓글을 찾을 수 없습니다.",
+        "collectionNotFound": "컬렉션을 찾을 수 없습니다.",
+        "tagNotFound": "태그를 찾을 수 없습니다.",
+        "reportNotFound": "신고를 찾을 수 없습니다.",
+        "categoryNotFound": "카테고리를 찾을 수 없습니다.",
+        "sanctionNotFound": "제재를 찾을 수 없습니다.",
+        "itemNotFound": "항목을 찾을 수 없습니다.",
+        "chatNotFound": "채팅을 찾을 수 없습니다.",
+        "boardNotFound": "보드를 찾을 수 없습니다.",
+        "invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다.",
+        "emailTaken": "이 이메일로 가입된 계정이 이미 있습니다.",
+        "usernameTaken": "이미 사용 중인 사용자 이름입니다.",
+        "emailOrUsernameTaken": "이미 사용 중인 이메일 또는 사용자 이름입니다.",
+        "currentPasswordRequired": "현재 비밀번호를 입력하세요.",
+        "currentPasswordIncorrect": "현재 비밀번호가 올바르지 않습니다.",
+        "passwordUnchanged": "새 비밀번호는 현재 비밀번호와 달라야 합니다.",
+        "passwordIncorrect": "비밀번호가 올바르지 않습니다.",
+        "typeUsernameToConfirm": "확인을 위해 사용자 이름을 입력하세요.",
+        "impersonationInactive": "다른 사용자로 로그인한 상태가 아닙니다.",
+        "bannedUntil": "계정이 정지되었습니다. 정지는 {date}에 해제됩니다.",
+        "bannedPermanent": "계정이 정지되었습니다. 이 제한은 영구적입니다.",
+        "mutedCommentsUntil": "댓글 작성이 제한되었습니다. {date}에 해제됩니다.",
+        "mutedCommentsPermanent": "댓글 작성이 제한되었습니다. 이 제한은 영구적입니다.",
+        "mutedMessengerUntil": "메시지 전송이 제한되었습니다. {date}에 해제됩니다.",
+        "mutedMessengerPermanent": "메시지 전송이 제한되었습니다. 이 제한은 영구적입니다.",
+        "chatsUnavailableImpersonating": "다른 사용자로 로그인한 동안에는 채팅을 사용할 수 없습니다.",
+        "cannotModerateSelf": "자기 자신을 관리할 수 없습니다.",
+        "adminsNotModeratable": "관리자는 제재할 수 없습니다.",
+        "moderatorsCannotManageModerators": "모더레이터는 다른 모더레이터를 관리할 수 없습니다.",
+        "permanentSanctionAdminOnly": "영구 제재는 관리자만 내릴 수 있습니다.",
+        "liftPermanentAdminOnly": "영구 제재는 관리자만 해제할 수 있습니다.",
+        "liftAdminSanctionAdminOnly": "관리자가 내린 제재는 관리자만 해제할 수 있습니다.",
+        "manageModeratorsAdminOnly": "모더레이터는 관리자만 관리할 수 있습니다.",
+        "alreadySignedInAsUser": "이미 이 사용자로 로그인되어 있습니다.",
+        "stopImpersonationFirst": "먼저 현재 대리 로그인을 종료하세요.",
+        "cannotImpersonateBanned": "정지된 계정으로는 로그인할 수 없습니다.",
+        "categoryUnknown": "기존 카테고리를 선택하세요.",
+        "categoriesUnknown": "기존 카테고리를 선택하세요.",
+        "categoryExists": "같은 이름 또는 슬러그의 카테고리가 이미 있습니다.",
+        "categoryInUse": "이 카테고리에 아직 컬렉션이 있습니다. 대신 보관 처리하세요.",
+        "tagsWrongCategory": "태그는 컬렉션의 카테고리에 속해야 합니다.",
+        "tagsLimit": "컬렉션에는 태그를 최대 {limit}개까지 달 수 있습니다.",
+        "tagsDailyLimit": "오늘 태그를 너무 많이 만들었습니다. 내일 다시 시도하세요.",
+        "signInForBoards": "보드를 보려면 로그인하세요.",
+        "signInForFavorites": "저장한 컬렉션을 보려면 로그인하세요.",
+        "ownerOnly": "이 컬렉션은 소유자만 변경할 수 있습니다.",
+        "collectionsLimit": "컬렉션은 최대 {limit}개까지 만들 수 있습니다.",
+        "itemsLimit": "컬렉션에는 항목을 최대 {limit}개까지 넣을 수 있습니다.",
+        "collectionNeedsItem": "컬렉션에는 항목이 하나 이상 있어야 합니다.",
+        "invalidItemOrder": "새 순서에는 컬렉션의 모든 항목이 정확히 한 번씩 포함되어야 합니다.",
+        "boardNameTaken": "같은 이름의 보드가 이미 있습니다.",
+        "boardsLimit": "보드는 최대 {limit}개까지 만들 수 있습니다.",
+        "cannotMessageSelf": "자기 자신에게 메시지를 보낼 수 없습니다.",
+        "userDeleted": "이 사용자는 계정을 삭제했습니다.",
+        "editOwnCommentsOnly": "자신의 댓글만 수정할 수 있습니다.",
+        "heartOwnerOnly": "댓글에 하트는 컬렉션 소유자만 줄 수 있습니다.",
+        "commentsLimit": "한 컬렉션에 댓글은 최대 {limit}개까지 남길 수 있습니다.",
+        "repliesLimit": "한 컬렉션에 답글은 최대 {limit}개까지 남길 수 있습니다.",
+        "cannotReportSelf": "자기 자신을 신고할 수 없습니다.",
+        "accountNotReportable": "이 계정은 신고할 수 없습니다.",
+        "alreadyReported": "이미 신고했습니다. 곧 모더레이터가 검토합니다.",
+        "reportClosed": "이미 종료된 신고입니다.",
+        "cannotReviewOwnReport": "자신의 신고는 검토할 수 없습니다.",
+        "nothingToRemove": "사용자 신고에는 삭제할 콘텐츠가 없습니다.",
+        "duplicateMustMatchUser": "원래 신고는 같은 사용자에 대한 다른 신고여야 합니다.",
+        "reportJustReviewed": "이 신고는 방금 다른 사람이 검토했습니다.",
+        "nothingToUpdate": "업데이트할 내용이 없습니다.",
+        "countryRequiredForCity": "도시의 국가를 선택하세요.",
+        "cityUnknown": "알 수 없는 도시입니다.",
+        "cannotFollowSelf": "자기 자신을 팔로우할 수 없습니다.",
+        "generic": "문제가 발생했습니다. 다시 시도하세요.",
+        "network": "네트워크 오류입니다. 연결을 확인하세요."
+    },
+    "validation": {
+        "required": "필수 입력 항목입니다.",
+        "tooLong": "너무 깁니다.",
+        "usernameMin": "사용자 이름은 {usernameMin}자 이상이어야 합니다.",
+        "usernameMax": "사용자 이름은 {usernameMax}자 이하여야 합니다.",
+        "usernameChars": "사용자 이름에는 a-z, 0-9, \"_\", \".\"만 사용할 수 있습니다.",
+        "passwordMin": "비밀번호는 {passwordMin}자 이상이어야 합니다.",
+        "passwordMax": "비밀번호는 {passwordMax}자 이하여야 합니다.",
+        "passwordChars": "비밀번호에 지원되지 않는 문자가 있습니다.",
+        "passwordsMismatch": "비밀번호가 일치하지 않습니다.",
+        "emailInvalid": "올바른 이메일을 입력하세요.",
+        "urlInvalid": "올바른 http(s) URL이어야 합니다.",
+        "countryUnknown": "알 수 없는 국가입니다.",
+        "cityChars": "문자, 공백, - . , ' / ( )를 사용하세요",
+        "dateInvalid": "올바른 날짜를 입력하세요.",
+        "ageMin": "만 {minAge}세 이상이어야 합니다.",
+        "localeUnknown": "지원되지 않는 언어입니다.",
+        "nameRequired": "이름은 필수입니다.",
+        "descriptionRequired": "설명은 필수입니다.",
+        "slugRequired": "슬러그는 필수입니다.",
+        "slugChars": "소문자, 숫자, 하이픈을 사용하세요.",
+        "messageEmpty": "메시지를 입력하세요.",
+        "commentEmpty": "댓글을 입력하세요.",
+        "itemTitleOrImage": "제목이나 이미지를 추가하세요.",
+        "categoryRequired": "카테고리를 선택하세요.",
+        "tagsMax": "태그는 최대 {tagsMax}개입니다.",
+        "tagNameMin": "{tagNameMin}자 이상이어야 합니다.",
+        "tagNameChars": "문자, 숫자, 공백, - & + . ' #",
+        "verdictRequiresGuilty": "처벌과 콘텐츠 삭제에는 ‘위반’ 판정이 필요합니다.",
+        "duplicateRequiresOriginal": "‘중복’ 판정에는 원래 신고를 선택하세요."
+    },
+    "meta": {
+        "description": "우리와 함께 흥미로운 컬렉션을 만들어 보세요.",
+        "privacyDescription": "Collectify가 데이터를 수집, 사용, 저장하는 방법.",
+        "userDescription": "Collectify의 {name} 님 컬렉션.",
+        "pages": {
+            "login": "로그인",
+            "register": "회원가입",
+            "chats": "채팅",
+            "createCollection": "컬렉션 만들기",
+            "myCollections": "내 컬렉션",
+            "notifications": "알림",
+            "onboarding": "관심사 선택",
+            "settings": "설정",
+            "myProfile": "내 프로필",
+            "management": "관리",
+            "privacyPolicy": "개인정보 처리방침",
+            "collection": "컬렉션",
+            "userNotFound": "사용자를 찾을 수 없음"
+        }
+    },
+    "languages": {
+        "label": "언어"
+    },
+    "auth": {
+        "email": "이메일",
+        "password": "비밀번호",
+        "username": "사용자 이름",
+        "login": "로그인",
+        "register": "회원가입",
+        "signingIn": "로그인 중…",
+        "creatingAccount": "계정 만드는 중…",
+        "usernameHint": "소문자, 숫자, \"_\", \".\"",
+        "passwordHint": "{min}자 이상",
+        "languageHint": "나중에 설정에서 변경할 수 있습니다.",
+        "orContinueWith": "또는 다음으로 계속",
+        "loginSubtitle": "계정에 접속하려면 로그인 정보를 입력하세요.",
+        "registerSubtitle": "계정을 만들고 수집을 시작하세요.",
+        "noAccount": "아직 계정이 없나요? <link>회원가입</link>",
+        "haveAccount": "이미 계정이 있나요? <link>로그인</link>",
+        "oauthErrors": {
+            "oauthState": "로그인 링크가 만료되었습니다. 다시 시도하세요.",
+            "oauthFailed": "외부 계정으로 로그인하지 못했습니다. 다시 시도하세요.",
+            "accountBanned": "이 계정은 정지되었습니다."
+        }
+    },
+    "common": {
+        "cancel": "취소",
+        "reset": "초기화",
+        "save": "저장",
+        "delete": "삭제",
+        "edit": "수정",
+        "close": "닫기",
+        "back": "뒤로",
+        "retry": "다시 시도",
+        "loadMore": "더 보기",
+        "search": "검색",
+        "next": "다음",
+        "skip": "건너뛰기",
+        "confirm": "확인",
+        "create": "만들기",
+        "add": "추가",
+        "moreActions": "더 많은 작업",
+        "loading": "로딩 중",
+        "sortBy": "정렬"
+    },
+    "settings": {
+        "title": "설정",
+        "subtitle": "계정 설정과 환경설정을 관리하세요",
+        "profile": {
+            "title": "프로필",
+            "description": "이름, 사용자 이름, 소개, 이미지.",
+            "edit": "프로필 수정"
+        },
+        "security": {
+            "title": "개인정보 및 보안",
+            "changePassword": "비밀번호를 변경하세요.",
+            "setPassword": "비밀번호를 설정하면 이메일로도 로그인할 수 있습니다.",
+            "passwordChanged": "비밀번호가 변경되었습니다.",
+            "passwordSet": "비밀번호가 설정되었습니다. 이제 이메일로 로그인할 수 있습니다.",
+            "currentPassword": "현재 비밀번호",
+            "newPassword": "새 비밀번호",
+            "confirmPassword": "새 비밀번호 확인",
+            "change": "비밀번호 변경",
+            "set": "비밀번호 설정"
+        },
+        "interests": {
+            "title": "관심사",
+            "description": "좋아하는 카테고리입니다. ‘추천’ 피드에 반영됩니다.",
+            "saved": "관심사를 저장했습니다.",
+            "save": "관심사 저장"
+        },
+        "language": {
+            "title": "언어",
+            "description": "전체 인터페이스의 언어입니다. 계정에 저장됩니다."
+        },
+        "appearance": {
+            "title": "화면",
+            "description": "테마를 선택하세요. 즉시 적용되며 이 기기에 저장됩니다.",
+            "search": "테마 찾기",
+            "filter": "테마 필터",
+            "theme": "테마",
+            "filters": {
+                "all": "전체",
+                "light": "라이트",
+                "dark": "다크"
+            }
+        },
+        "home": {
+            "title": "홈페이지",
+            "description": "피드 옆의 위젯.",
+            "showPeopleWidget": "홈에 ‘알 수도 있는 사람’ 표시"
+        },
+        "danger": {
+            "title": "위험 구역",
+            "description": "계정과 모든 데이터를 영구적으로 삭제합니다.",
+            "deleteAccount": "계정 삭제",
+            "warning": "프로필, 컬렉션, 댓글, 채팅이 영구적으로 삭제됩니다. 되돌릴 수 없습니다.",
+            "yourPassword": "비밀번호",
+            "typeUsername": "확인을 위해 “{username}”을(를) 입력하세요",
+            "deleteForever": "영구 삭제"
+        }
+    },
+    "dateField": {
+        "placeholder": "날짜 선택",
+        "clear": "날짜 지우기",
+        "open": "달력 열기",
+        "chooseYear": "연도 선택",
+        "previousMonth": "이전 달",
+        "nextMonth": "다음 달"
+    },
+    "imageDropzone": {
+        "label": "클릭하거나 이미지를 끌어다 놓으세요",
+        "hint": "PNG, JPG, WEBP, 최대 10MB"
+    },
+    "roles": {
+        "Admin": "관리자",
+        "Moderator": "모더레이터",
+        "Verified": "인증됨"
+    },
+    "imageEditor": {
+        "title": "이미지 편집",
+        "failed": "이미지를 편집할 수 없습니다.",
+        "zoom": "확대",
+        "rotateLeft": "왼쪽으로 회전",
+        "rotateRight": "오른쪽으로 회전",
+        "aspectRatio": "가로세로 비율",
+        "original": "원본"
+    },
+    "pagination": {
+        "label": "페이지 이동",
+        "previous": "이전 페이지",
+        "next": "다음 페이지",
+        "page": "{page}페이지"
+    },
+    "scrollRow": {
+        "back": "{items} 뒤로 스크롤",
+        "forward": "{items} 앞으로 스크롤"
+    },
+    "upload": {
+        "readFailed": "이미지를 읽을 수 없습니다.",
+        "editUnsupported": "이 브라우저는 이미지 편집을 지원하지 않습니다.",
+        "saveFailed": "이미지를 저장할 수 없습니다.",
+        "wrongType": "PNG, JPG, WEBP 또는 GIF 이미지를 선택하세요.",
+        "tooBig": "이미지는 10MB 이하여야 합니다.",
+        "notConfigured": "이미지 업로드가 설정되지 않았습니다.",
+        "network": "이미지를 업로드하지 못했습니다. 연결을 확인하세요.",
+        "failed": "이미지를 업로드하지 못했습니다."
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "계정 정지",
+            "COMMENTS": "댓글 제한",
+            "MESSENGER": "메시지 제한"
+        },
+        "durations": {
+            "1h": "1시간",
+            "1d": "1일",
+            "7d": "7일",
+            "30d": "30일",
+            "permanent": "영구"
+        },
+        "until": "{scope} · {date}까지",
+        "permanentScope": "{scope} · 영구",
+        "mutePlaceholder": {
+            "commentsUntil": "{date}까지 댓글 작성이 제한되었습니다.",
+            "commentsPermanent": "댓글 작성이 영구적으로 제한되었습니다.",
+            "messengerUntil": "{date}까지 메시지 전송이 제한되었습니다.",
+            "messengerPermanent": "메시지 전송이 영구적으로 제한되었습니다."
+        }
+    },
+    "categories": {
+        "books": "책",
+        "movies": "영화",
+        "games": "게임",
+        "recipes": "레시피",
+        "apps": "앱",
+        "travel": "여행",
+        "music": "음악",
+        "sport": "스포츠",
+        "tv-shows": "TV 프로그램",
+        "anime": "애니메이션",
+        "podcasts": "팟캐스트",
+        "art": "예술",
+        "design": "디자인",
+        "photography": "사진",
+        "fashion": "패션",
+        "home": "홈 & 인테리어",
+        "tech": "테크",
+        "science": "과학",
+        "education": "교육",
+        "fitness": "피트니스",
+        "cars": "자동차",
+        "pets": "반려동물",
+        "nature": "자연",
+        "custom": "기타"
+    },
+    "categoryMenu": {
+        "all": "모든 카테고리",
+        "search": "카테고리 찾기",
+        "nothingFound": "결과 없음",
+        "label": "카테고리"
+    },
+    "chats": {
+        "online": "온라인",
+        "typing": "입력 중",
+        "message": "메시지 보내기",
+        "mute": {
+            "actions": "채팅 작업",
+            "mutedUntil": "{date}까지 알림 끔",
+            "off": "알림이 꺼져 있습니다",
+            "enable": "알림 켜기",
+            "muteForMenu": "알림 끄기 기간…",
+            "disable": "알림 끄기",
+            "muteFor": "알림 끄기 기간",
+            "durations": {
+                "15m": "15분",
+                "30m": "30분",
+                "1h": "1시간",
+                "8h": "8시간",
+                "1d": "1일",
+                "1w": "1주"
+            },
+            "failed": "알림 설정을 변경하지 못했습니다. 다시 시도하세요."
+        },
+        "composer": {
+            "placeholder": "메시지를 입력하세요…",
+            "label": "메시지",
+            "send": "메시지 보내기"
+        },
+        "title": "채팅",
+        "unread": "읽지 않음 {count}개",
+        "empty": "아직 채팅이 없습니다.",
+        "deletedAccount": "삭제된 계정",
+        "muted": "알림 꺼짐",
+        "you": "나: {text}",
+        "back": "채팅 목록으로",
+        "directMessages": "다이렉트 메시지",
+        "viewProfile": "프로필 보기",
+        "conversation": "대화",
+        "unavailable": "이 채팅은 사용할 수 없습니다.",
+        "seen": "읽음 <time></time>",
+        "sent": "보냄",
+        "privateTitle": "채팅은 비공개입니다",
+        "privateDescription": "다른 사용자로 로그인한 동안에는 다이렉트 메시지를 사용할 수 없습니다.",
+        "placeholderTitle": "내 채팅",
+        "placeholderText": "왼쪽에서 대화를 골라 컬렉션 이야기를 이어가세요."
+    },
+    "collectionCard": {
+        "items": "{count, plural, other {항목 #개}}",
+        "comments": "{count, plural, other {댓글 #개}}",
+        "favorites": "{count, plural, other {저장 #회}}",
+        "likes": "{count, plural, other {좋아요 #개}}"
+    },
+    "collectionForm": {
+        "cover": "커버 이미지",
+        "coverHint": "클릭해서 커버 이미지를 업로드하세요",
+        "title": "제목",
+        "description": "설명",
+        "visibility": "공개 범위",
+        "public": "공개",
+        "private": "비공개"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "아무것도 찾지 못했습니다",
+        "emptyDescription": "다른 필터나 검색어를 사용해 보세요."
+    },
+    "items": {
+        "open": "항목 열기",
+        "drag": "항목 끌기",
+        "image": "이미지",
+        "title": "제목",
+        "description": "설명",
+        "titleRequired": "이미지가 없으면 필수",
+        "sourceUrl": "출처 URL",
+        "cardSize": "카드 크기",
+        "sizes": {
+            "S": "작은 정사각형 타일",
+            "M": "세로로 긴 타일, 1열",
+            "L": "큰 타일, 2열",
+            "XL": "한 줄 전체 배너"
+        },
+        "edit": "항목 수정",
+        "delete": "항목 삭제",
+        "actions": "항목 작업",
+        "deleteTitle": "“{title}”을(를) 삭제할까요?",
+        "deleteUntitled": "이 항목을 삭제할까요?",
+        "deleteDescription": "이 항목이 컬렉션에서 제거됩니다.",
+        "add": "항목 추가",
+        "addIntro": "컬렉션에 새 항목을 추가하세요.",
+        "editIntro": "항목을 수정하세요. 변경 사항은 즉시 모두에게 보입니다.",
+        "item": "항목",
+        "previous": "이전 항목",
+        "next": "다음 항목",
+        "label": "항목"
+    },
+    "comments": {
+        "editedAt": "{date}에 수정됨",
+        "edited": "(수정됨)",
+        "replyTo": "@{username} 님에게 답글",
+        "placeholder": "댓글 추가…",
+        "reply": "답글",
+        "comment": "댓글",
+        "deleteAsModerator": "모더레이터로 삭제",
+        "actions": "댓글 작업",
+        "deleteTitle": "이 댓글을 삭제할까요?",
+        "count": "{count, plural, other {댓글 #개}}",
+        "emptyTitle": "아직 댓글이 없습니다.",
+        "emptyDescription": "대화를 시작해 보세요.",
+        "replies": "{count, plural, other {답글 #개}}",
+        "moreReplies": "답글 더 보기",
+        "unheart": "하트 취소",
+        "heart": "이 댓글에 하트 주기",
+        "heartLabel": "댓글에 하트",
+        "heartedBy": "♥ {username}"
+    },
+    "notifications": {
+        "unread": "읽지 않음",
+        "texts": {
+            "FOLLOW": "님이 회원님을 팔로우했습니다",
+            "LIKE": "님이 회원님의 컬렉션을 좋아합니다:",
+            "FAVORITE": "님이 회원님의 컬렉션을 저장했습니다:",
+            "COMMENT": "님이 회원님의 컬렉션에 댓글을 남겼습니다:",
+            "REPORT_RESOLVED": "신고가 검토되었습니다. Collectify를 안전하게 지켜 주셔서 감사합니다.",
+            "SANCTION": "모더레이터가 회원님의 계정을 제한했습니다. 자세한 내용은 설정에서 확인하세요.",
+            "COMMENT_REPLY": "님이 다음 컬렉션의 회원님 댓글에 답글을 남겼습니다:",
+            "COMMENT_LIKED": "님이 다음 컬렉션의 회원님 댓글에 하트를 보냈습니다:"
+        },
+        "dismiss": "알림 닫기",
+        "title": "알림",
+        "markAllRead": "모두 읽음으로 표시",
+        "tabs": {
+            "all": "전체",
+            "unread": "읽지 않음"
+        },
+        "emptyUnread": "읽지 않은 알림이 없습니다",
+        "empty": "아직 알림이 없습니다",
+        "caughtUp": "모두 확인했습니다.",
+        "groups": {
+            "today": "오늘",
+            "yesterday": "어제",
+            "thisWeek": "이번 주",
+            "earlier": "이전"
+        }
+    },
+    "tags": {
+        "label": "태그",
+        "upTo": "태그 최대 {limit}개",
+        "noMatches": "일치하는 태그가 없습니다",
+        "noneYet": "아직 태그가 없습니다",
+        "searchByTags": "태그로 검색",
+        "noneInCategory": "이 카테고리에는 아직 태그가 없습니다",
+        "create": "“{name}” 만들기",
+        "searchOrCreate": "태그 검색 또는 만들기",
+        "chooseCategoryFirst": "먼저 카테고리를 선택하세요.",
+        "pickerHint": "{count} / {limit} · 카테고리의 인기 태그가 먼저 추천됩니다."
+    },
+    "profile": {
+        "usernameCopied": "사용자 이름을 복사했습니다.",
+        "usernameCopyFailed": "사용자 이름을 복사하지 못했습니다.",
+        "copyUsername": "사용자 이름 복사",
+        "noBio": "아직 소개가 없습니다",
+        "statLabel": "{label} {count}",
+        "following": "팔로잉",
+        "followers": "팔로워",
+        "follow": "팔로우",
+        "unfollow": "언팔로우",
+        "follows": {
+            "followers": "팔로워",
+            "following": "팔로잉",
+            "noFollowers": "아직 팔로워가 없습니다",
+            "noFollowing": "팔로우하는 사람이 없습니다",
+            "followingButton": "팔로잉",
+            "follow": "팔로우"
+        },
+        "edit": {
+            "updated": "프로필을 업데이트했습니다.",
+            "title": "프로필 수정",
+            "changeBanner": "배너 변경",
+            "removeBanner": "배너 삭제",
+            "changeAvatar": "아바타 변경",
+            "removeAvatar": "아바타 삭제",
+            "fullName": "이름",
+            "username": "사용자 이름",
+            "bio": "소개",
+            "country": "국가",
+            "city": "도시",
+            "birthDate": "생년월일"
+        },
+        "tabs": {
+            "created": "만든 컬렉션",
+            "favorites": "저장됨",
+            "private": "비공개"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "스팸",
+            "HARASSMENT": "괴롭힘",
+            "HATE": "혐오 발언",
+            "SCAM": "사기",
+            "ADULT": "성인 콘텐츠",
+            "OTHER": "기타"
+        },
+        "targets": {
+            "USER": "사용자",
+            "COMMENT": "댓글",
+            "COLLECTION": "컬렉션"
+        },
+        "reportTarget": {
+            "USER": "사용자 신고",
+            "COMMENT": "댓글 신고",
+            "COLLECTION": "컬렉션 신고"
+        },
+        "openTarget": {
+            "USER": "사용자 열기",
+            "COMMENT": "댓글 열기",
+            "COLLECTION": "컬렉션 열기"
+        },
+        "verdicts": {
+            "PENDING": "대기 중",
+            "GUILTY": "위반",
+            "NO_VIOLATION": "위반 없음",
+            "INSUFFICIENT_EVIDENCE": "증거 불충분",
+            "DUPLICATE": "중복"
+        },
+        "submitted": "신고가 접수되었습니다. 곧 모더레이터가 검토합니다.",
+        "reason": "사유",
+        "details": "상세 내용",
+        "submit": "신고하기"
+    },
+    "boards": {
+        "rename": "이름 변경",
+        "delete": "보드 삭제",
+        "renameTitle": "보드 이름 변경",
+        "deleteTitle": "“{name}”을(를) 삭제할까요?",
+        "deleteDescription": "컬렉션은 ‘저장한 모든 항목’에 그대로 남습니다.",
+        "name": "보드 이름",
+        "label": "보드",
+        "items": "보드",
+        "all": "전체",
+        "new": "새 보드",
+        "actions": "보드 작업",
+        "signInToSave": "저장하려면 로그인하세요",
+        "saved": "저장됨",
+        "save": "저장",
+        "saveTo": "저장할 위치",
+        "allSaved": "저장한 모든 항목",
+        "hint": "저장한 컬렉션을 보드로 묶어 보세요.",
+        "newName": "새 보드 이름",
+        "create": "보드 만들기",
+        "draggableTab": "끌어서 옮길 수 있는 탭"
+    },
+    "management": {
+        "categories": {
+            "updated": "카테고리를 업데이트했습니다.",
+            "created": "카테고리를 만들었습니다.",
+            "deleted": "카테고리를 삭제했습니다.",
+            "name": "이름",
+            "slug": "슬러그",
+            "slugHint": "링크에 사용됩니다: /?category=slug",
+            "description": "설명",
+            "position": "순서",
+            "positionHint": "낮을수록 먼저 표시",
+            "active": "활성",
+            "archived": "보관됨",
+            "onlyArchive": "컬렉션이 있는 카테고리는 보관만 할 수 있습니다.",
+            "create": "카테고리 만들기",
+            "deleteTitle": "“{name}”을(를) 삭제할까요?",
+            "new": "새 카테고리",
+            "empty": "아직 카테고리가 없습니다",
+            "collections": "{count, plural, other {컬렉션 #개}}",
+            "archivedLower": "보관됨",
+            "notFound": "카테고리를 찾을 수 없습니다"
+        },
+        "roles": {
+            "updated": "역할을 업데이트했습니다.",
+            "revoke": "{role} 해제",
+            "grant": "{role} 부여"
+        },
+        "sanctions": {
+            "applied": "제재를 적용했습니다.",
+            "strongerKept": "더 강한 제재가 이미 적용 중이어서 그대로 유지했습니다.",
+            "scope": "범위",
+            "duration": "기간",
+            "reason": "사유",
+            "apply": "적용",
+            "confirmTitle": "@{username} 님을 제재할까요?",
+            "summary": "{scope}: {duration}.",
+            "reasonLine": "사유: {reason}",
+            "confirm": "제재 적용",
+            "lifted": "제재를 해제했습니다.",
+            "none": "적용 중인 제재가 없습니다",
+            "lift": "해제"
+        },
+        "danger": {
+            "deleted": "계정을 삭제했습니다.",
+            "impersonate": "이 사용자로 로그인",
+            "delete": "계정 삭제",
+            "impersonateTitle": "@{username}(으)로 로그인할까요?",
+            "impersonateDescription": "하는 모든 작업이 회원님의 이름으로 감사 로그에 기록됩니다.",
+            "signIn": "로그인",
+            "deleteTitle": "@{username} 님을 삭제할까요?",
+            "deleteDescription": "계정과 해당 계정의 컬렉션, 댓글, 채팅이 영구적으로 삭제됩니다."
+        },
+        "review": {
+            "describeVerdict": "판정: {verdict}.",
+            "describeRemove": "신고된 콘텐츠가 삭제됩니다.",
+            "describePunishment": "@{username} 님에게 적용: {scope}, {duration}.",
+            "describeDuplicate": "신고 #{id}의 중복으로 표시됩니다.",
+            "closed": "신고를 종료했습니다.",
+            "closedStrongerKept": "신고를 종료했습니다. 더 강한 제재가 이미 적용 중이어서 그대로 유지했습니다.",
+            "verdict": "판정",
+            "removeContent": "신고된 콘텐츠 삭제",
+            "nothingToDelete": "삭제할 항목 없음",
+            "sanctionUser": "사용자 제재",
+            "punishment": "처벌",
+            "duration": "기간",
+            "originalReport": "원래 신고 #",
+            "resolution": "처리 메모",
+            "close": "신고 종료",
+            "closeTitle": "신고 #{id}을(를) 종료할까요?"
+        },
+        "audit": {
+            "title": "감사",
+            "titleFor": "@{username} 감사 기록",
+            "empty": "아직 감사 기록이 없습니다",
+            "system": "시스템",
+            "via": "(@{username} 경유)",
+            "content": "콘텐츠",
+            "actions": {
+                "grant": "{role} 부여",
+                "revoke": "{role} 해제",
+                "sanction": "적용: {scope}",
+                "revokeSanction": "해제: {scope}",
+                "report": "신고 종료: {verdict}",
+                "deleteUser": "사용자 계정 삭제",
+                "deleteComment": "댓글 삭제",
+                "deleteCollection": "컬렉션 삭제",
+                "impersonateUser": "사용자로 로그인",
+                "stopImpersonation": "대리 로그인 종료"
+            }
+        },
+        "activity": {
+            "collections": "컬렉션",
+            "noCollections": "컬렉션 없음",
+            "private": "비공개",
+            "counts": "{items, plural, other {항목 #개}} · {comments, plural, other {댓글 #개}} · {likes, plural, other {좋아요 #개}}",
+            "comments": "댓글",
+            "noComments": "댓글 없음"
+        },
+        "tags": {
+            "deleted": "태그를 삭제했습니다.",
+            "title": "태그",
+            "hint": "사용자가 만든 태그이며, 사용하는 컬렉션 수 순으로 정렬됩니다.",
+            "search": "태그 찾기",
+            "empty": "태그 없음",
+            "usage": "{count, plural, other {컬렉션 #개}}",
+            "delete": "태그 삭제",
+            "deleteNamed": "{name} 삭제",
+            "deleteTitle": "#{name}을(를) 삭제할까요?",
+            "deleteDescription": "이 태그를 사용하는 모든 컬렉션에서 태그가 제거됩니다."
+        },
+        "title": "관리",
+        "subtitle": "사용자, 신고, 제재, 카테고리",
+        "tabs": {
+            "users": "사용자",
+            "reports": "신고",
+            "categories": "카테고리"
+        },
+        "selectUser": "사용자를 선택하세요",
+        "selectUserHint": "사용자 이름, 이름 또는 이메일로 검색하세요.",
+        "selectReport": "신고를 선택하세요",
+        "selectReportHint": "가장 오래된 미처리 신고가 맨 위에 있습니다.",
+        "selectCategory": "카테고리를 선택하세요",
+        "selectCategoryHint": "또는 새로 만드세요. 보관된 카테고리의 컬렉션은 그대로 유지됩니다.",
+        "users": {
+            "search": "사용자 검색",
+            "empty": "사용자를 찾을 수 없습니다",
+            "sanctioned": "제재 중"
+        },
+        "report": {
+            "aboutAccount": "계정 자체에 대한 신고입니다.",
+            "deletedSince": "이후 삭제됨 — 신고 당시의 스냅샷을 표시합니다",
+            "posted": "{date}에 게시됨",
+            "verdict": "판정",
+            "reviewedBy": "검토자",
+            "sanction": "제재",
+            "duplicateOf": "중복 대상",
+            "resolution": "처리 결과",
+            "notFound": "신고를 찾을 수 없습니다",
+            "title": "<user>@{username}</user>에 대한 신고 #{id}",
+            "subtitle": "{target} · 신고자 @{username} · {date}",
+            "open": "미처리",
+            "closed": "종료됨",
+            "evidence": "증거",
+            "context": "맥락",
+            "against": "@{username} 님에 대한 신고",
+            "againstCounts": "총 {total}건 · 위반 {guilty}건",
+            "filedBy": "@{username} 님이 한 신고",
+            "filedCounts": "총 {total}건 · 기각 {rejected}건",
+            "activeSanctions": "적용 중인 제재",
+            "none": "없음",
+            "decision": "결정",
+            "outcome": "결과"
+        },
+        "queue": {
+            "open": "미처리 ({count})",
+            "closed": "종료됨",
+            "type": "유형",
+            "all": "전체",
+            "empty": "대기열이 비어 있습니다",
+            "emptyClosed": "종료된 신고가 없습니다"
+        },
+        "user": {
+            "notFound": "사용자를 찾을 수 없습니다",
+            "notFoundHint": "삭제되었거나 관리할 수 없는 사용자입니다.",
+            "regularUser": "사용자",
+            "stats": {
+                "collections": "컬렉션",
+                "comments": "댓글",
+                "messages": "메시지",
+                "reportsReceived": "받은 신고"
+            },
+            "sanctions": "제재",
+            "sanctionsHint": "계정 정지와 기능별 제한입니다. 적용 중인 더 강한 제재는 절대 단축되지 않습니다.",
+            "roles": "역할",
+            "rolesHint": "관리자 권한은 `npm run admin`으로 관리합니다.",
+            "activity": "활동",
+            "activityHint": "컬렉션과 댓글, 최신순.",
+            "danger": "위험 구역"
+        }
+    },
+    "collectionFilters": {
+        "search": "컬렉션 검색",
+        "sorts": {
+            "popular": "인기순",
+            "newest": "최신순",
+            "old": "오래된순"
+        }
+    },
+    "collection": {
+        "like": "좋아요",
+        "unlike": "좋아요 취소",
+        "signInToLike": "좋아요를 누르려면 로그인하세요",
+        "delete": {
+            "deleted": "컬렉션을 삭제했습니다.",
+            "title": "“{name}”을(를) 삭제할까요?",
+            "description": "이 작업은 되돌릴 수 없습니다. 모든 항목과 댓글도 삭제됩니다."
+        },
+        "edit": {
+            "updated": "컬렉션을 업데이트했습니다.",
+            "title": "컬렉션 수정",
+            "intro": "변경 사항은 즉시 저장되며 다른 사용자에게도 보입니다. 항목은 컬렉션 페이지에서 바로 수정합니다."
+        },
+        "stats": {
+            "likes": "좋아요",
+            "comments": "댓글",
+            "favorites": "저장",
+            "title": "통계",
+            "intro": "컬렉션의 일별 활동 (UTC).",
+            "unavailable": "지금은 통계를 볼 수 없습니다.",
+            "empty": "아직 활동이 없습니다."
+        },
+        "description": "설명",
+        "meta": "{count, plural, other {항목 #개}} · {date} 생성",
+        "private": "비공개",
+        "deleteAsModerator": "모더레이터로 삭제",
+        "deleteCollection": "컬렉션 삭제",
+        "actions": "컬렉션 작업"
+    },
+    "nav": {
+        "home": "홈",
+        "collections": "컬렉션",
+        "profile": "프로필",
+        "notifications": "알림",
+        "management": "관리",
+        "settings": "설정",
+        "openMenu": "메뉴 열기",
+        "createCollection": "컬렉션 만들기",
+        "chats": "채팅",
+        "findUser": "사용자 찾기",
+        "accountMenu": "계정 메뉴",
+        "returnToAdmin": "관리자로 돌아가기",
+        "logout": "로그아웃",
+        "startTyping": "사용자 이름을 입력하세요",
+        "impersonating": "<strong>@{username}</strong>(으)로 로그인되어 있습니다. 돌아가려면 계정 메뉴의 ‘관리자로 돌아가기’를 사용하세요."
+    },
+    "footer": {
+        "privacyPolicy": "개인정보 처리방침"
+    },
+    "people": {
+        "mutual": "함께 아는 사람 {count}명",
+        "livesIn": "{city} 거주",
+        "followsYou": "회원님을 팔로우함",
+        "following": "팔로잉",
+        "follow": "팔로우",
+        "title": "알 수도 있는 사람",
+        "hide": "추천 숨기기",
+        "hideHint": "숨기기 (설정에서 다시 표시할 수 있음)",
+        "seeAll": "추천 모두 보기"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "컬렉션 만들기",
+            "firstItem": "첫 항목 추가"
+        },
+        "title": "새 컬렉션 만들기",
+        "itemTitle": "첫 항목을 추가하세요",
+        "subtitle": "새 컬렉션을 추가해 콘텐츠를 정리하세요.",
+        "itemSubtitle": "모든 컬렉션은 항목 하나 이상으로 시작합니다.",
+        "submit": "컬렉션 만들기"
+    },
+    "home": {
+        "discover": "컬렉션 둘러보기",
+        "emptyTitle": "아직 추천할 항목이 없습니다",
+        "emptyBoard": "먼저 이 보드에 태그가 있는 컬렉션을 몇 개 저장하세요.",
+        "emptyForYou": "컬렉션에 좋아요를 누르고 저장해서 피드를 맞춤 설정하세요.",
+        "feeds": {
+            "forYou": "추천",
+            "explore": "탐색",
+            "moreLike": "“{name}”와 비슷한 항목",
+            "label": "피드",
+            "items": "피드"
+        }
+    },
+    "myCollections": {
+        "title": "내 컬렉션",
+        "subtitle": "공개 범위, 카테고리, 태그, 검색으로 내 컬렉션을 둘러보고 관리하세요.",
+        "create": "컬렉션 만들기",
+        "filters": "필터",
+        "category": "카테고리",
+        "tags": "태그"
+    },
+    "notFound": {
+        "title": "페이지를 찾을 수 없습니다",
+        "description": "찾으시는 페이지가 없거나 이동되었습니다.",
+        "home": "홈으로",
+        "back": "뒤로 가기"
+    },
+    "onboarding": {
+        "title": "무엇에 관심이 있나요?",
+        "subtitle": "카테고리 몇 개를 고르면 피드를 맞춰 드립니다. 나중에 설정에서 바꿀 수 있습니다.",
+        "pickMore": "{count}개 더 선택",
+        "continue": "계속"
+    },
+    "privacy": {
+        "title": "개인정보 처리방침",
+        "updated": "최종 업데이트: {date}",
+        "collect": {
+            "title": "수집하는 데이터",
+            "intro": "Collectify에서 계정을 만들면 다음 정보를 수집합니다:",
+            "items": {
+                "email": "이메일 주소 (로그인 및 계정 식별에 사용)",
+                "names": "직접 정한 사용자 이름과 이름",
+                "password": "비밀번호 (안전한 해시로 저장하며 평문으로 저장하지 않습니다). GitHub 또는 Google로 가입한 경우에는 대신 연결된 계정의 ID를 저장합니다",
+                "profile": "선택적으로 추가하는 프로필 정보: 아바타, 배너, 소개/설명, 국가와 도시, 생년월일",
+                "content": "앱에서 만든 콘텐츠: 컬렉션, 항목, 댓글, 좋아요, 팔로우, 메시지, 알림"
+            }
+        },
+        "why": {
+            "title": "수집하는 이유",
+            "text": "데이터는 계정을 만들고 관리하고, 로그인 시 본인을 인증하고, 방문 사이에 로그인 상태를 유지하며(세션 관리), 컬렉션, 다른 사용자 팔로우, 댓글, 좋아요, 메시지 등 앱의 핵심 기능을 제공하는 데 사용됩니다."
+        },
+        "location": {
+            "title": "위치와 생년월일",
+            "intro": "둘 다 선택 사항이며 프로필에서 언제든지 변경하거나 삭제할 수 있습니다.",
+            "items": {
+                "location": "<strong>국가와 도시</strong>는 공개 프로필에 표시되며, 같은 도시에 사는 알 수도 있는 사람을 추천하는 데 사용됩니다. 정확한 위치나 IP 기반 위치는 수집하지 않습니다.",
+                "birthDate": "<strong>생년월일</strong>은 비공개이며 다른 사용자에게 절대 표시되지 않습니다. 최소 연령 충족 여부를 확인하는 데만 사용됩니다."
+            }
+        },
+        "recommendations": {
+            "title": "추천",
+            "text": "‘추천’ 피드, 보드 추천, ‘알 수도 있는 사람’을 만들기 위해 관심사로 고른 카테고리, 로그인 상태에서 좋아요·저장·보드 추가·열람한 컬렉션, 해당 컬렉션의 태그와 카테고리, 회원님이 팔로우하는 사람과 회원님을 팔로우하는 사람, 프로필의 도시를 사용합니다. 좋아요나 저장을 취소해도 해당 컬렉션을 다시 추천하지 않도록 기록을 유지합니다. 이 모든 과정은 Collectify 내부에서만 이루어지며, 보드와 열람 기록은 다른 사용자에게 절대 표시되지 않습니다."
+        },
+        "age": {
+            "title": "최소 연령",
+            "text": "Collectify는 만 18세 이상을 대상으로 합니다. 만 18세 미만에 해당하는 생년월일은 저장할 수 없습니다. 계정이 만 18세 미만의 사람에게 속한 것으로 확인되면 계정을 정지하고 데이터를 삭제할 수 있습니다."
+        },
+        "cookies": {
+            "title": "쿠키",
+            "text": "로그인 상태를 유지하는 기능성 세션 쿠키, 인터페이스 언어를 기억하는 기능성 쿠키, 그리고 GitHub 또는 Google로 로그인하는 동안 사용하는 단기 보안 쿠키(약 10분)를 사용합니다. 선택한 테마는 브라우저의 로컬 저장소에 저장됩니다. 분석, 추적, 마케팅 쿠키는 사용하지 않습니다."
+        },
+        "storage": {
+            "title": "데이터 저장 위치",
+            "text": "앱은 Vercel에서 호스팅됩니다. 계정과 콘텐츠 데이터는 당사 데이터베이스에 저장됩니다. 업로드한 이미지(아바타, 배너, 항목 이미지)는 미디어 호스팅 업체인 Uploadcare에 저장됩니다."
+        },
+        "moderation": {
+            "title": "신고와 관리",
+            "text": "콘텐츠를 신고하면 나중에 삭제되더라도 모더레이터가 검토할 수 있도록 신고된 댓글이나 컬렉션의 사본을 보관합니다. 신고를 처리할 때 모더레이터와 관리자는 신고된 콘텐츠와 계정의 공개 활동을 확인할 수 있습니다. 다이렉트 메시지는 신고할 수 없으며, 모더레이터와 관리자는 회원님의 대화를 읽을 수 없습니다. 관리 조치는 내부 감사 로그에 기록됩니다. 계정을 삭제하면 해당 콘텐츠도 삭제되며, 감사 로그에는 계정 ID와 사용자 이름만 남습니다."
+        },
+        "thirdParties": {
+            "title": "제3자",
+            "text": "광고나 마케팅 목적으로 회원님의 데이터를 판매하거나 제3자와 공유하지 않습니다. GitHub 또는 Google로 가입하거나 로그인하면 계정을 만들기 위해 해당 업체가 기본 프로필 정보(예: 이메일)를 당사와 공유합니다."
+        }
+    },
+    "errorPage": {
+        "title": "문제가 발생했습니다",
+        "description": "다시 시도하세요."
+    },
+    "userProfile": {
+        "manage": "관리"
+    }
+}

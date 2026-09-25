@@ -17,6 +17,7 @@ import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import { TabIndicator } from '@/shared/ui/TabIndicator';
 import styles from './NotificationsPage.module.css';
+import { useTranslations } from 'next-intl';
 
 type Tab = 'all' | 'unread';
 
@@ -26,15 +27,15 @@ function groupLabel(createdAt: string, now: Date) {
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     const time = new Date(createdAt).getTime();
 
-    if (time >= startOfToday) return 'Today';
-    if (time >= startOfToday - DAY) return 'Yesterday';
-    if (time >= startOfToday - 6 * DAY) return 'This week';
-    return 'Earlier';
+    if (time >= startOfToday) return 'today';
+    if (time >= startOfToday - DAY) return 'yesterday';
+    if (time >= startOfToday - 6 * DAY) return 'thisWeek';
+    return 'earlier';
 }
 
 function groupByDay(notifications: AppNotification[]) {
     const now = new Date();
-    const groups: { label: string; items: AppNotification[] }[] = [];
+    const groups: { label: ReturnType<typeof groupLabel>; items: AppNotification[] }[] = [];
 
     for (const notification of notifications) {
         const label = groupLabel(notification.createdAt, now);
@@ -48,6 +49,7 @@ function groupByDay(notifications: AppNotification[]) {
 }
 
 export default function NotificationsPage() {
+    const t = useTranslations('notifications');
     const cache = useNotificationCache();
     const markRead = useMarkNotificationRead();
     const [tab, setTab] = useState<Tab>('all');
@@ -87,7 +89,7 @@ export default function NotificationsPage() {
     return (
         <section className={styles.page}>
             <header className={styles.header}>
-                <h1 className={styles.title}>Notifications</h1>
+                <h1 className={styles.title}>{t('title')}</h1>
 
                 <Button
                     size="small"
@@ -95,7 +97,7 @@ export default function NotificationsPage() {
                     onClick={() => markAllRead.mutate()}
                     disabled={unread === 0 || markAllRead.isPending}
                 >
-                    Mark all as read
+                    {t('markAllRead')}
                 </Button>
             </header>
 
@@ -109,7 +111,7 @@ export default function NotificationsPage() {
                         className={`${styles.tab} ${tab === value ? styles.tabActive : ''}`}
                         onClick={() => setTab(value)}
                     >
-                        {value === 'all' ? 'All' : 'Unread'}
+                        {t(`tabs.${value}`)}
                         {value === 'unread' && unread > 0 && (
                             <span className={styles.counter}>{unread}</span>
                         )}
@@ -122,14 +124,14 @@ export default function NotificationsPage() {
 
             {query.isSuccess && notifications.length === 0 && (
                 <EmptyState
-                    title={tab === 'unread' ? 'No unread notifications' : 'No notifications yet'}
-                    description="You're all caught up."
+                    title={tab === 'unread' ? t('emptyUnread') : t('empty')}
+                    description={t('caughtUp')}
                 />
             )}
 
             {groups.map((group) => (
                 <section key={group.label} className={styles.group}>
-                    <h2 className={styles.groupTitle}>{group.label}</h2>
+                    <h2 className={styles.groupTitle}>{t(`groups.${group.label}`)}</h2>
                     <div className={styles.list}>
                         {group.items.map((notification) => (
                             <NotificationItem

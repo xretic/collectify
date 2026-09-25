@@ -4,7 +4,7 @@ import { revokeSanction } from '@/features/moderation/server/moderation';
 
 export const DELETE = route<{ id: string }>(async (req, params) => {
     const ctx = await requireStaff(req);
-    await revokeSanction(ctx, parseId(params.id, 'sanction id'));
+    await revokeSanction(ctx, parseId(params.id));
 
     return noContent();
 });

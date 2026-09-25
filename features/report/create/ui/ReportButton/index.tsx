@@ -2,8 +2,8 @@
 
 import { IconButton, Tooltip } from '@mui/material';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
-import { REPORT_TARGET_LABELS } from '@/entities/report/model/types';
 import { useReportDialogStore, type ReportRequest } from '../../model/reportDialogStore';
+import { useTranslations } from 'next-intl';
 
 type ReportButtonProps = ReportRequest & {
     className?: string;
@@ -17,8 +17,9 @@ export function ReportButton({
     disabled,
     ...request
 }: ReportButtonProps) {
+    const t = useTranslations('reports');
     const open = useReportDialogStore((state) => state.open);
-    const label = `Report ${REPORT_TARGET_LABELS[request.target.type].toLowerCase()}`;
+    const label = t(`reportTarget.${request.target.type}`);
 
     return (
         <Tooltip title={label}>

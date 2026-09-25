@@ -1,6 +1,6 @@
 import 'server-only';
 import { db, type Tx } from '@/shared/server/db';
-import { forbidden } from '@/shared/server/http';
+import { forbidden, type ErrorKey } from '@/shared/server/http';
 import { isStrongerOrEqual, type SanctionScope } from '../model/types';
 
 const activeWhere = (now: Date) => ({
@@ -35,23 +35,28 @@ export async function getActiveSanction(userId: number, scope: SanctionScope, cl
     return sanction ?? null;
 }
 
-export function sanctionMessage(prefix: string, expiresAt: Date | null) {
-    return expiresAt
-        ? `${prefix} It expires at ${expiresAt.toISOString()}.`
-        : `${prefix} This restriction is permanent.`;
-}
+const SANCTION_ERRORS = {
+    ACCOUNT: ['bannedUntil', 'bannedPermanent'],
+    COMMENTS: ['mutedCommentsUntil', 'mutedCommentsPermanent'],
+    MESSENGER: ['mutedMessengerUntil', 'mutedMessengerPermanent'],
+} as const satisfies Record<SanctionScope, readonly [ErrorKey, ErrorKey]>;
 
-const MUTE_PLACES: Record<Exclude<SanctionScope, 'ACCOUNT'>, string> = {
-    COMMENTS: 'comments',
-    MESSENGER: 'the messenger',
-};
+/** 403 explaining the restriction and when it ends ("2026-10-01 14:30 UTC"). */
+export function sanctionError(scope: SanctionScope, expiresAt: Date | null) {
+    const [until, permanent] = SANCTION_ERRORS[scope];
+    if (!expiresAt) return forbidden(permanent);
+
+    return forbidden(until, {
+        date: `${expiresAt.toISOString().slice(0, 16).replace('T', ' ')} UTC`,
+    });
+}
 
 /** Throws 403 when the user is muted in the given scope. */
 export async function assertNotMuted(userId: number, scope: Exclude<SanctionScope, 'ACCOUNT'>) {
     const sanction = await getActiveSanction(userId, scope);
     if (!sanction) return;
 
-    throw forbidden(sanctionMessage(`You are muted in ${MUTE_PLACES[scope]}.`, sanction.expiresAt));
+    throw sanctionError(scope, sanction.expiresAt);
 }
 
 type IssueSanctionInput = {

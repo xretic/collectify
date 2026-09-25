@@ -20,10 +20,10 @@ import { CommentMenu } from '@/features/comment/manage/ui/CommentMenu';
 import { useCommentMutations } from '@/features/comment/manage/model/useCommentMutations';
 import { useReportAction } from '@/features/report/create/model/useReportAction';
 import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll';
-import { formatCompact } from '@/shared/lib/format/number';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CommentsSectionProps = {
     collectionId: number;
@@ -58,6 +58,8 @@ function useLinkedComment(ready: boolean) {
 }
 
 export function CommentsSection({ collectionId, owner, total, viewer }: CommentsSectionProps) {
+    const t = useTranslations('comments');
+    const tc = useTranslations('common');
     const query = useInfiniteQuery({
         queryKey: commentQueryKeys.byCollection(collectionId),
         queryFn: ({ pageParam }) => collectionApi.comments(collectionId, pageParam),
@@ -80,7 +82,7 @@ export function CommentsSection({ collectionId, owner, total, viewer }: Comments
     return (
         <section id="comments" className={styles.section}>
             <h2 className={styles.title}>
-                {formatCompact(query.data?.pages[0]?.total ?? total)} comments
+                {t('count', { count: query.data?.pages[0]?.total ?? total })}
             </h2>
 
             {viewer && <CommentComposer collectionId={collectionId} viewer={viewer} />}
@@ -88,7 +90,7 @@ export function CommentsSection({ collectionId, owner, total, viewer }: Comments
             {query.isPending && <Spinner />}
 
             {!query.isPending && comments.length === 0 && (
-                <EmptyState title="No comments yet." description="Start the conversation." />
+                <EmptyState title={t('emptyTitle')} description={t('emptyDescription')} />
             )}
 
             <div className={styles.list}>
@@ -109,7 +111,7 @@ export function CommentsSection({ collectionId, owner, total, viewer }: Comments
                     {isFetchingNextPage ? (
                         <Spinner />
                     ) : (
-                        <Button onClick={() => fetchNextPage()}>Load more</Button>
+                        <Button onClick={() => fetchNextPage()}>{tc('loadMore')}</Button>
                     )}
                 </div>
             )}
@@ -126,6 +128,7 @@ type ThreadProps = {
 };
 
 function CommentThread({ collectionId, comment, owner, viewer, linkedId }: ThreadProps) {
+    const t = useTranslations('comments');
     const [open, setOpen] = useState(false);
     const [replyingTo, setReplyingTo] = useState<CollectionComment | null>(null);
 
@@ -168,7 +171,7 @@ function CommentThread({ collectionId, comment, owner, viewer, linkedId }: Threa
                         ) : (
                             <KeyboardArrowDownIcon fontSize="small" />
                         )}
-                        {comment.replies} {comment.replies === 1 ? 'reply' : 'replies'}
+                        {t('replies', { count: comment.replies })}
                     </button>
                 )}
 
@@ -195,7 +198,7 @@ function CommentThread({ collectionId, comment, owner, viewer, linkedId }: Threa
                                 onClick={() => replies.fetchNextPage()}
                                 disabled={replies.isFetchingNextPage}
                             >
-                                Show more replies
+                                {t('moreReplies')}
                             </button>
                         )}
                     </>
@@ -225,6 +228,7 @@ type ItemProps = {
 };
 
 function CommentItem({ collectionId, comment, owner, viewer, highlighted, onReply }: ItemProps) {
+    const t = useTranslations('comments');
     const { update, remove, heart } = useCommentMutations(collectionId);
     const [editing, setEditing] = useState(false);
 
@@ -254,12 +258,12 @@ function CommentItem({ collectionId, comment, owner, viewer, highlighted, onRepl
         <>
             {viewer && !viewer.restrictions.comments.muted && (
                 <Button size="small" className={styles.replyButton} onClick={onReply}>
-                    Reply
+                    {t('reply')}
                 </Button>
             )}
 
             {isOwner ? (
-                <Tooltip title={comment.likedByAuthor ? 'Remove heart' : 'Heart this comment'}>
+                <Tooltip title={comment.likedByAuthor ? t('unheart') : t('heart')}>
                     <IconButton
                         size="small"
                         className={comment.likedByAuthor ? styles.hearted : undefined}
@@ -267,7 +271,7 @@ function CommentItem({ collectionId, comment, owner, viewer, highlighted, onRepl
                             heart.mutate({ commentId: comment.id, liked: !comment.likedByAuthor })
                         }
                         aria-pressed={comment.likedByAuthor}
-                        aria-label="Heart comment"
+                        aria-label={t('heartLabel')}
                     >
                         {comment.likedByAuthor ? (
                             <FavoriteIcon fontSize="small" />
@@ -278,7 +282,7 @@ function CommentItem({ collectionId, comment, owner, viewer, highlighted, onRepl
                 </Tooltip>
             ) : (
                 comment.likedByAuthor && (
-                    <Tooltip title={`♥ by ${owner.username}`}>
+                    <Tooltip title={t('heartedBy', { username: owner.username })}>
                         <span className={styles.authorHeart}>
                             <Avatar
                                 src={owner.avatarUrl}

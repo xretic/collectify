@@ -12,8 +12,10 @@ import { ReportPanel } from './ReportPanel';
 import { UserPanel } from './UserPanel';
 import { CategoryPanel } from './CategoryPanel';
 import styles from './ManagementPage.module.css';
+import { useTranslations } from 'next-intl';
 
 export default function ManagementPage() {
+    const t = useTranslations('management');
     const { user } = useSessionUser();
     const url = useManagementUrl();
     const [reportFilters, setReportFilters] = useState<ReportFilters>({ status: 'OPEN' });
@@ -54,10 +56,7 @@ export default function ManagementPage() {
                                 onDeleted={() => url.selectUser(null)}
                             />
                         ) : (
-                            <EmptyState
-                                title="Select a user"
-                                description="Search by username, name or email."
-                            />
+                            <EmptyState title={t('selectUser')} description={t('selectUserHint')} />
                         ))}
 
                     {url.tab === 'reports' &&
@@ -71,8 +70,8 @@ export default function ManagementPage() {
                             />
                         ) : (
                             <EmptyState
-                                title="Select a report"
-                                description="The oldest open reports are at the top."
+                                title={t('selectReport')}
+                                description={t('selectReportHint')}
                             />
                         ))}
 
@@ -85,8 +84,8 @@ export default function ManagementPage() {
                             />
                         ) : (
                             <EmptyState
-                                title="Select a category"
-                                description="Or create a new one. Archived categories keep their collections."
+                                title={t('selectCategory')}
+                                description={t('selectCategoryHint')}
                             />
                         ))}
                 </section>

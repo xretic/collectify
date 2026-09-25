@@ -4,7 +4,7 @@ import { markChatRead } from '@/features/chat/server/chats';
 
 export const PATCH = route<{ id: string }>(async (req, params) => {
     const viewer = await requireChatViewer(req);
-    await markChatRead(parseId(params.id, 'chat id'), viewer.userId);
+    await markChatRead(parseId(params.id), viewer.userId);
 
     return noContent();
 });

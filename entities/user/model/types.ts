@@ -1,3 +1,5 @@
+import type { Locale } from '@/shared/config/i18n';
+
 export type UserRole = 'Admin' | 'Moderator' | 'Verified';
 
 export type UserPreview = {
@@ -26,6 +28,8 @@ export type SessionUser = {
     birthDate: string | null;
     /** Saved order of the home feed tabs ("for-you", "explore", "board:<id>"). */
     feedTabOrder: string[];
+    /** UI language kept on the account. */
+    locale: Locale;
     followers: number;
     subscriptions: number;
     notifications: number;

@@ -1,3 +1,5 @@
+'use client';
+
 import { TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import {
     ITEM_DESCRIPTION_MAX_LENGTH,
@@ -9,13 +11,8 @@ import { ImageDropzone } from '@/shared/ui/ImageDropzone';
 import { isSourceUrlInvalid, type ItemDraft } from '../../model/drafts';
 import type { ItemSize } from '../../model/types';
 import styles from './index.module.css';
-
-const SIZE_HINTS: Record<ItemSize, string> = {
-    S: 'Small square tile',
-    M: 'Tall tile, one column',
-    L: 'Large tile, two columns',
-    XL: 'Banner across the whole row',
-};
+import { useTranslations } from 'next-intl';
+import { useValidationMessage } from '@/shared/i18n/useValidationMessage';
 
 type ItemFormFieldsProps = {
     value: ItemDraft;
@@ -23,6 +20,8 @@ type ItemFormFieldsProps = {
 };
 
 export function ItemFormFields({ value, onChange }: ItemFormFieldsProps) {
+    const t = useTranslations('items');
+    const validationMessage = useValidationMessage();
     const set = <K extends keyof ItemDraft>(key: K, fieldValue: ItemDraft[K]) =>
         onChange({ ...value, [key]: fieldValue });
 
@@ -32,26 +31,25 @@ export function ItemFormFields({ value, onChange }: ItemFormFieldsProps) {
     return (
         <div className={styles.fields}>
             <div className={styles.field}>
-                <span className={styles.label}>Image</span>
+                <span className={styles.label}>{t('image')}</span>
                 <ImageDropzone
                     value={value.imageUrl || null}
                     onChange={(url) => set('imageUrl', url)}
-                    label="Click or drop an image"
                 />
             </div>
 
             <CountedTextField
-                label="Title"
+                label={t('title')}
                 value={value.title}
                 onChange={(title) => set('title', title)}
                 maxLength={ITEM_TITLE_MAX_LENGTH}
                 required={!hasImage}
-                helperText={hasImage ? undefined : 'Required when there is no image'}
+                helperText={hasImage ? undefined : t('titleRequired')}
                 fullWidth
             />
 
             <CountedTextField
-                label="Description"
+                label={t('description')}
                 value={value.description}
                 onChange={(description) => set('description', description)}
                 maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
@@ -62,36 +60,36 @@ export function ItemFormFields({ value, onChange }: ItemFormFieldsProps) {
             />
 
             <TextField
-                label="Source URL"
+                label={t('sourceUrl')}
                 type="url"
                 value={value.sourceUrl}
                 onChange={(event) => set('sourceUrl', event.target.value)}
                 error={urlInvalid}
-                helperText={urlInvalid ? 'Enter a valid http(s) URL.' : undefined}
+                helperText={urlInvalid ? validationMessage('validation.urlInvalid') : undefined}
                 fullWidth
             />
 
             <div className={styles.field}>
-                <span className={styles.label}>Card size</span>
+                <span className={styles.label}>{t('cardSize')}</span>
                 <ToggleButtonGroup
                     exclusive
                     size="small"
                     value={value.size}
                     onChange={(_, size: ItemSize | null) => size && set('size', size)}
-                    aria-label="Card size"
+                    aria-label={t('cardSize')}
                 >
                     {ITEM_SIZES.map((size) => (
                         <ToggleButton
                             key={size}
                             value={size}
                             className={styles.size}
-                            title={SIZE_HINTS[size]}
+                            title={t(`sizes.${size}`)}
                         >
                             {size}
                         </ToggleButton>
                     ))}
                 </ToggleButtonGroup>
-                <span className={styles.hint}>{SIZE_HINTS[value.size]}</span>
+                <span className={styles.hint}>{t(`sizes.${value.size}`)}</span>
             </div>
         </div>
     );

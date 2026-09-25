@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "不正なリクエストです。",
+        "unauthorized": "続行するにはログインしてください。",
+        "forbidden": "この操作を行う権限がありません。",
+        "notFound": "見つかりません。",
+        "internal": "サーバー内部エラーが発生しました。",
+        "invalidInput": "入力内容が正しくありません。",
+        "invalidField": "無効な値です: {field}",
+        "invalidJson": "リクエスト本文が正しくありません。",
+        "invalidId": "無効な ID です。",
+        "tooManyRequests": "リクエストが多すぎます。しばらくしてから再度お試しください。",
+        "realtimeUnavailable": "リアルタイム機能が設定されていません。",
+        "invalidWebhookSignature": "Webhook の署名が無効です。",
+        "oauthNotConfigured": "このログイン方法は設定されていません。",
+        "userNotFound": "ユーザーが見つかりません。",
+        "commentNotFound": "コメントが見つかりません。",
+        "collectionNotFound": "コレクションが見つかりません。",
+        "tagNotFound": "タグが見つかりません。",
+        "reportNotFound": "通報が見つかりません。",
+        "categoryNotFound": "カテゴリが見つかりません。",
+        "sanctionNotFound": "制裁が見つかりません。",
+        "itemNotFound": "アイテムが見つかりません。",
+        "chatNotFound": "チャットが見つかりません。",
+        "boardNotFound": "ボードが見つかりません。",
+        "invalidCredentials": "メールアドレスまたはパスワードが正しくありません。",
+        "emailTaken": "このメールアドレスのアカウントはすでに存在します。",
+        "usernameTaken": "このユーザー名はすでに使われています。",
+        "emailOrUsernameTaken": "このメールアドレスまたはユーザー名はすでに使われています。",
+        "currentPasswordRequired": "現在のパスワードを入力してください。",
+        "currentPasswordIncorrect": "現在のパスワードが正しくありません。",
+        "passwordUnchanged": "新しいパスワードは現在のパスワードと異なるものにしてください。",
+        "passwordIncorrect": "パスワードが正しくありません。",
+        "typeUsernameToConfirm": "確認のためユーザー名を入力してください。",
+        "impersonationInactive": "代理ログインは有効ではありません。",
+        "bannedUntil": "アカウントは停止されています。停止は {date} に終了します。",
+        "bannedPermanent": "アカウントは停止されています。この制限は無期限です。",
+        "mutedCommentsUntil": "コメントの投稿が制限されています。{date} に解除されます。",
+        "mutedCommentsPermanent": "コメントの投稿が制限されています。この制限は無期限です。",
+        "mutedMessengerUntil": "メッセージの送信が制限されています。{date} に解除されます。",
+        "mutedMessengerPermanent": "メッセージの送信が制限されています。この制限は無期限です。",
+        "chatsUnavailableImpersonating": "別のユーザーとしてログイン中はチャットを利用できません。",
+        "cannotModerateSelf": "自分自身をモデレートすることはできません。",
+        "adminsNotModeratable": "管理者はモデレートできません。",
+        "moderatorsCannotManageModerators": "モデレーターは他のモデレーターを管理できません。",
+        "permanentSanctionAdminOnly": "無期限の制裁を科せるのは管理者だけです。",
+        "liftPermanentAdminOnly": "無期限の制裁を解除できるのは管理者だけです。",
+        "liftAdminSanctionAdminOnly": "管理者が科した制裁を解除できるのは管理者だけです。",
+        "manageModeratorsAdminOnly": "モデレーターを管理できるのは管理者だけです。",
+        "alreadySignedInAsUser": "すでにこのユーザーとしてログインしています。",
+        "stopImpersonationFirst": "先に現在の代理ログインを終了してください。",
+        "cannotImpersonateBanned": "停止中のアカウントには代理ログインできません。",
+        "categoryUnknown": "既存のカテゴリを選択してください。",
+        "categoriesUnknown": "既存のカテゴリを選択してください。",
+        "categoryExists": "この名前またはスラッグのカテゴリはすでに存在します。",
+        "categoryInUse": "このカテゴリにはまだコレクションがあります。代わりにアーカイブしてください。",
+        "tagsWrongCategory": "タグはコレクションのカテゴリに属している必要があります。",
+        "tagsLimit": "1 つのコレクションに付けられるタグは最大 {limit} 個です。",
+        "tagsDailyLimit": "今日はタグを作成しすぎました。明日もう一度お試しください。",
+        "signInForBoards": "ボードを見るにはログインしてください。",
+        "signInForFavorites": "保存したコレクションを見るにはログインしてください。",
+        "ownerOnly": "このコレクションを変更できるのは所有者だけです。",
+        "collectionsLimit": "作成できるコレクションは最大 {limit} 個です。",
+        "itemsLimit": "1 つのコレクションに追加できるアイテムは最大 {limit} 個です。",
+        "collectionNeedsItem": "コレクションには少なくとも 1 つのアイテムが必要です。",
+        "invalidItemOrder": "新しい並び順には、コレクションの各アイテムをちょうど 1 回ずつ含める必要があります。",
+        "boardNameTaken": "この名前のボードはすでにあります。",
+        "boardsLimit": "作成できるボードは最大 {limit} 個です。",
+        "cannotMessageSelf": "自分自身にメッセージを送ることはできません。",
+        "userDeleted": "このユーザーはアカウントを削除しました。",
+        "editOwnCommentsOnly": "編集できるのは自分のコメントだけです。",
+        "heartOwnerOnly": "コメントにハートを付けられるのはコレクションの所有者だけです。",
+        "commentsLimit": "1 つのコレクションに投稿できるコメントは最大 {limit} 件です。",
+        "repliesLimit": "1 つのコレクションに投稿できる返信は最大 {limit} 件です。",
+        "cannotReportSelf": "自分自身を通報することはできません。",
+        "accountNotReportable": "このアカウントは通報できません。",
+        "alreadyReported": "すでに通報済みです。まもなくモデレーターが確認します。",
+        "reportClosed": "この通報はすでにクローズされています。",
+        "cannotReviewOwnReport": "自分の通報は審査できません。",
+        "nothingToRemove": "ユーザーの通報には削除するコンテンツがありません。",
+        "duplicateMustMatchUser": "元の通報は、同じユーザーに関する別の通報である必要があります。",
+        "reportJustReviewed": "この通報はたった今ほかの人が審査しました。",
+        "nothingToUpdate": "更新する内容がありません。",
+        "countryRequiredForCity": "都市の国を選択してください。",
+        "cityUnknown": "不明な都市です。",
+        "cannotFollowSelf": "自分自身をフォローすることはできません。",
+        "generic": "問題が発生しました。もう一度お試しください。",
+        "network": "ネットワークエラーです。接続を確認してください。"
+    },
+    "validation": {
+        "required": "この項目は必須です。",
+        "tooLong": "長すぎます。",
+        "usernameMin": "ユーザー名は {usernameMin} 文字以上にしてください。",
+        "usernameMax": "ユーザー名は {usernameMax} 文字以内にしてください。",
+        "usernameChars": "ユーザー名に使えるのは a-z、0-9、「_」、「.」のみです。",
+        "passwordMin": "パスワードは {passwordMin} 文字以上にしてください。",
+        "passwordMax": "パスワードは {passwordMax} 文字以内にしてください。",
+        "passwordChars": "パスワードに使用できない文字が含まれています。",
+        "passwordsMismatch": "パスワードが一致しません。",
+        "emailInvalid": "有効なメールアドレスを入力してください。",
+        "urlInvalid": "有効な http(s) URL を入力してください。",
+        "countryUnknown": "不明な国です。",
+        "cityChars": "文字、スペース、- . , ' / ( ) を使用してください",
+        "dateInvalid": "有効な日付を入力してください。",
+        "ageMin": "{minAge} 歳以上である必要があります。",
+        "localeUnknown": "サポートされていない言語です。",
+        "nameRequired": "名前は必須です。",
+        "descriptionRequired": "説明は必須です。",
+        "slugRequired": "スラッグは必須です。",
+        "slugChars": "小文字、数字、ハイフンを使用してください。",
+        "messageEmpty": "メッセージを入力してください。",
+        "commentEmpty": "コメントを入力してください。",
+        "itemTitleOrImage": "タイトルまたは画像を追加してください。",
+        "categoryRequired": "カテゴリを選択してください。",
+        "tagsMax": "タグは最大 {tagsMax} 個です。",
+        "tagNameMin": "{tagNameMin} 文字以上にしてください。",
+        "tagNameChars": "文字、数字、スペース、- & + . ' #",
+        "verdictRequiresGuilty": "処分とコンテンツの削除には「違反あり」の判定が必要です。",
+        "duplicateRequiresOriginal": "「重複」の判定には元の通報を選択してください。"
+    },
+    "meta": {
+        "description": "あなただけの素敵なコレクションを作りましょう。",
+        "privacyDescription": "Collectify がデータをどのように収集・利用・保存するか。",
+        "userDescription": "Collectify の {name} さんのコレクション。",
+        "pages": {
+            "login": "ログイン",
+            "register": "新規登録",
+            "chats": "チャット",
+            "createCollection": "コレクションを作成",
+            "myCollections": "マイコレクション",
+            "notifications": "通知",
+            "onboarding": "興味を選択",
+            "settings": "設定",
+            "myProfile": "マイプロフィール",
+            "management": "管理",
+            "privacyPolicy": "プライバシーポリシー",
+            "collection": "コレクション",
+            "userNotFound": "ユーザーが見つかりません"
+        }
+    },
+    "languages": {
+        "label": "言語"
+    },
+    "auth": {
+        "email": "メールアドレス",
+        "password": "パスワード",
+        "username": "ユーザー名",
+        "login": "ログイン",
+        "register": "新規登録",
+        "signingIn": "ログイン中…",
+        "creatingAccount": "アカウントを作成中…",
+        "usernameHint": "小文字、数字、「_」と「.」",
+        "passwordHint": "{min} 文字以上",
+        "languageHint": "あとで設定から変更できます。",
+        "orContinueWith": "または次の方法で続行",
+        "loginSubtitle": "アカウントにアクセスするには認証情報を入力してください。",
+        "registerSubtitle": "アカウントを作成してコレクションを始めましょう。",
+        "noAccount": "アカウントをお持ちでない方は <link>新規登録</link>",
+        "haveAccount": "すでにアカウントをお持ちの方は <link>ログイン</link>",
+        "oauthErrors": {
+            "oauthState": "ログインリンクの有効期限が切れました。もう一度お試しください。",
+            "oauthFailed": "プロバイダーでのログインに失敗しました。もう一度お試しください。",
+            "accountBanned": "このアカウントは停止されています。"
+        }
+    },
+    "common": {
+        "cancel": "キャンセル",
+        "reset": "リセット",
+        "save": "保存",
+        "delete": "削除",
+        "edit": "編集",
+        "close": "閉じる",
+        "back": "戻る",
+        "retry": "再試行",
+        "loadMore": "さらに読み込む",
+        "search": "検索",
+        "next": "次へ",
+        "skip": "スキップ",
+        "confirm": "確認",
+        "create": "作成",
+        "add": "追加",
+        "moreActions": "その他の操作",
+        "loading": "読み込み中",
+        "sortBy": "並べ替え"
+    },
+    "settings": {
+        "title": "設定",
+        "subtitle": "アカウントの設定と環境設定を管理します",
+        "profile": {
+            "title": "プロフィール",
+            "description": "名前、ユーザー名、自己紹介、画像。",
+            "edit": "プロフィールを編集"
+        },
+        "security": {
+            "title": "プライバシーとセキュリティ",
+            "changePassword": "パスワードを変更します。",
+            "setPassword": "パスワードを設定すると、メールアドレスでもログインできます。",
+            "passwordChanged": "パスワードを変更しました。",
+            "passwordSet": "パスワードを設定しました。メールアドレスでログインできるようになりました。",
+            "currentPassword": "現在のパスワード",
+            "newPassword": "新しいパスワード",
+            "confirmPassword": "新しいパスワード（確認）",
+            "change": "パスワードを変更",
+            "set": "パスワードを設定"
+        },
+        "interests": {
+            "title": "興味",
+            "description": "好きなカテゴリ。「おすすめ」フィードに反映されます。",
+            "saved": "興味を保存しました。",
+            "save": "興味を保存"
+        },
+        "language": {
+            "title": "言語",
+            "description": "インターフェース全体の言語です。アカウントに保存されます。"
+        },
+        "appearance": {
+            "title": "外観",
+            "description": "テーマを選びます。すぐに適用され、このデバイスに保存されます。",
+            "search": "テーマを検索",
+            "filter": "テーマを絞り込む",
+            "theme": "テーマ",
+            "filters": {
+                "all": "すべて",
+                "light": "ライト",
+                "dark": "ダーク"
+            }
+        },
+        "home": {
+            "title": "ホームページ",
+            "description": "フィードの横に表示するウィジェット。",
+            "showPeopleWidget": "ホームに「知り合いかも」を表示する"
+        },
+        "danger": {
+            "title": "危険な操作",
+            "description": "アカウントとすべてのデータを完全に削除します。",
+            "deleteAccount": "アカウントを削除",
+            "warning": "プロフィール、コレクション、コメント、チャットが完全に削除されます。元に戻すことはできません。",
+            "yourPassword": "パスワード",
+            "typeUsername": "確認のため「{username}」と入力してください",
+            "deleteForever": "完全に削除"
+        }
+    },
+    "dateField": {
+        "placeholder": "日付を選択",
+        "clear": "日付をクリア",
+        "open": "カレンダーを開く",
+        "chooseYear": "年を選択",
+        "previousMonth": "前の月",
+        "nextMonth": "次の月"
+    },
+    "imageDropzone": {
+        "label": "クリックまたは画像をドロップ",
+        "hint": "PNG、JPG、WEBP（10MB まで）"
+    },
+    "roles": {
+        "Admin": "管理者",
+        "Moderator": "モデレーター",
+        "Verified": "認証済み"
+    },
+    "imageEditor": {
+        "title": "画像を編集",
+        "failed": "画像を編集できませんでした。",
+        "zoom": "ズーム",
+        "rotateLeft": "左に回転",
+        "rotateRight": "右に回転",
+        "aspectRatio": "縦横比",
+        "original": "元の比率"
+    },
+    "pagination": {
+        "label": "ページ送り",
+        "previous": "前のページ",
+        "next": "次のページ",
+        "page": "{page} ページ"
+    },
+    "scrollRow": {
+        "back": "{items}を前へスクロール",
+        "forward": "{items}を次へスクロール"
+    },
+    "upload": {
+        "readFailed": "画像を読み込めませんでした。",
+        "editUnsupported": "このブラウザは画像の編集に対応していません。",
+        "saveFailed": "画像を保存できませんでした。",
+        "wrongType": "PNG、JPG、WEBP、GIF のいずれかの画像を選んでください。",
+        "tooBig": "画像は 10MB 以下にしてください。",
+        "notConfigured": "画像のアップロードが設定されていません。",
+        "network": "画像のアップロードに失敗しました。接続を確認してください。",
+        "failed": "画像のアップロードに失敗しました。"
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "アカウント停止",
+            "COMMENTS": "コメント制限",
+            "MESSENGER": "メッセージ制限"
+        },
+        "durations": {
+            "1h": "1 時間",
+            "1d": "1 日",
+            "7d": "7 日",
+            "30d": "30 日",
+            "permanent": "無期限"
+        },
+        "until": "{scope}・{date} まで",
+        "permanentScope": "{scope}・無期限",
+        "mutePlaceholder": {
+            "commentsUntil": "{date} までコメントの投稿が制限されています。",
+            "commentsPermanent": "コメントの投稿が無期限に制限されています。",
+            "messengerUntil": "{date} までメッセージの送信が制限されています。",
+            "messengerPermanent": "メッセージの送信が無期限に制限されています。"
+        }
+    },
+    "categories": {
+        "books": "本",
+        "movies": "映画",
+        "games": "ゲーム",
+        "recipes": "レシピ",
+        "apps": "アプリ",
+        "travel": "旅行",
+        "music": "音楽",
+        "sport": "スポーツ",
+        "tv-shows": "テレビ番組",
+        "anime": "アニメ",
+        "podcasts": "ポッドキャスト",
+        "art": "アート",
+        "design": "デザイン",
+        "photography": "写真",
+        "fashion": "ファッション",
+        "home": "住まい・インテリア",
+        "tech": "テクノロジー",
+        "science": "科学",
+        "education": "教育",
+        "fitness": "フィットネス",
+        "cars": "車",
+        "pets": "ペット",
+        "nature": "自然",
+        "custom": "その他"
+    },
+    "categoryMenu": {
+        "all": "すべてのカテゴリ",
+        "search": "カテゴリを検索",
+        "nothingFound": "見つかりませんでした",
+        "label": "カテゴリ"
+    },
+    "chats": {
+        "online": "オンライン",
+        "typing": "入力中",
+        "message": "メッセージ",
+        "mute": {
+            "actions": "チャットの操作",
+            "mutedUntil": "{date} までミュート",
+            "off": "通知はオフです",
+            "enable": "通知をオンにする",
+            "muteForMenu": "ミュートする期間…",
+            "disable": "通知をオフにする",
+            "muteFor": "ミュートする期間",
+            "durations": {
+                "15m": "15 分",
+                "30m": "30 分",
+                "1h": "1 時間",
+                "8h": "8 時間",
+                "1d": "1 日",
+                "1w": "1 週間"
+            },
+            "failed": "通知を更新できませんでした。もう一度お試しください。"
+        },
+        "composer": {
+            "placeholder": "メッセージを入力…",
+            "label": "メッセージ",
+            "send": "メッセージを送信"
+        },
+        "title": "チャット",
+        "unread": "未読 {count} 件",
+        "empty": "まだチャットはありません。",
+        "deletedAccount": "削除されたアカウント",
+        "muted": "ミュート中",
+        "you": "あなた: {text}",
+        "back": "チャット一覧に戻る",
+        "directMessages": "ダイレクトメッセージ",
+        "viewProfile": "プロフィールを見る",
+        "conversation": "会話",
+        "unavailable": "このチャットは利用できません。",
+        "seen": "既読 <time></time>",
+        "sent": "送信済み",
+        "privateTitle": "チャットは非公開です",
+        "privateDescription": "別のユーザーとしてログイン中はダイレクトメッセージを利用できません。",
+        "placeholderTitle": "あなたのチャット",
+        "placeholderText": "左の会話を選んで、コレクションの話を続けましょう。"
+    },
+    "collectionCard": {
+        "items": "{count, plural, other {# 件のアイテム}}",
+        "comments": "{count, plural, other {# 件のコメント}}",
+        "favorites": "{count, plural, other {# 件の保存}}",
+        "likes": "{count, plural, other {# 件のいいね}}"
+    },
+    "collectionForm": {
+        "cover": "カバー画像",
+        "coverHint": "クリックしてカバー画像をアップロード",
+        "title": "タイトル",
+        "description": "説明",
+        "visibility": "公開範囲",
+        "public": "公開",
+        "private": "非公開"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "見つかりませんでした",
+        "emptyDescription": "別のフィルターや検索を試してください。"
+    },
+    "items": {
+        "open": "アイテムを開く",
+        "drag": "アイテムをドラッグ",
+        "image": "画像",
+        "title": "タイトル",
+        "description": "説明",
+        "titleRequired": "画像がない場合は必須",
+        "sourceUrl": "出典 URL",
+        "cardSize": "カードのサイズ",
+        "sizes": {
+            "S": "小さな正方形のタイル",
+            "M": "縦長のタイル（1 列）",
+            "L": "大きなタイル（2 列）",
+            "XL": "行全体のバナー"
+        },
+        "edit": "アイテムを編集",
+        "delete": "アイテムを削除",
+        "actions": "アイテムの操作",
+        "deleteTitle": "「{title}」を削除しますか？",
+        "deleteUntitled": "このアイテムを削除しますか？",
+        "deleteDescription": "このアイテムはコレクションから削除されます。",
+        "add": "アイテムを追加",
+        "addIntro": "コレクションに新しいアイテムを追加します。",
+        "editIntro": "アイテムを更新します。変更はすぐに全員に表示されます。",
+        "item": "アイテム",
+        "previous": "前のアイテム",
+        "next": "次のアイテム",
+        "label": "アイテム"
+    },
+    "comments": {
+        "editedAt": "{date} に編集",
+        "edited": "（編集済み）",
+        "replyTo": "@{username} さんに返信",
+        "placeholder": "コメントを追加…",
+        "reply": "返信",
+        "comment": "コメント",
+        "deleteAsModerator": "モデレーターとして削除",
+        "actions": "コメントの操作",
+        "deleteTitle": "このコメントを削除しますか？",
+        "count": "{count, plural, other {# 件のコメント}}",
+        "emptyTitle": "まだコメントはありません。",
+        "emptyDescription": "会話を始めましょう。",
+        "replies": "{count, plural, other {# 件の返信}}",
+        "moreReplies": "返信をさらに表示",
+        "unheart": "ハートを外す",
+        "heart": "このコメントにハートを付ける",
+        "heartLabel": "コメントにハート",
+        "heartedBy": "♥ {username}"
+    },
+    "notifications": {
+        "unread": "未読",
+        "texts": {
+            "FOLLOW": "があなたをフォローしました",
+            "LIKE": "があなたのコレクションにいいねしました:",
+            "FAVORITE": "があなたのコレクションを保存しました:",
+            "COMMENT": "があなたのコレクションにコメントしました:",
+            "REPORT_RESOLVED": "あなたの通報を確認しました。Collectify の安全を守るためのご協力に感謝します。",
+            "SANCTION": "モデレーターがあなたのアカウントを制限しました。詳細は設定をご確認ください。",
+            "COMMENT_REPLY": "があなたのコメントに返信しました:",
+            "COMMENT_LIKED": "があなたのコメントにハートを付けました:"
+        },
+        "dismiss": "通知を閉じる",
+        "title": "通知",
+        "markAllRead": "すべて既読にする",
+        "tabs": {
+            "all": "すべて",
+            "unread": "未読"
+        },
+        "emptyUnread": "未読の通知はありません",
+        "empty": "まだ通知はありません",
+        "caughtUp": "すべて確認済みです。",
+        "groups": {
+            "today": "今日",
+            "yesterday": "昨日",
+            "thisWeek": "今週",
+            "earlier": "それ以前"
+        }
+    },
+    "tags": {
+        "label": "タグ",
+        "upTo": "タグは最大 {limit} 個",
+        "noMatches": "一致するタグはありません",
+        "noneYet": "まだタグはありません",
+        "searchByTags": "タグで検索",
+        "noneInCategory": "このカテゴリにはまだタグがありません",
+        "create": "「{name}」を作成",
+        "searchOrCreate": "タグを検索または作成",
+        "chooseCategoryFirst": "先にカテゴリを選択してください。",
+        "pickerHint": "{count} / {limit}・カテゴリの人気タグが先に表示されます。"
+    },
+    "profile": {
+        "usernameCopied": "ユーザー名をコピーしました。",
+        "usernameCopyFailed": "ユーザー名をコピーできませんでした。",
+        "copyUsername": "ユーザー名をコピー",
+        "noBio": "自己紹介はまだありません",
+        "statLabel": "{label} {count}",
+        "following": "フォロー中",
+        "followers": "フォロワー",
+        "follow": "フォロー",
+        "unfollow": "フォロー解除",
+        "follows": {
+            "followers": "フォロワー",
+            "following": "フォロー中",
+            "noFollowers": "まだフォロワーはいません",
+            "noFollowing": "誰もフォローしていません",
+            "followingButton": "フォロー中",
+            "follow": "フォロー"
+        },
+        "edit": {
+            "updated": "プロフィールを更新しました。",
+            "title": "プロフィールを編集",
+            "changeBanner": "バナーを変更",
+            "removeBanner": "バナーを削除",
+            "changeAvatar": "アバターを変更",
+            "removeAvatar": "アバターを削除",
+            "fullName": "氏名",
+            "username": "ユーザー名",
+            "bio": "自己紹介",
+            "country": "国",
+            "city": "都市",
+            "birthDate": "生年月日"
+        },
+        "tabs": {
+            "created": "作成",
+            "favorites": "保存済み",
+            "private": "非公開"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "スパム",
+            "HARASSMENT": "嫌がらせ",
+            "HATE": "ヘイトスピーチ",
+            "SCAM": "詐欺",
+            "ADULT": "アダルトコンテンツ",
+            "OTHER": "その他"
+        },
+        "targets": {
+            "USER": "ユーザー",
+            "COMMENT": "コメント",
+            "COLLECTION": "コレクション"
+        },
+        "reportTarget": {
+            "USER": "ユーザーを通報",
+            "COMMENT": "コメントを通報",
+            "COLLECTION": "コレクションを通報"
+        },
+        "openTarget": {
+            "USER": "ユーザーを開く",
+            "COMMENT": "コメントを開く",
+            "COLLECTION": "コレクションを開く"
+        },
+        "verdicts": {
+            "PENDING": "保留中",
+            "GUILTY": "違反あり",
+            "NO_VIOLATION": "違反なし",
+            "INSUFFICIENT_EVIDENCE": "証拠不十分",
+            "DUPLICATE": "重複"
+        },
+        "submitted": "通報を送信しました。まもなくモデレーターが確認します。",
+        "reason": "理由",
+        "details": "詳細",
+        "submit": "通報を送信"
+    },
+    "boards": {
+        "rename": "名前を変更",
+        "delete": "ボードを削除",
+        "renameTitle": "ボード名を変更",
+        "deleteTitle": "「{name}」を削除しますか？",
+        "deleteDescription": "コレクションは「すべての保存済み」に残ります。",
+        "name": "ボード名",
+        "label": "ボード",
+        "items": "ボード",
+        "all": "すべて",
+        "new": "新しいボード",
+        "actions": "ボードの操作",
+        "signInToSave": "保存するにはログイン",
+        "saved": "保存済み",
+        "save": "保存",
+        "saveTo": "保存先",
+        "allSaved": "すべての保存済み",
+        "hint": "保存したコレクションをボードにまとめましょう。",
+        "newName": "新しいボード名",
+        "create": "ボードを作成",
+        "draggableTab": "ドラッグできるタブ"
+    },
+    "management": {
+        "categories": {
+            "updated": "カテゴリを更新しました。",
+            "created": "カテゴリを作成しました。",
+            "deleted": "カテゴリを削除しました。",
+            "name": "名前",
+            "slug": "スラッグ",
+            "slugHint": "リンクで使用: /?category=slug",
+            "description": "説明",
+            "position": "表示順",
+            "positionHint": "小さいほど先に表示",
+            "active": "有効",
+            "archived": "アーカイブ済み",
+            "onlyArchive": "コレクションのあるカテゴリはアーカイブのみ可能です。",
+            "create": "カテゴリを作成",
+            "deleteTitle": "「{name}」を削除しますか？",
+            "new": "新しいカテゴリ",
+            "empty": "まだカテゴリはありません",
+            "collections": "{count, plural, other {# 件のコレクション}}",
+            "archivedLower": "アーカイブ済み",
+            "notFound": "カテゴリが見つかりません"
+        },
+        "roles": {
+            "updated": "ロールを更新しました。",
+            "revoke": "{role}を取り消す",
+            "grant": "{role}を付与"
+        },
+        "sanctions": {
+            "applied": "制裁を科しました。",
+            "strongerKept": "より重い制裁がすでに有効なため、そちらが維持されました。",
+            "scope": "範囲",
+            "duration": "期間",
+            "reason": "理由",
+            "apply": "適用",
+            "confirmTitle": "@{username} に制裁を科しますか？",
+            "summary": "{scope}: {duration}。",
+            "reasonLine": "理由: {reason}",
+            "confirm": "制裁を科す",
+            "lifted": "制裁を解除しました。",
+            "none": "有効な制裁はありません",
+            "lift": "解除"
+        },
+        "danger": {
+            "deleted": "アカウントを削除しました。",
+            "impersonate": "このユーザーとしてログイン",
+            "delete": "アカウントを削除",
+            "impersonateTitle": "@{username} としてログインしますか？",
+            "impersonateDescription": "行った操作はすべて、あなたの名前で監査ログに記録されます。",
+            "signIn": "ログイン",
+            "deleteTitle": "@{username} を削除しますか？",
+            "deleteDescription": "アカウントとそのコレクション、コメント、チャットは完全に削除されます。"
+        },
+        "review": {
+            "describeVerdict": "判定: {verdict}。",
+            "describeRemove": "通報されたコンテンツは削除されます。",
+            "describePunishment": "@{username} への処分: {scope}、{duration}。",
+            "describeDuplicate": "通報 #{id} の重複としてマークします。",
+            "closed": "通報をクローズしました。",
+            "closedStrongerKept": "通報をクローズしました。より重い制裁がすでに有効だったため、そちらが維持されました。",
+            "verdict": "判定",
+            "removeContent": "通報されたコンテンツを削除",
+            "nothingToDelete": "削除するものはありません",
+            "sanctionUser": "ユーザーに制裁を科す",
+            "punishment": "処分",
+            "duration": "期間",
+            "originalReport": "元の通報 #",
+            "resolution": "対応メモ",
+            "close": "通報をクローズ",
+            "closeTitle": "通報 #{id} をクローズしますか？"
+        },
+        "audit": {
+            "title": "監査",
+            "titleFor": "@{username} の監査",
+            "empty": "まだ監査記録はありません",
+            "system": "システム",
+            "via": "（@{username} 経由）",
+            "content": "コンテンツ",
+            "actions": {
+                "grant": "{role}を付与",
+                "revoke": "{role}を取り消し",
+                "sanction": "適用: {scope}",
+                "revokeSanction": "解除: {scope}",
+                "report": "通報をクローズ: {verdict}",
+                "deleteUser": "ユーザーアカウントを削除",
+                "deleteComment": "コメントを削除",
+                "deleteCollection": "コレクションを削除",
+                "impersonateUser": "ユーザーとしてログイン",
+                "stopImpersonation": "代理ログインを終了"
+            }
+        },
+        "activity": {
+            "collections": "コレクション",
+            "noCollections": "コレクションはありません",
+            "private": "非公開",
+            "counts": "アイテム {items, plural, other {# 件}}・コメント {comments, plural, other {# 件}}・いいね {likes, plural, other {# 件}}",
+            "comments": "コメント",
+            "noComments": "コメントはありません"
+        },
+        "tags": {
+            "deleted": "タグを削除しました。",
+            "title": "タグ",
+            "hint": "ユーザーが作成したタグ。使用しているコレクション数の順に表示されます。",
+            "search": "タグを検索",
+            "empty": "タグはありません",
+            "usage": "{count, plural, other {# 件のコレクション}}",
+            "delete": "タグを削除",
+            "deleteNamed": "{name} を削除",
+            "deleteTitle": "#{name} を削除しますか？",
+            "deleteDescription": "このタグは、使用しているすべてのコレクションから外されます。"
+        },
+        "title": "管理",
+        "subtitle": "ユーザー、通報、制裁、カテゴリ",
+        "tabs": {
+            "users": "ユーザー",
+            "reports": "通報",
+            "categories": "カテゴリ"
+        },
+        "selectUser": "ユーザーを選択",
+        "selectUserHint": "ユーザー名、名前、メールアドレスで検索できます。",
+        "selectReport": "通報を選択",
+        "selectReportHint": "最も古い未対応の通報が上に表示されます。",
+        "selectCategory": "カテゴリを選択",
+        "selectCategoryHint": "または新しく作成します。アーカイブしたカテゴリのコレクションはそのまま残ります。",
+        "users": {
+            "search": "ユーザーを検索",
+            "empty": "ユーザーが見つかりません",
+            "sanctioned": "制裁中"
+        },
+        "report": {
+            "aboutAccount": "この通報はアカウント自体に関するものです。",
+            "deletedSince": "その後削除されました — 通報時点のスナップショットを表示しています",
+            "posted": "{date} に投稿",
+            "verdict": "判定",
+            "reviewedBy": "審査者",
+            "sanction": "制裁",
+            "duplicateOf": "重複元",
+            "resolution": "対応",
+            "notFound": "通報が見つかりません",
+            "title": "<user>@{username}</user> に関する通報 #{id}",
+            "subtitle": "{target}・通報者 @{username}・{date}",
+            "open": "未対応",
+            "closed": "クローズ済み",
+            "evidence": "証拠",
+            "context": "状況",
+            "against": "@{username} への通報",
+            "againstCounts": "合計 {total}・違反あり {guilty}",
+            "filedBy": "@{username} による通報",
+            "filedCounts": "合計 {total}・却下 {rejected}",
+            "activeSanctions": "有効な制裁",
+            "none": "なし",
+            "decision": "判断",
+            "outcome": "結果"
+        },
+        "queue": {
+            "open": "未対応（{count}）",
+            "closed": "クローズ済み",
+            "type": "種類",
+            "all": "すべて",
+            "empty": "キューは空です",
+            "emptyClosed": "クローズ済みの通報はありません"
+        },
+        "user": {
+            "notFound": "ユーザーが見つかりません",
+            "notFoundHint": "削除されたか、管理できないユーザーです。",
+            "regularUser": "ユーザー",
+            "stats": {
+                "collections": "コレクション",
+                "comments": "コメント",
+                "messages": "メッセージ",
+                "reportsReceived": "受けた通報"
+            },
+            "sanctions": "制裁",
+            "sanctionsHint": "アカウント停止と機能ごとの制限。有効なより重い制裁が短縮されることはありません。",
+            "roles": "ロール",
+            "rolesHint": "管理者権限は `npm run admin` で管理します。",
+            "activity": "アクティビティ",
+            "activityHint": "コレクションとコメント（新しい順）。",
+            "danger": "危険な操作"
+        }
+    },
+    "collectionFilters": {
+        "search": "コレクションを検索",
+        "sorts": {
+            "popular": "人気順",
+            "newest": "新しい順",
+            "old": "古い順"
+        }
+    },
+    "collection": {
+        "like": "いいね",
+        "unlike": "いいねを取り消す",
+        "signInToLike": "いいねするにはログイン",
+        "delete": {
+            "deleted": "コレクションを削除しました。",
+            "title": "「{name}」を削除しますか？",
+            "description": "この操作は元に戻せません。すべてのアイテムとコメントも削除されます。"
+        },
+        "edit": {
+            "updated": "コレクションを更新しました。",
+            "title": "コレクションを編集",
+            "intro": "変更はすぐに保存され、他のユーザーにも表示されます。アイテムはコレクションのページで直接編集します。"
+        },
+        "stats": {
+            "likes": "いいね",
+            "comments": "コメント",
+            "favorites": "保存",
+            "title": "統計",
+            "intro": "コレクションの日別アクティビティ（UTC）。",
+            "unavailable": "現在、統計は利用できません。",
+            "empty": "まだアクティビティはありません。"
+        },
+        "description": "説明",
+        "meta": "{count, plural, other {# 件のアイテム}}・{date} に作成",
+        "private": "非公開",
+        "deleteAsModerator": "モデレーターとして削除",
+        "deleteCollection": "コレクションを削除",
+        "actions": "コレクションの操作"
+    },
+    "nav": {
+        "home": "ホーム",
+        "collections": "コレクション",
+        "profile": "プロフィール",
+        "notifications": "通知",
+        "management": "管理",
+        "settings": "設定",
+        "openMenu": "メニューを開く",
+        "createCollection": "コレクションを作成",
+        "chats": "チャット",
+        "findUser": "ユーザーを探す",
+        "accountMenu": "アカウントメニュー",
+        "returnToAdmin": "管理者に戻る",
+        "logout": "ログアウト",
+        "startTyping": "ユーザー名を入力してください",
+        "impersonating": "<strong>@{username}</strong> としてログインしています。戻るにはアカウントメニューの「管理者に戻る」を使ってください。"
+    },
+    "footer": {
+        "privacyPolicy": "プライバシーポリシー"
+    },
+    "people": {
+        "mutual": "共通の知り合い {count} 人",
+        "livesIn": "{city} 在住",
+        "followsYou": "あなたをフォロー中",
+        "following": "フォロー中",
+        "follow": "フォロー",
+        "title": "知り合いかも",
+        "hide": "おすすめを非表示",
+        "hideHint": "非表示にする（設定で元に戻せます）",
+        "seeAll": "すべてのおすすめを見る"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "コレクションを作成",
+            "firstItem": "最初のアイテムを追加"
+        },
+        "title": "新しいコレクションを作成",
+        "itemTitle": "最初のアイテムを追加",
+        "subtitle": "新しいコレクションを追加してコンテンツを整理しましょう。",
+        "itemSubtitle": "どのコレクションも少なくとも 1 つのアイテムから始まります。",
+        "submit": "コレクションを作成"
+    },
+    "home": {
+        "discover": "コレクションを見つけよう",
+        "emptyTitle": "まだおすすめはありません",
+        "emptyBoard": "まずこのボードにタグ付きのコレクションをいくつか保存してください。",
+        "emptyForYou": "コレクションにいいねしたり保存したりして、フィードを調整しましょう。",
+        "feeds": {
+            "forYou": "おすすめ",
+            "explore": "探す",
+            "moreLike": "「{name}」に似たもの",
+            "label": "フィード",
+            "items": "フィード"
+        }
+    },
+    "myCollections": {
+        "title": "マイコレクション",
+        "subtitle": "公開範囲、カテゴリ、タグ、検索で自分のコレクションを閲覧・管理できます。",
+        "create": "コレクションを作成",
+        "filters": "フィルター",
+        "category": "カテゴリ",
+        "tags": "タグ"
+    },
+    "notFound": {
+        "title": "ページが見つかりません",
+        "description": "お探しのページは存在しないか、移動した可能性があります。",
+        "home": "ホームへ",
+        "back": "戻る"
+    },
+    "onboarding": {
+        "title": "何に興味がありますか？",
+        "subtitle": "カテゴリをいくつか選ぶと、フィードをあなた向けに調整します。あとで設定から変更できます。",
+        "pickMore": "あと {count} つ選択",
+        "continue": "続ける"
+    },
+    "privacy": {
+        "title": "プライバシーポリシー",
+        "updated": "最終更新日: {date}",
+        "collect": {
+            "title": "収集するデータ",
+            "intro": "Collectify でアカウントを作成すると、次の情報を収集します。",
+            "items": {
+                "email": "メールアドレス（ログインとアカウントの識別に使用）",
+                "names": "あなたが選んだユーザー名と氏名",
+                "password": "パスワード（安全なハッシュとして保存し、平文で保存することはありません）。GitHub または Google で登録した場合は、代わりに連携したアカウントの ID を保存します",
+                "profile": "任意で追加するプロフィール情報: アバター、バナー、自己紹介・説明、国と都市、生年月日",
+                "content": "アプリで作成したコンテンツ: コレクション、アイテム、コメント、いいね、フォロー、メッセージ、通知"
+            }
+        },
+        "why": {
+            "title": "収集する理由",
+            "text": "データは、アカウントの作成と管理、ログイン時の認証、訪問間でログイン状態を保つこと（セッション管理）、そしてコレクション、他のユーザーのフォロー、コメント、いいね、メッセージといったアプリの主要機能を提供するために使用されます。"
+        },
+        "location": {
+            "title": "所在地と生年月日",
+            "intro": "どちらも任意で、プロフィールからいつでも変更・削除できます。",
+            "items": {
+                "location": "<strong>国と都市</strong>は公開プロフィールに表示され、同じ都市に住む知り合いかもしれない人を提案するために使われます。正確な位置情報や IP アドレスに基づく位置情報は収集しません。",
+                "birthDate": "<strong>生年月日</strong>は非公開で、他のユーザーに表示されることはありません。最低年齢を満たしていることの確認にのみ使用します。"
+            }
+        },
+        "recommendations": {
+            "title": "おすすめ",
+            "text": "「おすすめ」フィード、ボードの提案、「知り合いかも」を作成するために、興味として選んだカテゴリ、ログイン中にいいね・保存・ボードへの追加・閲覧をしたコレクション、それらのコレクションのタグとカテゴリ、あなたがフォローしている人とあなたをフォローしている人、プロフィールの都市を使用します。いいねや保存を取り消しても、そのコレクションを再度おすすめしないよう記録を保持します。これらは Collectify 内でのみ行われ、ボードや閲覧履歴が他のユーザーに表示されることはありません。"
+        },
+        "age": {
+            "title": "最低年齢",
+            "text": "Collectify は 18 歳以上の方を対象としています。18 歳未満となる生年月日は保存できません。アカウントが 18 歳未満の方のものだと判明した場合、アカウントを停止し、そのデータを削除することがあります。"
+        },
+        "cookies": {
+            "title": "Cookie",
+            "text": "ログイン状態を保つための機能的なセッション Cookie、インターフェースの言語を記憶する機能的な Cookie、そして GitHub または Google でログインする際の短時間（約 10 分）のセキュリティ Cookie を使用します。選んだテーマはブラウザのローカルストレージに保存されます。分析、トラッキング、マーケティング用の Cookie は使用しません。"
+        },
+        "storage": {
+            "title": "データの保存場所",
+            "text": "アプリは Vercel でホストされています。アカウントとコンテンツのデータは当社のデータベースに保存されます。アップロードされた画像（アバター、バナー、アイテム画像）はメディアホスティングプロバイダーの Uploadcare に保存されます。"
+        },
+        "moderation": {
+            "title": "通報とモデレーション",
+            "text": "コンテンツを通報すると、後で削除されてもモデレーターが確認できるよう、通報されたコメントまたはコレクションのコピーを保存します。通報に対応する際、モデレーターと管理者は通報されたコンテンツとアカウントの公開アクティビティを確認できます。ダイレクトメッセージは通報できず、モデレーターと管理者があなたの会話を読むこともできません。モデレーションの操作は内部の監査ログに記録されます。アカウントを削除するとそのコンテンツも削除され、監査ログにはアカウント ID とユーザー名のみが残ります。"
+        },
+        "thirdParties": {
+            "title": "第三者",
+            "text": "広告やマーケティングの目的であなたのデータを販売したり第三者と共有したりすることはありません。GitHub または Google で登録・ログインした場合、アカウント作成のため、それらのプロバイダーから基本的なプロフィール情報（メールアドレスなど）が共有されます。"
+        }
+    },
+    "errorPage": {
+        "title": "問題が発生しました",
+        "description": "もう一度お試しください。"
+    },
+    "userProfile": {
+        "manage": "管理"
+    }
+}

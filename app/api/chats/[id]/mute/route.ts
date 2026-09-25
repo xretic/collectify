@@ -12,13 +12,13 @@ export const PUT = route<{ id: string }>(async (req, params) => {
     await enforceRateLimit(req, 'mutation', viewer.userId);
     const { duration } = await readBody(req, muteSchema);
 
-    return json({ mute: await muteChat(parseId(params.id, 'chat id'), viewer.userId, duration) });
+    return json({ mute: await muteChat(parseId(params.id), viewer.userId, duration) });
 });
 
 export const DELETE = route<{ id: string }>(async (req, params) => {
     const viewer = await requireChatViewer(req);
     await enforceRateLimit(req, 'mutation', viewer.userId);
-    await unmuteChat(parseId(params.id, 'chat id'), viewer.userId);
+    await unmuteChat(parseId(params.id), viewer.userId);
 
     return noContent();
 });

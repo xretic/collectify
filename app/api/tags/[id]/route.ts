@@ -6,7 +6,7 @@ export const GET = route<{ id: string }>(async (req, params) => {
     await enforceRateLimit(req, 'search');
 
     const tag = await findTag(parseId(params.id));
-    if (!tag) throw notFound('Tag not found.');
+    if (!tag) throw notFound('tagNotFound');
 
     return json({ tag });
 });

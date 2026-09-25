@@ -6,6 +6,7 @@ import {
     emailSchema,
     fullNameSchema,
     httpUrlSchema,
+    localeSchema,
     passwordSchema,
     profileDescriptionSchema,
     usernameSchema,
@@ -13,13 +14,14 @@ import {
 
 export const loginSchema = z.object({
     email: emailSchema,
-    password: z.string().min(1).max(200),
+    password: z.string().min(1, 'validation.required').max(200, 'validation.tooLong'),
 });
 
 export const registerSchema = z.object({
     email: emailSchema,
     username: usernameSchema,
     password: passwordSchema,
+    locale: localeSchema.optional(),
 });
 
 export const updateProfileSchema = z
@@ -43,11 +45,13 @@ export const changePasswordSchema = z
         confirmPassword: z.string(),
     })
     .refine((value) => value.newPassword === value.confirmPassword, {
-        message: 'Passwords do not match.',
+        message: 'validation.passwordsMismatch',
         path: ['confirmPassword'],
     });
 
 /** Password for password accounts, username for OAuth-only accounts. */
 export const deleteAccountSchema = z.object({
-    confirmation: z.string().min(1).max(200),
+    confirmation: z.string().min(1, 'validation.required').max(200, 'validation.tooLong'),
 });
+
+export const setLocaleSchema = z.object({ locale: localeSchema });

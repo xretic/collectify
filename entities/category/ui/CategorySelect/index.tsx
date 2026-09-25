@@ -3,6 +3,7 @@
 import { MenuItem, TextField } from '@mui/material';
 import { useCategories } from '../../model/useCategories';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CategorySelectProps = {
     value: number | null;
@@ -20,13 +21,14 @@ export function CategorySelect({
     disabled,
     className,
 }: CategorySelectProps) {
+    const t = useTranslations('categoryMenu');
     const { categories, isPending } = useCategories();
 
     return (
         <TextField
             select
             fullWidth
-            label="Category"
+            label={t('label')}
             required={required}
             disabled={disabled || isPending}
             className={className}

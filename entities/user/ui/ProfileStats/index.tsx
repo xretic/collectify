@@ -1,5 +1,8 @@
+'use client';
+
 import type { FollowListKind } from '../../model/types';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type ProfileStatsProps = {
     followers: number;
@@ -17,13 +20,15 @@ export function ProfileStats({
     variant = 'pill',
     onSelect,
 }: ProfileStatsProps) {
+    const t = useTranslations('profile');
+
     const stat = (kind: FollowListKind, label: string, value: number) =>
         onSelect ? (
             <button
                 type="button"
                 className={`${styles.stat} ${styles.clickable}`}
                 onClick={() => onSelect(kind)}
-                aria-label={`${value} ${label}`}
+                aria-label={t('statLabel', { count: value, label })}
             >
                 <span className={styles.label}>{label}</span>
                 <span className={styles.number}>{value}</span>
@@ -39,9 +44,9 @@ export function ProfileStats({
 
     return (
         <Wrapper className={`${styles.stats} ${styles[variant]}`}>
-            {stat('following', 'following', subscriptions)}
+            {stat('following', t('following'), subscriptions)}
             <div className={styles.divider} />
-            {stat('followers', 'followers', followers)}
+            {stat('followers', t('followers'), followers)}
         </Wrapper>
     );
 }

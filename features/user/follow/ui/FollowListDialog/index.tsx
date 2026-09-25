@@ -14,6 +14,7 @@ import { Spinner } from '@/shared/ui/Spinner';
 import { TabIndicator } from '@/shared/ui/TabIndicator';
 import { useFollowUser } from '../../model/useFollowUser';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type FollowListDialogProps = {
     userId: number;
@@ -22,13 +23,12 @@ type FollowListDialogProps = {
     onClose: () => void;
 };
 
-const TABS: { kind: FollowListKind; label: string }[] = [
-    { kind: 'followers', label: 'Followers' },
-    { kind: 'following', label: 'Following' },
-];
+const TABS: FollowListKind[] = ['followers', 'following'];
 
 /** Followers / following of a profile; the next page loads as the list scrolls. */
 export function FollowListDialog({ userId, kind, onKindChange, onClose }: FollowListDialogProps) {
+    const t = useTranslations('profile.follows');
+    const tc = useTranslations('common');
     const { user: viewer } = useSessionUser();
     const queryClient = useQueryClient();
     const key = userQueryKeys.follows(userId, kind);
@@ -57,19 +57,19 @@ export function FollowListDialog({ userId, kind, onKindChange, onClose }: Follow
                 <span className={styles.tabs} role="tablist">
                     {TABS.map((tab) => (
                         <button
-                            key={tab.kind}
+                            key={tab}
                             type="button"
                             role="tab"
-                            aria-selected={tab.kind === kind}
-                            className={`${styles.tab} ${tab.kind === kind ? styles.active : ''}`}
-                            onClick={() => onKindChange(tab.kind)}
+                            aria-selected={tab === kind}
+                            className={`${styles.tab} ${tab === kind ? styles.active : ''}`}
+                            onClick={() => onKindChange(tab)}
                         >
-                            {tab.label}
+                            {t(tab)}
                         </button>
                     ))}
                     <TabIndicator />
                 </span>
-                <IconButton onClick={onClose} aria-label="Close" color="inherit">
+                <IconButton onClick={onClose} aria-label={tc('close')} color="inherit">
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
@@ -79,7 +79,7 @@ export function FollowListDialog({ userId, kind, onKindChange, onClose }: Follow
 
                 {query.isSuccess && users.length === 0 && (
                     <EmptyState
-                        title={kind === 'followers' ? 'No followers yet' : 'Not following anyone'}
+                        title={kind === 'followers' ? t('noFollowers') : t('noFollowing')}
                     />
                 )}
 
@@ -121,7 +121,7 @@ export function FollowListDialog({ userId, kind, onKindChange, onClose }: Follow
                                     )
                                 }
                             >
-                                {user.isFollowed ? 'Following' : 'Follow'}
+                                {user.isFollowed ? t('followingButton') : t('follow')}
                             </Button>
                         )}
                     </div>

@@ -6,8 +6,10 @@ import { useRouter } from 'next/navigation';
 import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import { AuthLayout } from '@/features/auth/ui/AuthLayout';
 import { RegisterForm } from '@/features/auth/ui/RegisterForm';
+import { useTranslations } from 'next-intl';
 
 export default function RegisterPage() {
+    const t = useTranslations('auth');
     const router = useRouter();
     const { user } = useSessionUser();
 
@@ -17,13 +19,11 @@ export default function RegisterPage() {
 
     return (
         <AuthLayout
-            title="Register"
-            subtitle="Create an account to start collecting."
-            footer={
-                <>
-                    Already have an account? <Link href="/auth/login">Login</Link>
-                </>
-            }
+            title={t('register')}
+            subtitle={t('registerSubtitle')}
+            footer={t.rich('haveAccount', {
+                link: (chunks) => <Link href="/auth/login">{chunks}</Link>,
+            })}
         >
             <RegisterForm />
         </AuthLayout>

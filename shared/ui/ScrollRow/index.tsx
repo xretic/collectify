@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type HTMLAttributes } from 'r
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 /** Share of the visible width one arrow click scrolls by. */
 const SCROLL_STEP = 0.7;
@@ -27,6 +28,7 @@ export function ScrollRow({
     onScroll,
     ...rest
 }: ScrollRowProps) {
+    const t = useTranslations('scrollRow');
     const listRef = useRef<HTMLDivElement>(null);
     const [overflow, setOverflow] = useState({ start: false, end: false });
 
@@ -69,7 +71,7 @@ export function ScrollRow({
                 type="button"
                 className={`${styles.arrow} ${styles.arrowStart} ${overflow.start ? styles.arrowVisible : ''}`}
                 onClick={() => scrollBy(-1)}
-                aria-label={`Scroll ${itemsLabel} back`}
+                aria-label={t('back', { items: itemsLabel })}
                 tabIndex={overflow.start ? 0 : -1}
             >
                 <ChevronLeftIcon />
@@ -91,7 +93,7 @@ export function ScrollRow({
                 type="button"
                 className={`${styles.arrow} ${styles.arrowEnd} ${overflow.end ? styles.arrowVisible : ''}`}
                 onClick={() => scrollBy(1)}
-                aria-label={`Scroll ${itemsLabel} forward`}
+                aria-label={t('forward', { items: itemsLabel })}
                 tabIndex={overflow.end ? 0 : -1}
             >
                 <ChevronRightIcon />

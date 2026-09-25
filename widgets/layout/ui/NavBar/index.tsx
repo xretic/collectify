@@ -20,8 +20,11 @@ import { getNavItems } from './navItems';
 import { NavItemIcon } from './NavItemIcon';
 import { NavDrawer } from './NavDrawer';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export default function NavBar() {
+    const t = useTranslations('nav');
+    const ta = useTranslations('auth');
     const pathname = usePathname();
     const queryClient = useQueryClient();
     const { user, loading, setUser } = useSessionUser();
@@ -53,7 +56,7 @@ export default function NavBar() {
                         <IconButton
                             className={styles.drawerToggle}
                             onClick={() => setDrawerOpen(true)}
-                            aria-label="Open menu"
+                            aria-label={t('openMenu')}
                         >
                             <Badge color="error" variant="dot" invisible={!user.notifications}>
                                 <MenuIcon />
@@ -80,7 +83,7 @@ export default function NavBar() {
                                     aria-current={active ? 'page' : undefined}
                                 >
                                     <NavItemIcon item={item} active={active} />
-                                    <span>{item.label}</span>
+                                    <span>{t(item.labelKey)}</span>
                                 </Link>
                             );
                         })}
@@ -92,18 +95,18 @@ export default function NavBar() {
 
                     {user && !searchOpen && (
                         <>
-                            <Tooltip title="Create collection">
+                            <Tooltip title={t('createCollection')}>
                                 <IconButton
                                     component={Link}
                                     href="/collections/create"
-                                    aria-label="Create collection"
+                                    aria-label={t('createCollection')}
                                 >
                                     <AddIcon />
                                 </IconButton>
                             </Tooltip>
 
-                            <Tooltip title="Chats">
-                                <IconButton component={Link} href="/chats" aria-label="Chats">
+                            <Tooltip title={t('chats')}>
+                                <IconButton component={Link} href="/chats" aria-label={t('chats')}>
                                     <Badge
                                         badgeContent={user.unreadMessages}
                                         max={99}
@@ -114,10 +117,10 @@ export default function NavBar() {
                                 </IconButton>
                             </Tooltip>
 
-                            <Tooltip title="Find a user">
+                            <Tooltip title={t('findUser')}>
                                 <IconButton
                                     onClick={() => setSearchOpen(true)}
-                                    aria-label="Find a user"
+                                    aria-label={t('findUser')}
                                 >
                                     <SearchIcon />
                                 </IconButton>
@@ -130,10 +133,10 @@ export default function NavBar() {
                     {!user && !loading && (
                         <div className={styles.auth}>
                             <Button variant="contained" component={Link} href="/auth/login">
-                                Login
+                                {ta('login')}
                             </Button>
                             <Button variant="outlined" component={Link} href="/auth/register">
-                                Register
+                                {ta('register')}
                             </Button>
                         </div>
                     )}

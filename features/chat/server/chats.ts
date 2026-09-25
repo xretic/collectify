@@ -116,7 +116,7 @@ export async function getChatMessages(
 
 /** The existing chat with `userId` (if any) and their preview, for opening a draft chat. */
 export async function findChatWith(viewerId: number, userId: number): Promise<ChatWith> {
-    if (viewerId === userId) throw forbidden('You cannot message yourself.');
+    if (viewerId === userId) throw forbidden('cannotMessageSelf');
 
     const [user, chat] = await Promise.all([
         db.user.findUnique({
@@ -125,7 +125,7 @@ export async function findChatWith(viewerId: number, userId: number): Promise<Ch
         }),
         db.chat.findUnique({ where: { pairKey: pairKey(viewerId, userId) }, select: { id: true } }),
     ]);
-    if (!user) throw notFound('User not found.');
+    if (!user) throw notFound('userNotFound');
 
     // Online status is only visible to people the user already chats with.
     const online = chat ? (await getOnlineUserIds([user.id])).has(user.id) : false;
@@ -160,14 +160,14 @@ export async function sendMessage(chatId: number, senderId: number, content: str
     await assertNotMuted(senderId, 'MESSENGER');
 
     const chat = await getChatForParticipant(chatId, senderId);
-    if (!chat.otherUser) throw forbidden('This user has deleted their account.');
+    if (!chat.otherUser) throw forbidden('userDeleted');
 
     return persistMessage(chat.id, senderId, chat.otherUser.id, content);
 }
 
 /** Opens (or reuses) the direct chat with `recipientId` and sends the first message. */
 export async function startChat(senderId: number, recipientId: number, content: string) {
-    if (senderId === recipientId) throw forbidden('You cannot message yourself.');
+    if (senderId === recipientId) throw forbidden('cannotMessageSelf');
 
     await assertNotMuted(senderId, 'MESSENGER');
 
@@ -175,7 +175,7 @@ export async function startChat(senderId: number, recipientId: number, content: 
         where: { id: recipientId },
         select: { id: true },
     });
-    if (!recipient) throw notFound('User not found.');
+    if (!recipient) throw notFound('userNotFound');
 
     const key = pairKey(senderId, recipientId);
     let chatId = (await db.chat.findUnique({ where: { pairKey: key }, select: { id: true } }))?.id;

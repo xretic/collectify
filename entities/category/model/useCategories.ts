@@ -4,8 +4,9 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { categoryApi } from '../api/categoryApi';
 import { categoryQueryKeys } from './queryKeys';
+import { useCategoryName } from './useCategoryName';
 
-/** Active categories; they rarely change, so they are cached for the session. */
+/** Active categories (names in the UI language); cached for the session, they rarely change. */
 export function useCategories() {
     const query = useQuery({
         queryKey: categoryQueryKeys.active(),
@@ -13,7 +14,11 @@ export function useCategories() {
         staleTime: 10 * 60_000,
     });
 
-    const categories = useMemo(() => query.data ?? [], [query.data]);
+    const categoryName = useCategoryName();
+    const categories = useMemo(
+        () => (query.data ?? []).map((category) => ({ ...category, name: categoryName(category) })),
+        [query.data, categoryName],
+    );
     const bySlug = useMemo(
         () => new Map(categories.map((category) => [category.slug, category])),
         [categories],

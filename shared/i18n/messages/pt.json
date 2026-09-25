@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "Pedido inválido.",
+        "unauthorized": "Inicie sessão para continuar.",
+        "forbidden": "Não tem permissão para fazer isto.",
+        "notFound": "Não encontrado.",
+        "internal": "Erro interno do servidor.",
+        "invalidInput": "Dados inválidos.",
+        "invalidField": "Valor inválido: {field}.",
+        "invalidJson": "Corpo do pedido inválido.",
+        "invalidId": "Identificador inválido.",
+        "tooManyRequests": "Demasiados pedidos. Tente novamente mais tarde.",
+        "realtimeUnavailable": "O serviço em tempo real não está configurado.",
+        "invalidWebhookSignature": "Assinatura do webhook inválida.",
+        "oauthNotConfigured": "Este método de início de sessão não está configurado.",
+        "userNotFound": "Utilizador não encontrado.",
+        "commentNotFound": "Comentário não encontrado.",
+        "collectionNotFound": "Coleção não encontrada.",
+        "tagNotFound": "Etiqueta não encontrada.",
+        "reportNotFound": "Denúncia não encontrada.",
+        "categoryNotFound": "Categoria não encontrada.",
+        "sanctionNotFound": "Sanção não encontrada.",
+        "itemNotFound": "Item não encontrado.",
+        "chatNotFound": "Conversa não encontrada.",
+        "boardNotFound": "Quadro não encontrado.",
+        "invalidCredentials": "E-mail ou palavra-passe incorretos.",
+        "emailTaken": "Já existe uma conta com este e-mail.",
+        "usernameTaken": "Este nome de utilizador já está em uso.",
+        "emailOrUsernameTaken": "Este e-mail ou nome de utilizador já está em uso.",
+        "currentPasswordRequired": "A palavra-passe atual é obrigatória.",
+        "currentPasswordIncorrect": "A palavra-passe atual está incorreta.",
+        "passwordUnchanged": "A nova palavra-passe tem de ser diferente da atual.",
+        "passwordIncorrect": "Palavra-passe incorreta.",
+        "typeUsernameToConfirm": "Escreva o seu nome de utilizador para confirmar.",
+        "impersonationInactive": "A sessão como outro utilizador não está ativa.",
+        "bannedUntil": "A sua conta está suspensa. A suspensão termina a {date}.",
+        "bannedPermanent": "A sua conta está suspensa. Esta restrição é permanente.",
+        "mutedCommentsUntil": "Está silenciado nos comentários. Termina a {date}.",
+        "mutedCommentsPermanent": "Está silenciado nos comentários. Esta restrição é permanente.",
+        "mutedMessengerUntil": "Está silenciado nas mensagens. Termina a {date}.",
+        "mutedMessengerPermanent": "Está silenciado nas mensagens. Esta restrição é permanente.",
+        "chatsUnavailableImpersonating": "As conversas não estão disponíveis com sessão iniciada como outro utilizador.",
+        "cannotModerateSelf": "Não se pode moderar a si próprio.",
+        "adminsNotModeratable": "Os administradores não podem ser moderados.",
+        "moderatorsCannotManageModerators": "Os moderadores não podem gerir outros moderadores.",
+        "permanentSanctionAdminOnly": "Só os administradores podem aplicar sanções permanentes.",
+        "liftPermanentAdminOnly": "Só os administradores podem levantar sanções permanentes.",
+        "liftAdminSanctionAdminOnly": "Só os administradores podem levantar sanções aplicadas por um administrador.",
+        "manageModeratorsAdminOnly": "Só os administradores podem gerir moderadores.",
+        "alreadySignedInAsUser": "Já tem sessão iniciada como este utilizador.",
+        "stopImpersonationFirst": "Termine primeiro a sessão atual como outro utilizador.",
+        "cannotImpersonateBanned": "Não pode iniciar sessão como uma conta suspensa.",
+        "categoryUnknown": "Escolha uma categoria existente.",
+        "categoriesUnknown": "Escolha categorias existentes.",
+        "categoryExists": "Já existe uma categoria com este nome ou slug.",
+        "categoryInUse": "A categoria ainda tem coleções. Arquive-a em vez de a eliminar.",
+        "tagsWrongCategory": "As etiquetas têm de pertencer à categoria da coleção.",
+        "tagsLimit": "Uma coleção pode ter no máximo {limit} etiquetas.",
+        "tagsDailyLimit": "Criou demasiadas etiquetas hoje. Tente novamente amanhã.",
+        "signInForBoards": "Inicie sessão para ver os seus quadros.",
+        "signInForFavorites": "Inicie sessão para ver os seus guardados.",
+        "ownerOnly": "Só o proprietário pode alterar esta coleção.",
+        "collectionsLimit": "Pode ter no máximo {limit} coleções.",
+        "itemsLimit": "Uma coleção pode ter no máximo {limit} itens.",
+        "collectionNeedsItem": "Uma coleção tem de manter pelo menos um item.",
+        "invalidItemOrder": "A nova ordem tem de conter cada item da coleção exatamente uma vez.",
+        "boardNameTaken": "Já tem um quadro com este nome.",
+        "boardsLimit": "Pode ter no máximo {limit} quadros.",
+        "cannotMessageSelf": "Não pode enviar mensagens a si próprio.",
+        "userDeleted": "Este utilizador eliminou a conta.",
+        "editOwnCommentsOnly": "Só pode editar os seus próprios comentários.",
+        "heartOwnerOnly": "Só o proprietário da coleção pode dar corações aos comentários.",
+        "commentsLimit": "Pode deixar no máximo {limit} comentários numa coleção.",
+        "repliesLimit": "Pode deixar no máximo {limit} respostas numa coleção.",
+        "cannotReportSelf": "Não se pode denunciar a si próprio.",
+        "accountNotReportable": "Esta conta não pode ser denunciada.",
+        "alreadyReported": "Já denunciou isto. Os moderadores vão analisá-lo em breve.",
+        "reportClosed": "A denúncia já está fechada.",
+        "cannotReviewOwnReport": "Não pode analisar a sua própria denúncia.",
+        "nothingToRemove": "Não há conteúdo a remover numa denúncia de utilizador.",
+        "duplicateMustMatchUser": "A denúncia original tem de ser outra denúncia sobre o mesmo utilizador.",
+        "reportJustReviewed": "Esta denúncia acabou de ser analisada por outra pessoa.",
+        "nothingToUpdate": "Nada para atualizar.",
+        "countryRequiredForCity": "Escolha um país para a cidade.",
+        "cityUnknown": "Cidade desconhecida.",
+        "cannotFollowSelf": "Não se pode seguir a si próprio.",
+        "generic": "Algo correu mal. Tente novamente.",
+        "network": "Erro de rede. Verifique a sua ligação."
+    },
+    "validation": {
+        "required": "Este campo é obrigatório.",
+        "tooLong": "Demasiado longo.",
+        "usernameMin": "O nome de utilizador tem de ter pelo menos {usernameMin} caracteres.",
+        "usernameMax": "O nome de utilizador pode ter no máximo {usernameMax} caracteres.",
+        "usernameChars": "O nome de utilizador só pode conter a-z, 0-9, «_» e «.».",
+        "passwordMin": "A palavra-passe tem de ter pelo menos {passwordMin} caracteres.",
+        "passwordMax": "A palavra-passe pode ter no máximo {passwordMax} caracteres.",
+        "passwordChars": "A palavra-passe contém caracteres não suportados.",
+        "passwordsMismatch": "As palavras-passe não coincidem.",
+        "emailInvalid": "Introduza um e-mail válido.",
+        "urlInvalid": "Tem de ser um URL http(s) válido.",
+        "countryUnknown": "País desconhecido.",
+        "cityChars": "Use letras, espaços e - . , ' / ( )",
+        "dateInvalid": "Introduza uma data válida.",
+        "ageMin": "Tem de ter pelo menos {minAge} anos.",
+        "localeUnknown": "Idioma não suportado.",
+        "nameRequired": "O nome é obrigatório.",
+        "descriptionRequired": "A descrição é obrigatória.",
+        "slugRequired": "O slug é obrigatório.",
+        "slugChars": "Use letras minúsculas, algarismos e hífenes.",
+        "messageEmpty": "A mensagem não pode estar vazia.",
+        "commentEmpty": "O comentário não pode estar vazio.",
+        "itemTitleOrImage": "Adicione um título ou uma imagem.",
+        "categoryRequired": "Escolha uma categoria.",
+        "tagsMax": "No máximo {tagsMax} etiquetas.",
+        "tagNameMin": "Pelo menos {tagNameMin} caracteres.",
+        "tagNameChars": "Letras, algarismos, espaços e - & + . ' #",
+        "verdictRequiresGuilty": "A sanção e a remoção de conteúdo exigem um veredicto de culpado.",
+        "duplicateRequiresOriginal": "Selecione a denúncia original para um veredicto de duplicado."
+    },
+    "meta": {
+        "description": "Crie connosco a sua coleção interessante.",
+        "privacyDescription": "Como o Collectify recolhe, utiliza e guarda os seus dados.",
+        "userDescription": "Coleções de {name} no Collectify.",
+        "pages": {
+            "login": "Iniciar sessão",
+            "register": "Registar",
+            "chats": "Conversas",
+            "createCollection": "Criar coleção",
+            "myCollections": "As minhas coleções",
+            "notifications": "Notificações",
+            "onboarding": "Escolha os seus interesses",
+            "settings": "Definições",
+            "myProfile": "O meu perfil",
+            "management": "Gestão",
+            "privacyPolicy": "Política de privacidade",
+            "collection": "Coleção",
+            "userNotFound": "Utilizador não encontrado"
+        }
+    },
+    "languages": {
+        "label": "Idioma"
+    },
+    "auth": {
+        "email": "E-mail",
+        "password": "Palavra-passe",
+        "username": "Nome de utilizador",
+        "login": "Iniciar sessão",
+        "register": "Registar",
+        "signingIn": "A iniciar sessão…",
+        "creatingAccount": "A criar a conta…",
+        "usernameHint": "Letras minúsculas, algarismos, «_» e «.»",
+        "passwordHint": "Pelo menos {min} caracteres",
+        "languageHint": "Pode alterá-lo mais tarde nas definições.",
+        "orContinueWith": "ou continue com",
+        "loginSubtitle": "Introduza as suas credenciais para aceder à conta.",
+        "registerSubtitle": "Crie uma conta para começar a colecionar.",
+        "noAccount": "Ainda não tem conta? <link>Registe-se</link>",
+        "haveAccount": "Já tem uma conta? <link>Inicie sessão</link>",
+        "oauthErrors": {
+            "oauthState": "O link de início de sessão expirou. Tente novamente.",
+            "oauthFailed": "Não foi possível iniciar sessão através do fornecedor. Tente novamente.",
+            "accountBanned": "Esta conta está suspensa."
+        }
+    },
+    "common": {
+        "cancel": "Cancelar",
+        "reset": "Repor",
+        "save": "Guardar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "close": "Fechar",
+        "back": "Voltar",
+        "retry": "Tentar novamente",
+        "loadMore": "Carregar mais",
+        "search": "Pesquisar",
+        "next": "Seguinte",
+        "skip": "Saltar",
+        "confirm": "Confirmar",
+        "create": "Criar",
+        "add": "Adicionar",
+        "moreActions": "Mais ações",
+        "loading": "A carregar",
+        "sortBy": "Ordenar por"
+    },
+    "settings": {
+        "title": "Definições",
+        "subtitle": "Gira as definições e preferências da sua conta",
+        "profile": {
+            "title": "Perfil",
+            "description": "Nome, nome de utilizador, biografia e imagens.",
+            "edit": "Editar perfil"
+        },
+        "security": {
+            "title": "Privacidade e segurança",
+            "changePassword": "Altere a sua palavra-passe.",
+            "setPassword": "Defina uma palavra-passe para também iniciar sessão com o e-mail.",
+            "passwordChanged": "Palavra-passe alterada.",
+            "passwordSet": "Palavra-passe definida. Já pode iniciar sessão com o e-mail.",
+            "currentPassword": "Palavra-passe atual",
+            "newPassword": "Nova palavra-passe",
+            "confirmPassword": "Confirme a nova palavra-passe",
+            "change": "Alterar palavra-passe",
+            "set": "Definir palavra-passe"
+        },
+        "interests": {
+            "title": "Interesses",
+            "description": "Categorias de que gosta. Moldam o seu feed «Para si».",
+            "saved": "Interesses guardados.",
+            "save": "Guardar interesses"
+        },
+        "language": {
+            "title": "Idioma",
+            "description": "O idioma de toda a interface. Fica guardado na sua conta."
+        },
+        "appearance": {
+            "title": "Aspeto",
+            "description": "Escolha um tema. É aplicado de imediato e memorizado neste dispositivo.",
+            "search": "Procurar um tema",
+            "filter": "Filtrar temas",
+            "theme": "Tema",
+            "filters": {
+                "all": "Todos",
+                "light": "Claros",
+                "dark": "Escuros"
+            }
+        },
+        "home": {
+            "title": "Página inicial",
+            "description": "Widgets ao lado do seu feed.",
+            "showPeopleWidget": "Mostrar «Pessoas que talvez conheça» na página inicial"
+        },
+        "danger": {
+            "title": "Zona de perigo",
+            "description": "Eliminar permanentemente a sua conta e todos os dados.",
+            "deleteAccount": "Eliminar conta",
+            "warning": "Isto elimina permanentemente o seu perfil, coleções, comentários e conversas. Não pode ser anulado.",
+            "yourPassword": "A sua palavra-passe",
+            "typeUsername": "Escreva «{username}» para confirmar",
+            "deleteForever": "Eliminar para sempre"
+        }
+    },
+    "dateField": {
+        "placeholder": "Escolha uma data",
+        "clear": "Limpar data",
+        "open": "Abrir calendário",
+        "chooseYear": "Escolher ano",
+        "previousMonth": "Mês anterior",
+        "nextMonth": "Mês seguinte"
+    },
+    "imageDropzone": {
+        "label": "Clique ou largue uma imagem",
+        "hint": "PNG, JPG, WEBP até 10 MB"
+    },
+    "roles": {
+        "Admin": "Administrador",
+        "Moderator": "Moderador",
+        "Verified": "Verificado"
+    },
+    "imageEditor": {
+        "title": "Editar imagem",
+        "failed": "Não foi possível editar a imagem.",
+        "zoom": "Zoom",
+        "rotateLeft": "Rodar para a esquerda",
+        "rotateRight": "Rodar para a direita",
+        "aspectRatio": "Proporção",
+        "original": "Original"
+    },
+    "pagination": {
+        "label": "Paginação",
+        "previous": "Página anterior",
+        "next": "Página seguinte",
+        "page": "Página {page}"
+    },
+    "scrollRow": {
+        "back": "Deslocar {items} para trás",
+        "forward": "Deslocar {items} para a frente"
+    },
+    "upload": {
+        "readFailed": "Não foi possível ler a imagem.",
+        "editUnsupported": "Este navegador não suporta a edição de imagens.",
+        "saveFailed": "Não foi possível guardar a imagem.",
+        "wrongType": "Escolha uma imagem PNG, JPG, WEBP ou GIF.",
+        "tooBig": "A imagem tem de ter 10 MB ou menos.",
+        "notConfigured": "O carregamento de imagens não está configurado.",
+        "network": "Falha ao carregar a imagem. Verifique a sua ligação.",
+        "failed": "Falha ao carregar a imagem."
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "Suspensão da conta",
+            "COMMENTS": "Silêncio nos comentários",
+            "MESSENGER": "Silêncio nas mensagens"
+        },
+        "durations": {
+            "1h": "1 hora",
+            "1d": "1 dia",
+            "7d": "7 dias",
+            "30d": "30 dias",
+            "permanent": "Permanente"
+        },
+        "until": "{scope} · até {date}",
+        "permanentScope": "{scope} · permanente",
+        "mutePlaceholder": {
+            "commentsUntil": "Está silenciado nos comentários até {date}.",
+            "commentsPermanent": "Está permanentemente silenciado nos comentários.",
+            "messengerUntil": "Está silenciado nas mensagens até {date}.",
+            "messengerPermanent": "Está permanentemente silenciado nas mensagens."
+        }
+    },
+    "categories": {
+        "books": "Livros",
+        "movies": "Filmes",
+        "games": "Jogos",
+        "recipes": "Receitas",
+        "apps": "Aplicações",
+        "travel": "Viagens",
+        "music": "Música",
+        "sport": "Desporto",
+        "tv-shows": "Séries",
+        "anime": "Anime",
+        "podcasts": "Podcasts",
+        "art": "Arte",
+        "design": "Design",
+        "photography": "Fotografia",
+        "fashion": "Moda",
+        "home": "Casa e decoração",
+        "tech": "Tecnologia",
+        "science": "Ciência",
+        "education": "Educação",
+        "fitness": "Fitness",
+        "cars": "Carros",
+        "pets": "Animais de estimação",
+        "nature": "Natureza",
+        "custom": "Outros"
+    },
+    "categoryMenu": {
+        "all": "Todas as categorias",
+        "search": "Procurar uma categoria",
+        "nothingFound": "Nada encontrado",
+        "label": "Categoria"
+    },
+    "chats": {
+        "online": "Online",
+        "typing": "a escrever",
+        "message": "Enviar mensagem",
+        "mute": {
+            "actions": "Ações da conversa",
+            "mutedUntil": "Silenciada até {date}",
+            "off": "As notificações estão desativadas",
+            "enable": "Ativar notificações",
+            "muteForMenu": "Silenciar durante…",
+            "disable": "Desativar notificações",
+            "muteFor": "Silenciar durante",
+            "durations": {
+                "15m": "15 minutos",
+                "30m": "30 minutos",
+                "1h": "1 hora",
+                "8h": "8 horas",
+                "1d": "1 dia",
+                "1w": "1 semana"
+            },
+            "failed": "Não foi possível atualizar as notificações. Tente novamente."
+        },
+        "composer": {
+            "placeholder": "Escreva a sua mensagem…",
+            "label": "Mensagem",
+            "send": "Enviar mensagem"
+        },
+        "title": "Conversas",
+        "unread": "{count} por ler",
+        "empty": "Ainda não há conversas.",
+        "deletedAccount": "Conta eliminada",
+        "muted": "Silenciada",
+        "you": "Você: {text}",
+        "back": "Voltar às conversas",
+        "directMessages": "Mensagens diretas",
+        "viewProfile": "Ver perfil",
+        "conversation": "Conversa",
+        "unavailable": "Esta conversa não está disponível.",
+        "seen": "Vista <time></time>",
+        "sent": "Enviada",
+        "privateTitle": "As conversas são privadas",
+        "privateDescription": "As mensagens diretas não estão disponíveis com sessão iniciada como outro utilizador.",
+        "placeholderTitle": "As suas conversas",
+        "placeholderText": "Escolha uma conversa à esquerda para continuar a falar sobre coleções."
+    },
+    "collectionCard": {
+        "items": "{count, plural, one {# item} other {# itens}}",
+        "comments": "{count, plural, one {# comentário} other {# comentários}}",
+        "favorites": "{count, plural, one {# guardado} other {# guardados}}",
+        "likes": "{count, plural, one {# gosto} other {# gostos}}"
+    },
+    "collectionForm": {
+        "cover": "Imagem de capa",
+        "coverHint": "Clique para carregar uma imagem de capa",
+        "title": "Título",
+        "description": "Descrição",
+        "visibility": "Visibilidade",
+        "public": "Pública",
+        "private": "Privada"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "Não encontrámos nada",
+        "emptyDescription": "Experimente outro filtro ou pesquisa."
+    },
+    "items": {
+        "open": "Abrir item",
+        "drag": "Arrastar item",
+        "image": "Imagem",
+        "title": "Título",
+        "description": "Descrição",
+        "titleRequired": "Obrigatório quando não há imagem",
+        "sourceUrl": "URL de origem",
+        "cardSize": "Tamanho do cartão",
+        "sizes": {
+            "S": "Mosaico quadrado pequeno",
+            "M": "Mosaico alto, uma coluna",
+            "L": "Mosaico grande, duas colunas",
+            "XL": "Faixa em toda a linha"
+        },
+        "edit": "Editar item",
+        "delete": "Eliminar item",
+        "actions": "Ações do item",
+        "deleteTitle": "Eliminar «{title}»?",
+        "deleteUntitled": "Eliminar este item?",
+        "deleteDescription": "Este item será removido da coleção.",
+        "add": "Adicionar item",
+        "addIntro": "Adicione um novo item à sua coleção.",
+        "editIntro": "Atualize o item. As alterações ficam visíveis para todos de imediato.",
+        "item": "Item",
+        "previous": "Item anterior",
+        "next": "Item seguinte",
+        "label": "Itens"
+    },
+    "comments": {
+        "editedAt": "Editado {date}",
+        "edited": "(editado)",
+        "replyTo": "Responder a @{username}",
+        "placeholder": "Adicione um comentário…",
+        "reply": "Responder",
+        "comment": "Comentar",
+        "deleteAsModerator": "Eliminar como moderador",
+        "actions": "Ações do comentário",
+        "deleteTitle": "Eliminar este comentário?",
+        "count": "{count, plural, one {# comentário} other {# comentários}}",
+        "emptyTitle": "Ainda não há comentários.",
+        "emptyDescription": "Comece a conversa.",
+        "replies": "{count, plural, one {# resposta} other {# respostas}}",
+        "moreReplies": "Mostrar mais respostas",
+        "unheart": "Remover coração",
+        "heart": "Dar um coração a este comentário",
+        "heartLabel": "Coração no comentário",
+        "heartedBy": "♥ de {username}"
+    },
+    "notifications": {
+        "unread": "Por ler",
+        "texts": {
+            "FOLLOW": "começou a segui-lo",
+            "LIKE": "gostou da sua coleção",
+            "FAVORITE": "guardou a sua coleção",
+            "COMMENT": "comentou a sua coleção",
+            "REPORT_RESOLVED": "A sua denúncia foi analisada. Obrigado por ajudar a manter o Collectify seguro.",
+            "SANCTION": "Um moderador restringiu a sua conta. Veja os detalhes nas definições.",
+            "COMMENT_REPLY": "respondeu ao seu comentário em",
+            "COMMENT_LIKED": "deu um coração ao seu comentário em"
+        },
+        "dismiss": "Dispensar notificação",
+        "title": "Notificações",
+        "markAllRead": "Marcar tudo como lido",
+        "tabs": {
+            "all": "Todas",
+            "unread": "Por ler"
+        },
+        "emptyUnread": "Não há notificações por ler",
+        "empty": "Ainda não há notificações",
+        "caughtUp": "Está tudo em dia.",
+        "groups": {
+            "today": "Hoje",
+            "yesterday": "Ontem",
+            "thisWeek": "Esta semana",
+            "earlier": "Anteriores"
+        }
+    },
+    "tags": {
+        "label": "Etiquetas",
+        "upTo": "Até {limit} etiquetas",
+        "noMatches": "Nenhuma etiqueta correspondente",
+        "noneYet": "Ainda não há etiquetas",
+        "searchByTags": "Pesquisar por etiquetas",
+        "noneInCategory": "Ainda não há etiquetas nesta categoria",
+        "create": "Criar «{name}»",
+        "searchOrCreate": "Pesquise ou crie etiquetas",
+        "chooseCategoryFirst": "Escolha primeiro uma categoria.",
+        "pickerHint": "{count} / {limit} · As etiquetas populares da categoria são sugeridas primeiro."
+    },
+    "profile": {
+        "usernameCopied": "Nome de utilizador copiado.",
+        "usernameCopyFailed": "Não foi possível copiar o nome de utilizador.",
+        "copyUsername": "Copiar nome de utilizador",
+        "noBio": "Ainda sem biografia",
+        "statLabel": "{count} {label}",
+        "following": "a seguir",
+        "followers": "seguidores",
+        "follow": "Seguir",
+        "unfollow": "Deixar de seguir",
+        "follows": {
+            "followers": "Seguidores",
+            "following": "A seguir",
+            "noFollowers": "Ainda sem seguidores",
+            "noFollowing": "Não segue ninguém",
+            "followingButton": "A seguir",
+            "follow": "Seguir"
+        },
+        "edit": {
+            "updated": "Perfil atualizado.",
+            "title": "Editar perfil",
+            "changeBanner": "Alterar faixa",
+            "removeBanner": "Remover faixa",
+            "changeAvatar": "Alterar avatar",
+            "removeAvatar": "Remover avatar",
+            "fullName": "Nome completo",
+            "username": "Nome de utilizador",
+            "bio": "Biografia",
+            "country": "País",
+            "city": "Cidade",
+            "birthDate": "Data de nascimento"
+        },
+        "tabs": {
+            "created": "Criadas",
+            "favorites": "Guardadas",
+            "private": "Privadas"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "Spam",
+            "HARASSMENT": "Assédio",
+            "HATE": "Discurso de ódio",
+            "SCAM": "Burla",
+            "ADULT": "Conteúdo para adultos",
+            "OTHER": "Outro"
+        },
+        "targets": {
+            "USER": "Utilizador",
+            "COMMENT": "Comentário",
+            "COLLECTION": "Coleção"
+        },
+        "reportTarget": {
+            "USER": "Denunciar utilizador",
+            "COMMENT": "Denunciar comentário",
+            "COLLECTION": "Denunciar coleção"
+        },
+        "openTarget": {
+            "USER": "Abrir utilizador",
+            "COMMENT": "Abrir comentário",
+            "COLLECTION": "Abrir coleção"
+        },
+        "verdicts": {
+            "PENDING": "Pendente",
+            "GUILTY": "Culpado",
+            "NO_VIOLATION": "Sem infração",
+            "INSUFFICIENT_EVIDENCE": "Provas insuficientes",
+            "DUPLICATE": "Duplicado"
+        },
+        "submitted": "Denúncia enviada. Os moderadores vão analisá-la em breve.",
+        "reason": "Motivo",
+        "details": "Detalhes",
+        "submit": "Enviar denúncia"
+    },
+    "boards": {
+        "rename": "Mudar o nome",
+        "delete": "Eliminar quadro",
+        "renameTitle": "Mudar o nome do quadro",
+        "deleteTitle": "Eliminar «{name}»?",
+        "deleteDescription": "As coleções continuam em «Tudo guardado».",
+        "name": "Nome do quadro",
+        "label": "Quadros",
+        "items": "quadros",
+        "all": "Tudo",
+        "new": "Novo quadro",
+        "actions": "Ações do quadro",
+        "signInToSave": "Inicie sessão para guardar",
+        "saved": "Guardado",
+        "save": "Guardar",
+        "saveTo": "Guardar em",
+        "allSaved": "Tudo guardado",
+        "hint": "Agrupe as coleções guardadas em quadros.",
+        "newName": "Nome do novo quadro",
+        "create": "Criar quadro",
+        "draggableTab": "separador arrastável"
+    },
+    "management": {
+        "categories": {
+            "updated": "Categoria atualizada.",
+            "created": "Categoria criada.",
+            "deleted": "Categoria eliminada.",
+            "name": "Nome",
+            "slug": "Slug",
+            "slugHint": "Usado nos links: /?category=slug",
+            "description": "Descrição",
+            "position": "Posição",
+            "positionHint": "Valores mais baixos aparecem primeiro",
+            "active": "Ativa",
+            "archived": "Arquivada",
+            "onlyArchive": "As categorias com coleções só podem ser arquivadas.",
+            "create": "Criar categoria",
+            "deleteTitle": "Eliminar «{name}»?",
+            "new": "Nova categoria",
+            "empty": "Ainda não há categorias",
+            "collections": "{count, plural, one {# coleção} other {# coleções}}",
+            "archivedLower": "arquivada",
+            "notFound": "Categoria não encontrada"
+        },
+        "roles": {
+            "updated": "Funções atualizadas.",
+            "revoke": "Retirar {role}",
+            "grant": "Atribuir {role}"
+        },
+        "sanctions": {
+            "applied": "Sanção aplicada.",
+            "strongerKept": "Já está ativa uma sanção mais severa; foi mantida.",
+            "scope": "Âmbito",
+            "duration": "Duração",
+            "reason": "Motivo",
+            "apply": "Aplicar",
+            "confirmTitle": "Sancionar @{username}?",
+            "summary": "{scope}: {duration}.",
+            "reasonLine": "Motivo: {reason}",
+            "confirm": "Aplicar sanção",
+            "lifted": "Sanção levantada.",
+            "none": "Sem sanções ativas",
+            "lift": "Levantar"
+        },
+        "danger": {
+            "deleted": "Conta eliminada.",
+            "impersonate": "Iniciar sessão como utilizador",
+            "delete": "Eliminar conta",
+            "impersonateTitle": "Iniciar sessão como @{username}?",
+            "impersonateDescription": "Tudo o que fizer ficará registado no registo de auditoria em seu nome.",
+            "signIn": "Iniciar sessão",
+            "deleteTitle": "Eliminar @{username}?",
+            "deleteDescription": "A conta, as suas coleções, comentários e conversas serão eliminados permanentemente."
+        },
+        "review": {
+            "describeVerdict": "Veredicto: {verdict}.",
+            "describeRemove": "O conteúdo denunciado será eliminado.",
+            "describePunishment": "@{username} recebe: {scope}, {duration}.",
+            "describeDuplicate": "Marcada como duplicado da denúncia #{id}.",
+            "closed": "Denúncia fechada.",
+            "closedStrongerKept": "Denúncia fechada. Já estava ativa uma sanção mais severa, que foi mantida.",
+            "verdict": "Veredicto",
+            "removeContent": "Eliminar o conteúdo denunciado",
+            "nothingToDelete": "Nada para eliminar",
+            "sanctionUser": "Sancionar o utilizador",
+            "punishment": "Sanção",
+            "duration": "Duração",
+            "originalReport": "Denúncia original #",
+            "resolution": "Nota da resolução",
+            "close": "Fechar denúncia",
+            "closeTitle": "Fechar a denúncia #{id}?"
+        },
+        "audit": {
+            "title": "Auditoria",
+            "titleFor": "Auditoria de @{username}",
+            "empty": "Ainda não há registos de auditoria",
+            "system": "sistema",
+            "via": "(via @{username})",
+            "content": "conteúdo",
+            "actions": {
+                "grant": "Atribuído: {role}",
+                "revoke": "Retirado: {role}",
+                "sanction": "Aplicada: {scope}",
+                "revokeSanction": "Levantada: {scope}",
+                "report": "Denúncia fechada: {verdict}",
+                "deleteUser": "Conta de utilizador eliminada",
+                "deleteComment": "Comentário eliminado",
+                "deleteCollection": "Coleção eliminada",
+                "impersonateUser": "Sessão iniciada como utilizador",
+                "stopImpersonation": "Sessão como utilizador terminada"
+            }
+        },
+        "activity": {
+            "collections": "Coleções",
+            "noCollections": "Sem coleções",
+            "private": "privada",
+            "counts": "{items, plural, one {# item} other {# itens}} · {comments, plural, one {# comentário} other {# comentários}} · {likes, plural, one {# gosto} other {# gostos}}",
+            "comments": "Comentários",
+            "noComments": "Sem comentários"
+        },
+        "tags": {
+            "deleted": "Etiqueta eliminada.",
+            "title": "Etiquetas",
+            "hint": "Criadas pelos utilizadores, ordenadas pelo número de coleções que as usam.",
+            "search": "Procurar uma etiqueta",
+            "empty": "Sem etiquetas",
+            "usage": "{count, plural, one {# coleção} other {# coleções}}",
+            "delete": "Eliminar etiqueta",
+            "deleteNamed": "Eliminar {name}",
+            "deleteTitle": "Eliminar #{name}?",
+            "deleteDescription": "A etiqueta será removida de todas as coleções que a usam."
+        },
+        "title": "Gestão",
+        "subtitle": "Utilizadores, denúncias, sanções, categorias",
+        "tabs": {
+            "users": "Utilizadores",
+            "reports": "Denúncias",
+            "categories": "Categorias"
+        },
+        "selectUser": "Selecione um utilizador",
+        "selectUserHint": "Pesquise por nome de utilizador, nome ou e-mail.",
+        "selectReport": "Selecione uma denúncia",
+        "selectReportHint": "As denúncias abertas mais antigas estão no topo.",
+        "selectCategory": "Selecione uma categoria",
+        "selectCategoryHint": "Ou crie uma nova. As categorias arquivadas mantêm as suas coleções.",
+        "users": {
+            "search": "Pesquisar utilizadores",
+            "empty": "Nenhum utilizador encontrado",
+            "sanctioned": "sancionado"
+        },
+        "report": {
+            "aboutAccount": "A denúncia é sobre a própria conta.",
+            "deletedSince": "Eliminado entretanto — mostra-se a cópia feita no momento da denúncia",
+            "posted": "Publicado {date}",
+            "verdict": "Veredicto",
+            "reviewedBy": "Analisada por",
+            "sanction": "Sanção",
+            "duplicateOf": "Duplicado de",
+            "resolution": "Resolução",
+            "notFound": "Denúncia não encontrada",
+            "title": "Denúncia #{id} sobre <user>@{username}</user>",
+            "subtitle": "{target} · denunciado por @{username} · {date}",
+            "open": "Aberta",
+            "closed": "Fechada",
+            "evidence": "Provas",
+            "context": "Contexto",
+            "against": "Denúncias contra @{username}",
+            "againstCounts": "{total} no total · {guilty} culpado",
+            "filedBy": "Denúncias feitas por @{username}",
+            "filedCounts": "{total} no total · {rejected} rejeitadas",
+            "activeSanctions": "Sanções ativas",
+            "none": "Nenhuma",
+            "decision": "Decisão",
+            "outcome": "Resultado"
+        },
+        "queue": {
+            "open": "Abertas ({count})",
+            "closed": "Fechadas",
+            "type": "Tipo",
+            "all": "Todas",
+            "empty": "A fila está vazia",
+            "emptyClosed": "Sem denúncias fechadas"
+        },
+        "user": {
+            "notFound": "Utilizador não encontrado",
+            "notFoundHint": "Pode ter sido eliminado, ou não o pode gerir.",
+            "regularUser": "Utilizador",
+            "stats": {
+                "collections": "Coleções",
+                "comments": "Comentários",
+                "messages": "Mensagens",
+                "reportsReceived": "Denúncias recebidas"
+            },
+            "sanctions": "Sanções",
+            "sanctionsHint": "Suspensões e silêncios por funcionalidade. Uma sanção ativa mais severa nunca é encurtada.",
+            "roles": "Funções",
+            "rolesHint": "As permissões de administrador são geridas com `npm run admin`.",
+            "activity": "Atividade",
+            "activityHint": "Coleções e comentários, mais recentes primeiro.",
+            "danger": "Zona de perigo"
+        }
+    },
+    "collectionFilters": {
+        "search": "Pesquisar coleções",
+        "sorts": {
+            "popular": "Populares",
+            "newest": "Mais recentes",
+            "old": "Mais antigas"
+        }
+    },
+    "collection": {
+        "like": "Gosto",
+        "unlike": "Retirar gosto",
+        "signInToLike": "Inicie sessão para gostar",
+        "delete": {
+            "deleted": "Coleção eliminada.",
+            "title": "Eliminar «{name}»?",
+            "description": "Esta ação não pode ser anulada. Todos os itens e comentários também serão eliminados."
+        },
+        "edit": {
+            "updated": "Coleção atualizada.",
+            "title": "Editar coleção",
+            "intro": "As alterações são guardadas de imediato e ficam visíveis para os outros. Os itens são editados diretamente na página da coleção."
+        },
+        "stats": {
+            "likes": "Gostos",
+            "comments": "Comentários",
+            "favorites": "Guardados",
+            "title": "Estatísticas",
+            "intro": "Atividade na sua coleção por dia (UTC).",
+            "unavailable": "As estatísticas não estão disponíveis de momento.",
+            "empty": "Ainda sem atividade."
+        },
+        "description": "Descrição",
+        "meta": "{count, plural, one {# item} other {# itens}} · Criada a {date}",
+        "private": "Privada",
+        "deleteAsModerator": "Eliminar como moderador",
+        "deleteCollection": "Eliminar coleção",
+        "actions": "Ações da coleção"
+    },
+    "nav": {
+        "home": "Início",
+        "collections": "Coleções",
+        "profile": "Perfil",
+        "notifications": "Notificações",
+        "management": "Gestão",
+        "settings": "Definições",
+        "openMenu": "Abrir menu",
+        "createCollection": "Criar coleção",
+        "chats": "Conversas",
+        "findUser": "Encontrar um utilizador",
+        "accountMenu": "Menu da conta",
+        "returnToAdmin": "Voltar ao administrador",
+        "logout": "Terminar sessão",
+        "startTyping": "Comece a escrever um nome de utilizador",
+        "impersonating": "Tem sessão iniciada como <strong>@{username}</strong>. Use «Voltar ao administrador» no menu da conta para regressar."
+    },
+    "footer": {
+        "privacyPolicy": "Política de privacidade"
+    },
+    "people": {
+        "mutual": "{count, plural, one {# em comum} other {# em comum}}",
+        "livesIn": "Vive em {city}",
+        "followsYou": "Segue-o",
+        "following": "A seguir",
+        "follow": "Seguir",
+        "title": "Pessoas que talvez conheça",
+        "hide": "Ocultar sugestões",
+        "hideHint": "Ocultar (pode voltar a mostrar nas Definições)",
+        "seeAll": "Ver todas as sugestões"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "Criar coleção",
+            "firstItem": "Adicionar o primeiro item"
+        },
+        "title": "Criar nova coleção",
+        "itemTitle": "Adicione o primeiro item",
+        "subtitle": "Adicione uma nova coleção para organizar o seu conteúdo.",
+        "itemSubtitle": "Todas as coleções começam com pelo menos um item.",
+        "submit": "Criar coleção"
+    },
+    "home": {
+        "discover": "Descubra coleções",
+        "emptyTitle": "Ainda nada para sugerir",
+        "emptyBoard": "Guarde primeiro neste quadro algumas coleções com etiquetas.",
+        "emptyForYou": "Goste de coleções e guarde-as para ajustar o seu feed.",
+        "feeds": {
+            "forYou": "Para si",
+            "explore": "Explorar",
+            "moreLike": "Mais como «{name}»",
+            "label": "Feeds",
+            "items": "feeds"
+        }
+    },
+    "myCollections": {
+        "title": "As minhas coleções",
+        "subtitle": "Explore e gira as suas coleções por visibilidade, categoria, etiquetas e pesquisa.",
+        "create": "Criar coleção",
+        "filters": "Filtros",
+        "category": "Categoria",
+        "tags": "Etiquetas"
+    },
+    "notFound": {
+        "title": "Página não encontrada",
+        "description": "A página que procura não existe ou foi movida.",
+        "home": "Ir para o início",
+        "back": "Voltar"
+    },
+    "onboarding": {
+        "title": "O que lhe interessa?",
+        "subtitle": "Escolha algumas categorias e adaptamos o seu feed. Pode alterá-las mais tarde nas definições.",
+        "pickMore": "Escolha mais {count}",
+        "continue": "Continuar"
+    },
+    "privacy": {
+        "title": "Política de privacidade",
+        "updated": "Última atualização: {date}",
+        "collect": {
+            "title": "Que dados recolhemos",
+            "intro": "Quando cria uma conta no Collectify, recolhemos:",
+            "items": {
+                "email": "O seu endereço de e-mail (para iniciar sessão e identificar a sua conta)",
+                "names": "Um nome de utilizador e um nome completo à sua escolha",
+                "password": "Uma palavra-passe (guardada como hash seguro — nunca guardamos a palavra-passe em texto simples), exceto se se registar com o GitHub ou o Google, caso em que guardamos o ID da conta associada",
+                "profile": "Informações opcionais do perfil que adicionar: avatar, faixa, biografia/descrição, país e cidade e data de nascimento",
+                "content": "O conteúdo que cria na aplicação: coleções, itens, comentários, gostos, seguimentos, mensagens e notificações"
+            }
+        },
+        "why": {
+            "title": "Porque os recolhemos",
+            "text": "Os seus dados servem para criar e gerir a sua conta, autenticá-lo ao iniciar sessão, manter a sessão iniciada entre visitas (gestão de sessões) e fornecer as funcionalidades principais da aplicação — coleções, seguir outros utilizadores, comentários, gostos e mensagens."
+        },
+        "location": {
+            "title": "Localização e data de nascimento",
+            "intro": "Ambas são opcionais e podem ser alteradas ou removidas a qualquer momento no seu perfil.",
+            "items": {
+                "location": "<strong>O país e a cidade</strong> são mostrados no seu perfil público e usados para sugerir pessoas que talvez conheça e que vivem na mesma cidade. Não recolhemos a sua localização exata nem uma localização baseada no IP.",
+                "birthDate": "<strong>A data de nascimento</strong> é privada: nunca é mostrada a outros utilizadores. Serve apenas para confirmar que cumpre a idade mínima."
+            }
+        },
+        "recommendations": {
+            "title": "Recomendações",
+            "text": "Para criar o seu feed «Para si», as sugestões de quadros e «Pessoas que talvez conheça», usamos as categorias que escolhe como interesses, as coleções de que gosta, que guarda, adiciona a quadros ou abre com sessão iniciada, as etiquetas e categorias dessas coleções, as pessoas que segue e que o seguem e a cidade do seu perfil. Lembramo-nos das coleções de que gostou ou que guardou mesmo que anule a ação, para não voltar a sugeri-las. Isto acontece apenas dentro do Collectify; os quadros e o seu histórico de visualização nunca são mostrados a outros utilizadores."
+        },
+        "age": {
+            "title": "Idade mínima",
+            "text": "O Collectify destina-se a pessoas com 18 anos ou mais. Não é possível guardar uma data de nascimento que indique menos de 18 anos. Se soubermos que uma conta pertence a alguém com menos de 18 anos, podemos suspendê-la e eliminar os seus dados."
+        },
+        "cookies": {
+            "title": "Cookies",
+            "text": "Usamos um cookie de sessão funcional para manter a sua sessão iniciada, um cookie funcional que memoriza o idioma da interface e um cookie de segurança de curta duração (cerca de 10 minutos) enquanto inicia sessão com o GitHub ou o Google. O tema escolhido é guardado no armazenamento local do navegador. Não usamos cookies de análise, rastreamento ou marketing."
+        },
+        "storage": {
+            "title": "Onde os seus dados são guardados",
+            "text": "A aplicação está alojada na Vercel. Os dados das contas e do conteúdo são guardados na nossa base de dados. As imagens carregadas (avatares, faixas, imagens de itens) são guardadas pelo nosso fornecedor de alojamento multimédia, a Uploadcare."
+        },
+        "moderation": {
+            "title": "Denúncias e moderação",
+            "text": "Quando denuncia conteúdo, guardamos uma cópia do comentário ou da coleção denunciados para que os moderadores o possam analisar mesmo que seja eliminado depois. Ao tratar uma denúncia, os moderadores e administradores podem analisar o conteúdo denunciado e a atividade pública de uma conta. As mensagens diretas não podem ser denunciadas, e os moderadores e administradores não podem ler as suas conversas. As ações de moderação ficam registadas num registo de auditoria interno. Quando uma conta é eliminada, o seu conteúdo também é; o registo de auditoria guarda apenas o ID da conta e o nome de utilizador."
+        },
+        "thirdParties": {
+            "title": "Terceiros",
+            "text": "Não vendemos nem partilhamos os seus dados com terceiros para fins de publicidade ou marketing. Se se registar ou iniciar sessão com o GitHub ou o Google, esses fornecedores partilham connosco informações básicas do perfil (como o seu e-mail) para criar a sua conta."
+        }
+    },
+    "errorPage": {
+        "title": "Algo correu mal",
+        "description": "Tente novamente."
+    },
+    "userProfile": {
+        "manage": "Gerir"
+    }
+}

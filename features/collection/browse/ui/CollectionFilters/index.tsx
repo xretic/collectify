@@ -1,14 +1,13 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import { SearchField } from '@/shared/ui/SearchField';
 import { SortSelect } from '@/shared/ui/SortSelect';
 import type { CollectionSort } from '@/entities/collection/model/types';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
-const SORT_OPTIONS = [
-    { value: 'popular', label: 'Popular' },
-    { value: 'newest', label: 'Newest' },
-    { value: 'old', label: 'Oldest' },
-] as const;
+const SORTS = ['popular', 'newest', 'old'] as const;
 
 type CollectionFiltersProps = {
     sort: CollectionSort;
@@ -29,6 +28,9 @@ export function CollectionFilters({
     children,
     center,
 }: CollectionFiltersProps) {
+    const t = useTranslations('collectionFilters');
+    const sortOptions = SORTS.map((value) => ({ value, label: t(`sorts.${value}`) }));
+
     return (
         <div className={styles.filters}>
             {children && <div className={styles.primary}>{children}</div>}
@@ -39,10 +41,10 @@ export function CollectionFilters({
                     <SearchField
                         value={query ?? ''}
                         onChange={onQueryChange}
-                        placeholder="Search collections"
+                        placeholder={t('search')}
                     />
                 )}
-                <SortSelect value={sort} options={SORT_OPTIONS} onChange={onSortChange} />
+                <SortSelect value={sort} options={sortOptions} onChange={onSortChange} />
             </div>
         </div>
     );

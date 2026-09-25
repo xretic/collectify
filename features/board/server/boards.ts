@@ -6,14 +6,14 @@ import { boardSelect, getOwnedBoard, toBoard } from '@/entities/board/server/que
 import { engage } from '@/features/collection/server/engagement';
 
 function duplicateName(error: unknown): never {
-    if (isUniqueViolation(error)) throw conflict('You already have a board with this name.');
+    if (isUniqueViolation(error)) throw conflict('boardNameTaken');
     throw error;
 }
 
 export async function createBoard(userId: number, name: string) {
     const count = await db.board.count({ where: { userId } });
     if (count >= BOARDS_PER_USER_LIMIT) {
-        throw forbidden(`You can have at most ${BOARDS_PER_USER_LIMIT} boards.`);
+        throw forbidden('boardsLimit', { limit: BOARDS_PER_USER_LIMIT });
     }
 
     const board = await db.board

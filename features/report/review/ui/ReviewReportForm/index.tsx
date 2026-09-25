@@ -14,16 +14,13 @@ import {
 import { managementApi } from '@/entities/moderation/api/managementApi';
 import {
     DEFAULT_SCOPE_FOR_TARGET,
-    REPORT_VERDICT_LABELS,
     REVIEW_VERDICTS,
     type ReportDetails,
     type ReviewReportPayload,
     type ReviewVerdict,
 } from '@/entities/report/model/types';
 import {
-    SANCTION_DURATION_LABELS,
     SANCTION_DURATIONS,
-    SANCTION_SCOPE_LABELS,
     SANCTION_SCOPES,
     type SanctionDuration,
     type SanctionScope,
@@ -32,6 +29,7 @@ import { useModerationMutation } from '@/entities/moderation/model/useModeration
 import { MODERATION_NOTE_MAX_LENGTH } from '@/shared/lib/constants';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type ReviewReportFormProps = {
     report: ReportDetails;
@@ -39,21 +37,30 @@ type ReviewReportFormProps = {
     onReviewed: () => void;
 };
 
-function describe(payload: ReviewReportPayload, username: string) {
-    const parts = [`Verdict: ${REPORT_VERDICT_LABELS[payload.verdict]}.`];
+function useDescribeReview() {
+    const t = useTranslations('management.review');
+    const tr = useTranslations('reports');
+    const ts = useTranslations('sanctions');
 
-    if (payload.removeContent) parts.push('The reported content will be deleted.');
-    if (payload.punishment) {
-        parts.push(
-            `@${username} gets ${SANCTION_SCOPE_LABELS[payload.punishment.scope].toLowerCase()} for ${SANCTION_DURATION_LABELS[
-                payload.punishment.duration
-            ].toLowerCase()}.`,
-        );
-    }
-    if (payload.duplicateOfId)
-        parts.push(`Marked as duplicate of report #${payload.duplicateOfId}.`);
+    return (payload: ReviewReportPayload, username: string) => {
+        const parts = [t('describeVerdict', { verdict: tr(`verdicts.${payload.verdict}`) })];
 
-    return parts.join(' ');
+        if (payload.removeContent) parts.push(t('describeRemove'));
+        if (payload.punishment) {
+            parts.push(
+                t('describePunishment', {
+                    username,
+                    scope: ts(`scopes.${payload.punishment.scope}`),
+                    duration: ts(`durations.${payload.punishment.duration}`),
+                }),
+            );
+        }
+        if (payload.duplicateOfId) {
+            parts.push(t('describeDuplicate', { id: payload.duplicateOfId }));
+        }
+
+        return parts.join(' ');
+    };
 }
 
 /**
@@ -61,6 +68,10 @@ function describe(payload: ReviewReportPayload, username: string) {
  * verdict needs an explicit confirmation of the punishment.
  */
 export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFormProps) {
+    const t = useTranslations('management.review');
+    const tr = useTranslations('reports');
+    const ts = useTranslations('sanctions');
+    const describe = useDescribeReview();
     const hasContent = report.targetType !== 'USER' && report.contentExists;
 
     const [verdict, setVerdict] = useState<ReviewVerdict | ''>('');
@@ -93,9 +104,7 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
     const review = useModerationMutation(
         (body: ReviewReportPayload) => managementApi.reviewReport(report.id, body),
         (result) =>
-            result.sanctionApplied || !payload?.punishment
-                ? 'Report closed.'
-                : 'Report closed. A stronger sanction was already active and was kept.',
+            result.sanctionApplied || !payload?.punishment ? t('closed') : t('closedStrongerKept'),
     );
 
     const submit = () =>
@@ -110,16 +119,16 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
     return (
         <div className={styles.form}>
             <FormControl size="small" className={styles.wide}>
-                <InputLabel id="report-verdict">Verdict</InputLabel>
+                <InputLabel id="report-verdict">{t('verdict')}</InputLabel>
                 <Select
                     labelId="report-verdict"
-                    label="Verdict"
+                    label={t('verdict')}
                     value={verdict}
                     onChange={(event) => setVerdict(event.target.value as ReviewVerdict)}
                 >
                     {REVIEW_VERDICTS.map((value) => (
                         <MenuItem key={value} value={value}>
-                            {REPORT_VERDICT_LABELS[value]}
+                            {tr(`verdicts.${value}`)}
                         </MenuItem>
                     ))}
                 </Select>
@@ -135,7 +144,7 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
                                 onChange={(event) => setRemoveContent(event.target.checked)}
                             />
                         }
-                        label={hasContent ? 'Delete the reported content' : 'Nothing to delete'}
+                        label={hasContent ? t('removeContent') : t('nothingToDelete')}
                     />
 
                     <FormControlLabel
@@ -145,16 +154,16 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
                                 onChange={(event) => setPunish(event.target.checked)}
                             />
                         }
-                        label="Sanction the user"
+                        label={t('sanctionUser')}
                     />
 
                     {punish && (
                         <div className={styles.row}>
                             <FormControl size="small" className={styles.select}>
-                                <InputLabel id="report-scope">Punishment</InputLabel>
+                                <InputLabel id="report-scope">{t('punishment')}</InputLabel>
                                 <Select
                                     labelId="report-scope"
-                                    label="Punishment"
+                                    label={t('punishment')}
                                     value={scope}
                                     onChange={(event) =>
                                         setScope(event.target.value as SanctionScope)
@@ -162,17 +171,17 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
                                 >
                                     {SANCTION_SCOPES.map((value) => (
                                         <MenuItem key={value} value={value}>
-                                            {SANCTION_SCOPE_LABELS[value]}
+                                            {ts(`scopes.${value}`)}
                                         </MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
 
                             <FormControl size="small" className={styles.select}>
-                                <InputLabel id="report-duration">Duration</InputLabel>
+                                <InputLabel id="report-duration">{t('duration')}</InputLabel>
                                 <Select
                                     labelId="report-duration"
-                                    label="Duration"
+                                    label={t('duration')}
                                     value={duration}
                                     onChange={(event) =>
                                         setDuration(event.target.value as SanctionDuration)
@@ -184,7 +193,7 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
                                             value={value}
                                             disabled={value === 'permanent' && !isAdmin}
                                         >
-                                            {SANCTION_DURATION_LABELS[value]}
+                                            {ts(`durations.${value}`)}
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -197,7 +206,7 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
             {verdict === 'DUPLICATE' && (
                 <TextField
                     size="small"
-                    label="Original report #"
+                    label={t('originalReport')}
                     value={duplicateOf}
                     onChange={(event) => setDuplicateOf(event.target.value.replace(/\D/g, ''))}
                     className={styles.wide}
@@ -206,7 +215,7 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
 
             <TextField
                 size="small"
-                label="Resolution note"
+                label={t('resolution')}
                 value={resolution}
                 onChange={(event) => setResolution(event.target.value)}
                 multiline
@@ -222,15 +231,15 @@ export function ReviewReportForm({ report, isAdmin, onReviewed }: ReviewReportFo
                     disabled={!ready || review.isPending}
                     onClick={() => setConfirming(true)}
                 >
-                    Close report
+                    {t('close')}
                 </Button>
             </div>
 
             <ConfirmDialog
                 open={confirming}
-                title={`Close report #${report.id}?`}
+                title={t('closeTitle', { id: report.id })}
                 description={payload && describe(payload, report.targetUser.username)}
-                confirmLabel="Close report"
+                confirmLabel={t('close')}
                 destructive={guilty}
                 pending={review.isPending}
                 onClose={() => setConfirming(false)}

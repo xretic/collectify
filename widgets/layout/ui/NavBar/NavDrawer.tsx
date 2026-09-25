@@ -5,6 +5,7 @@ import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } fr
 import type { NavItem } from './navItems';
 import { NavItemIcon } from './NavItemIcon';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type NavDrawerProps = {
     open: boolean;
@@ -14,6 +15,8 @@ type NavDrawerProps = {
 };
 
 export function NavDrawer({ open, items, pathname, onClose }: NavDrawerProps) {
+    const t = useTranslations('nav');
+
     return (
         <Drawer open={open} onClose={onClose} classes={{ paper: styles.drawer }}>
             <List className={styles.drawerList}>
@@ -23,7 +26,7 @@ export function NavDrawer({ open, items, pathname, onClose }: NavDrawerProps) {
                             <ListItemIcon>
                                 <NavItemIcon item={item} active={pathname === item.href} />
                             </ListItemIcon>
-                            <ListItemText primary={item.label} />
+                            <ListItemText primary={t(item.labelKey)} />
                         </ListItemButton>
                     </ListItem>
                 ))}

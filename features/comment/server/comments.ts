@@ -34,7 +34,7 @@ export async function createComment(
               select: { id: true, parentId: true, userId: true },
           })
         : null;
-    if (replyToId && !target) throw notFound('Comment not found.');
+    if (replyToId && !target) throw notFound('commentNotFound');
 
     // Top-level comments and replies have separate per-collection limits, so a
     // conversation has room to go on but nobody can flood a thread (each reply
@@ -43,12 +43,10 @@ export async function createComment(
         where: { userId: viewer.userId, collectionId, parentId: target ? { not: null } : null },
     });
     if (!target && written >= COMMENTS_PER_USER_LIMIT) {
-        throw forbidden(
-            `You can leave at most ${COMMENTS_PER_USER_LIMIT} comments on a collection.`,
-        );
+        throw forbidden('commentsLimit', { limit: COMMENTS_PER_USER_LIMIT });
     }
     if (target && written >= REPLIES_PER_USER_LIMIT) {
-        throw forbidden(`You can leave at most ${REPLIES_PER_USER_LIMIT} replies on a collection.`);
+        throw forbidden('repliesLimit', { limit: REPLIES_PER_USER_LIMIT });
     }
 
     const comment = await db.comment.create({
@@ -92,8 +90,8 @@ export async function updateComment(viewer: Viewer, commentId: number, text: str
         where: { id: commentId },
         select: { userId: true, text: true },
     });
-    if (!comment) throw notFound('Comment not found.');
-    if (comment.userId !== viewer.userId) throw forbidden('You can only edit your own comments.');
+    if (!comment) throw notFound('commentNotFound');
+    if (comment.userId !== viewer.userId) throw forbidden('editOwnCommentsOnly');
 
     const updated = await db.comment.update({
         where: { id: commentId },
@@ -115,9 +113,9 @@ export async function setAuthorLike(viewer: Viewer, commentId: number, liked: bo
             collection: { select: { userId: true, private: true } },
         },
     });
-    if (!comment || comment.collection.private) throw notFound('Comment not found.');
+    if (!comment || comment.collection.private) throw notFound('commentNotFound');
     if (comment.collection.userId !== viewer.userId) {
-        throw forbidden('Only the collection owner can heart comments.');
+        throw forbidden('heartOwnerOnly');
     }
 
     // Only the request that actually flips the heart notifies (or retracts).
@@ -145,7 +143,7 @@ export async function deleteComment(viewer: Viewer, commentId: number) {
         where: { id: commentId },
         select: { id: true, userId: true, text: true, collectionId: true },
     });
-    if (!comment) throw notFound('Comment not found.');
+    if (!comment) throw notFound('commentNotFound');
 
     if (comment.userId === viewer.userId) {
         await db.comment.delete({ where: { id: comment.id } });

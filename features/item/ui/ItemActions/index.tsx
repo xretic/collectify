@@ -9,6 +9,7 @@ import { ActionsMenu, type ActionsMenuItem } from '@/shared/ui/ActionsMenu';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { ItemFormDialog } from '../ItemFormDialog';
 import { useItemMutations } from '../../model/useItemMutations';
+import { useTranslations } from 'next-intl';
 
 type ItemActionsProps = {
     collectionId: number;
@@ -19,6 +20,8 @@ type ItemActionsProps = {
 
 /** Owner's "⋯" menu on an item card: edit / delete. */
 export function ItemActions({ collectionId, item, canDelete }: ItemActionsProps) {
+    const t = useTranslations('items');
+    const tc = useTranslations('common');
     const { update, remove } = useItemMutations(collectionId);
     const [editing, setEditing] = useState(false);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -26,7 +29,7 @@ export function ItemActions({ collectionId, item, canDelete }: ItemActionsProps)
     const items: ActionsMenuItem[] = [
         {
             key: 'edit',
-            label: 'Edit item',
+            label: t('edit'),
             icon: <EditOutlinedIcon fontSize="small" />,
             onClick: () => setEditing(true),
         },
@@ -35,7 +38,7 @@ export function ItemActions({ collectionId, item, canDelete }: ItemActionsProps)
     if (canDelete) {
         items.push({
             key: 'delete',
-            label: 'Delete item',
+            label: t('delete'),
             icon: <DeleteOutlineOutlinedIcon fontSize="small" />,
             onClick: () => setConfirmingDelete(true),
             danger: true,
@@ -44,7 +47,7 @@ export function ItemActions({ collectionId, item, canDelete }: ItemActionsProps)
 
     return (
         <>
-            <ActionsMenu items={items} label="Item actions" />
+            <ActionsMenu items={items} label={t('actions')} />
 
             {editing && (
                 <ItemFormDialog
@@ -63,9 +66,9 @@ export function ItemActions({ collectionId, item, canDelete }: ItemActionsProps)
 
             <ConfirmDialog
                 open={confirmingDelete}
-                title={item.title ? `Delete “${item.title}”?` : 'Delete this item?'}
-                description="This item will be removed from the collection."
-                confirmLabel="Delete"
+                title={item.title ? t('deleteTitle', { title: item.title }) : t('deleteUntitled')}
+                description={t('deleteDescription')}
+                confirmLabel={tc('delete')}
                 destructive
                 pending={remove.isPending}
                 onClose={() => setConfirmingDelete(false)}

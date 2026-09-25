@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getTranslations } from 'next-intl/server';
 import './globals.css';
 import './themes.css';
 import { AppProviders } from '@/app/providers/AppProviders';
 import { themeInitScript } from '@/shared/model/themeStore';
+import { I18nBridge } from '@/shared/i18n/I18nBridge';
 import { Toaster } from '@/shared/ui/Toaster';
 import { ImageEditorHost } from '@/shared/ui/ImageEditor';
 import NavBar from '@/widgets/layout/ui/NavBar';
@@ -22,16 +25,22 @@ const rubikMedium = localFont({
     variable: '--font-rubik-medium',
 });
 
-export const metadata: Metadata = {
-    title: { default: 'Collectify', template: '%s — Collectify' },
-    description: 'Create your interesting collection with us.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations('meta');
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+    return {
+        title: { default: 'Collectify', template: '%s — Collectify' },
+        description: t('description'),
+    };
+}
+
+export default async function RootLayout({ children }: { children: ReactNode }) {
+    const locale = await getLocale();
+
     return (
         <html
             className={`${googleSans.variable} ${rubikMedium.variable}`}
-            lang="en"
+            lang={locale}
             suppressHydrationWarning
         >
             <head>
@@ -39,15 +48,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
             </head>
             <body>
-                <AppProviders>
-                    <NavBar />
-                    <main className="app-content">{children}</main>
-                    <Footer />
-                    <Toaster />
-                    <ImageEditorHost />
-                    <ReportDialog />
-                    <NotificationToasts />
-                </AppProviders>
+                <NextIntlClientProvider>
+                    <I18nBridge />
+                    <AppProviders>
+                        <NavBar />
+                        <main className="app-content">{children}</main>
+                        <Footer />
+                        <Toaster />
+                        <ImageEditorHost />
+                        <ReportDialog />
+                        <NotificationToasts />
+                    </AppProviders>
+                </NextIntlClientProvider>
             </body>
         </html>
     );

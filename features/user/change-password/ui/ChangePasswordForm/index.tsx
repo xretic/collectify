@@ -10,10 +10,14 @@ import { passwordSchema } from '@/shared/lib/validation/schemas';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useValidationMessage } from '@/shared/i18n/useValidationMessage';
 
 const empty = { currentPassword: '', newPassword: '', confirmPassword: '' };
 
 export function ChangePasswordForm({ hasPassword }: { hasPassword: boolean }) {
+    const t = useTranslations('settings.security');
+    const validationMessage = useValidationMessage();
     const { setUser } = useSessionUser();
     const [form, setForm] = useState(empty);
 
@@ -38,9 +42,7 @@ export function ChangePasswordForm({ hasPassword }: { hasPassword: boolean }) {
         onSuccess: (user) => {
             setUser(user);
             setForm(empty);
-            toast.success(
-                hasPassword ? 'Password changed.' : 'Password set. You can now sign in with email.',
-            );
+            toast.success(hasPassword ? t('passwordChanged') : t('passwordSet'));
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
     });
@@ -60,7 +62,7 @@ export function ChangePasswordForm({ hasPassword }: { hasPassword: boolean }) {
             {hasPassword && (
                 <TextField
                     type="password"
-                    label="Current password"
+                    label={t('currentPassword')}
                     value={form.currentPassword}
                     onChange={(event) => set('currentPassword', event.target.value)}
                     slotProps={{ htmlInput: { autoComplete: 'current-password' } }}
@@ -70,13 +72,13 @@ export function ChangePasswordForm({ hasPassword }: { hasPassword: boolean }) {
 
             <TextField
                 type="password"
-                label="New password"
+                label={t('newPassword')}
                 value={form.newPassword}
                 onChange={(event) => set('newPassword', event.target.value)}
                 error={form.newPassword !== '' && !newPasswordCheck.success}
                 helperText={
                     form.newPassword !== '' && !newPasswordCheck.success
-                        ? newPasswordCheck.error.issues[0]?.message
+                        ? validationMessage(newPasswordCheck.error.issues[0]?.message)
                         : undefined
                 }
                 slotProps={inputProps}
@@ -85,18 +87,20 @@ export function ChangePasswordForm({ hasPassword }: { hasPassword: boolean }) {
 
             <TextField
                 type="password"
-                label="Confirm new password"
+                label={t('confirmPassword')}
                 value={form.confirmPassword}
                 onChange={(event) => set('confirmPassword', event.target.value)}
                 error={mismatch}
-                helperText={mismatch ? 'Passwords do not match.' : undefined}
+                helperText={
+                    mismatch ? validationMessage('validation.passwordsMismatch') : undefined
+                }
                 slotProps={inputProps}
                 size="small"
             />
 
             <div>
                 <Button type="submit" variant="contained" disabled={!valid || save.isPending}>
-                    {hasPassword ? 'Change password' : 'Set password'}
+                    {hasPassword ? t('change') : t('set')}
                 </Button>
             </div>
         </form>

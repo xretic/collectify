@@ -6,6 +6,7 @@ import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternate
 import { useImagePicker } from '@/shared/lib/hooks/useImagePicker';
 import type { ImageCropOptions } from '@/shared/model/imageEditorStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type ImageDropzoneProps = {
     value: string | null;
@@ -16,12 +17,8 @@ type ImageDropzoneProps = {
 };
 
 /** Click-or-drop upload area with a preview of the current image. */
-export function ImageDropzone({
-    value,
-    onChange,
-    label = 'Click or drop an image',
-    crop,
-}: ImageDropzoneProps) {
+export function ImageDropzone({ value, onChange, label, crop }: ImageDropzoneProps) {
+    const t = useTranslations('imageDropzone');
     const { pick, upload, pending } = useImagePicker(onChange, crop);
     const [dragging, setDragging] = useState(false);
 
@@ -55,8 +52,8 @@ export function ImageDropzone({
             {!pending && !value && (
                 <span className={styles.placeholder}>
                     <AddPhotoAlternateOutlinedIcon className={styles.icon} />
-                    <span className={styles.label}>{label}</span>
-                    <span className={styles.hint}>PNG, JPG, WEBP up to 10MB</span>
+                    <span className={styles.label}>{label ?? t('label')}</span>
+                    <span className={styles.hint}>{t('hint')}</span>
                 </span>
             )}
         </button>

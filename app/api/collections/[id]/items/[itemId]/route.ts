@@ -12,7 +12,7 @@ export const PATCH = route<Params>(async (req, params) => {
 
     const item = await updateItem(
         parseId(params.id),
-        parseId(params.itemId, 'item id'),
+        parseId(params.itemId),
         viewer.userId,
         await readBody(req, itemSchema),
     );
@@ -24,7 +24,7 @@ export const DELETE = route<Params>(async (req, params) => {
     const viewer = await requireViewer(req);
     await enforceRateLimit(req, 'mutation', viewer.userId);
 
-    await removeItem(parseId(params.id), parseId(params.itemId, 'item id'), viewer.userId);
+    await removeItem(parseId(params.id), parseId(params.itemId), viewer.userId);
 
     return noContent();
 });

@@ -43,7 +43,7 @@ export async function assertActiveCategory(categoryId: number) {
         select: { isActive: true },
     });
 
-    if (!category?.isActive) throw badRequest('Choose an existing category.');
+    if (!category?.isActive) throw badRequest('categoryUnknown');
 }
 
 /** Pool of top collections per category that the cover is picked from. */

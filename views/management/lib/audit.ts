@@ -1,13 +1,16 @@
-import { REPORT_VERDICT_LABELS, type ReportVerdict } from '@/entities/report/model/types';
-import { SANCTION_SCOPE_LABELS, type SanctionScope } from '@/entities/sanction/model/types';
+'use client';
 
-const DIRECT_ACTIONS: Record<string, string> = {
-    'delete-user': 'Deleted user account',
-    'delete-comment': 'Deleted comment',
-    'delete-collection': 'Deleted collection',
-    'impersonate-user': 'Signed in as user',
-    'stop-impersonation': 'Stopped impersonation',
-};
+import { useTranslations } from 'next-intl';
+import { REVIEW_VERDICTS, type ReportVerdict } from '@/entities/report/model/types';
+import { SANCTION_SCOPES, type SanctionScope } from '@/entities/sanction/model/types';
+
+const DIRECT_ACTIONS = {
+    'delete-user': 'deleteUser',
+    'delete-comment': 'deleteComment',
+    'delete-collection': 'deleteCollection',
+    'impersonate-user': 'impersonateUser',
+    'stop-impersonation': 'stopImpersonation',
+} as const;
 
 function humanize(value = '') {
     return value
@@ -17,21 +20,44 @@ function humanize(value = '') {
         .join(' ');
 }
 
-export function formatAuditAction(action: string) {
-    const [type, value = ''] = action.split(':');
+const isScope = (value: string): value is SanctionScope =>
+    SANCTION_SCOPES.includes(value as SanctionScope);
+const isVerdict = (value: string): value is ReportVerdict =>
+    value === 'PENDING' || REVIEW_VERDICTS.includes(value as never);
+const isDirect = (value: string): value is keyof typeof DIRECT_ACTIONS => value in DIRECT_ACTIONS;
 
-    switch (type) {
-        case 'grant':
-            return `Granted ${value.toLowerCase()}`;
-        case 'revoke':
-            return `Revoked ${value.toLowerCase()}`;
-        case 'sanction':
-            return `Applied ${(SANCTION_SCOPE_LABELS[value as SanctionScope] ?? humanize(value)).toLowerCase()}`;
-        case 'revoke-sanction':
-            return `Lifted ${(SANCTION_SCOPE_LABELS[value as SanctionScope] ?? humanize(value)).toLowerCase()}`;
-        case 'report':
-            return `Closed report: ${REPORT_VERDICT_LABELS[value as ReportVerdict] ?? humanize(value)}`;
-        default:
-            return DIRECT_ACTIONS[action] ?? humanize(action);
-    }
+/** "grant:Moderator" → "Granted Moderator", "sanction:COMMENTS" → "Applied: Comments mute"… */
+export function useFormatAuditAction() {
+    const t = useTranslations('management.audit.actions');
+    const tRoles = useTranslations('roles');
+    const tSanctions = useTranslations('sanctions');
+    const tReports = useTranslations('reports');
+
+    const role = (value: string) =>
+        value === 'Admin' || value === 'Moderator' || value === 'Verified'
+            ? tRoles(value)
+            : humanize(value);
+    const scope = (value: string) =>
+        isScope(value) ? tSanctions(`scopes.${value}`) : humanize(value);
+
+    return (action: string) => {
+        const [type, value = ''] = action.split(':');
+
+        switch (type) {
+            case 'grant':
+                return t('grant', { role: role(value) });
+            case 'revoke':
+                return t('revoke', { role: role(value) });
+            case 'sanction':
+                return t('sanction', { scope: scope(value) });
+            case 'revoke-sanction':
+                return t('revokeSanction', { scope: scope(value) });
+            case 'report':
+                return t('report', {
+                    verdict: isVerdict(value) ? tReports(`verdicts.${value}`) : humanize(value),
+                });
+            default:
+                return isDirect(action) ? t(DIRECT_ACTIONS[action]) : humanize(action);
+        }
+    };
 }

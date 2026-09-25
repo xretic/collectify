@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import RegisterPage from '@/views/register/ui/RegisterPage';
+import { pageMetadata } from '@/shared/i18n/metadata';
 
-export const metadata: Metadata = { title: 'Register' };
+export const generateMetadata = pageMetadata('register');
 
 export default function RegisterRoute() {
     return (

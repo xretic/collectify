@@ -9,12 +9,12 @@ type Params = { id: string };
 export const GET = route<Params>(async (req, params) => {
     const ctx = await requireStaff(req);
 
-    return json({ report: await getReportDetails(ctx, parseId(params.id, 'report id')) });
+    return json({ report: await getReportDetails(ctx, parseId(params.id)) });
 });
 
 export const PATCH = route<Params>(async (req, params) => {
     const ctx = await requireStaff(req);
-    const reportId = parseId(params.id, 'report id');
+    const reportId = parseId(params.id);
 
     const result = await reviewReport(ctx, reportId, await readBody(req, reviewReportSchema));
 

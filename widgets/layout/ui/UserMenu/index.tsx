@@ -16,8 +16,10 @@ import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export function UserMenu({ user }: { user: SessionUser }) {
+    const t = useTranslations('nav');
     const router = useRouter();
     const queryClient = useQueryClient();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -53,24 +55,24 @@ export function UserMenu({ user }: { user: SessionUser }) {
     const links = [
         {
             href: '/users/me',
-            label: 'Profile',
+            label: t('profile'),
             icon: <AccountCircleOutlinedIcon fontSize="small" />,
         },
         {
             href: '/collections/my',
-            label: 'Collections',
+            label: t('collections'),
             icon: <LibraryBooksOutlinedIcon fontSize="small" />,
         },
         ...(isStaff(user.roles)
             ? [
                   {
                       href: '/management',
-                      label: 'Management',
+                      label: t('management'),
                       icon: <SecurityOutlinedIcon fontSize="small" />,
                   },
               ]
             : []),
-        { href: '/settings', label: 'Settings', icon: <SettingsOutlined fontSize="small" /> },
+        { href: '/settings', label: t('settings'), icon: <SettingsOutlined fontSize="small" /> },
     ];
 
     return (
@@ -80,7 +82,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
                 className={styles.trigger}
                 onClick={(event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)}
                 aria-haspopup="menu"
-                aria-label="Account menu"
+                aria-label={t('accountMenu')}
             >
                 <span className={styles.username}>{user.username}</span>
                 <Avatar alt={user.username} src={user.avatarUrl} className={styles.avatar} />
@@ -98,7 +100,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
                         <ListItemIcon>
                             <KeyboardReturnOutlinedIcon fontSize="small" />
                         </ListItemIcon>
-                        Return to admin
+                        {t('returnToAdmin')}
                     </MenuItem>
                 )}
 
@@ -113,7 +115,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
                     <ListItemIcon>
                         <LogoutOutlined fontSize="small" />
                     </ListItemIcon>
-                    Logout
+                    {t('logout')}
                 </MenuItem>
             </Menu>
         </>

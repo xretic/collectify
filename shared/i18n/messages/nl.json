@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "Ongeldig verzoek.",
+        "unauthorized": "Log in om verder te gaan.",
+        "forbidden": "Je hebt geen toestemming om dit te doen.",
+        "notFound": "Niet gevonden.",
+        "internal": "Interne serverfout.",
+        "invalidInput": "Ongeldige invoer.",
+        "invalidField": "Ongeldige waarde: {field}.",
+        "invalidJson": "Ongeldige inhoud van het verzoek.",
+        "invalidId": "Ongeldige id.",
+        "tooManyRequests": "Te veel verzoeken. Probeer het later opnieuw.",
+        "realtimeUnavailable": "De realtimedienst is niet ingesteld.",
+        "invalidWebhookSignature": "Ongeldige webhookhandtekening.",
+        "oauthNotConfigured": "Deze inlogmethode is niet ingesteld.",
+        "userNotFound": "Gebruiker niet gevonden.",
+        "commentNotFound": "Reactie niet gevonden.",
+        "collectionNotFound": "Collectie niet gevonden.",
+        "tagNotFound": "Tag niet gevonden.",
+        "reportNotFound": "Melding niet gevonden.",
+        "categoryNotFound": "Categorie niet gevonden.",
+        "sanctionNotFound": "Sanctie niet gevonden.",
+        "itemNotFound": "Item niet gevonden.",
+        "chatNotFound": "Chat niet gevonden.",
+        "boardNotFound": "Bord niet gevonden.",
+        "invalidCredentials": "Onjuist e-mailadres of wachtwoord.",
+        "emailTaken": "Er bestaat al een account met dit e-mailadres.",
+        "usernameTaken": "Deze gebruikersnaam is al bezet.",
+        "emailOrUsernameTaken": "Dit e-mailadres of deze gebruikersnaam is al bezet.",
+        "currentPasswordRequired": "Het huidige wachtwoord is verplicht.",
+        "currentPasswordIncorrect": "Het huidige wachtwoord is onjuist.",
+        "passwordUnchanged": "Het nieuwe wachtwoord moet verschillen van het huidige.",
+        "passwordIncorrect": "Wachtwoord is onjuist.",
+        "typeUsernameToConfirm": "Typ je gebruikersnaam om te bevestigen.",
+        "impersonationInactive": "Inloggen als andere gebruiker is niet actief.",
+        "bannedUntil": "Je account is geblokkeerd. De blokkade loopt af op {date}.",
+        "bannedPermanent": "Je account is geblokkeerd. Deze beperking is permanent.",
+        "mutedCommentsUntil": "Je bent gedempt in reacties. Dit loopt af op {date}.",
+        "mutedCommentsPermanent": "Je bent gedempt in reacties. Deze beperking is permanent.",
+        "mutedMessengerUntil": "Je bent gedempt in berichten. Dit loopt af op {date}.",
+        "mutedMessengerPermanent": "Je bent gedempt in berichten. Deze beperking is permanent.",
+        "chatsUnavailableImpersonating": "Chats zijn niet beschikbaar terwijl je als andere gebruiker bent ingelogd.",
+        "cannotModerateSelf": "Je kunt jezelf niet modereren.",
+        "adminsNotModeratable": "Beheerders kunnen niet worden gemodereerd.",
+        "moderatorsCannotManageModerators": "Moderators kunnen geen andere moderators beheren.",
+        "permanentSanctionAdminOnly": "Alleen beheerders kunnen permanente sancties opleggen.",
+        "liftPermanentAdminOnly": "Alleen beheerders kunnen permanente sancties opheffen.",
+        "liftAdminSanctionAdminOnly": "Alleen beheerders kunnen sancties van een beheerder opheffen.",
+        "manageModeratorsAdminOnly": "Alleen beheerders kunnen moderators beheren.",
+        "alreadySignedInAsUser": "Je bent al ingelogd als deze gebruiker.",
+        "stopImpersonationFirst": "Stop eerst met inloggen als de huidige gebruiker.",
+        "cannotImpersonateBanned": "Je kunt niet inloggen als een geblokkeerd account.",
+        "categoryUnknown": "Kies een bestaande categorie.",
+        "categoriesUnknown": "Kies bestaande categorieën.",
+        "categoryExists": "Er bestaat al een categorie met deze naam of slug.",
+        "categoryInUse": "De categorie bevat nog collecties. Archiveer haar in plaats daarvan.",
+        "tagsWrongCategory": "Tags moeten bij de categorie van de collectie horen.",
+        "tagsLimit": "Een collectie kan maximaal {limit} tags hebben.",
+        "tagsDailyLimit": "Je hebt vandaag te veel tags gemaakt. Probeer het morgen opnieuw.",
+        "signInForBoards": "Log in om je borden te zien.",
+        "signInForFavorites": "Log in om je bewaarde collecties te zien.",
+        "ownerOnly": "Alleen de eigenaar kan deze collectie wijzigen.",
+        "collectionsLimit": "Je kunt maximaal {limit} collecties hebben.",
+        "itemsLimit": "Een collectie kan maximaal {limit} items hebben.",
+        "collectionNeedsItem": "Een collectie moet minstens één item behouden.",
+        "invalidItemOrder": "De nieuwe volgorde moet elk item van de collectie precies één keer bevatten.",
+        "boardNameTaken": "Je hebt al een bord met deze naam.",
+        "boardsLimit": "Je kunt maximaal {limit} borden hebben.",
+        "cannotMessageSelf": "Je kunt jezelf geen bericht sturen.",
+        "userDeleted": "Deze gebruiker heeft zijn account verwijderd.",
+        "editOwnCommentsOnly": "Je kunt alleen je eigen reacties bewerken.",
+        "heartOwnerOnly": "Alleen de eigenaar van de collectie kan reacties een hartje geven.",
+        "commentsLimit": "Je kunt maximaal {limit} reacties plaatsen bij een collectie.",
+        "repliesLimit": "Je kunt maximaal {limit} antwoorden plaatsen bij een collectie.",
+        "cannotReportSelf": "Je kunt jezelf niet melden.",
+        "accountNotReportable": "Dit account kan niet worden gemeld.",
+        "alreadyReported": "Je hebt dit al gemeld. Moderators bekijken het binnenkort.",
+        "reportClosed": "De melding is al gesloten.",
+        "cannotReviewOwnReport": "Je kunt je eigen melding niet beoordelen.",
+        "nothingToRemove": "Bij een melding over een gebruiker is er geen inhoud om te verwijderen.",
+        "duplicateMustMatchUser": "De oorspronkelijke melding moet een andere melding over dezelfde gebruiker zijn.",
+        "reportJustReviewed": "Deze melding is net door iemand anders beoordeeld.",
+        "nothingToUpdate": "Niets om bij te werken.",
+        "countryRequiredForCity": "Kies een land voor de stad.",
+        "cityUnknown": "Onbekende stad.",
+        "cannotFollowSelf": "Je kunt jezelf niet volgen.",
+        "generic": "Er ging iets mis. Probeer het opnieuw.",
+        "network": "Netwerkfout. Controleer je verbinding."
+    },
+    "validation": {
+        "required": "Dit veld is verplicht.",
+        "tooLong": "Te lang.",
+        "usernameMin": "De gebruikersnaam moet minstens {usernameMin} tekens bevatten.",
+        "usernameMax": "De gebruikersnaam mag maximaal {usernameMax} tekens bevatten.",
+        "usernameChars": "De gebruikersnaam mag alleen a-z, 0-9, ‘_’ en ‘.’ bevatten.",
+        "passwordMin": "Het wachtwoord moet minstens {passwordMin} tekens bevatten.",
+        "passwordMax": "Het wachtwoord mag maximaal {passwordMax} tekens bevatten.",
+        "passwordChars": "Het wachtwoord bevat niet-ondersteunde tekens.",
+        "passwordsMismatch": "De wachtwoorden komen niet overeen.",
+        "emailInvalid": "Voer een geldig e-mailadres in.",
+        "urlInvalid": "Moet een geldige http(s)-URL zijn.",
+        "countryUnknown": "Onbekend land.",
+        "cityChars": "Gebruik letters, spaties en - . , ' / ( )",
+        "dateInvalid": "Voer een geldige datum in.",
+        "ageMin": "Je moet minstens {minAge} jaar oud zijn.",
+        "localeUnknown": "Niet-ondersteunde taal.",
+        "nameRequired": "Naam is verplicht.",
+        "descriptionRequired": "Beschrijving is verplicht.",
+        "slugRequired": "Slug is verplicht.",
+        "slugChars": "Gebruik kleine letters, cijfers en streepjes.",
+        "messageEmpty": "Het bericht mag niet leeg zijn.",
+        "commentEmpty": "De reactie mag niet leeg zijn.",
+        "itemTitleOrImage": "Voeg een titel of een afbeelding toe.",
+        "categoryRequired": "Kies een categorie.",
+        "tagsMax": "Maximaal {tagsMax} tags.",
+        "tagNameMin": "Minstens {tagNameMin} tekens.",
+        "tagNameChars": "Letters, cijfers, spaties en - & + . ' #",
+        "verdictRequiresGuilty": "Een straf en het verwijderen van inhoud vereisen het oordeel ‘schuldig’.",
+        "duplicateRequiresOriginal": "Kies bij het oordeel ‘duplicaat’ de oorspronkelijke melding."
+    },
+    "meta": {
+        "description": "Maak samen met ons je interessante collectie.",
+        "privacyDescription": "Hoe Collectify je gegevens verzamelt, gebruikt en bewaart.",
+        "userDescription": "Collecties van {name} op Collectify.",
+        "pages": {
+            "login": "Inloggen",
+            "register": "Registreren",
+            "chats": "Chats",
+            "createCollection": "Collectie maken",
+            "myCollections": "Mijn collecties",
+            "notifications": "Meldingen",
+            "onboarding": "Kies je interesses",
+            "settings": "Instellingen",
+            "myProfile": "Mijn profiel",
+            "management": "Beheer",
+            "privacyPolicy": "Privacybeleid",
+            "collection": "Collectie",
+            "userNotFound": "Gebruiker niet gevonden"
+        }
+    },
+    "languages": {
+        "label": "Taal"
+    },
+    "auth": {
+        "email": "E-mail",
+        "password": "Wachtwoord",
+        "username": "Gebruikersnaam",
+        "login": "Inloggen",
+        "register": "Registreren",
+        "signingIn": "Bezig met inloggen…",
+        "creatingAccount": "Account wordt gemaakt…",
+        "usernameHint": "Kleine letters, cijfers, ‘_’ en ‘.’",
+        "passwordHint": "Minstens {min} tekens",
+        "languageHint": "Je kunt dit later wijzigen in de instellingen.",
+        "orContinueWith": "of ga verder met",
+        "loginSubtitle": "Voer je gegevens in om toegang te krijgen tot je account.",
+        "registerSubtitle": "Maak een account om te beginnen met verzamelen.",
+        "noAccount": "Nog geen account? <link>Registreer je</link>",
+        "haveAccount": "Heb je al een account? <link>Log in</link>",
+        "oauthErrors": {
+            "oauthState": "De inloglink is verlopen. Probeer het opnieuw.",
+            "oauthFailed": "Inloggen via de provider is mislukt. Probeer het opnieuw.",
+            "accountBanned": "Dit account is geblokkeerd."
+        }
+    },
+    "common": {
+        "cancel": "Annuleren",
+        "reset": "Herstellen",
+        "save": "Opslaan",
+        "delete": "Verwijderen",
+        "edit": "Bewerken",
+        "close": "Sluiten",
+        "back": "Terug",
+        "retry": "Opnieuw proberen",
+        "loadMore": "Meer laden",
+        "search": "Zoeken",
+        "next": "Volgende",
+        "skip": "Overslaan",
+        "confirm": "Bevestigen",
+        "create": "Maken",
+        "add": "Toevoegen",
+        "moreActions": "Meer acties",
+        "loading": "Laden",
+        "sortBy": "Sorteren op"
+    },
+    "settings": {
+        "title": "Instellingen",
+        "subtitle": "Beheer je accountinstellingen en voorkeuren",
+        "profile": {
+            "title": "Profiel",
+            "description": "Naam, gebruikersnaam, bio en afbeeldingen.",
+            "edit": "Profiel bewerken"
+        },
+        "security": {
+            "title": "Privacy en beveiliging",
+            "changePassword": "Wijzig je wachtwoord.",
+            "setPassword": "Stel een wachtwoord in om ook met je e-mailadres in te loggen.",
+            "passwordChanged": "Wachtwoord gewijzigd.",
+            "passwordSet": "Wachtwoord ingesteld. Je kunt nu inloggen met je e-mailadres.",
+            "currentPassword": "Huidig wachtwoord",
+            "newPassword": "Nieuw wachtwoord",
+            "confirmPassword": "Bevestig nieuw wachtwoord",
+            "change": "Wachtwoord wijzigen",
+            "set": "Wachtwoord instellen"
+        },
+        "interests": {
+            "title": "Interesses",
+            "description": "Categorieën die je leuk vindt. Ze bepalen je feed ‘Voor jou’.",
+            "saved": "Interesses opgeslagen.",
+            "save": "Interesses opslaan"
+        },
+        "language": {
+            "title": "Taal",
+            "description": "De taal van de hele interface. Wordt opgeslagen in je account."
+        },
+        "appearance": {
+            "title": "Weergave",
+            "description": "Kies een thema. Het wordt direct toegepast en op dit apparaat onthouden.",
+            "search": "Thema zoeken",
+            "filter": "Thema’s filteren",
+            "theme": "Thema",
+            "filters": {
+                "all": "Alle",
+                "light": "Licht",
+                "dark": "Donker"
+            }
+        },
+        "home": {
+            "title": "Startpagina",
+            "description": "Widgets naast je feed.",
+            "showPeopleWidget": "‘Mensen die je misschien kent’ tonen op de startpagina"
+        },
+        "danger": {
+            "title": "Gevarenzone",
+            "description": "Je account en alle gegevens definitief verwijderen.",
+            "deleteAccount": "Account verwijderen",
+            "warning": "Hiermee worden je profiel, collecties, reacties en chats definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
+            "yourPassword": "Je wachtwoord",
+            "typeUsername": "Typ ‘{username}’ om te bevestigen",
+            "deleteForever": "Definitief verwijderen"
+        }
+    },
+    "dateField": {
+        "placeholder": "Kies een datum",
+        "clear": "Datum wissen",
+        "open": "Kalender openen",
+        "chooseYear": "Jaar kiezen",
+        "previousMonth": "Vorige maand",
+        "nextMonth": "Volgende maand"
+    },
+    "imageDropzone": {
+        "label": "Klik of sleep een afbeelding hierheen",
+        "hint": "PNG, JPG, WEBP tot 10 MB"
+    },
+    "roles": {
+        "Admin": "Beheerder",
+        "Moderator": "Moderator",
+        "Verified": "Geverifieerd"
+    },
+    "imageEditor": {
+        "title": "Afbeelding bewerken",
+        "failed": "De afbeelding kon niet worden bewerkt.",
+        "zoom": "Zoom",
+        "rotateLeft": "Linksom draaien",
+        "rotateRight": "Rechtsom draaien",
+        "aspectRatio": "Beeldverhouding",
+        "original": "Origineel"
+    },
+    "pagination": {
+        "label": "Paginering",
+        "previous": "Vorige pagina",
+        "next": "Volgende pagina",
+        "page": "Pagina {page}"
+    },
+    "scrollRow": {
+        "back": "{items} terugscrollen",
+        "forward": "{items} vooruitscrollen"
+    },
+    "upload": {
+        "readFailed": "De afbeelding kon niet worden gelezen.",
+        "editUnsupported": "Deze browser ondersteunt het bewerken van afbeeldingen niet.",
+        "saveFailed": "De afbeelding kon niet worden opgeslagen.",
+        "wrongType": "Kies een PNG-, JPG-, WEBP- of GIF-afbeelding.",
+        "tooBig": "De afbeelding mag maximaal 10 MB zijn.",
+        "notConfigured": "Het uploaden van afbeeldingen is niet ingesteld.",
+        "network": "Uploaden van de afbeelding mislukt. Controleer je verbinding.",
+        "failed": "Uploaden van de afbeelding mislukt."
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "Accountblokkade",
+            "COMMENTS": "Reactieverbod",
+            "MESSENGER": "Berichtenverbod"
+        },
+        "durations": {
+            "1h": "1 uur",
+            "1d": "1 dag",
+            "7d": "7 dagen",
+            "30d": "30 dagen",
+            "permanent": "Permanent"
+        },
+        "until": "{scope} · tot {date}",
+        "permanentScope": "{scope} · permanent",
+        "mutePlaceholder": {
+            "commentsUntil": "Je bent tot {date} gedempt in reacties.",
+            "commentsPermanent": "Je bent permanent gedempt in reacties.",
+            "messengerUntil": "Je bent tot {date} gedempt in berichten.",
+            "messengerPermanent": "Je bent permanent gedempt in berichten."
+        }
+    },
+    "categories": {
+        "books": "Boeken",
+        "movies": "Films",
+        "games": "Games",
+        "recipes": "Recepten",
+        "apps": "Apps",
+        "travel": "Reizen",
+        "music": "Muziek",
+        "sport": "Sport",
+        "tv-shows": "Series",
+        "anime": "Anime",
+        "podcasts": "Podcasts",
+        "art": "Kunst",
+        "design": "Design",
+        "photography": "Fotografie",
+        "fashion": "Mode",
+        "home": "Wonen en interieur",
+        "tech": "Tech",
+        "science": "Wetenschap",
+        "education": "Onderwijs",
+        "fitness": "Fitness",
+        "cars": "Auto’s",
+        "pets": "Huisdieren",
+        "nature": "Natuur",
+        "custom": "Overig"
+    },
+    "categoryMenu": {
+        "all": "Alle categorieën",
+        "search": "Categorie zoeken",
+        "nothingFound": "Niets gevonden",
+        "label": "Categorie"
+    },
+    "chats": {
+        "online": "Online",
+        "typing": "typt",
+        "message": "Bericht sturen",
+        "mute": {
+            "actions": "Chatacties",
+            "mutedUntil": "Gedempt tot {date}",
+            "off": "Meldingen staan uit",
+            "enable": "Meldingen inschakelen",
+            "muteForMenu": "Dempen voor…",
+            "disable": "Meldingen uitschakelen",
+            "muteFor": "Dempen voor",
+            "durations": {
+                "15m": "15 minuten",
+                "30m": "30 minuten",
+                "1h": "1 uur",
+                "8h": "8 uur",
+                "1d": "1 dag",
+                "1w": "1 week"
+            },
+            "failed": "Meldingen konden niet worden bijgewerkt. Probeer het opnieuw."
+        },
+        "composer": {
+            "placeholder": "Schrijf je bericht…",
+            "label": "Bericht",
+            "send": "Bericht versturen"
+        },
+        "title": "Chats",
+        "unread": "{count} ongelezen",
+        "empty": "Nog geen chats.",
+        "deletedAccount": "Verwijderd account",
+        "muted": "Gedempt",
+        "you": "Jij: {text}",
+        "back": "Terug naar chats",
+        "directMessages": "Privéberichten",
+        "viewProfile": "Profiel bekijken",
+        "conversation": "Gesprek",
+        "unavailable": "Deze chat is niet beschikbaar.",
+        "seen": "Gezien <time></time>",
+        "sent": "Verzonden",
+        "privateTitle": "Chats zijn privé",
+        "privateDescription": "Privéberichten zijn niet beschikbaar terwijl je als andere gebruiker bent ingelogd.",
+        "placeholderTitle": "Je chats",
+        "placeholderText": "Kies links een gesprek om verder te praten over collecties."
+    },
+    "collectionCard": {
+        "items": "{count, plural, one {# item} other {# items}}",
+        "comments": "{count, plural, one {# reactie} other {# reacties}}",
+        "favorites": "{count, plural, one {# keer bewaard} other {# keer bewaard}}",
+        "likes": "{count, plural, one {# like} other {# likes}}"
+    },
+    "collectionForm": {
+        "cover": "Omslagafbeelding",
+        "coverHint": "Klik om een omslagafbeelding te uploaden",
+        "title": "Titel",
+        "description": "Beschrijving",
+        "visibility": "Zichtbaarheid",
+        "public": "Openbaar",
+        "private": "Privé"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "We hebben niets gevonden",
+        "emptyDescription": "Probeer een ander filter of een andere zoekopdracht."
+    },
+    "items": {
+        "open": "Item openen",
+        "drag": "Item verslepen",
+        "image": "Afbeelding",
+        "title": "Titel",
+        "description": "Beschrijving",
+        "titleRequired": "Verplicht als er geen afbeelding is",
+        "sourceUrl": "Bron-URL",
+        "cardSize": "Kaartformaat",
+        "sizes": {
+            "S": "Kleine vierkante tegel",
+            "M": "Hoge tegel, één kolom",
+            "L": "Grote tegel, twee kolommen",
+            "XL": "Banner over de hele rij"
+        },
+        "edit": "Item bewerken",
+        "delete": "Item verwijderen",
+        "actions": "Itemacties",
+        "deleteTitle": "‘{title}’ verwijderen?",
+        "deleteUntitled": "Dit item verwijderen?",
+        "deleteDescription": "Dit item wordt uit de collectie verwijderd.",
+        "add": "Item toevoegen",
+        "addIntro": "Voeg een nieuw item toe aan je collectie.",
+        "editIntro": "Werk het item bij. Wijzigingen zijn direct voor iedereen zichtbaar.",
+        "item": "Item",
+        "previous": "Vorig item",
+        "next": "Volgend item",
+        "label": "Items"
+    },
+    "comments": {
+        "editedAt": "Bewerkt {date}",
+        "edited": "(bewerkt)",
+        "replyTo": "Antwoord aan @{username}",
+        "placeholder": "Voeg een reactie toe…",
+        "reply": "Antwoorden",
+        "comment": "Reageren",
+        "deleteAsModerator": "Verwijderen als moderator",
+        "actions": "Reactieacties",
+        "deleteTitle": "Deze reactie verwijderen?",
+        "count": "{count, plural, one {# reactie} other {# reacties}}",
+        "emptyTitle": "Nog geen reacties.",
+        "emptyDescription": "Begin het gesprek.",
+        "replies": "{count, plural, one {# antwoord} other {# antwoorden}}",
+        "moreReplies": "Meer antwoorden tonen",
+        "unheart": "Hartje verwijderen",
+        "heart": "Geef deze reactie een hartje",
+        "heartLabel": "Hartje voor reactie",
+        "heartedBy": "♥ van {username}"
+    },
+    "notifications": {
+        "unread": "Ongelezen",
+        "texts": {
+            "FOLLOW": "volgt je nu",
+            "LIKE": "vindt je collectie leuk",
+            "FAVORITE": "heeft je collectie bewaard",
+            "COMMENT": "heeft gereageerd op je collectie",
+            "REPORT_RESOLVED": "Je melding is beoordeeld. Bedankt dat je helpt Collectify veilig te houden.",
+            "SANCTION": "Een moderator heeft je account beperkt. Bekijk je instellingen voor details.",
+            "COMMENT_REPLY": "heeft op je reactie geantwoord bij",
+            "COMMENT_LIKED": "heeft je reactie een hartje gegeven bij"
+        },
+        "dismiss": "Melding sluiten",
+        "title": "Meldingen",
+        "markAllRead": "Alles als gelezen markeren",
+        "tabs": {
+            "all": "Alle",
+            "unread": "Ongelezen"
+        },
+        "emptyUnread": "Geen ongelezen meldingen",
+        "empty": "Nog geen meldingen",
+        "caughtUp": "Je bent helemaal bij.",
+        "groups": {
+            "today": "Vandaag",
+            "yesterday": "Gisteren",
+            "thisWeek": "Deze week",
+            "earlier": "Eerder"
+        }
+    },
+    "tags": {
+        "label": "Tags",
+        "upTo": "Maximaal {limit} tags",
+        "noMatches": "Geen overeenkomende tags",
+        "noneYet": "Nog geen tags",
+        "searchByTags": "Zoeken op tags",
+        "noneInCategory": "Nog geen tags in deze categorie",
+        "create": "‘{name}’ maken",
+        "searchOrCreate": "Tags zoeken of maken",
+        "chooseCategoryFirst": "Kies eerst een categorie.",
+        "pickerHint": "{count} / {limit} · Populaire tags van de categorie worden eerst voorgesteld."
+    },
+    "profile": {
+        "usernameCopied": "Gebruikersnaam gekopieerd.",
+        "usernameCopyFailed": "De gebruikersnaam kon niet worden gekopieerd.",
+        "copyUsername": "Gebruikersnaam kopiëren",
+        "noBio": "Nog geen bio",
+        "statLabel": "{count} {label}",
+        "following": "volgend",
+        "followers": "volgers",
+        "follow": "Volgen",
+        "unfollow": "Ontvolgen",
+        "follows": {
+            "followers": "Volgers",
+            "following": "Volgend",
+            "noFollowers": "Nog geen volgers",
+            "noFollowing": "Volgt niemand",
+            "followingButton": "Volgend",
+            "follow": "Volgen"
+        },
+        "edit": {
+            "updated": "Profiel bijgewerkt.",
+            "title": "Profiel bewerken",
+            "changeBanner": "Banner wijzigen",
+            "removeBanner": "Banner verwijderen",
+            "changeAvatar": "Avatar wijzigen",
+            "removeAvatar": "Avatar verwijderen",
+            "fullName": "Volledige naam",
+            "username": "Gebruikersnaam",
+            "bio": "Bio",
+            "country": "Land",
+            "city": "Stad",
+            "birthDate": "Geboortedatum"
+        },
+        "tabs": {
+            "created": "Gemaakt",
+            "favorites": "Bewaard",
+            "private": "Privé"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "Spam",
+            "HARASSMENT": "Intimidatie",
+            "HATE": "Haatzaaiende taal",
+            "SCAM": "Oplichting",
+            "ADULT": "Inhoud voor volwassenen",
+            "OTHER": "Overig"
+        },
+        "targets": {
+            "USER": "Gebruiker",
+            "COMMENT": "Reactie",
+            "COLLECTION": "Collectie"
+        },
+        "reportTarget": {
+            "USER": "Gebruiker melden",
+            "COMMENT": "Reactie melden",
+            "COLLECTION": "Collectie melden"
+        },
+        "openTarget": {
+            "USER": "Gebruiker openen",
+            "COMMENT": "Reactie openen",
+            "COLLECTION": "Collectie openen"
+        },
+        "verdicts": {
+            "PENDING": "In behandeling",
+            "GUILTY": "Schuldig",
+            "NO_VIOLATION": "Geen overtreding",
+            "INSUFFICIENT_EVIDENCE": "Onvoldoende bewijs",
+            "DUPLICATE": "Duplicaat"
+        },
+        "submitted": "Melding verzonden. Moderators bekijken het binnenkort.",
+        "reason": "Reden",
+        "details": "Details",
+        "submit": "Melding versturen"
+    },
+    "boards": {
+        "rename": "Hernoemen",
+        "delete": "Bord verwijderen",
+        "renameTitle": "Bord hernoemen",
+        "deleteTitle": "‘{name}’ verwijderen?",
+        "deleteDescription": "De collecties blijven in ‘Alles bewaard’.",
+        "name": "Naam van het bord",
+        "label": "Borden",
+        "items": "borden",
+        "all": "Alles",
+        "new": "Nieuw bord",
+        "actions": "Bordacties",
+        "signInToSave": "Log in om te bewaren",
+        "saved": "Bewaard",
+        "save": "Bewaren",
+        "saveTo": "Bewaren in",
+        "allSaved": "Alles bewaard",
+        "hint": "Groepeer je bewaarde collecties in borden.",
+        "newName": "Naam nieuw bord",
+        "create": "Bord maken",
+        "draggableTab": "versleepbaar tabblad"
+    },
+    "management": {
+        "categories": {
+            "updated": "Categorie bijgewerkt.",
+            "created": "Categorie gemaakt.",
+            "deleted": "Categorie verwijderd.",
+            "name": "Naam",
+            "slug": "Slug",
+            "slugHint": "Gebruikt in links: /?category=slug",
+            "description": "Beschrijving",
+            "position": "Positie",
+            "positionHint": "Lager komt eerst",
+            "active": "Actief",
+            "archived": "Gearchiveerd",
+            "onlyArchive": "Categorieën met collecties kunnen alleen worden gearchiveerd.",
+            "create": "Categorie maken",
+            "deleteTitle": "‘{name}’ verwijderen?",
+            "new": "Nieuwe categorie",
+            "empty": "Nog geen categorieën",
+            "collections": "{count, plural, one {# collectie} other {# collecties}}",
+            "archivedLower": "gearchiveerd",
+            "notFound": "Categorie niet gevonden"
+        },
+        "roles": {
+            "updated": "Rollen bijgewerkt.",
+            "revoke": "{role} intrekken",
+            "grant": "{role} toekennen"
+        },
+        "sanctions": {
+            "applied": "Sanctie opgelegd.",
+            "strongerKept": "Er is al een zwaardere sanctie actief; die blijft gelden.",
+            "scope": "Bereik",
+            "duration": "Duur",
+            "reason": "Reden",
+            "apply": "Toepassen",
+            "confirmTitle": "@{username} een sanctie geven?",
+            "summary": "{scope}: {duration}.",
+            "reasonLine": "Reden: {reason}",
+            "confirm": "Sanctie opleggen",
+            "lifted": "Sanctie opgeheven.",
+            "none": "Geen actieve sancties",
+            "lift": "Opheffen"
+        },
+        "danger": {
+            "deleted": "Account verwijderd.",
+            "impersonate": "Inloggen als gebruiker",
+            "delete": "Account verwijderen",
+            "impersonateTitle": "Inloggen als @{username}?",
+            "impersonateDescription": "Alles wat je doet, wordt onder jouw naam vastgelegd in het auditlogboek.",
+            "signIn": "Inloggen",
+            "deleteTitle": "@{username} verwijderen?",
+            "deleteDescription": "Het account en zijn collecties, reacties en chats worden definitief verwijderd."
+        },
+        "review": {
+            "describeVerdict": "Oordeel: {verdict}.",
+            "describeRemove": "De gemelde inhoud wordt verwijderd.",
+            "describePunishment": "@{username} krijgt: {scope}, {duration}.",
+            "describeDuplicate": "Gemarkeerd als duplicaat van melding #{id}.",
+            "closed": "Melding gesloten.",
+            "closedStrongerKept": "Melding gesloten. Er was al een zwaardere sanctie actief en die blijft gelden.",
+            "verdict": "Oordeel",
+            "removeContent": "Gemelde inhoud verwijderen",
+            "nothingToDelete": "Niets om te verwijderen",
+            "sanctionUser": "Gebruiker een sanctie geven",
+            "punishment": "Straf",
+            "duration": "Duur",
+            "originalReport": "Oorspronkelijke melding #",
+            "resolution": "Toelichting",
+            "close": "Melding sluiten",
+            "closeTitle": "Melding #{id} sluiten?"
+        },
+        "audit": {
+            "title": "Audit",
+            "titleFor": "Audit voor @{username}",
+            "empty": "Nog geen auditregels",
+            "system": "systeem",
+            "via": "(via @{username})",
+            "content": "inhoud",
+            "actions": {
+                "grant": "{role} toegekend",
+                "revoke": "{role} ingetrokken",
+                "sanction": "Opgelegd: {scope}",
+                "revokeSanction": "Opgeheven: {scope}",
+                "report": "Melding gesloten: {verdict}",
+                "deleteUser": "Gebruikersaccount verwijderd",
+                "deleteComment": "Reactie verwijderd",
+                "deleteCollection": "Collectie verwijderd",
+                "impersonateUser": "Ingelogd als gebruiker",
+                "stopImpersonation": "Inloggen als gebruiker beëindigd"
+            }
+        },
+        "activity": {
+            "collections": "Collecties",
+            "noCollections": "Geen collecties",
+            "private": "privé",
+            "counts": "{items, plural, one {# item} other {# items}} · {comments, plural, one {# reactie} other {# reacties}} · {likes, plural, one {# like} other {# likes}}",
+            "comments": "Reacties",
+            "noComments": "Geen reacties"
+        },
+        "tags": {
+            "deleted": "Tag verwijderd.",
+            "title": "Tags",
+            "hint": "Gemaakt door gebruikers, gerangschikt op het aantal collecties dat ze gebruikt.",
+            "search": "Tag zoeken",
+            "empty": "Geen tags",
+            "usage": "{count, plural, one {# collectie} other {# collecties}}",
+            "delete": "Tag verwijderen",
+            "deleteNamed": "{name} verwijderen",
+            "deleteTitle": "#{name} verwijderen?",
+            "deleteDescription": "De tag wordt verwijderd uit elke collectie die hem gebruikt."
+        },
+        "title": "Beheer",
+        "subtitle": "Gebruikers, meldingen, sancties, categorieën",
+        "tabs": {
+            "users": "Gebruikers",
+            "reports": "Meldingen",
+            "categories": "Categorieën"
+        },
+        "selectUser": "Kies een gebruiker",
+        "selectUserHint": "Zoek op gebruikersnaam, naam of e-mailadres.",
+        "selectReport": "Kies een melding",
+        "selectReportHint": "De oudste open meldingen staan bovenaan.",
+        "selectCategory": "Kies een categorie",
+        "selectCategoryHint": "Of maak een nieuwe. Gearchiveerde categorieën behouden hun collecties.",
+        "users": {
+            "search": "Gebruikers zoeken",
+            "empty": "Geen gebruikers gevonden",
+            "sanctioned": "met sanctie"
+        },
+        "report": {
+            "aboutAccount": "De melding gaat over het account zelf.",
+            "deletedSince": "Inmiddels verwijderd — de momentopname van het moment van melden wordt getoond",
+            "posted": "Geplaatst {date}",
+            "verdict": "Oordeel",
+            "reviewedBy": "Beoordeeld door",
+            "sanction": "Sanctie",
+            "duplicateOf": "Duplicaat van",
+            "resolution": "Toelichting",
+            "notFound": "Melding niet gevonden",
+            "title": "Melding #{id} over <user>@{username}</user>",
+            "subtitle": "{target} · gemeld door @{username} · {date}",
+            "open": "Open",
+            "closed": "Gesloten",
+            "evidence": "Bewijs",
+            "context": "Context",
+            "against": "Meldingen over @{username}",
+            "againstCounts": "{total} in totaal · {guilty} schuldig",
+            "filedBy": "Meldingen door @{username}",
+            "filedCounts": "{total} in totaal · {rejected} afgewezen",
+            "activeSanctions": "Actieve sancties",
+            "none": "Geen",
+            "decision": "Beslissing",
+            "outcome": "Uitkomst"
+        },
+        "queue": {
+            "open": "Open ({count})",
+            "closed": "Gesloten",
+            "type": "Type",
+            "all": "Alle",
+            "empty": "De wachtrij is leeg",
+            "emptyClosed": "Geen gesloten meldingen"
+        },
+        "user": {
+            "notFound": "Gebruiker niet gevonden",
+            "notFoundHint": "Mogelijk is deze verwijderd, of kun je deze niet beheren.",
+            "regularUser": "Gebruiker",
+            "stats": {
+                "collections": "Collecties",
+                "comments": "Reacties",
+                "messages": "Berichten",
+                "reportsReceived": "Ontvangen meldingen"
+            },
+            "sanctions": "Sancties",
+            "sanctionsHint": "Blokkades en demping per functie. Een zwaardere actieve sanctie wordt nooit ingekort.",
+            "roles": "Rollen",
+            "rolesHint": "Beheerdersrechten worden beheerd met `npm run admin`.",
+            "activity": "Activiteit",
+            "activityHint": "Collecties en reacties, nieuwste eerst.",
+            "danger": "Gevarenzone"
+        }
+    },
+    "collectionFilters": {
+        "search": "Collecties zoeken",
+        "sorts": {
+            "popular": "Populair",
+            "newest": "Nieuwste",
+            "old": "Oudste"
+        }
+    },
+    "collection": {
+        "like": "Leuk vinden",
+        "unlike": "Niet meer leuk vinden",
+        "signInToLike": "Log in om te liken",
+        "delete": {
+            "deleted": "Collectie verwijderd.",
+            "title": "‘{name}’ verwijderen?",
+            "description": "Dit kan niet ongedaan worden gemaakt. Alle items en reacties worden ook verwijderd."
+        },
+        "edit": {
+            "updated": "Collectie bijgewerkt.",
+            "title": "Collectie bewerken",
+            "intro": "Wijzigingen worden direct opgeslagen en zijn zichtbaar voor anderen. Items bewerk je rechtstreeks op de pagina van de collectie."
+        },
+        "stats": {
+            "likes": "Likes",
+            "comments": "Reacties",
+            "favorites": "Bewaard",
+            "title": "Statistieken",
+            "intro": "Activiteit op je collectie per dag (UTC).",
+            "unavailable": "Statistieken zijn nu niet beschikbaar.",
+            "empty": "Nog geen activiteit."
+        },
+        "description": "Beschrijving",
+        "meta": "{count, plural, one {# item} other {# items}} · Gemaakt op {date}",
+        "private": "Privé",
+        "deleteAsModerator": "Verwijderen als moderator",
+        "deleteCollection": "Collectie verwijderen",
+        "actions": "Collectieacties"
+    },
+    "nav": {
+        "home": "Home",
+        "collections": "Collecties",
+        "profile": "Profiel",
+        "notifications": "Meldingen",
+        "management": "Beheer",
+        "settings": "Instellingen",
+        "openMenu": "Menu openen",
+        "createCollection": "Collectie maken",
+        "chats": "Chats",
+        "findUser": "Gebruiker zoeken",
+        "accountMenu": "Accountmenu",
+        "returnToAdmin": "Terug naar beheerder",
+        "logout": "Uitloggen",
+        "startTyping": "Begin met typen van een gebruikersnaam",
+        "impersonating": "Je bent ingelogd als <strong>@{username}</strong>. Gebruik ‘Terug naar beheerder’ in het accountmenu om terug te gaan."
+    },
+    "footer": {
+        "privacyPolicy": "Privacybeleid"
+    },
+    "people": {
+        "mutual": "{count} gemeenschappelijk",
+        "livesIn": "Woont in {city}",
+        "followsYou": "Volgt jou",
+        "following": "Volgend",
+        "follow": "Volgen",
+        "title": "Mensen die je misschien kent",
+        "hide": "Suggesties verbergen",
+        "hideHint": "Verbergen (terug te zetten in Instellingen)",
+        "seeAll": "Alle suggesties bekijken"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "Collectie maken",
+            "firstItem": "Eerste item toevoegen"
+        },
+        "title": "Nieuwe collectie maken",
+        "itemTitle": "Voeg het eerste item toe",
+        "subtitle": "Voeg een nieuwe collectie toe om je inhoud te ordenen.",
+        "itemSubtitle": "Elke collectie begint met minstens één item.",
+        "submit": "Collectie maken"
+    },
+    "home": {
+        "discover": "Ontdek collecties",
+        "emptyTitle": "Nog niets om voor te stellen",
+        "emptyBoard": "Bewaar eerst een paar collecties met tags op dit bord.",
+        "emptyForYou": "Like en bewaar collecties om je feed af te stemmen.",
+        "feeds": {
+            "forYou": "Voor jou",
+            "explore": "Ontdekken",
+            "moreLike": "Meer zoals ‘{name}’",
+            "label": "Feeds",
+            "items": "feeds"
+        }
+    },
+    "myCollections": {
+        "title": "Mijn collecties",
+        "subtitle": "Bekijk en beheer je collecties op zichtbaarheid, categorie, tags en zoekopdracht.",
+        "create": "Collectie maken",
+        "filters": "Filters",
+        "category": "Categorie",
+        "tags": "Tags"
+    },
+    "notFound": {
+        "title": "Pagina niet gevonden",
+        "description": "De pagina die je zoekt bestaat niet of is verplaatst.",
+        "home": "Naar home",
+        "back": "Terug"
+    },
+    "onboarding": {
+        "title": "Waar ben je in geïnteresseerd?",
+        "subtitle": "Kies een paar categorieën en we stemmen je feed erop af. Je kunt ze later wijzigen in de instellingen.",
+        "pickMore": "Kies er nog {count}",
+        "continue": "Doorgaan"
+    },
+    "privacy": {
+        "title": "Privacybeleid",
+        "updated": "Laatst bijgewerkt: {date}",
+        "collect": {
+            "title": "Welke gegevens we verzamelen",
+            "intro": "Als je een account aanmaakt op Collectify, verzamelen we:",
+            "items": {
+                "email": "Je e-mailadres (om in te loggen en je account te herkennen)",
+                "names": "Een gebruikersnaam en volledige naam die je zelf kiest",
+                "password": "Een wachtwoord (opgeslagen als veilige hash — we slaan je wachtwoord nooit als leesbare tekst op), tenzij je je registreert via GitHub of Google; dan slaan we in plaats daarvan de id van het gekoppelde account op",
+                "profile": "Optionele profielgegevens die je toevoegt: avatar, banner, bio/beschrijving, land en stad, en geboortedatum",
+                "content": "Inhoud die je in de app maakt: collecties, items, reacties, likes, volgers, berichten en meldingen"
+            }
+        },
+        "why": {
+            "title": "Waarom we ze verzamelen",
+            "text": "Je gegevens worden gebruikt om je account aan te maken en te beheren, je te verifiëren bij het inloggen, je tussen bezoeken ingelogd te houden (sessiebeheer) en de kernfuncties van de app te leveren — collecties, andere gebruikers volgen, reacties, likes en berichten."
+        },
+        "location": {
+            "title": "Locatie en geboortedatum",
+            "intro": "Beide zijn optioneel en kun je op elk moment in je profiel wijzigen of verwijderen.",
+            "items": {
+                "location": "<strong>Land en stad</strong> worden getoond op je openbare profiel en gebruikt om mensen voor te stellen die je misschien kent en in dezelfde stad wonen. We verzamelen niet je precieze locatie of een locatie op basis van je IP-adres.",
+                "birthDate": "<strong>Je geboortedatum</strong> is privé: die wordt nooit aan andere gebruikers getoond. Ze wordt alleen gebruikt om te controleren of je de minimumleeftijd hebt."
+            }
+        },
+        "recommendations": {
+            "title": "Aanbevelingen",
+            "text": "Voor je feed ‘Voor jou’, suggesties voor borden en ‘Mensen die je misschien kent’ gebruiken we de categorieën die je als interesses kiest, de collecties die je liket, bewaart, op borden zet of opent terwijl je bent ingelogd, de tags en categorieën van die collecties, de mensen die je volgt en die jou volgen, en de stad in je profiel. We onthouden welke collecties je hebt geliket of bewaard, ook als je dat ongedaan maakt, zodat ze je niet opnieuw worden voorgesteld. Dit gebeurt alleen binnen Collectify; borden en je kijkgeschiedenis worden nooit aan andere gebruikers getoond."
+        },
+        "age": {
+            "title": "Minimumleeftijd",
+            "text": "Collectify is bedoeld voor mensen van 18 jaar of ouder. Een geboortedatum waaruit blijkt dat je jonger bent dan 18 kan niet worden opgeslagen. Als we ontdekken dat een account van iemand onder de 18 is, kunnen we het opschorten en de gegevens verwijderen."
+        },
+        "cookies": {
+            "title": "Cookies",
+            "text": "We gebruiken een functionele sessiecookie om je ingelogd te houden, een functionele cookie die je interfacetaal onthoudt en een kortlevende beveiligingscookie (ongeveer 10 minuten) terwijl je inlogt met GitHub of Google. Je gekozen thema wordt opgeslagen in de lokale opslag van je browser. We gebruiken geen analyse-, tracking- of marketingcookies."
+        },
+        "storage": {
+            "title": "Waar je gegevens worden opgeslagen",
+            "text": "De app wordt gehost bij Vercel. Account- en inhoudsgegevens worden opgeslagen in onze database. Geüploade afbeeldingen (avatars, banners, itemafbeeldingen) worden opgeslagen bij onze mediahostingprovider, Uploadcare."
+        },
+        "moderation": {
+            "title": "Meldingen en moderatie",
+            "text": "Als je inhoud meldt, bewaren we een kopie van de gemelde reactie of collectie, zodat moderators die kunnen beoordelen, ook als die later wordt verwijderd. Bij het afhandelen van een melding kunnen moderators en beheerders de gemelde inhoud en de openbare activiteit van een account bekijken. Privéberichten kunnen niet worden gemeld, en moderators en beheerders kunnen je gesprekken niet lezen. Moderatieacties worden vastgelegd in een intern auditlogboek. Als een account wordt verwijderd, wordt ook de inhoud ervan verwijderd; het auditlogboek bewaart alleen de account-id en de gebruikersnaam."
+        },
+        "thirdParties": {
+            "title": "Derden",
+            "text": "We verkopen je gegevens niet en delen ze niet met derden voor reclame- of marketingdoeleinden. Als je je registreert of inlogt met GitHub of Google, delen die providers basisprofielgegevens (zoals je e-mailadres) met ons om je account aan te maken."
+        }
+    },
+    "errorPage": {
+        "title": "Er ging iets mis",
+        "description": "Probeer het opnieuw."
+    },
+    "userProfile": {
+        "manage": "Beheren"
+    }
+}

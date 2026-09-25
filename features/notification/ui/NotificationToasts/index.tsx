@@ -12,6 +12,7 @@ import { useRealtimeEvent } from '@/shared/lib/realtime/RealtimeProvider';
 import { useMarkNotificationRead } from '../../model/useMarkNotificationRead';
 import { useNotificationCache } from '../../model/useNotificationCache';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 const VISIBLE_MS = 5000;
 const EXIT_MS = 220;
@@ -129,6 +130,7 @@ type ToastCardProps = {
 };
 
 function ToastCard({ leaving, onDismiss, children }: ToastCardProps) {
+    const t = useTranslations('notifications');
     const [paused, setPaused] = useState(false);
     const remaining = useRef(VISIBLE_MS);
     const startedAt = useRef(0);
@@ -157,7 +159,7 @@ function ToastCard({ leaving, onDismiss, children }: ToastCardProps) {
                     size="small"
                     className={styles.close}
                     onClick={onDismiss}
-                    aria-label="Dismiss notification"
+                    aria-label={t('dismiss')}
                 >
                     <CloseIcon fontSize="small" />
                 </IconButton>,

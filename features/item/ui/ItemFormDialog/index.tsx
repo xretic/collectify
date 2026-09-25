@@ -13,6 +13,7 @@ import type { CollectionItemPayload } from '@/entities/collection/model/types';
 import { emptyItemDraft, toItemPayload, type ItemDraft } from '@/entities/collection/model/drafts';
 import { ItemFormFields } from '@/entities/collection/ui/ItemFormFields';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type ItemFormDialogProps = {
     mode: 'create' | 'edit';
@@ -30,18 +31,18 @@ export function ItemFormDialog({
     onSubmit,
     onClose,
 }: ItemFormDialogProps) {
+    const t = useTranslations('items');
+    const tc = useTranslations('common');
     const [draft, setDraft] = useState(initial);
     const payload = toItemPayload(draft);
 
     return (
         <Dialog open onClose={pending ? undefined : onClose} fullWidth maxWidth="sm">
-            <DialogTitle>{mode === 'create' ? 'Add item' : 'Edit item'}</DialogTitle>
+            <DialogTitle>{mode === 'create' ? t('add') : t('edit')}</DialogTitle>
 
             <DialogContent className={styles.content}>
                 <DialogContentText color="inherit" className={styles.intro}>
-                    {mode === 'create'
-                        ? 'Add a new item to your collection.'
-                        : 'Update the item. Changes are visible to everyone right away.'}
+                    {mode === 'create' ? t('addIntro') : t('editIntro')}
                 </DialogContentText>
 
                 <ItemFormFields value={draft} onChange={setDraft} />
@@ -49,14 +50,14 @@ export function ItemFormDialog({
 
             <DialogActions>
                 <Button onClick={onClose} disabled={pending}>
-                    Cancel
+                    {tc('cancel')}
                 </Button>
                 <Button
                     variant="contained"
                     disabled={!payload || pending}
                     onClick={() => payload && onSubmit(payload)}
                 >
-                    {mode === 'create' ? 'Add' : 'Save'}
+                    {mode === 'create' ? tc('add') : tc('save')}
                 </Button>
             </DialogActions>
         </Dialog>

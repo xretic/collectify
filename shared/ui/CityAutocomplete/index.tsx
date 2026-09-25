@@ -8,6 +8,7 @@ import type { CityOption } from '@/shared/lib/geo/cities';
 import { countryName } from '@/shared/lib/geo/countries';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce';
 import styles from './index.module.css';
+import { useLocale } from 'next-intl';
 
 type CityAutocompleteProps = {
     label: string;
@@ -31,6 +32,7 @@ export function CityAutocomplete({
     helperText,
     className,
 }: CityAutocompleteProps) {
+    const locale = useLocale();
     const inputValue = value ?? '';
     const query = useDebounce(inputValue.trim(), 250);
 
@@ -71,7 +73,7 @@ export function CityAutocomplete({
                             <span>{option.name}</span>
                             {!country && (
                                 <span className={styles.country}>
-                                    {countryName(option.country)}
+                                    {countryName(option.country, locale)}
                                 </span>
                             )}
                         </span>

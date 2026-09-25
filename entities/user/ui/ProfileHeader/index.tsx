@@ -8,6 +8,7 @@ import { UserBadges } from '@/shared/ui/UserBadge';
 import { toast } from '@/shared/model/toastStore';
 import type { UserRole } from '../../model/types';
 import styles from './index.module.css';
+import { useLocale, useTranslations } from 'next-intl';
 
 export type ProfileHeaderUser = {
     username: string;
@@ -29,16 +30,18 @@ type ProfileHeaderProps = {
 };
 
 export function ProfileHeader({ user, actions, stats }: ProfileHeaderProps) {
-    const location = [user.city, user.country && countryName(user.country)]
+    const t = useTranslations('profile');
+    const locale = useLocale();
+    const location = [user.city, user.country && countryName(user.country, locale)]
         .filter(Boolean)
         .join(', ');
 
     const copyUsername = async () => {
         try {
             await navigator.clipboard.writeText(user.username);
-            toast.success('Username copied.');
+            toast.success(t('usernameCopied'));
         } catch {
-            toast.error('Could not copy the username.');
+            toast.error(t('usernameCopyFailed'));
         }
     };
 
@@ -69,13 +72,13 @@ export function ProfileHeader({ user, actions, stats }: ProfileHeaderProps) {
                                 type="button"
                                 className={styles.username}
                                 onClick={copyUsername}
-                                title="Copy username"
+                                title={t('copyUsername')}
                             >
                                 @{user.username}
                             </button>
                         </div>
 
-                        <p className={styles.description}>{user.description || 'No bio yet'}</p>
+                        <p className={styles.description}>{user.description || t('noBio')}</p>
 
                         {location && (
                             <p className={styles.location}>

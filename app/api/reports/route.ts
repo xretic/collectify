@@ -10,5 +10,5 @@ export const POST = route(async (req) => {
 
     await createReport(viewer.userId, await readBody(req, createReportSchema));
 
-    return json({ message: 'Report submitted. Thank you!' }, 201);
+    return json({ ok: true }, 201);
 });

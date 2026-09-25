@@ -1,4 +1,5 @@
 import type { Area } from 'react-easy-crop';
+import { translate } from '@/shared/i18n/translator';
 
 /** Longest side of an edited image; bigger crops are scaled down to stay well under the upload limit. */
 const MAX_SIDE = 2560;
@@ -14,7 +15,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
         const image = new Image();
         image.onload = () => resolve(image);
-        image.onerror = () => reject(new Error('Could not read the image.'));
+        image.onerror = () => reject(new Error(translate('upload.readFailed')));
         image.src = src;
     });
 }
@@ -45,7 +46,7 @@ export async function cropImage(file: File, area: Area, rotation: number): Promi
         canvas.height = Math.max(1, Math.round(area.height * scale));
 
         const context = canvas.getContext('2d');
-        if (!context) throw new Error('Image editing is not supported in this browser.');
+        if (!context) throw new Error(translate('upload.editUnsupported'));
 
         context.imageSmoothingQuality = 'high';
         context.scale(scale, scale);
@@ -58,7 +59,7 @@ export async function cropImage(file: File, area: Area, rotation: number): Promi
         const blob = await new Promise<Blob | null>((resolve) =>
             canvas.toBlob(resolve, type, QUALITY),
         );
-        if (!blob) throw new Error('Could not save the image.');
+        if (!blob) throw new Error(translate('upload.saveFailed'));
 
         // Browsers without WebP encoding fall back to PNG; name the file after what we got.
         const extension = blob.type.split('/')[1] ?? 'png';

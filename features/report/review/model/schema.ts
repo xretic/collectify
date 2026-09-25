@@ -19,9 +19,9 @@ export const reviewReportSchema = z
         duplicateOfId: idSchema.nullable().default(null),
     })
     .refine((value) => value.verdict === 'GUILTY' || (!value.punishment && !value.removeContent), {
-        message: 'Punishment and content removal require a guilty verdict.',
+        message: 'validation.verdictRequiresGuilty',
     })
     .refine((value) => value.verdict !== 'DUPLICATE' || value.duplicateOfId !== null, {
-        message: 'Select the original report for a duplicate verdict.',
+        message: 'validation.duplicateRequiresOriginal',
         path: ['duplicateOfId'],
     });

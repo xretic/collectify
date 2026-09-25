@@ -19,7 +19,7 @@ import type {
 export async function createCollection(userId: number, input: CreateCollectionPayload) {
     const owned = await db.collection.count({ where: { userId } });
     if (owned >= COLLECTIONS_PER_USER_LIMIT) {
-        throw forbidden(`You can have at most ${COLLECTIONS_PER_USER_LIMIT} collections.`);
+        throw forbidden('collectionsLimit', { limit: COLLECTIONS_PER_USER_LIMIT });
     }
 
     await assertActiveCategory(input.categoryId);
@@ -87,7 +87,7 @@ export async function deleteCollection(collectionId: number, viewer: Viewer) {
         select: { id: true, userId: true, name: true },
     });
 
-    if (!collection) throw notFound('Collection not found.');
+    if (!collection) throw notFound('collectionNotFound');
 
     if (collection.userId === viewer.userId) {
         await db.collection.delete({ where: { id: collection.id } });

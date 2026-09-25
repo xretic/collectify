@@ -40,10 +40,10 @@ export async function reviewReport(
         },
     });
 
-    if (!report) throw notFound('Report not found.');
-    if (report.status === 'CLOSED') throw conflict('Report is already closed.');
+    if (!report) throw notFound('reportNotFound');
+    if (report.status === 'CLOSED') throw conflict('reportClosed');
     if (report.reporterId === ctx.userId && !ctx.isAdmin) {
-        throw forbidden('You cannot review your own report.');
+        throw forbidden('cannotReviewOwnReport');
     }
 
     await assertCanModerate(ctx, report.targetUserId);
@@ -53,11 +53,11 @@ export async function reviewReport(
         : null;
 
     if (payload.punishment && expiresAt === null && !ctx.isAdmin) {
-        throw forbidden('Only admins can issue permanent sanctions.');
+        throw forbidden('permanentSanctionAdminOnly');
     }
 
     if (payload.removeContent && report.targetType === 'USER') {
-        throw badRequest('There is no content to remove for a user report.');
+        throw badRequest('nothingToRemove');
     }
 
     if (payload.duplicateOfId !== null) {
@@ -71,7 +71,7 @@ export async function reviewReport(
             original.id === report.id ||
             original.targetUserId !== report.targetUserId
         ) {
-            throw badRequest('The original report must be another report about the same user.');
+            throw badRequest('duplicateMustMatchUser');
         }
     }
 
@@ -178,7 +178,7 @@ export async function reviewReport(
         });
     } catch (error) {
         if (error instanceof ReportAlreadyReviewed) {
-            throw conflict('This report was just reviewed by someone else.');
+            throw conflict('reportJustReviewed');
         }
         throw error;
     }

@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "Geçersiz istek.",
+        "unauthorized": "Devam etmek için giriş yapın.",
+        "forbidden": "Bunu yapmaya yetkiniz yok.",
+        "notFound": "Bulunamadı.",
+        "internal": "Sunucu hatası.",
+        "invalidInput": "Geçersiz giriş.",
+        "invalidField": "Geçersiz değer: {field}.",
+        "invalidJson": "Geçersiz istek gövdesi.",
+        "invalidId": "Geçersiz kimlik.",
+        "tooManyRequests": "Çok fazla istek. Lütfen daha sonra tekrar deneyin.",
+        "realtimeUnavailable": "Gerçek zamanlı hizmet yapılandırılmamış.",
+        "invalidWebhookSignature": "Geçersiz webhook imzası.",
+        "oauthNotConfigured": "Bu giriş yöntemi yapılandırılmamış.",
+        "userNotFound": "Kullanıcı bulunamadı.",
+        "commentNotFound": "Yorum bulunamadı.",
+        "collectionNotFound": "Koleksiyon bulunamadı.",
+        "tagNotFound": "Etiket bulunamadı.",
+        "reportNotFound": "Şikâyet bulunamadı.",
+        "categoryNotFound": "Kategori bulunamadı.",
+        "sanctionNotFound": "Yaptırım bulunamadı.",
+        "itemNotFound": "Öğe bulunamadı.",
+        "chatNotFound": "Sohbet bulunamadı.",
+        "boardNotFound": "Pano bulunamadı.",
+        "invalidCredentials": "E-posta veya şifre hatalı.",
+        "emailTaken": "Bu e-postayla kayıtlı bir hesap zaten var.",
+        "usernameTaken": "Bu kullanıcı adı alınmış.",
+        "emailOrUsernameTaken": "Bu e-posta veya kullanıcı adı zaten alınmış.",
+        "currentPasswordRequired": "Mevcut şifre gerekli.",
+        "currentPasswordIncorrect": "Mevcut şifre hatalı.",
+        "passwordUnchanged": "Yeni şifre mevcut şifreden farklı olmalı.",
+        "passwordIncorrect": "Şifre hatalı.",
+        "typeUsernameToConfirm": "Onaylamak için kullanıcı adınızı yazın.",
+        "impersonationInactive": "Başka bir kullanıcı olarak giriş etkin değil.",
+        "bannedUntil": "Hesabınız engellendi. Engel {date} tarihinde sona eriyor.",
+        "bannedPermanent": "Hesabınız engellendi. Bu kısıtlama kalıcıdır.",
+        "mutedCommentsUntil": "Yorumlarda susturuldunuz. {date} tarihinde sona eriyor.",
+        "mutedCommentsPermanent": "Yorumlarda susturuldunuz. Bu kısıtlama kalıcıdır.",
+        "mutedMessengerUntil": "Mesajlarda susturuldunuz. {date} tarihinde sona eriyor.",
+        "mutedMessengerPermanent": "Mesajlarda susturuldunuz. Bu kısıtlama kalıcıdır.",
+        "chatsUnavailableImpersonating": "Başka bir kullanıcı olarak giriş yapmışken sohbetler kullanılamaz.",
+        "cannotModerateSelf": "Kendinizi denetleyemezsiniz.",
+        "adminsNotModeratable": "Yöneticiler denetlenemez.",
+        "moderatorsCannotManageModerators": "Moderatörler diğer moderatörleri yönetemez.",
+        "permanentSanctionAdminOnly": "Kalıcı yaptırımları yalnızca yöneticiler uygulayabilir.",
+        "liftPermanentAdminOnly": "Kalıcı yaptırımları yalnızca yöneticiler kaldırabilir.",
+        "liftAdminSanctionAdminOnly": "Bir yöneticinin uyguladığı yaptırımları yalnızca yöneticiler kaldırabilir.",
+        "manageModeratorsAdminOnly": "Moderatörleri yalnızca yöneticiler yönetebilir.",
+        "alreadySignedInAsUser": "Zaten bu kullanıcı olarak giriş yaptınız.",
+        "stopImpersonationFirst": "Önce mevcut kullanıcı olarak girişi sonlandırın.",
+        "cannotImpersonateBanned": "Engellenmiş bir hesap olarak giriş yapamazsınız.",
+        "categoryUnknown": "Mevcut bir kategori seçin.",
+        "categoriesUnknown": "Mevcut kategoriler seçin.",
+        "categoryExists": "Bu ada veya slug’a sahip bir kategori zaten var.",
+        "categoryInUse": "Kategoride hâlâ koleksiyonlar var. Bunun yerine arşivleyin.",
+        "tagsWrongCategory": "Etiketler koleksiyonun kategorisine ait olmalı.",
+        "tagsLimit": "Bir koleksiyonda en fazla {limit} etiket olabilir.",
+        "tagsDailyLimit": "Bugün çok fazla etiket oluşturdunuz. Yarın tekrar deneyin.",
+        "signInForBoards": "Panolarınızı görmek için giriş yapın.",
+        "signInForFavorites": "Kaydettiklerinizi görmek için giriş yapın.",
+        "ownerOnly": "Bu koleksiyonu yalnızca sahibi değiştirebilir.",
+        "collectionsLimit": "En fazla {limit} koleksiyonunuz olabilir.",
+        "itemsLimit": "Bir koleksiyonda en fazla {limit} öğe olabilir.",
+        "collectionNeedsItem": "Bir koleksiyonda en az bir öğe kalmalı.",
+        "invalidItemOrder": "Yeni sıralama, koleksiyondaki her öğeyi tam olarak bir kez içermeli.",
+        "boardNameTaken": "Bu ada sahip bir panonuz zaten var.",
+        "boardsLimit": "En fazla {limit} panonuz olabilir.",
+        "cannotMessageSelf": "Kendinize mesaj gönderemezsiniz.",
+        "userDeleted": "Bu kullanıcı hesabını sildi.",
+        "editOwnCommentsOnly": "Yalnızca kendi yorumlarınızı düzenleyebilirsiniz.",
+        "heartOwnerOnly": "Yorumlara yalnızca koleksiyonun sahibi kalp verebilir.",
+        "commentsLimit": "Bir koleksiyona en fazla {limit} yorum yapabilirsiniz.",
+        "repliesLimit": "Bir koleksiyonda en fazla {limit} yanıt yazabilirsiniz.",
+        "cannotReportSelf": "Kendinizi şikâyet edemezsiniz.",
+        "accountNotReportable": "Bu hesap şikâyet edilemez.",
+        "alreadyReported": "Bunu zaten şikâyet ettiniz. Moderatörler yakında inceleyecek.",
+        "reportClosed": "Şikâyet zaten kapatıldı.",
+        "cannotReviewOwnReport": "Kendi şikâyetinizi inceleyemezsiniz.",
+        "nothingToRemove": "Kullanıcı şikâyetinde kaldırılacak içerik yok.",
+        "duplicateMustMatchUser": "Asıl şikâyet, aynı kullanıcı hakkındaki başka bir şikâyet olmalı.",
+        "reportJustReviewed": "Bu şikâyet az önce başka biri tarafından incelendi.",
+        "nothingToUpdate": "Güncellenecek bir şey yok.",
+        "countryRequiredForCity": "Şehir için bir ülke seçin.",
+        "cityUnknown": "Bilinmeyen şehir.",
+        "cannotFollowSelf": "Kendinizi takip edemezsiniz.",
+        "generic": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+        "network": "Ağ hatası. Bağlantınızı kontrol edin."
+    },
+    "validation": {
+        "required": "Bu alan zorunludur.",
+        "tooLong": "Çok uzun.",
+        "usernameMin": "Kullanıcı adı en az {usernameMin} karakter olmalı.",
+        "usernameMax": "Kullanıcı adı en fazla {usernameMax} karakter olabilir.",
+        "usernameChars": "Kullanıcı adı yalnızca a-z, 0-9, \"_\" ve \".\" içerebilir.",
+        "passwordMin": "Şifre en az {passwordMin} karakter olmalı.",
+        "passwordMax": "Şifre en fazla {passwordMax} karakter olabilir.",
+        "passwordChars": "Şifre desteklenmeyen karakterler içeriyor.",
+        "passwordsMismatch": "Şifreler eşleşmiyor.",
+        "emailInvalid": "Geçerli bir e-posta girin.",
+        "urlInvalid": "Geçerli bir http(s) URL’si olmalı.",
+        "countryUnknown": "Bilinmeyen ülke.",
+        "cityChars": "Harf, boşluk ve - . , ' / ( ) kullanın",
+        "dateInvalid": "Geçerli bir tarih girin.",
+        "ageMin": "En az {minAge} yaşında olmalısınız.",
+        "localeUnknown": "Desteklenmeyen dil.",
+        "nameRequired": "Ad zorunludur.",
+        "descriptionRequired": "Açıklama zorunludur.",
+        "slugRequired": "Slug zorunludur.",
+        "slugChars": "Küçük harf, rakam ve tire kullanın.",
+        "messageEmpty": "Mesaj boş olamaz.",
+        "commentEmpty": "Yorum boş olamaz.",
+        "itemTitleOrImage": "Bir başlık veya görsel ekleyin.",
+        "categoryRequired": "Bir kategori seçin.",
+        "tagsMax": "En fazla {tagsMax} etiket.",
+        "tagNameMin": "En az {tagNameMin} karakter.",
+        "tagNameChars": "Harf, rakam, boşluk ve - & + . ' #",
+        "verdictRequiresGuilty": "Ceza ve içerik kaldırma için “suçlu” kararı gerekir.",
+        "duplicateRequiresOriginal": "“Tekrar” kararı için asıl şikâyeti seçin."
+    },
+    "meta": {
+        "description": "İlginç koleksiyonunu bizimle oluştur.",
+        "privacyDescription": "Collectify verilerinizi nasıl topluyor, kullanıyor ve saklıyor.",
+        "userDescription": "{name} kullanıcısının Collectify koleksiyonları.",
+        "pages": {
+            "login": "Giriş yap",
+            "register": "Kayıt ol",
+            "chats": "Sohbetler",
+            "createCollection": "Koleksiyon oluştur",
+            "myCollections": "Koleksiyonlarım",
+            "notifications": "Bildirimler",
+            "onboarding": "İlgi alanlarını seç",
+            "settings": "Ayarlar",
+            "myProfile": "Profilim",
+            "management": "Yönetim",
+            "privacyPolicy": "Gizlilik Politikası",
+            "collection": "Koleksiyon",
+            "userNotFound": "Kullanıcı bulunamadı"
+        }
+    },
+    "languages": {
+        "label": "Dil"
+    },
+    "auth": {
+        "email": "E-posta",
+        "password": "Şifre",
+        "username": "Kullanıcı adı",
+        "login": "Giriş yap",
+        "register": "Kayıt ol",
+        "signingIn": "Giriş yapılıyor…",
+        "creatingAccount": "Hesap oluşturuluyor…",
+        "usernameHint": "Küçük harfler, rakamlar, \"_\" ve \".\"",
+        "passwordHint": "En az {min} karakter",
+        "languageHint": "Daha sonra ayarlardan değiştirebilirsiniz.",
+        "orContinueWith": "veya şununla devam et",
+        "loginSubtitle": "Hesabınıza erişmek için bilgilerinizi girin.",
+        "registerSubtitle": "Koleksiyon yapmaya başlamak için bir hesap oluşturun.",
+        "noAccount": "Hesabınız yok mu? <link>Kayıt olun</link>",
+        "haveAccount": "Zaten hesabınız var mı? <link>Giriş yapın</link>",
+        "oauthErrors": {
+            "oauthState": "Giriş bağlantısının süresi doldu. Lütfen tekrar deneyin.",
+            "oauthFailed": "Sağlayıcı ile giriş başarısız oldu. Lütfen tekrar deneyin.",
+            "accountBanned": "Bu hesap engellendi."
+        }
+    },
+    "common": {
+        "cancel": "İptal",
+        "reset": "Sıfırla",
+        "save": "Kaydet",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "close": "Kapat",
+        "back": "Geri",
+        "retry": "Tekrar dene",
+        "loadMore": "Daha fazla yükle",
+        "search": "Ara",
+        "next": "İleri",
+        "skip": "Atla",
+        "confirm": "Onayla",
+        "create": "Oluştur",
+        "add": "Ekle",
+        "moreActions": "Diğer işlemler",
+        "loading": "Yükleniyor",
+        "sortBy": "Sırala"
+    },
+    "settings": {
+        "title": "Ayarlar",
+        "subtitle": "Hesap ayarlarınızı ve tercihlerinizi yönetin",
+        "profile": {
+            "title": "Profil",
+            "description": "Ad, kullanıcı adı, biyografi ve görseller.",
+            "edit": "Profili düzenle"
+        },
+        "security": {
+            "title": "Gizlilik ve güvenlik",
+            "changePassword": "Şifrenizi değiştirin.",
+            "setPassword": "E-postayla da giriş yapabilmek için bir şifre belirleyin.",
+            "passwordChanged": "Şifre değiştirildi.",
+            "passwordSet": "Şifre belirlendi. Artık e-postayla giriş yapabilirsiniz.",
+            "currentPassword": "Mevcut şifre",
+            "newPassword": "Yeni şifre",
+            "confirmPassword": "Yeni şifreyi onaylayın",
+            "change": "Şifreyi değiştir",
+            "set": "Şifre belirle"
+        },
+        "interests": {
+            "title": "İlgi alanları",
+            "description": "Sevdiğiniz kategoriler. “Senin için” akışınızı şekillendirir.",
+            "saved": "İlgi alanları kaydedildi.",
+            "save": "İlgi alanlarını kaydet"
+        },
+        "language": {
+            "title": "Dil",
+            "description": "Tüm arayüzün dili. Hesabınıza kaydedilir."
+        },
+        "appearance": {
+            "title": "Görünüm",
+            "description": "Bir tema seçin. Hemen uygulanır ve bu cihazda hatırlanır.",
+            "search": "Tema bul",
+            "filter": "Temaları filtrele",
+            "theme": "Tema",
+            "filters": {
+                "all": "Tümü",
+                "light": "Açık",
+                "dark": "Koyu"
+            }
+        },
+        "home": {
+            "title": "Ana sayfa",
+            "description": "Akışınızın yanındaki bileşenler.",
+            "showPeopleWidget": "Ana sayfada “Tanıyor olabileceğin kişiler”i göster"
+        },
+        "danger": {
+            "title": "Tehlikeli bölge",
+            "description": "Hesabınızı ve tüm verilerinizi kalıcı olarak silin.",
+            "deleteAccount": "Hesabı sil",
+            "warning": "Bu işlem profilinizi, koleksiyonlarınızı, yorumlarınızı ve sohbetlerinizi kalıcı olarak siler. Geri alınamaz.",
+            "yourPassword": "Şifreniz",
+            "typeUsername": "Onaylamak için “{username}” yazın",
+            "deleteForever": "Kalıcı olarak sil"
+        }
+    },
+    "dateField": {
+        "placeholder": "Tarih seçin",
+        "clear": "Tarihi temizle",
+        "open": "Takvimi aç",
+        "chooseYear": "Yıl seç",
+        "previousMonth": "Önceki ay",
+        "nextMonth": "Sonraki ay"
+    },
+    "imageDropzone": {
+        "label": "Tıklayın veya bir görsel bırakın",
+        "hint": "PNG, JPG, WEBP, en fazla 10 MB"
+    },
+    "roles": {
+        "Admin": "Yönetici",
+        "Moderator": "Moderatör",
+        "Verified": "Doğrulanmış"
+    },
+    "imageEditor": {
+        "title": "Görseli düzenle",
+        "failed": "Görsel düzenlenemedi.",
+        "zoom": "Yakınlaştır",
+        "rotateLeft": "Sola döndür",
+        "rotateRight": "Sağa döndür",
+        "aspectRatio": "En boy oranı",
+        "original": "Orijinal"
+    },
+    "pagination": {
+        "label": "Sayfalama",
+        "previous": "Önceki sayfa",
+        "next": "Sonraki sayfa",
+        "page": "Sayfa {page}"
+    },
+    "scrollRow": {
+        "back": "{items}: geri kaydır",
+        "forward": "{items}: ileri kaydır"
+    },
+    "upload": {
+        "readFailed": "Görsel okunamadı.",
+        "editUnsupported": "Bu tarayıcı görsel düzenlemeyi desteklemiyor.",
+        "saveFailed": "Görsel kaydedilemedi.",
+        "wrongType": "PNG, JPG, WEBP veya GIF görsel seçin.",
+        "tooBig": "Görsel en fazla 10 MB olmalı.",
+        "notConfigured": "Görsel yükleme yapılandırılmamış.",
+        "network": "Görsel yüklenemedi. Bağlantınızı kontrol edin.",
+        "failed": "Görsel yüklenemedi."
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "Hesap engeli",
+            "COMMENTS": "Yorum susturması",
+            "MESSENGER": "Mesaj susturması"
+        },
+        "durations": {
+            "1h": "1 saat",
+            "1d": "1 gün",
+            "7d": "7 gün",
+            "30d": "30 gün",
+            "permanent": "Kalıcı"
+        },
+        "until": "{scope} · {date} tarihine kadar",
+        "permanentScope": "{scope} · kalıcı",
+        "mutePlaceholder": {
+            "commentsUntil": "{date} tarihine kadar yorumlarda susturuldunuz.",
+            "commentsPermanent": "Yorumlarda kalıcı olarak susturuldunuz.",
+            "messengerUntil": "{date} tarihine kadar mesajlarda susturuldunuz.",
+            "messengerPermanent": "Mesajlarda kalıcı olarak susturuldunuz."
+        }
+    },
+    "categories": {
+        "books": "Kitaplar",
+        "movies": "Filmler",
+        "games": "Oyunlar",
+        "recipes": "Tarifler",
+        "apps": "Uygulamalar",
+        "travel": "Seyahat",
+        "music": "Müzik",
+        "sport": "Spor",
+        "tv-shows": "Diziler",
+        "anime": "Anime",
+        "podcasts": "Podcast’ler",
+        "art": "Sanat",
+        "design": "Tasarım",
+        "photography": "Fotoğrafçılık",
+        "fashion": "Moda",
+        "home": "Ev ve dekorasyon",
+        "tech": "Teknoloji",
+        "science": "Bilim",
+        "education": "Eğitim",
+        "fitness": "Fitness",
+        "cars": "Arabalar",
+        "pets": "Evcil hayvanlar",
+        "nature": "Doğa",
+        "custom": "Diğer"
+    },
+    "categoryMenu": {
+        "all": "Tüm kategoriler",
+        "search": "Kategori bul",
+        "nothingFound": "Hiçbir şey bulunamadı",
+        "label": "Kategori"
+    },
+    "chats": {
+        "online": "Çevrimiçi",
+        "typing": "yazıyor",
+        "message": "Mesaj gönder",
+        "mute": {
+            "actions": "Sohbet işlemleri",
+            "mutedUntil": "{date} tarihine kadar sessizde",
+            "off": "Bildirimler kapalı",
+            "enable": "Bildirimleri aç",
+            "muteForMenu": "Şu süreyle sessize al…",
+            "disable": "Bildirimleri kapat",
+            "muteFor": "Şu süreyle sessize al",
+            "durations": {
+                "15m": "15 dakika",
+                "30m": "30 dakika",
+                "1h": "1 saat",
+                "8h": "8 saat",
+                "1d": "1 gün",
+                "1w": "1 hafta"
+            },
+            "failed": "Bildirimler güncellenemedi. Tekrar deneyin."
+        },
+        "composer": {
+            "placeholder": "Mesajınızı yazın…",
+            "label": "Mesaj",
+            "send": "Mesajı gönder"
+        },
+        "title": "Sohbetler",
+        "unread": "{count} okunmamış",
+        "empty": "Henüz sohbet yok.",
+        "deletedAccount": "Silinmiş hesap",
+        "muted": "Sessizde",
+        "you": "Sen: {text}",
+        "back": "Sohbetlere dön",
+        "directMessages": "Özel mesajlar",
+        "viewProfile": "Profili görüntüle",
+        "conversation": "Konuşma",
+        "unavailable": "Bu sohbet kullanılamıyor.",
+        "seen": "Görüldü <time></time>",
+        "sent": "Gönderildi",
+        "privateTitle": "Sohbetler gizlidir",
+        "privateDescription": "Başka bir kullanıcı olarak giriş yapmışken özel mesajlar kullanılamaz.",
+        "placeholderTitle": "Sohbetlerin",
+        "placeholderText": "Koleksiyonlar hakkında konuşmaya devam etmek için soldan bir sohbet seç."
+    },
+    "collectionCard": {
+        "items": "{count, plural, one {# öğe} other {# öğe}}",
+        "comments": "{count, plural, one {# yorum} other {# yorum}}",
+        "favorites": "{count, plural, one {# kayıt} other {# kayıt}}",
+        "likes": "{count, plural, one {# beğeni} other {# beğeni}}"
+    },
+    "collectionForm": {
+        "cover": "Kapak görseli",
+        "coverHint": "Kapak görseli yüklemek için tıklayın",
+        "title": "Başlık",
+        "description": "Açıklama",
+        "visibility": "Görünürlük",
+        "public": "Herkese açık",
+        "private": "Gizli"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "Hiçbir şey bulamadık",
+        "emptyDescription": "Başka bir filtre veya arama deneyin."
+    },
+    "items": {
+        "open": "Öğeyi aç",
+        "drag": "Öğeyi sürükle",
+        "image": "Görsel",
+        "title": "Başlık",
+        "description": "Açıklama",
+        "titleRequired": "Görsel yoksa zorunlu",
+        "sourceUrl": "Kaynak URL",
+        "cardSize": "Kart boyutu",
+        "sizes": {
+            "S": "Küçük kare kutu",
+            "M": "Uzun kutu, tek sütun",
+            "L": "Büyük kutu, iki sütun",
+            "XL": "Tüm satır boyunca afiş"
+        },
+        "edit": "Öğeyi düzenle",
+        "delete": "Öğeyi sil",
+        "actions": "Öğe işlemleri",
+        "deleteTitle": "“{title}” silinsin mi?",
+        "deleteUntitled": "Bu öğe silinsin mi?",
+        "deleteDescription": "Bu öğe koleksiyondan kaldırılacak.",
+        "add": "Öğe ekle",
+        "addIntro": "Koleksiyonunuza yeni bir öğe ekleyin.",
+        "editIntro": "Öğeyi güncelleyin. Değişiklikler herkes tarafından hemen görülür.",
+        "item": "Öğe",
+        "previous": "Önceki öğe",
+        "next": "Sonraki öğe",
+        "label": "Öğeler"
+    },
+    "comments": {
+        "editedAt": "Düzenlendi: {date}",
+        "edited": "(düzenlendi)",
+        "replyTo": "@{username} kullanıcısını yanıtla",
+        "placeholder": "Yorum ekle…",
+        "reply": "Yanıtla",
+        "comment": "Yorum yap",
+        "deleteAsModerator": "Moderatör olarak sil",
+        "actions": "Yorum işlemleri",
+        "deleteTitle": "Bu yorum silinsin mi?",
+        "count": "{count, plural, one {# yorum} other {# yorum}}",
+        "emptyTitle": "Henüz yorum yok.",
+        "emptyDescription": "Konuşmayı başlatın.",
+        "replies": "{count, plural, one {# yanıt} other {# yanıt}}",
+        "moreReplies": "Daha fazla yanıt göster",
+        "unheart": "Kalbi kaldır",
+        "heart": "Bu yoruma kalp ver",
+        "heartLabel": "Yoruma kalp ver",
+        "heartedBy": "♥ {username}"
+    },
+    "notifications": {
+        "unread": "Okunmamış",
+        "texts": {
+            "FOLLOW": "seni takip etmeye başladı",
+            "LIKE": "koleksiyonunu beğendi",
+            "FAVORITE": "koleksiyonunu kaydetti",
+            "COMMENT": "koleksiyonuna yorum yaptı",
+            "REPORT_RESOLVED": "Şikâyetin incelendi. Collectify’ı güvenli tutmaya yardım ettiğin için teşekkürler.",
+            "SANCTION": "Bir moderatör hesabını kısıtladı. Ayrıntılar için ayarlarına bak.",
+            "COMMENT_REPLY": "şu koleksiyondaki yorumunu yanıtladı:",
+            "COMMENT_LIKED": "şu koleksiyondaki yorumuna kalp verdi:"
+        },
+        "dismiss": "Bildirimi kapat",
+        "title": "Bildirimler",
+        "markAllRead": "Tümünü okundu işaretle",
+        "tabs": {
+            "all": "Tümü",
+            "unread": "Okunmamış"
+        },
+        "emptyUnread": "Okunmamış bildirim yok",
+        "empty": "Henüz bildirim yok",
+        "caughtUp": "Hepsini gördün.",
+        "groups": {
+            "today": "Bugün",
+            "yesterday": "Dün",
+            "thisWeek": "Bu hafta",
+            "earlier": "Daha önce"
+        }
+    },
+    "tags": {
+        "label": "Etiketler",
+        "upTo": "En fazla {limit} etiket",
+        "noMatches": "Eşleşen etiket yok",
+        "noneYet": "Henüz etiket yok",
+        "searchByTags": "Etiketlere göre ara",
+        "noneInCategory": "Bu kategoride henüz etiket yok",
+        "create": "“{name}” oluştur",
+        "searchOrCreate": "Etiket arayın veya oluşturun",
+        "chooseCategoryFirst": "Önce bir kategori seçin.",
+        "pickerHint": "{count} / {limit} · Önce kategorinin popüler etiketleri önerilir."
+    },
+    "profile": {
+        "usernameCopied": "Kullanıcı adı kopyalandı.",
+        "usernameCopyFailed": "Kullanıcı adı kopyalanamadı.",
+        "copyUsername": "Kullanıcı adını kopyala",
+        "noBio": "Henüz biyografi yok",
+        "statLabel": "{count} {label}",
+        "following": "takip edilen",
+        "followers": "takipçi",
+        "follow": "Takip et",
+        "unfollow": "Takibi bırak",
+        "follows": {
+            "followers": "Takipçiler",
+            "following": "Takip edilenler",
+            "noFollowers": "Henüz takipçi yok",
+            "noFollowing": "Kimseyi takip etmiyor",
+            "followingButton": "Takip ediliyor",
+            "follow": "Takip et"
+        },
+        "edit": {
+            "updated": "Profil güncellendi.",
+            "title": "Profili düzenle",
+            "changeBanner": "Afişi değiştir",
+            "removeBanner": "Afişi kaldır",
+            "changeAvatar": "Avatarı değiştir",
+            "removeAvatar": "Avatarı kaldır",
+            "fullName": "Ad soyad",
+            "username": "Kullanıcı adı",
+            "bio": "Biyografi",
+            "country": "Ülke",
+            "city": "Şehir",
+            "birthDate": "Doğum tarihi"
+        },
+        "tabs": {
+            "created": "Oluşturulan",
+            "favorites": "Kaydedilen",
+            "private": "Gizli"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "Spam",
+            "HARASSMENT": "Taciz",
+            "HATE": "Nefret söylemi",
+            "SCAM": "Dolandırıcılık",
+            "ADULT": "Yetişkin içerik",
+            "OTHER": "Diğer"
+        },
+        "targets": {
+            "USER": "Kullanıcı",
+            "COMMENT": "Yorum",
+            "COLLECTION": "Koleksiyon"
+        },
+        "reportTarget": {
+            "USER": "Kullanıcıyı şikâyet et",
+            "COMMENT": "Yorumu şikâyet et",
+            "COLLECTION": "Koleksiyonu şikâyet et"
+        },
+        "openTarget": {
+            "USER": "Kullanıcıyı aç",
+            "COMMENT": "Yorumu aç",
+            "COLLECTION": "Koleksiyonu aç"
+        },
+        "verdicts": {
+            "PENDING": "Beklemede",
+            "GUILTY": "Suçlu",
+            "NO_VIOLATION": "İhlal yok",
+            "INSUFFICIENT_EVIDENCE": "Yetersiz kanıt",
+            "DUPLICATE": "Tekrar"
+        },
+        "submitted": "Şikâyet gönderildi. Moderatörler yakında inceleyecek.",
+        "reason": "Neden",
+        "details": "Ayrıntılar",
+        "submit": "Şikâyeti gönder"
+    },
+    "boards": {
+        "rename": "Yeniden adlandır",
+        "delete": "Panoyu sil",
+        "renameTitle": "Panoyu yeniden adlandır",
+        "deleteTitle": "“{name}” silinsin mi?",
+        "deleteDescription": "Koleksiyonlar “Tüm kaydedilenler”de kalır.",
+        "name": "Pano adı",
+        "label": "Panolar",
+        "items": "panolar",
+        "all": "Tümü",
+        "new": "Yeni pano",
+        "actions": "Pano işlemleri",
+        "signInToSave": "Kaydetmek için giriş yapın",
+        "saved": "Kaydedildi",
+        "save": "Kaydet",
+        "saveTo": "Şuraya kaydet",
+        "allSaved": "Tüm kaydedilenler",
+        "hint": "Kaydettiğiniz koleksiyonları panolarda gruplayın.",
+        "newName": "Yeni pano adı",
+        "create": "Pano oluştur",
+        "draggableTab": "sürüklenebilir sekme"
+    },
+    "management": {
+        "categories": {
+            "updated": "Kategori güncellendi.",
+            "created": "Kategori oluşturuldu.",
+            "deleted": "Kategori silindi.",
+            "name": "Ad",
+            "slug": "Slug",
+            "slugHint": "Bağlantılarda kullanılır: /?category=slug",
+            "description": "Açıklama",
+            "position": "Sıra",
+            "positionHint": "Düşük olan önce gelir",
+            "active": "Etkin",
+            "archived": "Arşivlendi",
+            "onlyArchive": "Koleksiyon içeren kategoriler yalnızca arşivlenebilir.",
+            "create": "Kategori oluştur",
+            "deleteTitle": "“{name}” silinsin mi?",
+            "new": "Yeni kategori",
+            "empty": "Henüz kategori yok",
+            "collections": "{count, plural, one {# koleksiyon} other {# koleksiyon}}",
+            "archivedLower": "arşivlendi",
+            "notFound": "Kategori bulunamadı"
+        },
+        "roles": {
+            "updated": "Roller güncellendi.",
+            "revoke": "{role} rolünü kaldır",
+            "grant": "{role} rolünü ver"
+        },
+        "sanctions": {
+            "applied": "Yaptırım uygulandı.",
+            "strongerKept": "Daha ağır bir yaptırım zaten etkin; o korundu.",
+            "scope": "Kapsam",
+            "duration": "Süre",
+            "reason": "Neden",
+            "apply": "Uygula",
+            "confirmTitle": "@{username} kullanıcısına yaptırım uygulansın mı?",
+            "summary": "{scope}: {duration}.",
+            "reasonLine": "Neden: {reason}",
+            "confirm": "Yaptırımı uygula",
+            "lifted": "Yaptırım kaldırıldı.",
+            "none": "Etkin yaptırım yok",
+            "lift": "Kaldır"
+        },
+        "danger": {
+            "deleted": "Hesap silindi.",
+            "impersonate": "Kullanıcı olarak giriş yap",
+            "delete": "Hesabı sil",
+            "impersonateTitle": "@{username} olarak giriş yapılsın mı?",
+            "impersonateDescription": "Yaptığınız her şey denetim kaydına sizin adınıza işlenir.",
+            "signIn": "Giriş yap",
+            "deleteTitle": "@{username} silinsin mi?",
+            "deleteDescription": "Hesap ve hesabın koleksiyonları, yorumları ve sohbetleri kalıcı olarak silinir."
+        },
+        "review": {
+            "describeVerdict": "Karar: {verdict}.",
+            "describeRemove": "Şikâyet edilen içerik silinecek.",
+            "describePunishment": "@{username} şunu alır: {scope}, {duration}.",
+            "describeDuplicate": "#{id} numaralı şikâyetin tekrarı olarak işaretlendi.",
+            "closed": "Şikâyet kapatıldı.",
+            "closedStrongerKept": "Şikâyet kapatıldı. Daha ağır bir yaptırım zaten etkindi ve korundu.",
+            "verdict": "Karar",
+            "removeContent": "Şikâyet edilen içeriği sil",
+            "nothingToDelete": "Silinecek bir şey yok",
+            "sanctionUser": "Kullanıcıya yaptırım uygula",
+            "punishment": "Ceza",
+            "duration": "Süre",
+            "originalReport": "Asıl şikâyet #",
+            "resolution": "Karar notu",
+            "close": "Şikâyeti kapat",
+            "closeTitle": "#{id} numaralı şikâyet kapatılsın mı?"
+        },
+        "audit": {
+            "title": "Denetim",
+            "titleFor": "@{username} için denetim",
+            "empty": "Henüz denetim kaydı yok",
+            "system": "sistem",
+            "via": "(@{username} aracılığıyla)",
+            "content": "içerik",
+            "actions": {
+                "grant": "{role} rolü verildi",
+                "revoke": "{role} rolü kaldırıldı",
+                "sanction": "Uygulandı: {scope}",
+                "revokeSanction": "Kaldırıldı: {scope}",
+                "report": "Şikâyet kapatıldı: {verdict}",
+                "deleteUser": "Kullanıcı hesabı silindi",
+                "deleteComment": "Yorum silindi",
+                "deleteCollection": "Koleksiyon silindi",
+                "impersonateUser": "Kullanıcı olarak giriş yapıldı",
+                "stopImpersonation": "Kullanıcı olarak giriş sonlandırıldı"
+            }
+        },
+        "activity": {
+            "collections": "Koleksiyonlar",
+            "noCollections": "Koleksiyon yok",
+            "private": "gizli",
+            "counts": "{items, plural, one {# öğe} other {# öğe}} · {comments, plural, one {# yorum} other {# yorum}} · {likes, plural, one {# beğeni} other {# beğeni}}",
+            "comments": "Yorumlar",
+            "noComments": "Yorum yok"
+        },
+        "tags": {
+            "deleted": "Etiket silindi.",
+            "title": "Etiketler",
+            "hint": "Kullanıcılar tarafından oluşturulur, kullanan koleksiyon sayısına göre sıralanır.",
+            "search": "Etiket bul",
+            "empty": "Etiket yok",
+            "usage": "{count, plural, one {# koleksiyon} other {# koleksiyon}}",
+            "delete": "Etiketi sil",
+            "deleteNamed": "{name} etiketini sil",
+            "deleteTitle": "#{name} silinsin mi?",
+            "deleteDescription": "Etiket, onu kullanan tüm koleksiyonlardan kaldırılır."
+        },
+        "title": "Yönetim",
+        "subtitle": "Kullanıcılar, şikâyetler, yaptırımlar, kategoriler",
+        "tabs": {
+            "users": "Kullanıcılar",
+            "reports": "Şikâyetler",
+            "categories": "Kategoriler"
+        },
+        "selectUser": "Bir kullanıcı seçin",
+        "selectUserHint": "Kullanıcı adı, ad veya e-postayla arayın.",
+        "selectReport": "Bir şikâyet seçin",
+        "selectReportHint": "En eski açık şikâyetler en üsttedir.",
+        "selectCategory": "Bir kategori seçin",
+        "selectCategoryHint": "Veya yeni bir tane oluşturun. Arşivlenen kategoriler koleksiyonlarını korur.",
+        "users": {
+            "search": "Kullanıcı ara",
+            "empty": "Kullanıcı bulunamadı",
+            "sanctioned": "yaptırımlı"
+        },
+        "report": {
+            "aboutAccount": "Şikâyet hesabın kendisiyle ilgili.",
+            "deletedSince": "O zamandan beri silindi — şikâyet anındaki kopya gösteriliyor",
+            "posted": "Yayınlandı: {date}",
+            "verdict": "Karar",
+            "reviewedBy": "İnceleyen",
+            "sanction": "Yaptırım",
+            "duplicateOf": "Şunun tekrarı",
+            "resolution": "Karar",
+            "notFound": "Şikâyet bulunamadı",
+            "title": "<user>@{username}</user> hakkında #{id} numaralı şikâyet",
+            "subtitle": "{target} · şikâyet eden @{username} · {date}",
+            "open": "Açık",
+            "closed": "Kapalı",
+            "evidence": "Kanıt",
+            "context": "Bağlam",
+            "against": "@{username} hakkındaki şikâyetler",
+            "againstCounts": "toplam {total} · suçlu {guilty}",
+            "filedBy": "@{username} tarafından yapılan şikâyetler",
+            "filedCounts": "toplam {total} · reddedilen {rejected}",
+            "activeSanctions": "Etkin yaptırımlar",
+            "none": "Yok",
+            "decision": "Karar",
+            "outcome": "Sonuç"
+        },
+        "queue": {
+            "open": "Açık ({count})",
+            "closed": "Kapalı",
+            "type": "Tür",
+            "all": "Tümü",
+            "empty": "Kuyruk boş",
+            "emptyClosed": "Kapalı şikâyet yok"
+        },
+        "user": {
+            "notFound": "Kullanıcı bulunamadı",
+            "notFoundHint": "Silinmiş olabilir veya onu yönetemiyor olabilirsiniz.",
+            "regularUser": "Kullanıcı",
+            "stats": {
+                "collections": "Koleksiyonlar",
+                "comments": "Yorumlar",
+                "messages": "Mesajlar",
+                "reportsReceived": "Alınan şikâyetler"
+            },
+            "sanctions": "Yaptırımlar",
+            "sanctionsHint": "Engeller ve özelliğe özel susturmalar. Daha ağır bir etkin yaptırım asla kısaltılmaz.",
+            "roles": "Roller",
+            "rolesHint": "Yönetici yetkileri `npm run admin` ile yönetilir.",
+            "activity": "Etkinlik",
+            "activityHint": "Koleksiyonlar ve yorumlar, en yeniler önce.",
+            "danger": "Tehlikeli bölge"
+        }
+    },
+    "collectionFilters": {
+        "search": "Koleksiyon ara",
+        "sorts": {
+            "popular": "Popüler",
+            "newest": "En yeni",
+            "old": "En eski"
+        }
+    },
+    "collection": {
+        "like": "Beğen",
+        "unlike": "Beğeniyi geri al",
+        "signInToLike": "Beğenmek için giriş yapın",
+        "delete": {
+            "deleted": "Koleksiyon silindi.",
+            "title": "“{name}” silinsin mi?",
+            "description": "Bu işlem geri alınamaz. Tüm öğeler ve yorumlar da silinir."
+        },
+        "edit": {
+            "updated": "Koleksiyon güncellendi.",
+            "title": "Koleksiyonu düzenle",
+            "intro": "Değişiklikler hemen kaydedilir ve diğer kullanıcılar tarafından görülür. Öğeler doğrudan koleksiyon sayfasında düzenlenir."
+        },
+        "stats": {
+            "likes": "Beğeniler",
+            "comments": "Yorumlar",
+            "favorites": "Kayıtlar",
+            "title": "İstatistikler",
+            "intro": "Koleksiyonunuzdaki günlük etkinlik (UTC).",
+            "unavailable": "İstatistikler şu anda kullanılamıyor.",
+            "empty": "Henüz etkinlik yok."
+        },
+        "description": "Açıklama",
+        "meta": "{count, plural, one {# öğe} other {# öğe}} · Oluşturulma: {date}",
+        "private": "Gizli",
+        "deleteAsModerator": "Moderatör olarak sil",
+        "deleteCollection": "Koleksiyonu sil",
+        "actions": "Koleksiyon işlemleri"
+    },
+    "nav": {
+        "home": "Ana sayfa",
+        "collections": "Koleksiyonlar",
+        "profile": "Profil",
+        "notifications": "Bildirimler",
+        "management": "Yönetim",
+        "settings": "Ayarlar",
+        "openMenu": "Menüyü aç",
+        "createCollection": "Koleksiyon oluştur",
+        "chats": "Sohbetler",
+        "findUser": "Kullanıcı bul",
+        "accountMenu": "Hesap menüsü",
+        "returnToAdmin": "Yöneticiye dön",
+        "logout": "Çıkış yap",
+        "startTyping": "Bir kullanıcı adı yazmaya başlayın",
+        "impersonating": "<strong>@{username}</strong> olarak giriş yaptınız. Geri dönmek için hesap menüsündeki “Yöneticiye dön”ü kullanın."
+    },
+    "footer": {
+        "privacyPolicy": "Gizlilik Politikası"
+    },
+    "people": {
+        "mutual": "{count} ortak",
+        "livesIn": "{city} şehrinde yaşıyor",
+        "followsYou": "Seni takip ediyor",
+        "following": "Takip ediliyor",
+        "follow": "Takip et",
+        "title": "Tanıyor olabileceğin kişiler",
+        "hide": "Önerileri gizle",
+        "hideHint": "Gizle (Ayarlar’dan geri getirebilirsin)",
+        "seeAll": "Tüm önerileri gör"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "Koleksiyon oluştur",
+            "firstItem": "İlk öğeyi ekle"
+        },
+        "title": "Yeni koleksiyon oluştur",
+        "itemTitle": "İlk öğeyi ekleyin",
+        "subtitle": "İçeriğinizi düzenlemek için yeni bir koleksiyon ekleyin.",
+        "itemSubtitle": "Her koleksiyon en az bir öğeyle başlar.",
+        "submit": "Koleksiyon oluştur"
+    },
+    "home": {
+        "discover": "Koleksiyonları keşfet",
+        "emptyTitle": "Henüz önerilecek bir şey yok",
+        "emptyBoard": "Önce bu panoya etiketli birkaç koleksiyon kaydedin.",
+        "emptyForYou": "Akışını ayarlamak için koleksiyonları beğen ve kaydet.",
+        "feeds": {
+            "forYou": "Senin için",
+            "explore": "Keşfet",
+            "moreLike": "“{name}” gibi daha fazlası",
+            "label": "Akışlar",
+            "items": "akışlar"
+        }
+    },
+    "myCollections": {
+        "title": "Koleksiyonlarım",
+        "subtitle": "Koleksiyonlarınıza görünürlük, kategori, etiket ve aramaya göre göz atın ve onları yönetin.",
+        "create": "Koleksiyon oluştur",
+        "filters": "Filtreler",
+        "category": "Kategori",
+        "tags": "Etiketler"
+    },
+    "notFound": {
+        "title": "Sayfa bulunamadı",
+        "description": "Aradığınız sayfa yok veya taşınmış.",
+        "home": "Ana sayfaya git",
+        "back": "Geri dön"
+    },
+    "onboarding": {
+        "title": "Nelerle ilgileniyorsun?",
+        "subtitle": "Birkaç kategori seç, akışını sana göre ayarlayalım. Daha sonra ayarlardan değiştirebilirsin.",
+        "pickMore": "{count} tane daha seç",
+        "continue": "Devam"
+    },
+    "privacy": {
+        "title": "Gizlilik Politikası",
+        "updated": "Son güncelleme: {date}",
+        "collect": {
+            "title": "Hangi verileri topluyoruz",
+            "intro": "Collectify’da hesap oluşturduğunuzda şunları topluyoruz:",
+            "items": {
+                "email": "E-posta adresiniz (giriş yapmak ve hesabınızı tanımlamak için)",
+                "names": "Seçtiğiniz kullanıcı adı ve ad soyad",
+                "password": "Bir şifre (güvenli bir hash olarak saklanır — şifrenizi asla düz metin olarak saklamayız); GitHub veya Google ile kaydolursanız bunun yerine bağlı hesabın kimliğini saklarız",
+                "profile": "Eklediğiniz isteğe bağlı profil bilgileri: avatar, afiş, biyografi/açıklama, ülke ve şehir ile doğum tarihi",
+                "content": "Uygulamada oluşturduğunuz içerik: koleksiyonlar, öğeler, yorumlar, beğeniler, takipler, mesajlar ve bildirimler"
+            }
+        },
+        "why": {
+            "title": "Neden topluyoruz",
+            "text": "Verileriniz hesabınızı oluşturmak ve yönetmek, giriş yaptığınızda kimliğinizi doğrulamak, ziyaretler arasında oturumunuzu açık tutmak (oturum yönetimi) ve uygulamanın temel özelliklerini — koleksiyonlar, diğer kullanıcıları takip etme, yorumlar, beğeniler ve mesajlaşma — sunmak için kullanılır."
+        },
+        "location": {
+            "title": "Konum ve doğum tarihi",
+            "intro": "Her ikisi de isteğe bağlıdır ve profilinizden istediğiniz zaman değiştirilebilir veya kaldırılabilir.",
+            "items": {
+                "location": "<strong>Ülke ve şehir</strong> herkese açık profilinizde gösterilir ve aynı şehirde yaşayan, tanıyor olabileceğiniz kişileri önermek için kullanılır. Tam konumunuzu veya IP tabanlı konumunuzu toplamayız.",
+                "birthDate": "<strong>Doğum tarihi</strong> gizlidir: diğer kullanıcılara asla gösterilmez. Yalnızca asgari yaş koşulunu karşıladığınızı doğrulamak için kullanılır."
+            }
+        },
+        "recommendations": {
+            "title": "Öneriler",
+            "text": "“Senin için” akışınızı, pano önerilerini ve “Tanıyor olabileceğin kişiler”i oluşturmak için ilgi alanı olarak seçtiğiniz kategorileri; giriş yapmışken beğendiğiniz, kaydettiğiniz, panolara eklediğiniz veya açtığınız koleksiyonları; bu koleksiyonların etiketlerini ve kategorilerini; takip ettiğiniz ve sizi takip eden kişileri ve profilinizdeki şehri kullanırız. Beğendiğiniz veya kaydettiğiniz koleksiyonları, bunu geri alsanız bile hatırlarız; böylece size tekrar önerilmezler. Bu yalnızca Collectify içinde gerçekleşir; panolar ve görüntüleme geçmişiniz diğer kullanıcılara asla gösterilmez."
+        },
+        "age": {
+            "title": "Asgari yaş",
+            "text": "Collectify 18 yaş ve üzeri kişiler içindir. 18 yaşından küçük olduğunuzu gösteren bir doğum tarihi kaydedilemez. Bir hesabın 18 yaşından küçük birine ait olduğunu öğrenirsek hesabı askıya alıp verilerini silebiliriz."
+        },
+        "cookies": {
+            "title": "Çerezler",
+            "text": "Oturumunuzu açık tutmak için işlevsel bir oturum çerezi, arayüz dilinizi hatırlayan işlevsel bir çerez ve GitHub veya Google ile giriş yaparken kısa ömürlü bir güvenlik çerezi (yaklaşık 10 dakika) kullanırız. Seçtiğiniz tema tarayıcınızın yerel depolamasına kaydedilir. Analiz, izleme veya pazarlama çerezleri kullanmayız."
+        },
+        "storage": {
+            "title": "Verileriniz nerede saklanıyor",
+            "text": "Uygulama Vercel üzerinde barındırılır. Hesap ve içerik verileri veritabanımızda saklanır. Yüklenen görseller (avatarlar, afişler, öğe görselleri) medya barındırma sağlayıcımız Uploadcare’de saklanır."
+        },
+        "moderation": {
+            "title": "Şikâyetler ve moderasyon",
+            "text": "Bir içeriği şikâyet ettiğinizde, sonradan silinse bile moderatörlerin inceleyebilmesi için şikâyet edilen yorumun veya koleksiyonun bir kopyasını saklarız. Bir şikâyeti ele alırken moderatörler ve yöneticiler şikâyet edilen içeriği ve bir hesabın herkese açık etkinliğini inceleyebilir. Özel mesajlar şikâyet edilemez ve moderatörler ile yöneticiler konuşmalarınızı okuyamaz. Moderasyon işlemleri dahili bir denetim kaydına işlenir. Bir hesap silindiğinde içeriği de silinir; denetim kaydında yalnızca hesap kimliği ve kullanıcı adı kalır."
+        },
+        "thirdParties": {
+            "title": "Üçüncü taraflar",
+            "text": "Verilerinizi reklam veya pazarlama amacıyla üçüncü taraflara satmayız ya da onlarla paylaşmayız. GitHub veya Google ile kaydolur ya da giriş yaparsanız bu sağlayıcılar hesabınızı oluşturmamız için temel profil bilgilerinizi (örneğin e-postanızı) bizimle paylaşır."
+        }
+    },
+    "errorPage": {
+        "title": "Bir şeyler ters gitti",
+        "description": "Lütfen tekrar deneyin."
+    },
+    "userProfile": {
+        "manage": "Yönet"
+    }
+}

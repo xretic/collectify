@@ -4,8 +4,8 @@ import { DIRECT_MESSAGE_MAX_LENGTH } from '@/shared/lib/constants';
 export const messageContentSchema = z
     .string()
     .trim()
-    .min(1, 'Message cannot be empty.')
-    .max(DIRECT_MESSAGE_MAX_LENGTH);
+    .min(1, 'validation.messageEmpty')
+    .max(DIRECT_MESSAGE_MAX_LENGTH, 'validation.tooLong');
 
 export const MUTE_DURATIONS = ['15m', '30m', '1h', '8h', '1d', '1w', 'forever'] as const;
 

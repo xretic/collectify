@@ -1,9 +1,19 @@
-import { formatDateTime } from '@/shared/lib/format/date';
-import { SANCTION_SCOPE_LABELS, type SanctionScope } from '../model/types';
+'use client';
 
-export function formatSanction(sanction: { scope: SanctionScope; expiresAt: string | null }) {
-    const label = SANCTION_SCOPE_LABELS[sanction.scope];
-    return sanction.expiresAt
-        ? `${label} · until ${formatDateTime(sanction.expiresAt)}`
-        : `${label} · permanent`;
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
+import type { SanctionScope } from '../model/types';
+
+/** "Comments mute · until Sep 30, 2026, 14:00" / "Account ban · permanent". */
+export function useFormatSanction() {
+    const t = useTranslations('sanctions');
+    const format = useFormatters();
+
+    return (sanction: { scope: SanctionScope; expiresAt: string | null }) =>
+        sanction.expiresAt
+            ? t('until', {
+                  scope: t(`scopes.${sanction.scope}`),
+                  date: format.dateTime(sanction.expiresAt),
+              })
+            : t('permanentScope', { scope: t(`scopes.${sanction.scope}`) });
 }

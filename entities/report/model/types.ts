@@ -34,29 +34,6 @@ export const REVIEW_VERDICTS: readonly ReviewVerdict[] = [
     'DUPLICATE',
 ];
 
-export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
-    SPAM: 'Spam',
-    HARASSMENT: 'Harassment',
-    HATE: 'Hate speech',
-    SCAM: 'Scam',
-    ADULT: 'Adult content',
-    OTHER: 'Other',
-};
-
-export const REPORT_TARGET_LABELS: Record<ReportTargetType, string> = {
-    USER: 'User',
-    COMMENT: 'Comment',
-    COLLECTION: 'Collection',
-};
-
-export const REPORT_VERDICT_LABELS: Record<ReportVerdict, string> = {
-    PENDING: 'Pending',
-    GUILTY: 'Guilty',
-    NO_VIOLATION: 'No violation',
-    INSUFFICIENT_EVIDENCE: 'Insufficient evidence',
-    DUPLICATE: 'Duplicate',
-};
-
 /** The sanction scope that usually fits a report about this kind of content. */
 export const DEFAULT_SCOPE_FOR_TARGET: Record<ReportTargetType, SanctionScope> = {
     USER: 'ACCOUNT',

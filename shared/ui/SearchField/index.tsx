@@ -2,6 +2,7 @@ import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type SearchFieldProps = {
     value: string;
@@ -10,17 +11,14 @@ type SearchFieldProps = {
     className?: string;
 };
 
-export function SearchField({
-    value,
-    onChange,
-    placeholder = 'Search',
-    className,
-}: SearchFieldProps) {
+export function SearchField({ value, onChange, placeholder, className }: SearchFieldProps) {
+    const t = useTranslations('common');
+
     return (
         <TextField
             className={`${styles.field} ${className ?? ''}`}
             size="small"
-            placeholder={placeholder}
+            placeholder={placeholder ?? t('search')}
             value={value}
             onChange={(event) => onChange(event.target.value)}
             slotProps={{

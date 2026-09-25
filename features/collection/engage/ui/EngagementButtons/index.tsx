@@ -7,10 +7,11 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import type { CollectionDetails } from '@/entities/collection/model/types';
 import { useCollectionCache } from '@/entities/collection/model/useCollectionDetails';
-import { formatCompact } from '@/shared/lib/format/number';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type EngagementButtonsProps = {
     collection: CollectionDetails;
@@ -27,6 +28,8 @@ export function EngagementButtons({
     className,
     children,
 }: EngagementButtonsProps) {
+    const t = useTranslations('collection');
+    const format = useFormatters();
     const cache = useCollectionCache(collection.id);
 
     const toggle = useMutation({
@@ -57,11 +60,11 @@ export function EngagementButtons({
                 disabled={disabled || toggle.isPending}
                 onClick={() => toggle.mutate(!collection.liked)}
                 aria-pressed={collection.liked}
-                aria-label={collection.liked ? 'Unlike' : 'Like'}
-                title={disabled ? 'Sign in to like' : undefined}
+                aria-label={collection.liked ? t('unlike') : t('like')}
+                title={disabled ? t('signInToLike') : undefined}
             >
                 {collection.liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                <span className={styles.count}>{formatCompact(collection.likes)}</span>
+                <span className={styles.count}>{format.compact(collection.likes)}</span>
             </button>
 
             {children}

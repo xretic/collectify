@@ -6,6 +6,7 @@ import { categoryApi } from '@/entities/category/api/categoryApi';
 import { categoryQueryKeys } from '@/entities/category/model/queryKeys';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './index.module.css';
+import { useCategoryName } from '@/entities/category/model/useCategoryName';
 
 type InterestPickerProps = {
     value: number[];
@@ -14,6 +15,7 @@ type InterestPickerProps = {
 
 /** Category tiles with a cover from a random popular collection of that category. */
 export function InterestPicker({ value, onChange }: InterestPickerProps) {
+    const categoryName = useCategoryName();
     const showcase = useQuery({
         queryKey: [...categoryQueryKeys.all, 'showcase'],
         queryFn: categoryApi.showcase,
@@ -48,7 +50,7 @@ export function InterestPicker({ value, onChange }: InterestPickerProps) {
                             <span className={`${styles.cover} ${styles.placeholder}`} />
                         )}
                         <span className={styles.shade} />
-                        <span className={styles.name}>{category.name}</span>
+                        <span className={styles.name}>{categoryName(category)}</span>
                         {selected && <CheckCircleIcon className={styles.check} />}
                     </button>
                 );

@@ -5,6 +5,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { ActionsMenu, type ActionsMenuItem } from '@/shared/ui/ActionsMenu';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
+import { useTranslations } from 'next-intl';
 
 type CommentMenuProps = {
     canEdit: boolean;
@@ -28,6 +29,8 @@ export function CommentMenu({
     onDelete,
     extraItems = [],
 }: CommentMenuProps) {
+    const t = useTranslations('comments');
+    const tc = useTranslations('common');
     const [confirming, setConfirming] = useState(false);
 
     const items: ActionsMenuItem[] = [];
@@ -35,7 +38,7 @@ export function CommentMenu({
     if (canEdit) {
         items.push({
             key: 'edit',
-            label: 'Edit',
+            label: tc('edit'),
             icon: <EditOutlinedIcon fontSize="small" />,
             onClick: onEdit,
         });
@@ -44,7 +47,7 @@ export function CommentMenu({
     if (canDelete) {
         items.push({
             key: 'delete',
-            label: asModerator ? 'Delete as moderator' : 'Delete',
+            label: asModerator ? t('deleteAsModerator') : tc('delete'),
             icon: <DeleteOutlineOutlinedIcon fontSize="small" />,
             onClick: () => setConfirming(true),
             danger: true,
@@ -55,12 +58,12 @@ export function CommentMenu({
 
     return (
         <>
-            <ActionsMenu items={items} label="Comment actions" />
+            <ActionsMenu items={items} label={t('actions')} />
 
             <ConfirmDialog
                 open={confirming}
-                title="Delete this comment?"
-                confirmLabel="Delete"
+                title={t('deleteTitle')}
+                confirmLabel={tc('delete')}
                 destructive
                 pending={deleting}
                 onClose={() => setConfirming(false)}

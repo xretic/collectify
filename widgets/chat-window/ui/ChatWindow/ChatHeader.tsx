@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { IconButton } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -5,6 +7,7 @@ import type { ChatPeer } from '@/entities/chat/model/types';
 import { PeerAvatar } from '@/entities/chat/ui/PeerAvatar';
 import { TypingIndicator } from '@/entities/chat/ui/TypingIndicator';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type ChatHeaderProps = {
     peer: ChatPeer | null;
@@ -15,13 +18,15 @@ type ChatHeaderProps = {
 };
 
 export function ChatHeader({ peer, deleted, online, typing = false }: ChatHeaderProps) {
+    const t = useTranslations('chats');
+
     return (
         <header className={styles.header}>
             <IconButton
                 component={Link}
                 href="/chats"
                 className={styles.back}
-                aria-label="Back to chats"
+                aria-label={t('back')}
             >
                 <ArrowBackIosNewIcon fontSize="small" />
             </IconButton>
@@ -37,13 +42,13 @@ export function ChatHeader({ peer, deleted, online, typing = false }: ChatHeader
                             <span
                                 className={`${styles.peerStatus} ${online ? styles.peerOnline : ''}`}
                             >
-                                {online ? 'Online' : 'Direct messages'}
+                                {online ? t('online') : t('directMessages')}
                             </span>
                         )}
                     </span>
                 </Link>
             ) : (
-                <span className={styles.peerName}>{deleted ? 'Deleted account' : ''}</span>
+                <span className={styles.peerName}>{deleted ? t('deletedAccount') : ''}</span>
             )}
         </header>
     );
@@ -51,12 +56,14 @@ export function ChatHeader({ peer, deleted, online, typing = false }: ChatHeader
 
 /** Shown above the first message of a conversation. */
 export function ChatIntro({ peer }: { peer: ChatPeer }) {
+    const t = useTranslations('chats');
+
     return (
         <div className={styles.intro}>
             <PeerAvatar user={peer} className={styles.introAvatar} />
             <span className={styles.introName}>{peer.username}</span>
             <Link href={`/users/${peer.id}`} className={styles.introLink}>
-                View profile
+                {t('viewProfile')}
             </Link>
         </div>
     );

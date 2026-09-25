@@ -8,6 +8,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
 import { useCategories } from '../../model/useCategories';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CategoryMenuProps = {
     /** Selected category slug; `undefined` means all categories. */
@@ -17,6 +18,7 @@ type CategoryMenuProps = {
 
 /** Filter control: a button that opens a searchable list of categories. */
 export function CategoryMenu({ value, onChange }: CategoryMenuProps) {
+    const t = useTranslations('categoryMenu');
     const { categories, bySlug } = useCategories();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [search, setSearch] = useState('');
@@ -49,7 +51,7 @@ export function CategoryMenu({ value, onChange }: CategoryMenuProps) {
                 aria-haspopup="menu"
             >
                 <CategoryOutlinedIcon fontSize="small" />
-                <span className={styles.label}>{selected?.name ?? 'All categories'}</span>
+                <span className={styles.label}>{selected?.name ?? t('all')}</span>
                 <KeyboardArrowDownIcon fontSize="small" />
             </button>
 
@@ -65,7 +67,7 @@ export function CategoryMenu({ value, onChange }: CategoryMenuProps) {
                         size="small"
                         fullWidth
                         autoFocus
-                        placeholder="Find a category"
+                        placeholder={t('search')}
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         // Typing must not trigger the menu's first-letter navigation.
@@ -84,7 +86,7 @@ export function CategoryMenu({ value, onChange }: CategoryMenuProps) {
 
                 {!search && (
                     <MenuItem selected={!value} onClick={() => select(undefined)}>
-                        <span className={styles.item}>All categories</span>
+                        <span className={styles.item}>{t('all')}</span>
                         {!value && <CheckIcon fontSize="small" />}
                     </MenuItem>
                 )}
@@ -102,7 +104,7 @@ export function CategoryMenu({ value, onChange }: CategoryMenuProps) {
 
                 {visible.length === 0 && (
                     <MenuItem disabled>
-                        <span className={styles.item}>Nothing found</span>
+                        <span className={styles.item}>{t('nothingFound')}</span>
                     </MenuItem>
                 )}
             </Menu>

@@ -15,7 +15,7 @@ export async function setInterests(userId: number, categoryIds: number[]) {
     const unique = [...new Set(categoryIds)];
 
     const active = await db.category.count({ where: { id: { in: unique }, isActive: true } });
-    if (active !== unique.length) throw badRequest('Choose existing categories.');
+    if (active !== unique.length) throw badRequest('categoriesUnknown');
 
     await db.$transaction([
         db.userInterest.deleteMany({ where: { userId, categoryId: { notIn: unique } } }),

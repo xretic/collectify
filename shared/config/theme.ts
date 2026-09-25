@@ -1,6 +1,23 @@
 'use client';
 
-import { createTheme } from '@mui/material/styles';
+import { createTheme, type ThemeOptions } from '@mui/material/styles';
+import {
+    csCZ,
+    deDE,
+    enUS,
+    esES,
+    frFR,
+    itIT,
+    jaJP,
+    koKR,
+    nlNL,
+    plPL,
+    ptPT,
+    trTR,
+    ukUA,
+    zhCN,
+} from '@mui/material/locale';
+import type { Locale } from './i18n';
 
 /**
  * One MUI theme for the whole app. Colours come from the theme tokens in
@@ -8,7 +25,7 @@ import { createTheme } from '@mui/material/styles';
  * never re-renders React. `nativeColor` makes MUI derive hover/disabled shades
  * with CSS relative colors, which is what allows `var(...)` in the palette.
  */
-export const theme = createTheme({
+const themeOptions: ThemeOptions = {
     cssVariables: { nativeColor: true },
     palette: {
         primary: { main: 'var(--accent)', contrastText: 'var(--on-accent)' },
@@ -167,4 +184,38 @@ export const theme = createTheme({
             defaultProps: { arrow: true },
         },
     },
-});
+};
+
+const MUI_LOCALES = {
+    en: enUS,
+    cs: csCZ,
+    pl: plPL,
+    uk: ukUA,
+    de: deDE,
+    es: esES,
+    fr: frFR,
+    it: itIT,
+    pt: ptPT,
+    nl: nlNL,
+    tr: trTR,
+    ja: jaJP,
+    zh: zhCN,
+    ko: koKR,
+} satisfies Record<Locale, unknown>;
+
+const themes = new Map<Locale, ReturnType<typeof createTheme>>();
+
+/**
+ * The app theme with MUI's built-in texts ("No options", "Loading…") in the UI
+ * language. Built from the options (not an existing theme) so the CSS-variable
+ * palette is created once per locale.
+ */
+export function localizedTheme(locale: Locale) {
+    let localized = themes.get(locale);
+    if (!localized) {
+        localized = createTheme(themeOptions, MUI_LOCALES[locale]);
+        themes.set(locale, localized);
+    }
+
+    return localized;
+}

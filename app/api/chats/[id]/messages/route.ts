@@ -12,7 +12,7 @@ export const POST = route<{ id: string }>(async (req, params) => {
     await enforceRateLimit(req, 'message', viewer.userId);
 
     const { content } = await readBody(req, bodySchema);
-    const message = await sendMessage(parseId(params.id, 'chat id'), viewer.userId, content);
+    const message = await sendMessage(parseId(params.id), viewer.userId, content);
 
     return json({ message }, 201);
 });

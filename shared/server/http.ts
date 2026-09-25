@@ -1,23 +1,40 @@
 import 'server-only';
 import { NextRequest, NextResponse } from 'next/server';
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 import { idSchema } from '@/shared/lib/validation/ids';
+import { isValidationKey, VALIDATION_VALUES } from '@/shared/lib/validation/messages';
+import type { LooseTranslator, Messages, TranslationValues } from '@/shared/i18n/types';
 
+export type ErrorKey = keyof Messages['errors'];
+
+/** Carries a translation key; the response message is translated to the viewer's language. */
 export class ApiError extends Error {
     constructor(
         readonly status: number,
-        message: string,
+        /** `errors.*` key, or a `validation.*` key from a schema issue. */
+        readonly key: string,
+        readonly values?: TranslationValues,
         readonly headers?: Record<string, string>,
     ) {
-        super(message);
+        super(key);
     }
 }
 
-export const badRequest = (message = 'Bad request.') => new ApiError(400, message);
-export const unauthorized = (message = 'Unauthorized.') => new ApiError(401, message);
-export const forbidden = (message = 'Forbidden.') => new ApiError(403, message);
-export const notFound = (message = 'Not found.') => new ApiError(404, message);
-export const conflict = (message: string) => new ApiError(409, message);
+export const apiError = (
+    status: number,
+    key: ErrorKey,
+    values?: TranslationValues,
+    headers?: Record<string, string>,
+) => new ApiError(status, `errors.${key}`, values, headers);
+
+export const badRequest = (key: ErrorKey = 'badRequest', values?: TranslationValues) =>
+    apiError(400, key, values);
+export const unauthorized = (key: ErrorKey = 'unauthorized') => apiError(401, key);
+export const forbidden = (key: ErrorKey = 'forbidden', values?: TranslationValues) =>
+    apiError(403, key, values);
+export const notFound = (key: ErrorKey = 'notFound') => apiError(404, key);
+export const conflict = (key: ErrorKey) => apiError(409, key);
 
 export function json<T>(data: T, status = 200) {
     return NextResponse.json(data, { status });
@@ -27,9 +44,14 @@ export function noContent() {
     return new NextResponse(null, { status: 204 });
 }
 
-export function errorResponse(error: ApiError) {
+async function translate(key: string, values?: TranslationValues) {
+    const t = (await getTranslations()) as unknown as LooseTranslator;
+    return t.has(key) ? t(key, { ...VALIDATION_VALUES, ...values }) : key;
+}
+
+export async function errorResponse(error: ApiError) {
     return NextResponse.json(
-        { message: error.message },
+        { message: await translate(error.key, error.values) },
         { status: error.status, headers: error.headers },
     );
 }
@@ -49,22 +71,26 @@ export function route<P = Record<string, never>>(handler: Handler<P>) {
             if (error instanceof ApiError) return errorResponse(error);
 
             console.error(`[api] ${req.method} ${req.nextUrl.pathname}`, error);
-            return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
+            return NextResponse.json(
+                { message: await translate('errors.internal') },
+                { status: 500 },
+            );
         }
     };
 }
 
 function firstIssue(error: z.ZodError) {
     const issue = error.issues[0];
-    if (!issue) return 'Invalid input.';
+    if (!issue) return badRequest('invalidInput');
+    if (isValidationKey(issue.message)) return new ApiError(400, issue.message);
 
-    const path = issue.path.join('.');
-    return path ? `${path}: ${issue.message}` : issue.message;
+    const field = issue.path.join('.');
+    return field ? badRequest('invalidField', { field }) : badRequest('invalidInput');
 }
 
 export function parse<S extends z.ZodType>(schema: S, value: unknown): z.infer<S> {
     const result = schema.safeParse(value);
-    if (!result.success) throw badRequest(firstIssue(result.error));
+    if (!result.success) throw firstIssue(result.error);
     return result.data;
 }
 
@@ -74,7 +100,7 @@ export async function readBody<S extends z.ZodType>(req: NextRequest, schema: S)
     try {
         body = await req.json();
     } catch {
-        throw badRequest('Invalid JSON body.');
+        throw badRequest('invalidJson');
     }
 
     return parse(schema, body);
@@ -84,8 +110,8 @@ export function readQuery<S extends z.ZodType>(req: NextRequest, schema: S) {
     return parse(schema, Object.fromEntries(req.nextUrl.searchParams));
 }
 
-export function parseId(value: string, name = 'id') {
+export function parseId(value: string) {
     const result = idSchema.safeParse(value);
-    if (!result.success) throw badRequest(`Invalid ${name}.`);
+    if (!result.success) throw badRequest('invalidId');
     return result.data;
 }

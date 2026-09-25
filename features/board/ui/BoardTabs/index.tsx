@@ -22,6 +22,7 @@ import { useBoardMutations } from '../../model/useBoardMutations';
 import { useBoardActions } from '../BoardActions';
 import { BoardNameDialog } from '../BoardNameDialog';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type BoardTabsProps = {
     /** Selected board; `undefined` = "All saved". */
@@ -34,6 +35,8 @@ type BoardTabsProps = {
  * Boards can be dragged into any order (shared with the home feed tabs).
  */
 export function BoardTabs({ value, onChange }: BoardTabsProps) {
+    const t = useTranslations('boards');
+    const tc = useTranslations('common');
     const { boards, keys, reorder } = useBoardOrder();
     const { create } = useBoardMutations();
     const [creating, setCreating] = useState(false);
@@ -61,8 +64,8 @@ export function BoardTabs({ value, onChange }: BoardTabsProps) {
                         rootClassName={styles.row}
                         className={styles.tabs}
                         role="tablist"
-                        aria-label="Boards"
-                        itemsLabel="boards"
+                        aria-label={t('label')}
+                        itemsLabel={t('items')}
                     >
                         <button
                             type="button"
@@ -74,7 +77,7 @@ export function BoardTabs({ value, onChange }: BoardTabsProps) {
                             <span className={`${styles.cover} ${styles.allCover}`}>
                                 <BookmarkIcon fontSize="small" />
                             </span>
-                            All
+                            {t('all')}
                         </button>
 
                         {boards.map((board) => (
@@ -93,13 +96,13 @@ export function BoardTabs({ value, onChange }: BoardTabsProps) {
 
             <button type="button" className={styles.add} onClick={() => setCreating(true)}>
                 <AddIcon fontSize="small" />
-                New board
+                {t('new')}
             </button>
 
             {creating && (
                 <BoardNameDialog
-                    title="New board"
-                    submitLabel="Create"
+                    title={t('new')}
+                    submitLabel={tc('create')}
                     pending={create.isPending}
                     onClose={() => setCreating(false)}
                     onSubmit={(name) =>
@@ -126,6 +129,7 @@ type SortableBoardTabProps = {
 };
 
 function SortableBoardTab({ board, active, onSelect, actions }: SortableBoardTabProps) {
+    const t = useTranslations('boards');
     const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
         id: boardKey(board.id),
     });
@@ -162,9 +166,7 @@ function SortableBoardTab({ board, active, onSelect, actions }: SortableBoardTab
                 <span className={styles.count}>{board.collections}</span>
             </button>
 
-            {active && (
-                <ActionsMenu label="Board actions" className={styles.menu} items={actions} />
-            )}
+            {active && <ActionsMenu label={t('actions')} className={styles.menu} items={actions} />}
         </div>
     );
 }

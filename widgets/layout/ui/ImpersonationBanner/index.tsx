@@ -1,10 +1,15 @@
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export function ImpersonationBanner({ username }: { username: string }) {
+    const t = useTranslations('nav');
+
     return (
         <div className={styles.banner} role="status">
-            You are signed in as <strong>@{username}</strong>. Use “Return to admin” in the account
-            menu to go back.
+            {t.rich('impersonating', {
+                username,
+                strong: (chunks) => <strong>{chunks}</strong>,
+            })}
         </div>
     );
 }

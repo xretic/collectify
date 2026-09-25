@@ -15,11 +15,12 @@ import { collectionApi } from '@/entities/collection/api/collectionApi';
 import type { CollectionDetails } from '@/entities/collection/model/types';
 import { useCollectionCache } from '@/entities/collection/model/useCollectionDetails';
 import { BOARD_NAME_MAX_LENGTH } from '@/shared/lib/constants';
-import { formatCompact } from '@/shared/lib/format/number';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import { useBoardMutations } from '../../model/useBoardMutations';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type SaveMenuProps = {
     collection: CollectionDetails;
@@ -31,6 +32,8 @@ type SaveMenuProps = {
  * collection on any of their boards, or create a board on the spot.
  */
 export function SaveMenu({ collection, disabled }: SaveMenuProps) {
+    const t = useTranslations('boards');
+    const format = useFormatters();
     const queryClient = useQueryClient();
     const cache = useCollectionCache(collection.id);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -107,11 +110,11 @@ export function SaveMenu({ collection, disabled }: SaveMenuProps) {
                 disabled={disabled}
                 onClick={open}
                 aria-haspopup="dialog"
-                title={disabled ? 'Sign in to save' : undefined}
+                title={disabled ? t('signInToSave') : undefined}
             >
                 {collection.favorited ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-                <span>{collection.favorited ? 'Saved' : 'Save'}</span>
-                <span className={styles.count}>{formatCompact(collection.favorites)}</span>
+                <span>{collection.favorited ? t('saved') : t('save')}</span>
+                <span className={styles.count}>{format.compact(collection.favorites)}</span>
             </button>
 
             <Popover
@@ -121,13 +124,13 @@ export function SaveMenu({ collection, disabled }: SaveMenuProps) {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                 classes={{ paper: styles.popover }}
             >
-                <h3 className={styles.title}>Save to</h3>
+                <h3 className={styles.title}>{t('saveTo')}</h3>
 
                 <label className={styles.row}>
                     <span className={`${styles.cover} ${styles.allCover}`}>
                         <BookmarkIcon fontSize="small" />
                     </span>
-                    <span className={styles.name}>All saved</span>
+                    <span className={styles.name}>{t('allSaved')}</span>
                     <Checkbox
                         checked={collection.favorited}
                         onChange={(event) => setFavorited.mutate(event.target.checked)}
@@ -163,27 +166,25 @@ export function SaveMenu({ collection, disabled }: SaveMenuProps) {
                         );
                     })}
 
-                    {boards.data?.length === 0 && (
-                        <p className={styles.hint}>Group your saved collections into boards.</p>
-                    )}
+                    {boards.data?.length === 0 && <p className={styles.hint}>{t('hint')}</p>}
                 </div>
 
                 <form className={styles.create} onSubmit={createBoard}>
                     <InputBase
                         className={styles.input}
-                        placeholder="New board name"
+                        placeholder={t('newName')}
                         value={newName}
                         onChange={(event) => setNewName(event.target.value)}
                         inputProps={{
                             maxLength: BOARD_NAME_MAX_LENGTH,
-                            'aria-label': 'New board name',
+                            'aria-label': t('newName'),
                         }}
                     />
                     <IconButton
                         type="submit"
                         color="primary"
                         disabled={!parsedName.success || create.isPending}
-                        aria-label="Create board"
+                        aria-label={t('create')}
                     >
                         <AddIcon />
                     </IconButton>

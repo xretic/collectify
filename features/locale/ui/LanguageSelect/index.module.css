@@ -1,0 +1,30 @@
+.field {
+    width: 260px;
+    max-width: 100%;
+}
+
+.value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon {
+    font-size: 18px !important;
+    color: var(--soft-text);
+}
+
+.option {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.translated {
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.compact {
+    width: 170px;
+}

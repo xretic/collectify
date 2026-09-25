@@ -7,6 +7,7 @@ import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
+import { useTranslations } from 'next-intl';
 
 type DeleteCollectionDialogProps = {
     open: boolean;
@@ -24,6 +25,8 @@ export function DeleteCollectionDialog({
     name,
     asModerator = false,
 }: DeleteCollectionDialogProps) {
+    const t = useTranslations('collection.delete');
+    const tc = useTranslations('common');
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -32,7 +35,7 @@ export function DeleteCollectionDialog({
         onSuccess: () => {
             queryClient.removeQueries({ queryKey: collectionQueryKeys.detail(collectionId) });
             queryClient.invalidateQueries({ queryKey: collectionQueryKeys.lists() });
-            toast.success('Collection deleted.');
+            toast.success(t('deleted'));
             router.replace(asModerator ? '/' : '/collections/my');
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
@@ -41,9 +44,9 @@ export function DeleteCollectionDialog({
     return (
         <ConfirmDialog
             open={open}
-            title={`Delete “${name}”?`}
-            description="This action cannot be undone. All items and comments will be deleted too."
-            confirmLabel="Delete"
+            title={t('title', { name })}
+            description={t('description')}
+            confirmLabel={tc('delete')}
             destructive
             pending={remove.isPending}
             onClose={onClose}

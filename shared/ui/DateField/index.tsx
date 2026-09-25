@@ -8,6 +8,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styles from './index.module.css';
+import { useLocale, useTranslations } from 'next-intl';
 
 type DateFieldProps = Omit<TextFieldProps, 'value' | 'onChange' | 'type'> & {
     /** `YYYY-MM-DD` or `null`. */
@@ -20,10 +21,15 @@ type DateFieldProps = Omit<TextFieldProps, 'value' | 'onChange' | 'type'> & {
 
 type View = 'days' | 'months' | 'years';
 
-const WEEKDAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-const MONTHS = Array.from({ length: 12 }, (_, month) =>
-    new Date(2000, month, 1).toLocaleString('en', { month: 'short' }),
-);
+// 2024-01-01 is a Monday; the calendar is Monday-first.
+const weekdayNames = (locale: string) =>
+    Array.from({ length: 7 }, (_, day) =>
+        new Date(2024, 0, day + 1).toLocaleDateString(locale, { weekday: 'short' }),
+    );
+const monthNames = (locale: string) =>
+    Array.from({ length: 12 }, (_, month) =>
+        new Date(2000, month, 1).toLocaleDateString(locale, { month: 'short' }),
+    );
 const DEFAULT_MIN = '1900-01-01';
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -36,9 +42,9 @@ const todayIso = () => {
     const now = new Date();
     return toIso(now.getFullYear(), now.getMonth(), now.getDate());
 };
-const formatLong = (iso: string) => {
+const formatLong = (locale: string, iso: string) => {
     const { year, month, day } = parse(iso);
-    return new Date(year, month, day).toLocaleDateString('en', {
+    return new Date(year, month, day).toLocaleDateString(locale, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
@@ -54,6 +60,8 @@ export function DateField({
     slotProps,
     ...rest
 }: DateFieldProps) {
+    const t = useTranslations('dateField');
+    const locale = useLocale();
     const [anchor, setAnchor] = useState<HTMLElement | null>(null);
     const open = anchor !== null;
     const close = () => setAnchor(null);
@@ -62,8 +70,8 @@ export function DateField({
         <>
             <TextField
                 {...rest}
-                value={value ? formatLong(value) : ''}
-                placeholder="Pick a date"
+                value={value ? formatLong(locale, value) : ''}
+                placeholder={t('placeholder')}
                 onClick={(event) => setAnchor(event.currentTarget)}
                 onKeyDown={(event) => {
                     if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
@@ -81,7 +89,7 @@ export function DateField({
                                 {value && (
                                     <IconButton
                                         size="small"
-                                        aria-label="Clear date"
+                                        aria-label={t('clear')}
                                         className={styles.adornment}
                                         onClick={(event) => {
                                             event.stopPropagation();
@@ -93,7 +101,7 @@ export function DateField({
                                 )}
                                 <IconButton
                                     size="small"
-                                    aria-label="Open calendar"
+                                    aria-label={t('open')}
                                     className={styles.adornment}
                                 >
                                     <CalendarMonthOutlinedIcon fontSize="small" />
@@ -134,6 +142,8 @@ type CalendarProps = {
 };
 
 function Calendar({ value, min, max, onSelect }: CalendarProps) {
+    const t = useTranslations('dateField');
+    const locale = useLocale();
     const initial = parse(value ?? (todayIso() > max ? max : todayIso()));
     const [year, setYear] = useState(initial.year);
     const [month, setMonth] = useState(initial.month);
@@ -157,11 +167,14 @@ function Calendar({ value, min, max, onSelect }: CalendarProps) {
                     type="button"
                     className={styles.title}
                     onClick={() => setView(view === 'years' ? 'days' : 'years')}
-                    aria-label="Choose year"
+                    aria-label={t('chooseYear')}
                 >
-                    {view === 'days' &&
-                        `${new Date(year, month).toLocaleString('en', { month: 'long' })} `}
-                    {year}
+                    {view === 'days'
+                        ? new Date(year, month).toLocaleDateString(locale, {
+                              month: 'long',
+                              year: 'numeric',
+                          })
+                        : year}
                     <ExpandMoreIcon
                         fontSize="small"
                         className={`${styles.caret} ${view === 'years' ? styles.caretOpen : ''}`}
@@ -172,7 +185,7 @@ function Calendar({ value, min, max, onSelect }: CalendarProps) {
                     <div className={styles.nav}>
                         <IconButton
                             size="small"
-                            aria-label="Previous month"
+                            aria-label={t('previousMonth')}
                             disabled={ym(year, month) <= minYm}
                             onClick={() => shiftMonth(-1)}
                         >
@@ -180,7 +193,7 @@ function Calendar({ value, min, max, onSelect }: CalendarProps) {
                         </IconButton>
                         <IconButton
                             size="small"
-                            aria-label="Next month"
+                            aria-label={t('nextMonth')}
                             disabled={ym(year, month) >= maxYm}
                             onClick={() => shiftMonth(1)}
                         >
@@ -204,7 +217,7 @@ function Calendar({ value, min, max, onSelect }: CalendarProps) {
 
             {view === 'months' && (
                 <div className={styles.months}>
-                    {MONTHS.map((label, index) => {
+                    {monthNames(locale).map((label, index) => {
                         const key = ym(year, index);
                         return (
                             <button
@@ -281,6 +294,7 @@ type DayGridProps = {
 };
 
 function DayGrid({ year, month, value, min, max, onSelect }: DayGridProps) {
+    const locale = useLocale();
     const today = todayIso();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     // Monday-first offset of the 1st.
@@ -288,7 +302,7 @@ function DayGrid({ year, month, value, min, max, onSelect }: DayGridProps) {
 
     return (
         <div className={styles.days}>
-            {WEEKDAYS.map((day) => (
+            {weekdayNames(locale).map((day) => (
                 <span key={day} className={styles.weekday}>
                     {day}
                 </span>

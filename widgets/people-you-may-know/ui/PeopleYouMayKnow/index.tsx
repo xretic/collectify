@@ -13,18 +13,23 @@ import { useFollowUser } from '@/features/user/follow/model/useFollowUser';
 import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 const WIDGET_SIZE = 5;
 const PAGE_SIZE = 20;
 
-function reason(user: SuggestedUser) {
-    const parts: string[] = [];
+function useReason() {
+    const t = useTranslations('people');
 
-    if (user.mutual > 0) parts.push(`${user.mutual} mutual`);
-    if (user.city) parts.push(`Lives in ${user.city}`);
-    if (user.followsYou) parts.push('Follows you');
+    return (user: SuggestedUser) => {
+        const parts: string[] = [];
 
-    return parts.join(' · ');
+        if (user.mutual > 0) parts.push(t('mutual', { count: user.mutual }));
+        if (user.city) parts.push(t('livesIn', { city: user.city }));
+        if (user.followsYou) parts.push(t('followsYou'));
+
+        return parts.join(' · ');
+    };
 }
 
 type PersonProps = {
@@ -38,6 +43,8 @@ type PersonProps = {
  * stay listed (as "Following") until the suggestions are refetched.
  */
 function Person({ user, variant }: PersonProps) {
+    const t = useTranslations('people');
+    const reason = useReason();
     const follow = useFollowUser();
     const followed = user.isFollowed;
     const onToggle = () => follow.mutate({ userId: user.id, follow: !followed });
@@ -61,7 +68,7 @@ function Person({ user, variant }: PersonProps) {
                     onClick={onToggle}
                     aria-pressed={followed}
                 >
-                    {followed ? 'Following' : 'Follow'}
+                    {followed ? t('following') : t('follow')}
                 </button>
             ) : (
                 <Button
@@ -70,7 +77,7 @@ function Person({ user, variant }: PersonProps) {
                     onClick={onToggle}
                     className={styles.follow}
                 >
-                    {followed ? 'Following' : 'Follow'}
+                    {followed ? t('following') : t('follow')}
                 </Button>
             )}
         </article>
@@ -78,6 +85,8 @@ function Person({ user, variant }: PersonProps) {
 }
 
 function AllPeopleDialog({ onClose }: { onClose: () => void }) {
+    const t = useTranslations('people');
+    const tc = useTranslations('common');
     const query = useInfiniteQuery({
         queryKey: [...userQueryKeys.suggestions(PAGE_SIZE), 'all'],
         queryFn: ({ pageParam }) => userApi.suggestions(pageParam, PAGE_SIZE),
@@ -98,8 +107,8 @@ function AllPeopleDialog({ onClose }: { onClose: () => void }) {
     return (
         <Dialog open onClose={onClose} fullWidth maxWidth="sm">
             <DialogTitle className={styles.dialogTitle}>
-                People you may know
-                <IconButton onClick={onClose} aria-label="Close" color="inherit">
+                {t('title')}
+                <IconButton onClick={onClose} aria-label={tc('close')} color="inherit">
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
@@ -126,6 +135,7 @@ function AllPeopleDialog({ onClose }: { onClose: () => void }) {
  * who follow you), with every suggestion one click away.
  */
 export function PeopleYouMayKnow() {
+    const t = useTranslations('people');
     const queryClient = useQueryClient();
     const [showAll, setShowAll] = useState(false);
     const hidden = usePeopleWidgetVisibility((state) => state.hidden);
@@ -141,15 +151,15 @@ export function PeopleYouMayKnow() {
     if (hidden || !query.data || query.data.data.length === 0) return null;
 
     return (
-        <section className={styles.section} aria-label="People you may know">
+        <section className={styles.section} aria-label={t('title')}>
             <header className={styles.header}>
-                <h2 className={styles.title}>People you may know</h2>
+                <h2 className={styles.title}>{t('title')}</h2>
                 <IconButton
                     size="small"
                     className={styles.hide}
                     onClick={() => setHidden(true)}
-                    aria-label="Hide suggestions"
-                    title="Hide (you can bring it back in Settings)"
+                    aria-label={t('hide')}
+                    title={t('hideHint')}
                 >
                     <CloseIcon fontSize="small" />
                 </IconButton>
@@ -163,7 +173,7 @@ export function PeopleYouMayKnow() {
 
             {query.data.hasMore && (
                 <button type="button" className={styles.showAll} onClick={() => setShowAll(true)}>
-                    See all suggestions
+                    {t('seeAll')}
                 </button>
             )}
 

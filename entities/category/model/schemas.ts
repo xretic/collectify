@@ -5,14 +5,22 @@ export const categorySlugSchema = z
     .string()
     .trim()
     .toLowerCase()
-    .min(1, 'Slug is required.')
-    .max(40)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lowercase letters, digits and dashes.');
+    .min(1, 'validation.slugRequired')
+    .max(40, 'validation.tooLong')
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'validation.slugChars');
 
 export const categorySchema = z.object({
-    name: z.string().trim().min(1, 'Name is required.').max(CATEGORY_NAME_MAX_LENGTH),
+    name: z
+        .string()
+        .trim()
+        .min(1, 'validation.nameRequired')
+        .max(CATEGORY_NAME_MAX_LENGTH, 'validation.tooLong'),
     slug: categorySlugSchema,
-    description: z.string().trim().max(CATEGORY_DESCRIPTION_MAX_LENGTH).default(''),
+    description: z
+        .string()
+        .trim()
+        .max(CATEGORY_DESCRIPTION_MAX_LENGTH, 'validation.tooLong')
+        .default(''),
     position: z.number().int().min(0).max(10_000).default(0),
     isActive: z.boolean().default(true),
 });

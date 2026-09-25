@@ -1,5 +1,6 @@
 import 'server-only';
 import { db, isUniqueViolation } from '@/shared/server/db';
+import type { Locale } from '@/shared/config/i18n';
 import { badRequest, conflict, forbidden, notFound } from '@/shared/server/http';
 import { findCity, normalizeCityName } from '@/shared/server/geo/cities';
 import {
@@ -7,6 +8,10 @@ import {
     notifySocial,
     retractSocial,
 } from '@/entities/notification/server/notifications';
+
+export async function updateLocale(userId: number, locale: Locale) {
+    await db.user.update({ where: { id: userId }, data: { locale }, select: { id: true } });
+}
 
 export async function updateProfile(
     userId: number,
@@ -21,7 +26,7 @@ export async function updateProfile(
         birthDate?: string | null;
     },
 ) {
-    if (Object.keys(input).length === 0) throw badRequest('Nothing to update.');
+    if (Object.keys(input).length === 0) throw badRequest('nothingToUpdate');
 
     const { birthDate, city, country, ...rest } = input;
 
@@ -36,7 +41,7 @@ export async function updateProfile(
     try {
         await db.user.update({ where: { id: userId }, data, select: { id: true } });
     } catch (error) {
-        if (isUniqueViolation(error)) throw conflict('This username is taken.');
+        if (isUniqueViolation(error)) throw conflict('usernameTaken');
         throw error;
     }
 }
@@ -57,12 +62,12 @@ async function resolveLocation(
         where: { id: userId },
         select: { country: true, city: true },
     });
-    if (!current) throw notFound('User not found.');
+    if (!current) throw notFound('userNotFound');
 
     const nextCountry = country === undefined ? current.country : country;
     const nextCity = city === undefined ? current.city : city;
 
-    if (country === null && city) throw badRequest('Choose a country for the city.');
+    if (country === null && city) throw badRequest('countryRequiredForCity');
     if (!nextCity || (!nextCountry && !city)) {
         return { country: nextCountry, city: null, cityKey: null };
     }
@@ -70,17 +75,17 @@ async function resolveLocation(
     const found = await findCity(nextCity, nextCountry);
     if (!found) {
         if (city === undefined) return { country: nextCountry, city: null, cityKey: null };
-        throw badRequest('Unknown city.');
+        throw badRequest('cityUnknown');
     }
 
     return { country: found.country, city: found.name, cityKey: normalizeCityName(found.name) };
 }
 
 export async function follow(followerId: number, followingId: number) {
-    if (followerId === followingId) throw forbidden('You cannot follow yourself.');
+    if (followerId === followingId) throw forbidden('cannotFollowSelf');
 
     const target = await db.user.findUnique({ where: { id: followingId }, select: { id: true } });
-    if (!target) throw notFound('User not found.');
+    if (!target) throw notFound('userNotFound');
 
     // Only the request that actually creates the follow notifies.
     const { count } = await db.follow.createMany({

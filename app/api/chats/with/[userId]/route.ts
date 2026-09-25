@@ -7,5 +7,5 @@ export const GET = route<{ userId: string }>(async (req, params) => {
     const viewer = await requireChatViewer(req);
     await enforceRateLimit(req, 'search', viewer.userId);
 
-    return json(await findChatWith(viewer.userId, parseId(params.userId, 'user id')));
+    return json(await findChatWith(viewer.userId, parseId(params.userId)));
 });

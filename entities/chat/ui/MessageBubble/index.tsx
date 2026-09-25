@@ -1,9 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import { Avatar } from '@mui/material';
-import { formatDateTime } from '@/shared/lib/format/date';
 import type { BubblePosition } from '../../lib/layoutMessages';
 import type { ChatMessage } from '../../model/types';
 import styles from './index.module.css';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type MessageBubbleProps = {
     message: ChatMessage;
@@ -13,6 +15,7 @@ type MessageBubbleProps = {
 };
 
 export function MessageBubble({ message, own, position }: MessageBubbleProps) {
+    const format = useFormatters();
     const showAvatar = !own && (position === 'single' || position === 'last');
 
     return (
@@ -31,7 +34,7 @@ export function MessageBubble({ message, own, position }: MessageBubbleProps) {
                 </span>
             )}
 
-            <p className={styles.bubble} title={formatDateTime(message.createdAt)}>
+            <p className={styles.bubble} title={format.dateTime(message.createdAt)}>
                 {message.content}
             </p>
         </div>

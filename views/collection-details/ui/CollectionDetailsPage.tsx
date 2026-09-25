@@ -22,10 +22,13 @@ import { ActionsMenu, type ActionsMenuItem } from '@/shared/ui/ActionsMenu';
 import { Spinner } from '@/shared/ui/Spinner';
 import type { CollectionDetails } from '@/entities/collection/model/types';
 import { TagChips } from '@/entities/tag/ui/TagChips';
-import { formatDate } from '@/shared/lib/format/date';
 import styles from './CollectionDetailsPage.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 export function CollectionDetailsPage() {
+    const t = useTranslations('collection');
+    const format = useFormatters();
     const collectionId = Number(useParams<{ id: string }>().id);
     const { user } = useSessionUser();
     const { data: collection, error, isPending } = useCollectionDetails(collectionId);
@@ -56,7 +59,7 @@ export function CollectionDetailsPage() {
             <div className={styles.page}>
                 <section className={styles.panel}>
                     <header className={styles.header}>
-                        <h2 className={styles.heading}>Description</h2>
+                        <h2 className={styles.heading}>{t('description')}</h2>
 
                         {user && (
                             <CollectionActions
@@ -82,9 +85,11 @@ export function CollectionDetailsPage() {
                         )}
 
                         <span className={styles.meta}>
-                            {collection.items.length} items · Created{' '}
-                            {formatDate(collection.createdAt)}
-                            {collection.isPrivate && ' · Private'}
+                            {t('meta', {
+                                count: collection.items.length,
+                                date: format.date(collection.createdAt),
+                            })}
+                            {collection.isPrivate && ` · ${t('private')}`}
                         </span>
                     </footer>
                 </section>
@@ -143,6 +148,7 @@ function CollectionActions({
     onStats,
     onDelete,
 }: CollectionActionsProps) {
+    const t = useTranslations('collection');
     const report = useReportAction({
         target: { type: 'COLLECTION', collectionId: collection.id },
         username: collection.author.username,
@@ -154,7 +160,7 @@ function CollectionActions({
     if (isOwner) {
         items.push({
             key: 'edit',
-            label: 'Edit collection',
+            label: t('edit.title'),
             icon: <EditOutlinedIcon fontSize="small" />,
             onClick: onEdit,
         });
@@ -162,7 +168,7 @@ function CollectionActions({
         if (!collection.isPrivate) {
             items.push({
                 key: 'stats',
-                label: 'Statistics',
+                label: t('stats.title'),
                 icon: <InsertChartOutlinedIcon fontSize="small" />,
                 onClick: onStats,
             });
@@ -172,7 +178,7 @@ function CollectionActions({
     if (isOwner || canModerate) {
         items.push({
             key: 'delete',
-            label: canModerate ? 'Delete as moderator' : 'Delete collection',
+            label: canModerate ? t('deleteAsModerator') : t('deleteCollection'),
             icon: <DeleteOutlineOutlinedIcon fontSize="small" />,
             onClick: onDelete,
             danger: true,
@@ -181,5 +187,5 @@ function CollectionActions({
 
     if (!isOwner) items.push(report);
 
-    return <ActionsMenu items={items} label="Collection actions" size="medium" />;
+    return <ActionsMenu items={items} label={t('actions')} size="medium" />;
 }

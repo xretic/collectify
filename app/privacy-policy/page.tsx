@@ -1,10 +1,11 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import PrivacyPolicyPage from '@/views/privacy-policy/ui/PrivacyPolicyPage';
 
-export const metadata: Metadata = {
-    title: 'Privacy Policy — Collectify',
-    description: 'How Collectify collects, uses, and stores your data.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations('meta');
+    return { title: t('pages.privacyPolicy'), description: t('privacyDescription') };
+}
 
 export default function PrivacyPolicyRoute() {
     return <PrivacyPolicyPage />;

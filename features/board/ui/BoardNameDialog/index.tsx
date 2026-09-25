@@ -5,6 +5,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/
 import { boardNameSchema } from '@/entities/board/model/schemas';
 import { BOARD_NAME_MAX_LENGTH } from '@/shared/lib/constants';
 import { CountedTextField } from '@/shared/ui/CountedTextField';
+import { useTranslations } from 'next-intl';
 
 type BoardNameDialogProps = {
     title: string;
@@ -24,6 +25,8 @@ export function BoardNameDialog({
     onSubmit,
     onClose,
 }: BoardNameDialogProps) {
+    const t = useTranslations('boards');
+    const tc = useTranslations('common');
     const [name, setName] = useState(initialName);
     const parsed = boardNameSchema.safeParse(name);
 
@@ -38,7 +41,7 @@ export function BoardNameDialog({
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>
                     <CountedTextField
-                        label="Board name"
+                        label={t('name')}
                         value={name}
                         onChange={setName}
                         maxLength={BOARD_NAME_MAX_LENGTH}
@@ -49,7 +52,7 @@ export function BoardNameDialog({
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose} disabled={pending}>
-                        Cancel
+                        {tc('cancel')}
                     </Button>
                     <Button type="submit" variant="contained" disabled={!parsed.success || pending}>
                         {submitLabel}

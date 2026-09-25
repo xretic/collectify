@@ -3,15 +3,18 @@
 import { Button } from '@mui/material';
 import { managementApi } from '@/entities/moderation/api/managementApi';
 import type { ActiveSanction } from '@/entities/sanction/model/types';
-import { formatSanction } from '@/entities/sanction/lib/format';
+import { useFormatSanction } from '@/entities/sanction/lib/format';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { useModerationMutation } from '@/entities/moderation/model/useModerationMutation';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export function SanctionList({ sanctions }: { sanctions: ActiveSanction[] }) {
-    const revoke = useModerationMutation(managementApi.revokeSanction, 'Sanction lifted.');
+    const t = useTranslations('management.sanctions');
+    const formatSanction = useFormatSanction();
+    const revoke = useModerationMutation(managementApi.revokeSanction, t('lifted'));
 
-    if (sanctions.length === 0) return <EmptyState title="No active sanctions" />;
+    if (sanctions.length === 0) return <EmptyState title={t('none')} />;
 
     return (
         <ul className={styles.list}>
@@ -30,7 +33,7 @@ export function SanctionList({ sanctions }: { sanctions: ActiveSanction[] }) {
                         disabled={revoke.isPending}
                         onClick={() => revoke.mutate(sanction.id)}
                     >
-                        Lift
+                        {t('lift')}
                     </Button>
                 </li>
             ))}

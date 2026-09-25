@@ -11,18 +11,12 @@ import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import type { MuteDuration } from '@/entities/chat/model/schemas';
 import type { ChatMuteState } from '@/entities/chat/model/types';
-import { formatChatTimestamp } from '@/shared/lib/format/date';
 import { useChatMute } from '../../model/useChatMute';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
-const DURATIONS: { value: Exclude<MuteDuration, 'forever'>; label: string }[] = [
-    { value: '15m', label: '15 minutes' },
-    { value: '30m', label: '30 minutes' },
-    { value: '1h', label: '1 hour' },
-    { value: '8h', label: '8 hours' },
-    { value: '1d', label: '1 day' },
-    { value: '1w', label: '1 week' },
-];
+const DURATIONS: Exclude<MuteDuration, 'forever'>[] = ['15m', '30m', '1h', '8h', '1d', '1w'];
 
 type ChatMuteMenuProps = {
     chatId: number;
@@ -33,6 +27,8 @@ type ChatMuteMenuProps = {
 
 /** "⋯" menu of a chat row: mute for a while (Telegram-style submenu) or turn notifications off. */
 export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
+    const t = useTranslations('chats.mute');
+    const format = useFormatters();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [view, setView] = useState<'main' | 'durations'>('main');
     // Slide the main view in only when coming back from the durations.
@@ -60,7 +56,7 @@ export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
                     setReturned(false);
                     setAnchorEl(event.currentTarget);
                 }}
-                aria-label="Chat actions"
+                aria-label={t('actions')}
                 aria-haspopup="menu"
                 aria-expanded={open}
             >
@@ -81,8 +77,8 @@ export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
                         {mute && (
                             <p className={styles.status}>
                                 {mute.until
-                                    ? `Muted until ${formatChatTimestamp(mute.until)}`
-                                    : 'Notifications are off'}
+                                    ? t('mutedUntil', { date: format.chatTimestamp(mute.until) })
+                                    : t('off')}
                             </p>
                         )}
 
@@ -91,7 +87,7 @@ export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
                                 <ListItemIcon className={styles.icon}>
                                     <NotificationsActiveOutlinedIcon fontSize="small" />
                                 </ListItemIcon>
-                                <ListItemText>Enable notifications</ListItemText>
+                                <ListItemText>{t('enable')}</ListItemText>
                             </MenuItem>
                         )}
 
@@ -99,7 +95,7 @@ export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
                             <ListItemIcon className={styles.icon}>
                                 <ScheduleOutlinedIcon fontSize="small" />
                             </ListItemIcon>
-                            <ListItemText>Mute for…</ListItemText>
+                            <ListItemText>{t('muteForMenu')}</ListItemText>
                             <ChevronRightIcon fontSize="small" className={styles.chevron} />
                         </MenuItem>
 
@@ -111,7 +107,7 @@ export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
                                 <ListItemIcon className={styles.icon}>
                                     <NotificationsOffOutlinedIcon fontSize="small" />
                                 </ListItemIcon>
-                                <ListItemText>Disable notifications</ListItemText>
+                                <ListItemText>{t('disable')}</ListItemText>
                             </MenuItem>
                         )}
                     </div>
@@ -127,10 +123,10 @@ export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
                             <ListItemIcon className={styles.icon}>
                                 <ArrowBackIcon fontSize="small" />
                             </ListItemIcon>
-                            <ListItemText>Mute for</ListItemText>
+                            <ListItemText>{t('muteFor')}</ListItemText>
                         </MenuItem>
 
-                        {DURATIONS.map(({ value, label }) => (
+                        {DURATIONS.map((value) => (
                             <MenuItem
                                 key={value}
                                 className={styles.item}
@@ -139,7 +135,7 @@ export function ChatMuteMenu({ chatId, mute, className }: ChatMuteMenuProps) {
                                 <ListItemIcon className={styles.icon}>
                                     <TimerOutlinedIcon fontSize="small" />
                                 </ListItemIcon>
-                                <ListItemText>{label}</ListItemText>
+                                <ListItemText>{t(`durations.${value}`)}</ListItemText>
                             </MenuItem>
                         ))}
                     </div>

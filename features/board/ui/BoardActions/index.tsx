@@ -8,12 +8,15 @@ import type { ActionsMenuItem } from '@/shared/ui/ActionsMenu';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { useBoardMutations } from '../../model/useBoardMutations';
 import { BoardNameDialog } from '../BoardNameDialog';
+import { useTranslations } from 'next-intl';
 
 /**
  * Rename / delete for a board's "⋯" menu. Render `dialogs` outside the board tab,
  * so pointer events inside a dialog never reach the tab's drag handle.
  */
 export function useBoardActions({ onDeleted }: { onDeleted: (board: Board) => void }) {
+    const t = useTranslations('boards');
+    const tc = useTranslations('common');
     const { rename, remove } = useBoardMutations();
     const [renaming, setRenaming] = useState<Board | null>(null);
     const [deleting, setDeleting] = useState<Board | null>(null);
@@ -21,13 +24,13 @@ export function useBoardActions({ onDeleted }: { onDeleted: (board: Board) => vo
     const items = (board: Board): ActionsMenuItem[] => [
         {
             key: 'rename',
-            label: 'Rename',
+            label: t('rename'),
             icon: <DriveFileRenameOutlineIcon fontSize="small" />,
             onClick: () => setRenaming(board),
         },
         {
             key: 'delete',
-            label: 'Delete board',
+            label: t('delete'),
             icon: <DeleteOutlineOutlinedIcon fontSize="small" />,
             onClick: () => setDeleting(board),
             danger: true,
@@ -38,9 +41,9 @@ export function useBoardActions({ onDeleted }: { onDeleted: (board: Board) => vo
         <>
             {renaming && (
                 <BoardNameDialog
-                    title="Rename board"
+                    title={t('renameTitle')}
                     initialName={renaming.name}
-                    submitLabel="Save"
+                    submitLabel={tc('save')}
                     pending={rename.isPending}
                     onClose={() => setRenaming(null)}
                     onSubmit={(name) =>
@@ -54,9 +57,9 @@ export function useBoardActions({ onDeleted }: { onDeleted: (board: Board) => vo
 
             <ConfirmDialog
                 open={deleting !== null}
-                title={`Delete “${deleting?.name}”?`}
-                description="The collections stay in All saved."
-                confirmLabel="Delete"
+                title={t('deleteTitle', { name: deleting?.name ?? '' })}
+                description={t('deleteDescription')}
+                confirmLabel={tc('delete')}
                 destructive
                 pending={remove.isPending}
                 onClose={() => setDeleting(null)}

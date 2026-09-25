@@ -19,7 +19,7 @@ export async function listFollows(
     viewerId: number | null,
 ): Promise<FollowListPage> {
     const exists = await db.user.findUnique({ where: { id: userId }, select: { id: true } });
-    if (!exists) throw notFound('User not found.');
+    if (!exists) throw notFound('userNotFound');
 
     const take = FOLLOW_LIST_PAGE_SIZE + 1;
 

@@ -10,6 +10,7 @@ import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { useModerationMutation } from '@/entities/moderation/model/useModerationMutation';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type UserDangerZoneProps = {
     userId: number;
@@ -19,14 +20,13 @@ type UserDangerZoneProps = {
 
 /** Admin-only: impersonate or delete an account. */
 export function UserDangerZone({ userId, username, onDeleted }: UserDangerZoneProps) {
+    const t = useTranslations('management.danger');
+    const tc = useTranslations('common');
     const queryClient = useQueryClient();
     const [confirm, setConfirm] = useState<'impersonate' | 'delete' | null>(null);
 
     const impersonate = useModerationMutation(() => managementApi.impersonate(userId));
-    const remove = useModerationMutation(
-        () => managementApi.deleteUser(userId),
-        'Account deleted.',
-    );
+    const remove = useModerationMutation(() => managementApi.deleteUser(userId), t('deleted'));
 
     const handleImpersonate = () =>
         impersonate.mutate(undefined, {
@@ -52,7 +52,7 @@ export function UserDangerZone({ userId, username, onDeleted }: UserDangerZonePr
                 startIcon={<LoginOutlinedIcon />}
                 onClick={() => setConfirm('impersonate')}
             >
-                Sign in as user
+                {t('impersonate')}
             </Button>
             <Button
                 color="error"
@@ -60,14 +60,14 @@ export function UserDangerZone({ userId, username, onDeleted }: UserDangerZonePr
                 startIcon={<DeleteOutlinedIcon />}
                 onClick={() => setConfirm('delete')}
             >
-                Delete account
+                {t('delete')}
             </Button>
 
             <ConfirmDialog
                 open={confirm === 'impersonate'}
-                title={`Sign in as @${username}?`}
-                description="Everything you do will be recorded in the audit log under your name."
-                confirmLabel="Sign in"
+                title={t('impersonateTitle', { username })}
+                description={t('impersonateDescription')}
+                confirmLabel={t('signIn')}
                 pending={impersonate.isPending}
                 onClose={() => setConfirm(null)}
                 onConfirm={handleImpersonate}
@@ -75,9 +75,9 @@ export function UserDangerZone({ userId, username, onDeleted }: UserDangerZonePr
 
             <ConfirmDialog
                 open={confirm === 'delete'}
-                title={`Delete @${username}?`}
-                description="The account, its collections, comments and chats are deleted permanently."
-                confirmLabel="Delete"
+                title={t('deleteTitle', { username })}
+                description={t('deleteDescription')}
+                confirmLabel={tc('delete')}
                 destructive
                 pending={remove.isPending}
                 onClose={() => setConfirm(null)}

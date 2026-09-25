@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import LoginPage from '@/views/login/ui/LoginPage';
+import { pageMetadata } from '@/shared/i18n/metadata';
 
-export const metadata: Metadata = { title: 'Login' };
+export const generateMetadata = pageMetadata('login');
 
 export default function LoginRoute() {
     return (

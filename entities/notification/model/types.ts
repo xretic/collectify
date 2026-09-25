@@ -35,17 +35,6 @@ declare module '@/shared/lib/realtime/events' {
     }
 }
 
-export const NOTIFICATION_TEXTS: Record<NotificationType, string> = {
-    FOLLOW: 'started following you',
-    LIKE: 'liked your collection',
-    FAVORITE: 'saved your collection',
-    COMMENT: 'commented on your collection',
-    REPORT_RESOLVED: 'Your report has been reviewed. Thank you for helping keep Collectify safe.',
-    SANCTION: 'A moderator restricted your account. Check your settings for details.',
-    COMMENT_REPLY: 'replied to your comment on',
-    COMMENT_LIKED: 'loved your comment on',
-};
-
 /** Where clicking a notification leads. */
 export function notificationHref(notification: AppNotification): string {
     const { type, sender, collection, comment } = notification;

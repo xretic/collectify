@@ -7,7 +7,7 @@ const querySchema = z.object({ skip: z.coerce.number().int().min(0).max(100_000)
 
 export const GET = route<{ id: string }>(async (req, params) => {
     const ctx = await requireStaff(req);
-    const userId = parseId(params.id, 'user id');
+    const userId = parseId(params.id);
     await assertCanModerate(ctx, userId);
 
     const { skip } = readQuery(req, querySchema);

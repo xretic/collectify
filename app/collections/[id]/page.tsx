@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { db } from '@/shared/server/db';
 import { CollectionDetailsPage } from '@/views/collection-details/ui/CollectionDetailsPage';
 
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
               })
             : null;
 
-    if (!collection) return { title: 'Collection' };
+    if (!collection) return { title: (await getTranslations('meta.pages'))('collection') };
 
     return {
         title: collection.name,

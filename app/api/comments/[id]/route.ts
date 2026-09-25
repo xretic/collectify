@@ -11,7 +11,7 @@ export const PATCH = route<Params>(async (req, params) => {
     await enforceRateLimit(req, 'comment', viewer.userId);
 
     const { text } = await readBody(req, commentTextSchema);
-    const comment = await updateComment(viewer, parseId(params.id, 'comment id'), text);
+    const comment = await updateComment(viewer, parseId(params.id), text);
 
     return json({ comment });
 });
@@ -20,7 +20,7 @@ export const DELETE = route<Params>(async (req, params) => {
     const viewer = await requireViewer(req);
     await enforceRateLimit(req, 'mutation', viewer.userId);
 
-    await deleteComment(viewer, parseId(params.id, 'comment id'));
+    await deleteComment(viewer, parseId(params.id));
 
     return noContent();
 });

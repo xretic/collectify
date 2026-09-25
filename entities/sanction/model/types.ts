@@ -20,20 +20,6 @@ export const SANCTION_DURATION_MS: Record<SanctionDuration, number | null> = {
     permanent: null,
 };
 
-export const SANCTION_SCOPE_LABELS: Record<SanctionScope, string> = {
-    ACCOUNT: 'Account ban',
-    COMMENTS: 'Comments mute',
-    MESSENGER: 'Messenger mute',
-};
-
-export const SANCTION_DURATION_LABELS: Record<SanctionDuration, string> = {
-    '1h': '1 hour',
-    '1d': '1 day',
-    '7d': '7 days',
-    '30d': '30 days',
-    permanent: 'Permanent',
-};
-
 export type ActiveSanction = {
     id: number;
     scope: SanctionScope;

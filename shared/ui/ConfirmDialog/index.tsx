@@ -9,6 +9,7 @@ import {
     DialogTitle,
 } from '@mui/material';
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 
 type ConfirmDialogProps = {
     open: boolean;
@@ -25,12 +26,14 @@ export function ConfirmDialog({
     open,
     title,
     description,
-    confirmLabel = 'Confirm',
+    confirmLabel,
     destructive = false,
     pending = false,
     onConfirm,
     onClose,
 }: ConfirmDialogProps) {
+    const t = useTranslations('common');
+
     return (
         <Dialog open={open} onClose={pending ? undefined : onClose} maxWidth="xs" fullWidth>
             <DialogTitle>{title}</DialogTitle>
@@ -43,7 +46,7 @@ export function ConfirmDialog({
             )}
             <DialogActions>
                 <Button onClick={onClose} disabled={pending}>
-                    Cancel
+                    {t('cancel')}
                 </Button>
                 <Button
                     variant="contained"
@@ -51,7 +54,7 @@ export function ConfirmDialog({
                     onClick={onConfirm}
                     disabled={pending}
                 >
-                    {confirmLabel}
+                    {confirmLabel ?? t('confirm')}
                 </Button>
             </DialogActions>
         </Dialog>

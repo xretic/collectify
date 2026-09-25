@@ -19,6 +19,7 @@ import { MessageButton } from '@/features/chat/create/ui/MessageButton';
 import { ReportButton } from '@/features/report/create/ui/ReportButton';
 import { ProfileCollections } from '@/widgets/profile-collections/ui/ProfileCollections';
 import { Spinner } from '@/shared/ui/Spinner';
+import { useTranslations } from 'next-intl';
 
 function canManage(viewer: SessionUser | null, target: PublicUser) {
     if (!viewer || viewer.id === target.id || target.roles.includes('Admin')) return false;
@@ -27,6 +28,7 @@ function canManage(viewer: SessionUser | null, target: PublicUser) {
 }
 
 export default function UserProfilePage() {
+    const t = useTranslations('userProfile');
     const router = useRouter();
     const userId = Number(useParams<{ id: string }>().id);
     const { user: viewer } = useSessionUser();
@@ -77,7 +79,7 @@ export default function UserProfilePage() {
                             disabled={!signedIn}
                         />
                         {canManage(viewer, profile) && (
-                            <Tooltip title="Manage">
+                            <Tooltip title={t('manage')}>
                                 <IconButton
                                     color="inherit"
                                     component={Link}

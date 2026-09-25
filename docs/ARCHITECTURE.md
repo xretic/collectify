@@ -213,5 +213,11 @@ Redis is optional: Upstash (REST) wins when both it and `REDIS_URL` are set.
   `[data-theme='…']` block; the id list in `shared/config/themes.ts` must match. The saved theme is
   applied by an inline script before first paint, so there is no flash.
 - No style objects in `.tsx` files beyond one-line layout tweaks.
+- UI text comes from [`next-intl`](https://next-intl.dev) messages in `shared/i18n/messages/`
+  (English is the source; cs, pl, uk, de, es, fr, it, pt, nl, tr, ja, zh, ko). The language is the
+  `NEXT_LOCALE` cookie, falling back to `Accept-Language`; signed-in users also keep it in
+  `User.locale`, chosen at registration or in settings and restored on login. There is no locale
+  in the URL. Server errors and validation messages are keys translated in `route()`, dates and
+  numbers go through `useFormatters()`, and MUI's built-in texts follow the locale via the theme.
 - Server state is TanStack Query; zustand holds only tiny cross-tree UI state (theme, toasts,
   dialogs, presence).

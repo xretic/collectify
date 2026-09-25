@@ -6,7 +6,7 @@ import { notifyTyping } from '@/features/chat/server/chats';
 export const POST = route<{ id: string }>(async (req, params) => {
     const viewer = await requireChatViewer(req);
     await enforceRateLimit(req, 'realtime', viewer.userId);
-    await notifyTyping(parseId(params.id, 'chat id'), viewer.userId);
+    await notifyTyping(parseId(params.id), viewer.userId);
 
     return noContent();
 });

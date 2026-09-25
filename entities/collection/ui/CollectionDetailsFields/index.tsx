@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@mui/material';
 import {
     COLLECTION_DESCRIPTION_MAX_LENGTH,
@@ -7,6 +9,7 @@ import { CountedTextField } from '@/shared/ui/CountedTextField';
 import { ImageDropzone } from '@/shared/ui/ImageDropzone';
 import type { CollectionDraft } from '../../model/drafts';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CollectionDetailsFieldsProps = {
     value: CollectionDraft;
@@ -15,23 +18,24 @@ type CollectionDetailsFieldsProps = {
 
 /** Name, description, banner and visibility — shared by "create" and "edit". */
 export function CollectionDetailsFields({ value, onChange }: CollectionDetailsFieldsProps) {
+    const t = useTranslations('collectionForm');
     const set = <K extends keyof CollectionDraft>(key: K, fieldValue: CollectionDraft[K]) =>
         onChange({ ...value, [key]: fieldValue });
 
     return (
         <div className={styles.fields}>
             <div className={styles.field}>
-                <span className={styles.label}>Cover image</span>
+                <span className={styles.label}>{t('cover')}</span>
                 <ImageDropzone
                     value={value.bannerUrl || null}
                     onChange={(url) => set('bannerUrl', url)}
-                    label="Click to upload cover image"
+                    label={t('coverHint')}
                     crop={{ aspect: 16 / 10 }}
                 />
             </div>
 
             <CountedTextField
-                label="Title"
+                label={t('title')}
                 value={value.name}
                 onChange={(name) => set('name', name)}
                 maxLength={COLLECTION_NAME_MAX_LENGTH}
@@ -40,7 +44,7 @@ export function CollectionDetailsFields({ value, onChange }: CollectionDetailsFi
             />
 
             <CountedTextField
-                label="Description"
+                label={t('description')}
                 value={value.description}
                 onChange={(description) => set('description', description)}
                 maxLength={COLLECTION_DESCRIPTION_MAX_LENGTH}
@@ -52,19 +56,19 @@ export function CollectionDetailsFields({ value, onChange }: CollectionDetailsFi
             />
 
             <div className={styles.field}>
-                <span className={styles.label}>Visibility</span>
+                <span className={styles.label}>{t('visibility')}</span>
                 <div className={styles.row}>
                     <Button
                         variant={value.isPrivate ? 'outlined' : 'contained'}
                         onClick={() => set('isPrivate', false)}
                     >
-                        Public
+                        {t('public')}
                     </Button>
                     <Button
                         variant={value.isPrivate ? 'contained' : 'outlined'}
                         onClick={() => set('isPrivate', true)}
                     >
-                        Private
+                        {t('private')}
                     </Button>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { editAndUploadImage, pickImage } from '@/shared/lib/pickImage';
 import type { ImageCropOptions } from '@/shared/model/imageEditorStore';
 import { toast } from '@/shared/model/toastStore';
+import { translate } from '@/shared/i18n/translator';
 
 /**
  * `pick` opens the native file dialog, `upload` takes a file the user dropped;
@@ -21,7 +22,7 @@ export function useImagePicker(onPicked: (url: string) => void, crop?: ImageCrop
             const url = await task();
             if (url) onPicked(url);
         } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Upload failed.');
+            toast.error(error instanceof Error ? error.message : translate('upload.failed'));
         } finally {
             setPending(false);
         }

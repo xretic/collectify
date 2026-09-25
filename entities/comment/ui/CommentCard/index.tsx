@@ -1,10 +1,13 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Avatar, Tooltip } from '@mui/material';
-import { formatDateTime } from '@/shared/lib/format/date';
 import { RelativeTime } from '@/shared/ui/RelativeTime';
 import type { CollectionComment } from '../../model/types';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type CommentCardProps = {
     comment: CollectionComment;
@@ -28,6 +31,9 @@ export function CommentCard({
     children,
     highlighted = false,
 }: CommentCardProps) {
+    const t = useTranslations('comments');
+    const format = useFormatters();
+
     return (
         <article
             id={`comment-${comment.id}`}
@@ -49,9 +55,11 @@ export function CommentCard({
                         </Link>
                         <RelativeTime value={comment.createdAt} className={styles.date} />
                         {comment.editedAt && (
-                            <Tooltip title={`Edited ${formatDateTime(comment.editedAt)}`}>
+                            <Tooltip
+                                title={t('editedAt', { date: format.dateTime(comment.editedAt) })}
+                            >
                                 <span className={styles.edited} tabIndex={0}>
-                                    (edited)
+                                    {t('edited')}
                                 </span>
                             </Tooltip>
                         )}

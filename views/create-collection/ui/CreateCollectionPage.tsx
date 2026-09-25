@@ -21,10 +21,13 @@ import {
 import { CollectionDetailsFields } from '@/entities/collection/ui/CollectionDetailsFields';
 import { ItemFormFields } from '@/entities/collection/ui/ItemFormFields';
 import styles from './CreateCollectionPage.module.css';
+import { useTranslations } from 'next-intl';
 
-const STEPS = ['Create Collection', 'Add First Item'];
+const STEPS = ['details', 'firstItem'] as const;
 
 export default function CreateCollectionPage() {
+    const t = useTranslations('createCollection');
+    const tc = useTranslations('common');
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -51,22 +54,18 @@ export default function CreateCollectionPage() {
     return (
         <section className={styles.page}>
             <Stepper activeStep={step} className={styles.stepper}>
-                {STEPS.map((label) => (
-                    <Step key={label}>
-                        <StepLabel classes={{ label: styles.stepLabel }}>{label}</StepLabel>
+                {STEPS.map((key) => (
+                    <Step key={key}>
+                        <StepLabel classes={{ label: styles.stepLabel }}>
+                            {t(`steps.${key}`)}
+                        </StepLabel>
                     </Step>
                 ))}
             </Stepper>
 
             <header className={styles.header}>
-                <h1 className={styles.title}>
-                    {step === 0 ? 'Create New Collection' : 'Add the first item'}
-                </h1>
-                <p className={styles.subtitle}>
-                    {step === 0
-                        ? 'Add a new collection to organize your content.'
-                        : 'Every collection starts with at least one item.'}
-                </p>
+                <h1 className={styles.title}>{step === 0 ? t('title') : t('itemTitle')}</h1>
+                <p className={styles.subtitle}>{step === 0 ? t('subtitle') : t('itemSubtitle')}</p>
             </header>
 
             <div className={styles.card}>
@@ -97,26 +96,26 @@ export default function CreateCollectionPage() {
                 <div className={styles.actions}>
                     {step === 0 ? (
                         <>
-                            <Button onClick={() => router.back()}>Cancel</Button>
+                            <Button onClick={() => router.back()}>{tc('cancel')}</Button>
                             <Button
                                 variant="contained"
                                 disabled={!detailsPayload}
                                 onClick={() => setStep(1)}
                             >
-                                Next
+                                {tc('next')}
                             </Button>
                         </>
                     ) : (
                         <>
                             <Button onClick={() => setStep(0)} disabled={create.isPending}>
-                                Back
+                                {tc('back')}
                             </Button>
                             <Button
                                 variant="contained"
                                 disabled={!itemPayload || create.isPending}
                                 onClick={() => create.mutate()}
                             >
-                                Create collection
+                                {t('submit')}
                             </Button>
                         </>
                     )}

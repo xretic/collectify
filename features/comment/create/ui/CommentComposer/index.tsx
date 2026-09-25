@@ -6,13 +6,14 @@ import { Avatar, Button } from '@mui/material';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import type { CollectionComment } from '@/entities/comment/model/types';
 import type { SessionUser } from '@/entities/user/model/types';
-import { getMutePlaceholder } from '@/entities/user/lib/restrictions';
+import { useMutePlaceholder } from '@/entities/user/lib/restrictions';
 import { COMMENT_MAX_LENGTH } from '@/shared/lib/constants';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import { CountedTextField } from '@/shared/ui/CountedTextField';
 import { useCommentCache } from '../../../model/useCommentCache';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CommentComposerProps = {
     collectionId: number;
@@ -23,6 +24,9 @@ type CommentComposerProps = {
 };
 
 export function CommentComposer({ collectionId, viewer, replyTo, onDone }: CommentComposerProps) {
+    const t = useTranslations('comments');
+    const tc = useTranslations('common');
+    const mutePlaceholder = useMutePlaceholder();
     const cache = useCommentCache(collectionId);
     const restriction = viewer.restrictions.comments;
     const [text, setText] = useState('');
@@ -45,7 +49,9 @@ export function CommentComposer({ collectionId, viewer, replyTo, onDone }: Comme
         onDone?.();
     };
 
-    const placeholder = replyTo ? `Reply to @${replyTo.author.username}` : 'Add a comment…';
+    const placeholder = replyTo
+        ? t('replyTo', { username: replyTo.author.username })
+        : t('placeholder');
 
     return (
         <div className={`${styles.composer} ${replyTo ? styles.reply : ''}`}>
@@ -57,7 +63,7 @@ export function CommentComposer({ collectionId, viewer, replyTo, onDone }: Comme
                     onChange={setText}
                     onFocus={() => setFocused(true)}
                     maxLength={COMMENT_MAX_LENGTH}
-                    placeholder={getMutePlaceholder(restriction, 'comments', placeholder)}
+                    placeholder={mutePlaceholder(restriction, 'comments', placeholder)}
                     disabled={restriction.muted}
                     variant="standard"
                     multiline
@@ -70,7 +76,7 @@ export function CommentComposer({ collectionId, viewer, replyTo, onDone }: Comme
                 {focused && !restriction.muted && (
                     <div className={styles.actions}>
                         <Button size="small" onClick={cancel} disabled={send.isPending}>
-                            Cancel
+                            {tc('cancel')}
                         </Button>
                         <Button
                             size="small"
@@ -78,7 +84,7 @@ export function CommentComposer({ collectionId, viewer, replyTo, onDone }: Comme
                             onClick={() => send.mutate()}
                             disabled={!text.trim() || send.isPending}
                         >
-                            {replyTo ? 'Reply' : 'Comment'}
+                            {replyTo ? t('reply') : t('comment')}
                         </Button>
                     </div>
                 )}

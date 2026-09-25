@@ -15,9 +15,12 @@ import { EmptyState } from '@/shared/ui/EmptyState';
 import { SearchField } from '@/shared/ui/SearchField';
 import { Section } from '../Section';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 /** Tags of a category, most used first, with removal for spam. */
 export function CategoryTags({ categoryId }: { categoryId: number }) {
+    const t = useTranslations('management.tags');
+    const tc = useTranslations('common');
     const queryClient = useQueryClient();
     const [input, setInput] = useState('');
     const [deleting, setDeleting] = useState<Tag | null>(null);
@@ -27,29 +30,31 @@ export function CategoryTags({ categoryId }: { categoryId: number }) {
         mutationFn: (tagId: number) => tagApi.delete(tagId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: tagQueryKeys.all });
-            toast.success('Tag deleted.');
+            toast.success(t('deleted'));
             setDeleting(null);
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
     });
 
     return (
-        <Section title="Tags" hint="Created by users, ranked by how many collections use them.">
-            <SearchField value={input} onChange={setInput} placeholder="Find a tag" />
+        <Section title={t('title')} hint={t('hint')}>
+            <SearchField value={input} onChange={setInput} placeholder={t('search')} />
 
-            {tags.data?.length === 0 && <EmptyState title="No tags" />}
+            {tags.data?.length === 0 && <EmptyState title={t('empty')} />}
 
             <ul className={styles.list}>
                 {tags.data?.map((tag) => (
                     <li key={tag.id} className={styles.row}>
                         <span className={styles.name}>#{tag.name}</span>
-                        <span className={styles.usage}>{tag.usageCount} collections</span>
-                        <Tooltip title="Delete tag">
+                        <span className={styles.usage}>
+                            {t('usage', { count: tag.usageCount })}
+                        </span>
+                        <Tooltip title={t('delete')}>
                             <IconButton
                                 size="small"
                                 color="error"
                                 onClick={() => setDeleting(tag)}
-                                aria-label={`Delete ${tag.name}`}
+                                aria-label={t('deleteNamed', { name: tag.name })}
                             >
                                 <DeleteOutlineOutlinedIcon fontSize="small" />
                             </IconButton>
@@ -60,9 +65,9 @@ export function CategoryTags({ categoryId }: { categoryId: number }) {
 
             <ConfirmDialog
                 open={deleting !== null}
-                title={`Delete #${deleting?.name}?`}
-                description="The tag is removed from every collection that uses it."
-                confirmLabel="Delete"
+                title={t('deleteTitle', { name: deleting?.name ?? '' })}
+                description={t('deleteDescription')}
+                confirmLabel={tc('delete')}
                 destructive
                 pending={remove.isPending}
                 onClose={() => setDeleting(null)}

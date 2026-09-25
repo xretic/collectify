@@ -25,6 +25,8 @@ model User {
     birthDate            DateTime?           @db.Date
     /// Order of the home feed tabs: "for-you", "explore", "board:<id>".
     feedTabOrder         String[]            @default([])
+    /// UI language (one of LOCALES in shared/config/i18n.ts).
+    locale               String              @default("en")
     githubId             String?             @unique
     googleId             String?             @unique
     createdAt            DateTime            @default(now())

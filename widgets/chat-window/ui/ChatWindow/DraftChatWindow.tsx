@@ -13,6 +13,7 @@ import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import { ChatHeader, ChatIntro } from './ChatHeader';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type DraftChatWindowProps = {
     userId: number;
@@ -24,6 +25,7 @@ type DraftChatWindowProps = {
  * created by the first message, and leaving without sending one leaves nothing behind.
  */
 export function DraftChatWindow({ userId, viewer }: DraftChatWindowProps) {
+    const t = useTranslations('chats');
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -60,12 +62,12 @@ export function DraftChatWindow({ userId, viewer }: DraftChatWindowProps) {
     };
 
     return (
-        <section className={styles.window} aria-label="Conversation">
+        <section className={styles.window} aria-label={t('conversation')}>
             <ChatHeader peer={peer} deleted={false} online={online} />
 
             <div className={styles.messages}>
                 {query.isError ? (
-                    <EmptyState title="This chat is not available." />
+                    <EmptyState title={t('unavailable')} />
                 ) : (
                     <div className={styles.thread}>
                         {query.isPending || chatId ? (

@@ -16,8 +16,9 @@ import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import { useRealtimeEvent } from '@/shared/lib/realtime/RealtimeProvider';
 import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll';
 import { useNow } from '@/shared/lib/hooks/useNow';
-import { formatShortRelative } from '@/shared/lib/format/date';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 /** Missed realtime events are caught up by refetching. */
 const REFRESH_MS = 60_000;
@@ -29,6 +30,8 @@ type ChatListProps = {
 };
 
 export function ChatList({ activeChatId, viewer }: ChatListProps) {
+    const t = useTranslations('chats');
+    const format = useFormatters();
     const queryClient = useQueryClient();
     const key = chatQueryKeys.lists();
     const now = useNow();
@@ -122,15 +125,18 @@ export function ChatList({ activeChatId, viewer }: ChatListProps) {
     return (
         <aside className={styles.sidebar}>
             <header className={styles.header}>
-                <h1 className={styles.title}>Chats</h1>
+                <h1 className={styles.title}>{t('title')}</h1>
                 {totalUnread > 0 && (
-                    <span className={styles.headerBadge} aria-label={`${totalUnread} unread`}>
+                    <span
+                        className={styles.headerBadge}
+                        aria-label={t('unread', { count: totalUnread })}
+                    >
                         {totalUnread}
                     </span>
                 )}
             </header>
 
-            <nav className={styles.list} aria-label="Chats">
+            <nav className={styles.list} aria-label={t('title')}>
                 {query.isPending &&
                     Array.from({ length: SKELETON_ROWS }, (_, index) => (
                         <div key={index} className={styles.item}>
@@ -143,7 +149,7 @@ export function ChatList({ activeChatId, viewer }: ChatListProps) {
                     ))}
 
                 {!query.isPending && chats.length === 0 && (
-                    <p className={styles.empty}>No chats yet.</p>
+                    <p className={styles.empty}>{t('empty')}</p>
                 )}
 
                 {chats.map((chat) => {
@@ -165,12 +171,12 @@ export function ChatList({ activeChatId, viewer }: ChatListProps) {
                                 <span className={styles.meta}>
                                     <span className={styles.line}>
                                         <span className={styles.username}>
-                                            {chat.user?.username ?? 'Deleted account'}
+                                            {chat.user?.username ?? t('deletedAccount')}
                                         </span>
                                         {muted && (
                                             <NotificationsOffIcon
                                                 className={styles.mutedIcon}
-                                                aria-label="Muted"
+                                                aria-label={t('muted')}
                                             />
                                         )}
                                         {chat.lastMessage && (
@@ -178,7 +184,7 @@ export function ChatList({ activeChatId, viewer }: ChatListProps) {
                                                 className={styles.time}
                                                 dateTime={chat.lastMessage.createdAt}
                                             >
-                                                {formatShortRelative(
+                                                {format.shortRelative(
                                                     chat.lastMessage.createdAt,
                                                     now,
                                                 )}
@@ -193,7 +199,9 @@ export function ChatList({ activeChatId, viewer }: ChatListProps) {
                                             <span className={styles.preview}>
                                                 {chat.lastMessage &&
                                                     (own
-                                                        ? `You: ${chat.lastMessage.content}`
+                                                        ? t('you', {
+                                                              text: chat.lastMessage.content,
+                                                          })
                                                         : chat.lastMessage.content)}
                                             </span>
                                         )}

@@ -11,8 +11,10 @@ import { FollowListDialog } from '@/features/user/follow/ui/FollowListDialog';
 import type { FollowListKind } from '@/entities/user/model/types';
 import { ProfileCollections } from '@/widgets/profile-collections/ui/ProfileCollections';
 import { Spinner } from '@/shared/ui/Spinner';
+import { useTranslations } from 'next-intl';
 
 export default function MyProfilePage() {
+    const t = useTranslations('settings.profile');
     const { user, loading } = useSessionUser();
     const [editing, setEditing] = useState(false);
     const [followList, setFollowList] = useState<FollowListKind | null>(null);
@@ -32,8 +34,8 @@ export default function MyProfilePage() {
                     />
                 }
                 actions={
-                    <Tooltip title="Edit profile">
-                        <IconButton onClick={() => setEditing(true)} aria-label="Edit profile">
+                    <Tooltip title={t('edit')}>
+                        <IconButton onClick={() => setEditing(true)} aria-label={t('edit')}>
                             <EditOutlinedIcon />
                         </IconButton>
                     </Tooltip>

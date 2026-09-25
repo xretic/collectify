@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ApiError, forbidden, json, parse, route } from '@/shared/server/http';
+import { apiError, forbidden, json, parse, route } from '@/shared/server/http';
 import { pusher } from '@/shared/server/realtime';
 import { userChannelName } from '@/shared/lib/realtime/events';
 import { requireViewer } from '@/features/auth/server/guards';
@@ -10,7 +10,7 @@ const formSchema = z.object({
 });
 
 export const POST = route(async (req) => {
-    if (!pusher) throw new ApiError(503, 'Realtime provider is not configured.');
+    if (!pusher) throw apiError(503, 'realtimeUnavailable');
 
     const viewer = await requireViewer(req);
     // The user channel carries direct messages, which staff must not see.

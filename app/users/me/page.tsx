@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import MyProfilePage from '@/views/my-profile/ui/MyProfilePage';
+import { pageMetadata } from '@/shared/i18n/metadata';
 
-export const metadata: Metadata = { title: 'My profile' };
+export const generateMetadata = pageMetadata('myProfile');
 
 export default function MyProfileRoute() {
     return (

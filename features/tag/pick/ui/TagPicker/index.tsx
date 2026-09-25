@@ -11,10 +11,11 @@ import { normalizeTagName, tagNameSchema } from '@/entities/tag/model/schemas';
 import type { Tag, TagRef } from '@/entities/tag/model/types';
 import { useTagSearch } from '@/entities/tag/model/useTagSearch';
 import { COLLECTION_TAGS_LIMIT } from '@/shared/lib/constants';
-import { formatCompact } from '@/shared/lib/format/number';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type Option = Tag | { create: string };
 
@@ -32,6 +33,8 @@ const isCreate = (option: Option): option is { create: string } => 'create' in o
  * created on the spot and become available to everyone.
  */
 export function TagPicker({ categoryId, value, onChange }: TagPickerProps) {
+    const t = useTranslations('tags');
+    const format = useFormatters();
     const queryClient = useQueryClient();
     const [input, setInput] = useState('');
     const search = useTagSearch(categoryId, input);
@@ -95,7 +98,7 @@ export function TagPicker({ categoryId, value, onChange }: TagPickerProps) {
             loading={search.isFetching || create.isPending}
             disabled={disabled}
             readOnly={full}
-            noOptionsText={input ? 'No matching tags' : 'No tags in this category yet'}
+            noOptionsText={input ? t('noMatches') : t('noneInCategory')}
             renderValue={(selected, getItemProps) =>
                 selected.map((option, index) => {
                     const { key, ...itemProps } = getItemProps({ index });
@@ -114,12 +117,14 @@ export function TagPicker({ categoryId, value, onChange }: TagPickerProps) {
                     {isCreate(option) ? (
                         <span className={styles.create}>
                             <AddIcon fontSize="small" />
-                            Create “{option.create}”
+                            {t('create', { name: option.create })}
                         </span>
                     ) : (
                         <span className={styles.option}>
                             <span>{option.name}</span>
-                            <span className={styles.usage}>{formatCompact(option.usageCount)}</span>
+                            <span className={styles.usage}>
+                                {format.compact(option.usageCount)}
+                            </span>
                         </span>
                     )}
                 </li>
@@ -127,12 +132,12 @@ export function TagPicker({ categoryId, value, onChange }: TagPickerProps) {
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Tags"
-                    placeholder={full ? '' : 'Search or create tags'}
+                    label={t('label')}
+                    placeholder={full ? '' : t('searchOrCreate')}
                     helperText={
                         disabled
-                            ? 'Choose a category first.'
-                            : `${value.length} / ${COLLECTION_TAGS_LIMIT} · Popular tags of the category are suggested first.`
+                            ? t('chooseCategoryFirst')
+                            : t('pickerHint', { count: value.length, limit: COLLECTION_TAGS_LIMIT })
                     }
                     slotProps={{
                         input: {

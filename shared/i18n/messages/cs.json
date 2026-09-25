@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "Neplatný požadavek.",
+        "unauthorized": "Pro pokračování se přihlaste.",
+        "forbidden": "K této akci nemáte oprávnění.",
+        "notFound": "Nenalezeno.",
+        "internal": "Interní chyba serveru.",
+        "invalidInput": "Neplatný vstup.",
+        "invalidField": "Neplatná hodnota: {field}.",
+        "invalidJson": "Neplatné tělo požadavku.",
+        "invalidId": "Neplatný identifikátor.",
+        "tooManyRequests": "Příliš mnoho požadavků. Zkuste to prosím později.",
+        "realtimeUnavailable": "Služba pro okamžité zprávy není nastavena.",
+        "invalidWebhookSignature": "Neplatný podpis webhooku.",
+        "oauthNotConfigured": "Tento způsob přihlášení není nastaven.",
+        "userNotFound": "Uživatel nenalezen.",
+        "commentNotFound": "Komentář nenalezen.",
+        "collectionNotFound": "Kolekce nenalezena.",
+        "tagNotFound": "Štítek nenalezen.",
+        "reportNotFound": "Nahlášení nenalezeno.",
+        "categoryNotFound": "Kategorie nenalezena.",
+        "sanctionNotFound": "Sankce nenalezena.",
+        "itemNotFound": "Položka nenalezena.",
+        "chatNotFound": "Chat nenalezen.",
+        "boardNotFound": "Nástěnka nenalezena.",
+        "invalidCredentials": "Neplatný e-mail nebo heslo.",
+        "emailTaken": "Účet s tímto e-mailem už existuje.",
+        "usernameTaken": "Toto uživatelské jméno je obsazené.",
+        "emailOrUsernameTaken": "Tento e-mail nebo uživatelské jméno už je obsazené.",
+        "currentPasswordRequired": "Zadejte současné heslo.",
+        "currentPasswordIncorrect": "Současné heslo není správné.",
+        "passwordUnchanged": "Nové heslo se musí lišit od současného.",
+        "passwordIncorrect": "Heslo není správné.",
+        "typeUsernameToConfirm": "Pro potvrzení napište své uživatelské jméno.",
+        "impersonationInactive": "Přihlášení za jiného uživatele není aktivní.",
+        "bannedUntil": "Váš účet je zablokován. Blokace vyprší {date}.",
+        "bannedPermanent": "Váš účet je zablokován. Toto omezení je trvalé.",
+        "mutedCommentsUntil": "V komentářích máte zákaz psaní. Vyprší {date}.",
+        "mutedCommentsPermanent": "V komentářích máte zákaz psaní. Toto omezení je trvalé.",
+        "mutedMessengerUntil": "Ve zprávách máte zákaz psaní. Vyprší {date}.",
+        "mutedMessengerPermanent": "Ve zprávách máte zákaz psaní. Toto omezení je trvalé.",
+        "chatsUnavailableImpersonating": "Chaty nejsou dostupné, když jste přihlášeni za jiného uživatele.",
+        "cannotModerateSelf": "Nemůžete moderovat sami sebe.",
+        "adminsNotModeratable": "Administrátory nelze moderovat.",
+        "moderatorsCannotManageModerators": "Moderátoři nemohou spravovat jiné moderátory.",
+        "permanentSanctionAdminOnly": "Trvalé sankce mohou udělovat jen administrátoři.",
+        "liftPermanentAdminOnly": "Trvalé sankce mohou rušit jen administrátoři.",
+        "liftAdminSanctionAdminOnly": "Sankce udělené administrátorem mohou rušit jen administrátoři.",
+        "manageModeratorsAdminOnly": "Moderátory mohou spravovat jen administrátoři.",
+        "alreadySignedInAsUser": "Za tohoto uživatele už jste přihlášeni.",
+        "stopImpersonationFirst": "Nejprve ukončete současné přihlášení za jiného uživatele.",
+        "cannotImpersonateBanned": "Nelze se přihlásit za zablokovaný účet.",
+        "categoryUnknown": "Vyberte existující kategorii.",
+        "categoriesUnknown": "Vyberte existující kategorie.",
+        "categoryExists": "Kategorie s tímto názvem nebo slugem už existuje.",
+        "categoryInUse": "Kategorie stále obsahuje kolekce. Místo smazání ji archivujte.",
+        "tagsWrongCategory": "Štítky musí patřit do kategorie kolekce.",
+        "tagsLimit": "Kolekce může mít nejvýše {limit} štítků.",
+        "tagsDailyLimit": "Dnes jste vytvořili příliš mnoho štítků. Zkuste to zítra.",
+        "signInForBoards": "Pro zobrazení nástěnek se přihlaste.",
+        "signInForFavorites": "Pro zobrazení uložených se přihlaste.",
+        "ownerOnly": "Tuto kolekci může měnit jen její vlastník.",
+        "collectionsLimit": "Můžete mít nejvýše {limit} kolekcí.",
+        "itemsLimit": "Kolekce může mít nejvýše {limit} položek.",
+        "collectionNeedsItem": "Kolekce musí obsahovat alespoň jednu položku.",
+        "invalidItemOrder": "Nové pořadí musí obsahovat každou položku kolekce právě jednou.",
+        "boardNameTaken": "Nástěnku s tímto názvem už máte.",
+        "boardsLimit": "Můžete mít nejvýše {limit} nástěnek.",
+        "cannotMessageSelf": "Nemůžete psát sami sobě.",
+        "userDeleted": "Tento uživatel smazal svůj účet.",
+        "editOwnCommentsOnly": "Upravovat můžete jen své komentáře.",
+        "heartOwnerOnly": "Srdíčko komentářům může dávat jen vlastník kolekce.",
+        "commentsLimit": "Ke kolekci můžete napsat nejvýše {limit} komentářů.",
+        "repliesLimit": "V kolekci můžete napsat nejvýše {limit} odpovědí.",
+        "cannotReportSelf": "Nemůžete nahlásit sami sebe.",
+        "accountNotReportable": "Tento účet nelze nahlásit.",
+        "alreadyReported": "Už jste to nahlásili. Moderátoři se tomu brzy budou věnovat.",
+        "reportClosed": "Nahlášení je už uzavřené.",
+        "cannotReviewOwnReport": "Nemůžete posuzovat vlastní nahlášení.",
+        "nothingToRemove": "U nahlášení uživatele není co odstranit.",
+        "duplicateMustMatchUser": "Původní nahlášení musí být jiné nahlášení téhož uživatele.",
+        "reportJustReviewed": "Toto nahlášení právě posoudil někdo jiný.",
+        "nothingToUpdate": "Není co aktualizovat.",
+        "countryRequiredForCity": "Vyberte zemi pro toto město.",
+        "cityUnknown": "Neznámé město.",
+        "cannotFollowSelf": "Nemůžete sledovat sami sebe.",
+        "generic": "Něco se pokazilo. Zkuste to prosím znovu.",
+        "network": "Chyba sítě. Zkontrolujte připojení."
+    },
+    "validation": {
+        "required": "Toto pole je povinné.",
+        "tooLong": "Příliš dlouhé.",
+        "usernameMin": "Uživatelské jméno musí mít alespoň {usernameMin} znaky.",
+        "usernameMax": "Uživatelské jméno může mít nejvýše {usernameMax} znaků.",
+        "usernameChars": "Uživatelské jméno smí obsahovat jen a-z, 0-9, „_“ a „.“.",
+        "passwordMin": "Heslo musí mít alespoň {passwordMin} znaků.",
+        "passwordMax": "Heslo může mít nejvýše {passwordMax} znaků.",
+        "passwordChars": "Heslo obsahuje nepodporované znaky.",
+        "passwordsMismatch": "Hesla se neshodují.",
+        "emailInvalid": "Zadejte platný e-mail.",
+        "urlInvalid": "Zadejte platnou adresu http(s).",
+        "countryUnknown": "Neznámá země.",
+        "cityChars": "Použijte písmena, mezery a - . , ' / ( )",
+        "dateInvalid": "Zadejte platné datum.",
+        "ageMin": "Musí vám být alespoň {minAge} let.",
+        "localeUnknown": "Nepodporovaný jazyk.",
+        "nameRequired": "Název je povinný.",
+        "descriptionRequired": "Popis je povinný.",
+        "slugRequired": "Slug je povinný.",
+        "slugChars": "Použijte malá písmena, číslice a pomlčky.",
+        "messageEmpty": "Zpráva nemůže být prázdná.",
+        "commentEmpty": "Komentář nemůže být prázdný.",
+        "itemTitleOrImage": "Přidejte název nebo obrázek.",
+        "categoryRequired": "Vyberte kategorii.",
+        "tagsMax": "Nejvýše {tagsMax} štítků.",
+        "tagNameMin": "Alespoň {tagNameMin} znaky.",
+        "tagNameChars": "Písmena, číslice, mezery a - & + . ' #",
+        "verdictRequiresGuilty": "Trest a odstranění obsahu vyžadují verdikt „vinen“.",
+        "duplicateRequiresOriginal": "U verdiktu „duplikát“ vyberte původní nahlášení."
+    },
+    "meta": {
+        "description": "Vytvořte si s námi zajímavou kolekci.",
+        "privacyDescription": "Jak Collectify shromažďuje, používá a ukládá vaše data.",
+        "userDescription": "Kolekce uživatele {name} na Collectify.",
+        "pages": {
+            "login": "Přihlášení",
+            "register": "Registrace",
+            "chats": "Chaty",
+            "createCollection": "Nová kolekce",
+            "myCollections": "Moje kolekce",
+            "notifications": "Oznámení",
+            "onboarding": "Vyberte si zájmy",
+            "settings": "Nastavení",
+            "myProfile": "Můj profil",
+            "management": "Správa",
+            "privacyPolicy": "Zásady ochrany osobních údajů",
+            "collection": "Kolekce",
+            "userNotFound": "Uživatel nenalezen"
+        }
+    },
+    "languages": {
+        "label": "Jazyk"
+    },
+    "auth": {
+        "email": "E-mail",
+        "password": "Heslo",
+        "username": "Uživatelské jméno",
+        "login": "Přihlásit se",
+        "register": "Registrovat se",
+        "signingIn": "Přihlašování…",
+        "creatingAccount": "Vytváření účtu…",
+        "usernameHint": "Malá písmena, číslice, „_“ a „.“",
+        "passwordHint": "Alespoň {min} znaků",
+        "languageHint": "Později ho můžete změnit v nastavení.",
+        "orContinueWith": "nebo pokračujte přes",
+        "loginSubtitle": "Zadejte své údaje pro přístup k účtu.",
+        "registerSubtitle": "Vytvořte si účet a začněte sbírat.",
+        "noAccount": "Ještě nemáte účet? <link>Zaregistrujte se</link>",
+        "haveAccount": "Už máte účet? <link>Přihlaste se</link>",
+        "oauthErrors": {
+            "oauthState": "Platnost přihlašovacího odkazu vypršela. Zkuste to prosím znovu.",
+            "oauthFailed": "Přihlášení přes poskytovatele selhalo. Zkuste to prosím znovu.",
+            "accountBanned": "Tento účet je zablokován."
+        }
+    },
+    "common": {
+        "cancel": "Zrušit",
+        "reset": "Obnovit",
+        "save": "Uložit",
+        "delete": "Smazat",
+        "edit": "Upravit",
+        "close": "Zavřít",
+        "back": "Zpět",
+        "retry": "Zkusit znovu",
+        "loadMore": "Načíst další",
+        "search": "Hledat",
+        "next": "Další",
+        "skip": "Přeskočit",
+        "confirm": "Potvrdit",
+        "create": "Vytvořit",
+        "add": "Přidat",
+        "moreActions": "Další akce",
+        "loading": "Načítání",
+        "sortBy": "Řadit podle"
+    },
+    "settings": {
+        "title": "Nastavení",
+        "subtitle": "Spravujte nastavení účtu a předvolby",
+        "profile": {
+            "title": "Profil",
+            "description": "Jméno, uživatelské jméno, bio a obrázky.",
+            "edit": "Upravit profil"
+        },
+        "security": {
+            "title": "Soukromí a zabezpečení",
+            "changePassword": "Změňte si heslo.",
+            "setPassword": "Nastavte si heslo, abyste se mohli přihlašovat i e-mailem.",
+            "passwordChanged": "Heslo bylo změněno.",
+            "passwordSet": "Heslo je nastaveno. Nyní se můžete přihlašovat e-mailem.",
+            "currentPassword": "Současné heslo",
+            "newPassword": "Nové heslo",
+            "confirmPassword": "Potvrďte nové heslo",
+            "change": "Změnit heslo",
+            "set": "Nastavit heslo"
+        },
+        "interests": {
+            "title": "Zájmy",
+            "description": "Kategorie, které máte rádi. Podle nich se sestavuje kanál „Pro vás“.",
+            "saved": "Zájmy uloženy.",
+            "save": "Uložit zájmy"
+        },
+        "language": {
+            "title": "Jazyk",
+            "description": "Jazyk celého rozhraní. Ukládá se k vašemu účtu."
+        },
+        "appearance": {
+            "title": "Vzhled",
+            "description": "Vyberte si motiv. Použije se hned a toto zařízení si ho zapamatuje.",
+            "search": "Najít motiv",
+            "filter": "Filtrovat motivy",
+            "theme": "Motiv",
+            "filters": {
+                "all": "Vše",
+                "light": "Světlé",
+                "dark": "Tmavé"
+            }
+        },
+        "home": {
+            "title": "Domovská stránka",
+            "description": "Widgety vedle vašeho kanálu.",
+            "showPeopleWidget": "Zobrazovat „Lidé, které možná znáte“ na domovské stránce"
+        },
+        "danger": {
+            "title": "Nebezpečná zóna",
+            "description": "Trvale smazat účet a všechna data.",
+            "deleteAccount": "Smazat účet",
+            "warning": "Tím trvale smažete svůj profil, kolekce, komentáře a chaty. Nelze to vrátit zpět.",
+            "yourPassword": "Vaše heslo",
+            "typeUsername": "Pro potvrzení napište „{username}“",
+            "deleteForever": "Smazat navždy"
+        }
+    },
+    "dateField": {
+        "placeholder": "Vyberte datum",
+        "clear": "Vymazat datum",
+        "open": "Otevřít kalendář",
+        "chooseYear": "Vybrat rok",
+        "previousMonth": "Předchozí měsíc",
+        "nextMonth": "Další měsíc"
+    },
+    "imageDropzone": {
+        "label": "Klikněte nebo přetáhněte obrázek",
+        "hint": "PNG, JPG, WEBP do 10 MB"
+    },
+    "roles": {
+        "Admin": "Administrátor",
+        "Moderator": "Moderátor",
+        "Verified": "Ověřený"
+    },
+    "imageEditor": {
+        "title": "Upravit obrázek",
+        "failed": "Obrázek se nepodařilo upravit.",
+        "zoom": "Přiblížení",
+        "rotateLeft": "Otočit doleva",
+        "rotateRight": "Otočit doprava",
+        "aspectRatio": "Poměr stran",
+        "original": "Původní"
+    },
+    "pagination": {
+        "label": "Stránkování",
+        "previous": "Předchozí stránka",
+        "next": "Další stránka",
+        "page": "Stránka {page}"
+    },
+    "scrollRow": {
+        "back": "Posunout zpět: {items}",
+        "forward": "Posunout vpřed: {items}"
+    },
+    "upload": {
+        "readFailed": "Obrázek se nepodařilo načíst.",
+        "editUnsupported": "Tento prohlížeč nepodporuje úpravy obrázků.",
+        "saveFailed": "Obrázek se nepodařilo uložit.",
+        "wrongType": "Vyberte obrázek PNG, JPG, WEBP nebo GIF.",
+        "tooBig": "Obrázek může mít nejvýše 10 MB.",
+        "notConfigured": "Nahrávání obrázků není nastaveno.",
+        "network": "Nahrání obrázku selhalo. Zkontrolujte připojení.",
+        "failed": "Nahrání obrázku selhalo."
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "Blokace účtu",
+            "COMMENTS": "Zákaz komentářů",
+            "MESSENGER": "Zákaz zpráv"
+        },
+        "durations": {
+            "1h": "1 hodina",
+            "1d": "1 den",
+            "7d": "7 dní",
+            "30d": "30 dní",
+            "permanent": "Trvale"
+        },
+        "until": "{scope} · do {date}",
+        "permanentScope": "{scope} · trvale",
+        "mutePlaceholder": {
+            "commentsUntil": "V komentářích máte zákaz psaní do {date}.",
+            "commentsPermanent": "V komentářích máte trvalý zákaz psaní.",
+            "messengerUntil": "Ve zprávách máte zákaz psaní do {date}.",
+            "messengerPermanent": "Ve zprávách máte trvalý zákaz psaní."
+        }
+    },
+    "categories": {
+        "books": "Knihy",
+        "movies": "Filmy",
+        "games": "Hry",
+        "recipes": "Recepty",
+        "apps": "Aplikace",
+        "travel": "Cestování",
+        "music": "Hudba",
+        "sport": "Sport",
+        "tv-shows": "Seriály",
+        "anime": "Anime",
+        "podcasts": "Podcasty",
+        "art": "Umění",
+        "design": "Design",
+        "photography": "Fotografie",
+        "fashion": "Móda",
+        "home": "Domov a interiér",
+        "tech": "Technologie",
+        "science": "Věda",
+        "education": "Vzdělávání",
+        "fitness": "Fitness",
+        "cars": "Auta",
+        "pets": "Mazlíčci",
+        "nature": "Příroda",
+        "custom": "Vlastní"
+    },
+    "categoryMenu": {
+        "all": "Všechny kategorie",
+        "search": "Najít kategorii",
+        "nothingFound": "Nic nenalezeno",
+        "label": "Kategorie"
+    },
+    "chats": {
+        "online": "Online",
+        "typing": "píše",
+        "message": "Napsat zprávu",
+        "mute": {
+            "actions": "Akce chatu",
+            "mutedUntil": "Ztlumeno do {date}",
+            "off": "Oznámení jsou vypnutá",
+            "enable": "Zapnout oznámení",
+            "muteForMenu": "Ztlumit na…",
+            "disable": "Vypnout oznámení",
+            "muteFor": "Ztlumit na",
+            "durations": {
+                "15m": "15 minut",
+                "30m": "30 minut",
+                "1h": "1 hodinu",
+                "8h": "8 hodin",
+                "1d": "1 den",
+                "1w": "1 týden"
+            },
+            "failed": "Oznámení se nepodařilo změnit. Zkuste to znovu."
+        },
+        "composer": {
+            "placeholder": "Napište zprávu…",
+            "label": "Zpráva",
+            "send": "Odeslat zprávu"
+        },
+        "title": "Chaty",
+        "unread": "Nepřečtené: {count}",
+        "empty": "Zatím žádné chaty.",
+        "deletedAccount": "Smazaný účet",
+        "muted": "Ztlumeno",
+        "you": "Vy: {text}",
+        "back": "Zpět na chaty",
+        "directMessages": "Soukromé zprávy",
+        "viewProfile": "Zobrazit profil",
+        "conversation": "Konverzace",
+        "unavailable": "Tento chat není dostupný.",
+        "seen": "Přečteno <time></time>",
+        "sent": "Odesláno",
+        "privateTitle": "Chaty jsou soukromé",
+        "privateDescription": "Soukromé zprávy nejsou dostupné, když jste přihlášeni za jiného uživatele.",
+        "placeholderTitle": "Vaše chaty",
+        "placeholderText": "Vyberte konverzaci vlevo a pokračujte v povídání o kolekcích."
+    },
+    "collectionCard": {
+        "items": "{count, plural, one {# položka} few {# položky} many {# položky} other {# položek}}",
+        "comments": "{count, plural, one {# komentář} few {# komentáře} many {# komentáře} other {# komentářů}}",
+        "favorites": "{count, plural, one {# uložení} few {# uložení} many {# uložení} other {# uložení}}",
+        "likes": "{count, plural, one {# lajk} few {# lajky} many {# lajku} other {# lajků}}"
+    },
+    "collectionForm": {
+        "cover": "Titulní obrázek",
+        "coverHint": "Klikněte pro nahrání titulního obrázku",
+        "title": "Název",
+        "description": "Popis",
+        "visibility": "Viditelnost",
+        "public": "Veřejná",
+        "private": "Soukromá"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "Nic jsme nenašli",
+        "emptyDescription": "Zkuste jiný filtr nebo hledání."
+    },
+    "items": {
+        "open": "Otevřít položku",
+        "drag": "Přesunout položku",
+        "image": "Obrázek",
+        "title": "Název",
+        "description": "Popis",
+        "titleRequired": "Povinné, pokud chybí obrázek",
+        "sourceUrl": "Adresa zdroje",
+        "cardSize": "Velikost karty",
+        "sizes": {
+            "S": "Malá čtvercová dlaždice",
+            "M": "Vysoká dlaždice, jeden sloupec",
+            "L": "Velká dlaždice, dva sloupce",
+            "XL": "Banner přes celý řádek"
+        },
+        "edit": "Upravit položku",
+        "delete": "Smazat položku",
+        "actions": "Akce položky",
+        "deleteTitle": "Smazat „{title}“?",
+        "deleteUntitled": "Smazat tuto položku?",
+        "deleteDescription": "Položka bude z kolekce odstraněna.",
+        "add": "Přidat položku",
+        "addIntro": "Přidejte do kolekce novou položku.",
+        "editIntro": "Upravte položku. Změny hned uvidí všichni.",
+        "item": "Položka",
+        "previous": "Předchozí položka",
+        "next": "Další položka",
+        "label": "Položky"
+    },
+    "comments": {
+        "editedAt": "Upraveno {date}",
+        "edited": "(upraveno)",
+        "replyTo": "Odpovědět @{username}",
+        "placeholder": "Přidat komentář…",
+        "reply": "Odpovědět",
+        "comment": "Komentovat",
+        "deleteAsModerator": "Smazat jako moderátor",
+        "actions": "Akce komentáře",
+        "deleteTitle": "Smazat tento komentář?",
+        "count": "{count, plural, one {# komentář} few {# komentáře} many {# komentáře} other {# komentářů}}",
+        "emptyTitle": "Zatím žádné komentáře.",
+        "emptyDescription": "Začněte konverzaci.",
+        "replies": "{count, plural, one {# odpověď} few {# odpovědi} many {# odpovědi} other {# odpovědí}}",
+        "moreReplies": "Zobrazit další odpovědi",
+        "unheart": "Odebrat srdíčko",
+        "heart": "Dát komentáři srdíčko",
+        "heartLabel": "Srdíčko komentáři",
+        "heartedBy": "♥ od {username}"
+    },
+    "notifications": {
+        "unread": "Nepřečtené",
+        "texts": {
+            "FOLLOW": "vás začal(a) sledovat",
+            "LIKE": "dal(a) lajk vaší kolekci",
+            "FAVORITE": "si uložil(a) vaši kolekci",
+            "COMMENT": "okomentoval(a) vaši kolekci",
+            "REPORT_RESOLVED": "Vaše nahlášení bylo posouzeno. Děkujeme, že pomáháte udržet Collectify bezpečné.",
+            "SANCTION": "Moderátor omezil váš účet. Podrobnosti najdete v nastavení.",
+            "COMMENT_REPLY": "odpověděl(a) na váš komentář u kolekce",
+            "COMMENT_LIKED": "dal(a) srdíčko vašemu komentáři u kolekce"
+        },
+        "dismiss": "Zavřít oznámení",
+        "title": "Oznámení",
+        "markAllRead": "Označit vše jako přečtené",
+        "tabs": {
+            "all": "Vše",
+            "unread": "Nepřečtené"
+        },
+        "emptyUnread": "Žádná nepřečtená oznámení",
+        "empty": "Zatím žádná oznámení",
+        "caughtUp": "Máte vše přečteno.",
+        "groups": {
+            "today": "Dnes",
+            "yesterday": "Včera",
+            "thisWeek": "Tento týden",
+            "earlier": "Dříve"
+        }
+    },
+    "tags": {
+        "label": "Štítky",
+        "upTo": "Nejvýše {limit} štítků",
+        "noMatches": "Žádné odpovídající štítky",
+        "noneYet": "Zatím žádné štítky",
+        "searchByTags": "Hledat podle štítků",
+        "noneInCategory": "V této kategorii zatím nejsou štítky",
+        "create": "Vytvořit „{name}“",
+        "searchOrCreate": "Vyhledejte nebo vytvořte štítky",
+        "chooseCategoryFirst": "Nejprve vyberte kategorii.",
+        "pickerHint": "{count} / {limit} · Nejdřív se nabízejí oblíbené štítky kategorie."
+    },
+    "profile": {
+        "usernameCopied": "Uživatelské jméno zkopírováno.",
+        "usernameCopyFailed": "Uživatelské jméno se nepodařilo zkopírovat.",
+        "copyUsername": "Kopírovat uživatelské jméno",
+        "noBio": "Zatím žádné bio",
+        "statLabel": "{label}: {count}",
+        "following": "sleduje",
+        "followers": "sledující",
+        "follow": "Sledovat",
+        "unfollow": "Přestat sledovat",
+        "follows": {
+            "followers": "Sledující",
+            "following": "Sleduje",
+            "noFollowers": "Zatím žádní sledující",
+            "noFollowing": "Nikoho nesleduje",
+            "followingButton": "Sledujete",
+            "follow": "Sledovat"
+        },
+        "edit": {
+            "updated": "Profil aktualizován.",
+            "title": "Upravit profil",
+            "changeBanner": "Změnit banner",
+            "removeBanner": "Odebrat banner",
+            "changeAvatar": "Změnit avatar",
+            "removeAvatar": "Odebrat avatar",
+            "fullName": "Celé jméno",
+            "username": "Uživatelské jméno",
+            "bio": "Bio",
+            "country": "Země",
+            "city": "Město",
+            "birthDate": "Datum narození"
+        },
+        "tabs": {
+            "created": "Vytvořené",
+            "favorites": "Uložené",
+            "private": "Soukromé"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "Spam",
+            "HARASSMENT": "Obtěžování",
+            "HATE": "Nenávistné projevy",
+            "SCAM": "Podvod",
+            "ADULT": "Obsah pro dospělé",
+            "OTHER": "Jiné"
+        },
+        "targets": {
+            "USER": "Uživatel",
+            "COMMENT": "Komentář",
+            "COLLECTION": "Kolekce"
+        },
+        "reportTarget": {
+            "USER": "Nahlásit uživatele",
+            "COMMENT": "Nahlásit komentář",
+            "COLLECTION": "Nahlásit kolekci"
+        },
+        "openTarget": {
+            "USER": "Otevřít uživatele",
+            "COMMENT": "Otevřít komentář",
+            "COLLECTION": "Otevřít kolekci"
+        },
+        "verdicts": {
+            "PENDING": "Čeká",
+            "GUILTY": "Vinen",
+            "NO_VIOLATION": "Bez porušení",
+            "INSUFFICIENT_EVIDENCE": "Nedostatek důkazů",
+            "DUPLICATE": "Duplikát"
+        },
+        "submitted": "Nahlášení odesláno. Moderátoři se mu brzy budou věnovat.",
+        "reason": "Důvod",
+        "details": "Podrobnosti",
+        "submit": "Odeslat nahlášení"
+    },
+    "boards": {
+        "rename": "Přejmenovat",
+        "delete": "Smazat nástěnku",
+        "renameTitle": "Přejmenovat nástěnku",
+        "deleteTitle": "Smazat „{name}“?",
+        "deleteDescription": "Kolekce zůstanou ve Všech uložených.",
+        "name": "Název nástěnky",
+        "label": "Nástěnky",
+        "items": "nástěnky",
+        "all": "Vše",
+        "new": "Nová nástěnka",
+        "actions": "Akce nástěnky",
+        "signInToSave": "Pro uložení se přihlaste",
+        "saved": "Uloženo",
+        "save": "Uložit",
+        "saveTo": "Uložit do",
+        "allSaved": "Všechny uložené",
+        "hint": "Seskupte uložené kolekce do nástěnek.",
+        "newName": "Název nové nástěnky",
+        "create": "Vytvořit nástěnku",
+        "draggableTab": "přetahovatelná karta"
+    },
+    "management": {
+        "categories": {
+            "updated": "Kategorie aktualizována.",
+            "created": "Kategorie vytvořena.",
+            "deleted": "Kategorie smazána.",
+            "name": "Název",
+            "slug": "Slug",
+            "slugHint": "Používá se v odkazech: /?category=slug",
+            "description": "Popis",
+            "position": "Pozice",
+            "positionHint": "Nižší je dříve",
+            "active": "Aktivní",
+            "archived": "Archivovaná",
+            "onlyArchive": "Kategorie s kolekcemi lze pouze archivovat.",
+            "create": "Vytvořit kategorii",
+            "deleteTitle": "Smazat „{name}“?",
+            "new": "Nová kategorie",
+            "empty": "Zatím žádné kategorie",
+            "collections": "{count, plural, one {# kolekce} few {# kolekce} many {# kolekce} other {# kolekcí}}",
+            "archivedLower": "archivovaná",
+            "notFound": "Kategorie nenalezena"
+        },
+        "roles": {
+            "updated": "Role aktualizovány.",
+            "revoke": "Odebrat roli {role}",
+            "grant": "Udělit roli {role}"
+        },
+        "sanctions": {
+            "applied": "Sankce udělena.",
+            "strongerKept": "Už platí přísnější sankce; ta zůstává.",
+            "scope": "Rozsah",
+            "duration": "Doba trvání",
+            "reason": "Důvod",
+            "apply": "Použít",
+            "confirmTitle": "Udělit sankci @{username}?",
+            "summary": "{scope}: {duration}.",
+            "reasonLine": "Důvod: {reason}",
+            "confirm": "Udělit sankci",
+            "lifted": "Sankce zrušena.",
+            "none": "Žádné aktivní sankce",
+            "lift": "Zrušit"
+        },
+        "danger": {
+            "deleted": "Účet smazán.",
+            "impersonate": "Přihlásit se za uživatele",
+            "delete": "Smazat účet",
+            "impersonateTitle": "Přihlásit se jako @{username}?",
+            "impersonateDescription": "Vše, co uděláte, se zapíše do auditního protokolu pod vaším jménem.",
+            "signIn": "Přihlásit se",
+            "deleteTitle": "Smazat @{username}?",
+            "deleteDescription": "Účet, jeho kolekce, komentáře a chaty budou trvale smazány."
+        },
+        "review": {
+            "describeVerdict": "Verdikt: {verdict}.",
+            "describeRemove": "Nahlášený obsah bude smazán.",
+            "describePunishment": "@{username} dostane: {scope}, {duration}.",
+            "describeDuplicate": "Označeno jako duplikát nahlášení #{id}.",
+            "closed": "Nahlášení uzavřeno.",
+            "closedStrongerKept": "Nahlášení uzavřeno. Už platila přísnější sankce a zůstává.",
+            "verdict": "Verdikt",
+            "removeContent": "Smazat nahlášený obsah",
+            "nothingToDelete": "Není co smazat",
+            "sanctionUser": "Udělit uživateli sankci",
+            "punishment": "Trest",
+            "duration": "Doba trvání",
+            "originalReport": "Původní nahlášení #",
+            "resolution": "Poznámka k řešení",
+            "close": "Uzavřít nahlášení",
+            "closeTitle": "Uzavřít nahlášení #{id}?"
+        },
+        "audit": {
+            "title": "Audit",
+            "titleFor": "Audit pro @{username}",
+            "empty": "Zatím žádné záznamy auditu",
+            "system": "systém",
+            "via": "(přes @{username})",
+            "content": "obsah",
+            "actions": {
+                "grant": "Udělena role {role}",
+                "revoke": "Odebrána role {role}",
+                "sanction": "Udělena sankce: {scope}",
+                "revokeSanction": "Zrušena sankce: {scope}",
+                "report": "Nahlášení uzavřeno: {verdict}",
+                "deleteUser": "Smazán uživatelský účet",
+                "deleteComment": "Smazán komentář",
+                "deleteCollection": "Smazána kolekce",
+                "impersonateUser": "Přihlášení za uživatele",
+                "stopImpersonation": "Ukončeno přihlášení za uživatele"
+            }
+        },
+        "activity": {
+            "collections": "Kolekce",
+            "noCollections": "Žádné kolekce",
+            "private": "soukromá",
+            "counts": "{items, plural, one {# položka} few {# položky} many {# položky} other {# položek}} · {comments, plural, one {# komentář} few {# komentáře} many {# komentáře} other {# komentářů}} · {likes, plural, one {# lajk} few {# lajky} many {# lajku} other {# lajků}}",
+            "comments": "Komentáře",
+            "noComments": "Žádné komentáře"
+        },
+        "tags": {
+            "deleted": "Štítek smazán.",
+            "title": "Štítky",
+            "hint": "Vytvářejí je uživatelé, řazeno podle počtu kolekcí, které je používají.",
+            "search": "Najít štítek",
+            "empty": "Žádné štítky",
+            "usage": "{count, plural, one {# kolekce} few {# kolekce} many {# kolekce} other {# kolekcí}}",
+            "delete": "Smazat štítek",
+            "deleteNamed": "Smazat {name}",
+            "deleteTitle": "Smazat #{name}?",
+            "deleteDescription": "Štítek bude odebrán ze všech kolekcí, které ho používají."
+        },
+        "title": "Správa",
+        "subtitle": "Uživatelé, nahlášení, sankce, kategorie",
+        "tabs": {
+            "users": "Uživatelé",
+            "reports": "Nahlášení",
+            "categories": "Kategorie"
+        },
+        "selectUser": "Vyberte uživatele",
+        "selectUserHint": "Hledejte podle uživatelského jména, jména nebo e-mailu.",
+        "selectReport": "Vyberte nahlášení",
+        "selectReportHint": "Nejstarší otevřená nahlášení jsou nahoře.",
+        "selectCategory": "Vyberte kategorii",
+        "selectCategoryHint": "Nebo vytvořte novou. Archivované kategorie si ponechají své kolekce.",
+        "users": {
+            "search": "Hledat uživatele",
+            "empty": "Žádní uživatelé nenalezeni",
+            "sanctioned": "se sankcí"
+        },
+        "report": {
+            "aboutAccount": "Nahlášení se týká samotného účtu.",
+            "deletedSince": "Mezitím smazáno — zobrazuje se snímek z doby nahlášení",
+            "posted": "Zveřejněno {date}",
+            "verdict": "Verdikt",
+            "reviewedBy": "Posoudil(a)",
+            "sanction": "Sankce",
+            "duplicateOf": "Duplikát nahlášení",
+            "resolution": "Řešení",
+            "notFound": "Nahlášení nenalezeno",
+            "title": "Nahlášení #{id} na <user>@{username}</user>",
+            "subtitle": "{target} · nahlásil(a) @{username} · {date}",
+            "open": "Otevřené",
+            "closed": "Uzavřené",
+            "evidence": "Důkazy",
+            "context": "Kontext",
+            "against": "Nahlášení na @{username}",
+            "againstCounts": "celkem {total} · vinen {guilty}",
+            "filedBy": "Nahlášení od @{username}",
+            "filedCounts": "celkem {total} · zamítnuto {rejected}",
+            "activeSanctions": "Aktivní sankce",
+            "none": "Žádné",
+            "decision": "Rozhodnutí",
+            "outcome": "Výsledek"
+        },
+        "queue": {
+            "open": "Otevřené ({count})",
+            "closed": "Uzavřené",
+            "type": "Typ",
+            "all": "Vše",
+            "empty": "Fronta je prázdná",
+            "emptyClosed": "Žádná uzavřená nahlášení"
+        },
+        "user": {
+            "notFound": "Uživatel nenalezen",
+            "notFoundHint": "Mohl být smazán, nebo ho nemůžete spravovat.",
+            "regularUser": "Uživatel",
+            "stats": {
+                "collections": "Kolekce",
+                "comments": "Komentáře",
+                "messages": "Zprávy",
+                "reportsReceived": "Obdržená nahlášení"
+            },
+            "sanctions": "Sankce",
+            "sanctionsHint": "Blokace a zákazy jednotlivých funkcí. Přísnější aktivní sankce se nikdy nezkracuje.",
+            "roles": "Role",
+            "rolesHint": "Administrátorská práva se spravují přes `npm run admin`.",
+            "activity": "Aktivita",
+            "activityHint": "Kolekce a komentáře, nejnovější první.",
+            "danger": "Nebezpečná zóna"
+        }
+    },
+    "collectionFilters": {
+        "search": "Hledat kolekce",
+        "sorts": {
+            "popular": "Oblíbené",
+            "newest": "Nejnovější",
+            "old": "Nejstarší"
+        }
+    },
+    "collection": {
+        "like": "Líbí se mi",
+        "unlike": "Zrušit lajk",
+        "signInToLike": "Pro lajk se přihlaste",
+        "delete": {
+            "deleted": "Kolekce smazána.",
+            "title": "Smazat „{name}“?",
+            "description": "Tuto akci nelze vrátit. Smažou se i všechny položky a komentáře."
+        },
+        "edit": {
+            "updated": "Kolekce aktualizována.",
+            "title": "Upravit kolekci",
+            "intro": "Změny se ukládají okamžitě a ostatní je hned uvidí. Položky se upravují přímo na stránce kolekce."
+        },
+        "stats": {
+            "likes": "Lajky",
+            "comments": "Komentáře",
+            "favorites": "Uložení",
+            "title": "Statistiky",
+            "intro": "Aktivita u vaší kolekce po dnech (UTC).",
+            "unavailable": "Statistiky nejsou momentálně k dispozici.",
+            "empty": "Zatím žádná aktivita."
+        },
+        "description": "Popis",
+        "meta": "{count, plural, one {# položka} few {# položky} many {# položky} other {# položek}} · Vytvořeno {date}",
+        "private": "Soukromá",
+        "deleteAsModerator": "Smazat jako moderátor",
+        "deleteCollection": "Smazat kolekci",
+        "actions": "Akce kolekce"
+    },
+    "nav": {
+        "home": "Domů",
+        "collections": "Kolekce",
+        "profile": "Profil",
+        "notifications": "Oznámení",
+        "management": "Správa",
+        "settings": "Nastavení",
+        "openMenu": "Otevřít menu",
+        "createCollection": "Nová kolekce",
+        "chats": "Chaty",
+        "findUser": "Najít uživatele",
+        "accountMenu": "Menu účtu",
+        "returnToAdmin": "Zpět k administrátorovi",
+        "logout": "Odhlásit se",
+        "startTyping": "Začněte psát uživatelské jméno",
+        "impersonating": "Jste přihlášeni jako <strong>@{username}</strong>. Pro návrat použijte „Zpět k administrátorovi“ v menu účtu."
+    },
+    "footer": {
+        "privacyPolicy": "Ochrana osobních údajů"
+    },
+    "people": {
+        "mutual": "{count, plural, one {# společný} few {# společní} many {# společného} other {# společných}}",
+        "livesIn": "Žije v: {city}",
+        "followsYou": "Sleduje vás",
+        "following": "Sledujete",
+        "follow": "Sledovat",
+        "title": "Lidé, které možná znáte",
+        "hide": "Skrýt návrhy",
+        "hideHint": "Skrýt (vrátit to můžete v Nastavení)",
+        "seeAll": "Zobrazit všechny návrhy"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "Vytvořit kolekci",
+            "firstItem": "Přidat první položku"
+        },
+        "title": "Nová kolekce",
+        "itemTitle": "Přidejte první položku",
+        "subtitle": "Přidejte novou kolekci a uspořádejte svůj obsah.",
+        "itemSubtitle": "Každá kolekce začíná alespoň jednou položkou.",
+        "submit": "Vytvořit kolekci"
+    },
+    "home": {
+        "discover": "Objevujte kolekce",
+        "emptyTitle": "Zatím není co doporučit",
+        "emptyBoard": "Nejdřív na tuto nástěnku uložte pár kolekcí se štítky.",
+        "emptyForYou": "Dávejte lajky a ukládejte kolekce, ať si kanál vyladíte.",
+        "feeds": {
+            "forYou": "Pro vás",
+            "explore": "Procházet",
+            "moreLike": "Více jako „{name}“",
+            "label": "Kanály",
+            "items": "kanály"
+        }
+    },
+    "myCollections": {
+        "title": "Moje kolekce",
+        "subtitle": "Procházejte a spravujte své kolekce podle viditelnosti, kategorie, štítků a hledání.",
+        "create": "Vytvořit kolekci",
+        "filters": "Filtry",
+        "category": "Kategorie",
+        "tags": "Štítky"
+    },
+    "notFound": {
+        "title": "Stránka nenalezena",
+        "description": "Stránka, kterou hledáte, neexistuje nebo byla přesunuta.",
+        "home": "Domů",
+        "back": "Zpět"
+    },
+    "onboarding": {
+        "title": "Co vás baví?",
+        "subtitle": "Vyberte pár kategorií a my vám přizpůsobíme kanál. Později je můžete změnit v nastavení.",
+        "pickMore": "Vyberte ještě {count}",
+        "continue": "Pokračovat"
+    },
+    "privacy": {
+        "title": "Zásady ochrany osobních údajů",
+        "updated": "Poslední aktualizace: {date}",
+        "collect": {
+            "title": "Jaké údaje shromažďujeme",
+            "intro": "Když si na Collectify vytvoříte účet, shromažďujeme:",
+            "items": {
+                "email": "Vaši e-mailovou adresu (slouží k přihlášení a identifikaci účtu)",
+                "names": "Uživatelské jméno a celé jméno, které si zvolíte",
+                "password": "Heslo (uložené jako bezpečný hash — heslo nikdy neukládáme v čitelné podobě), ledaže se zaregistrujete přes GitHub nebo Google; pak místo něj ukládáme ID propojeného účtu",
+                "profile": "Nepovinné údaje profilu, které přidáte: avatar, banner, bio/popis, zemi a město a datum narození",
+                "content": "Obsah, který v aplikaci vytvoříte: kolekce, položky, komentáře, lajky, sledování, zprávy a oznámení"
+            }
+        },
+        "why": {
+            "title": "Proč je shromažďujeme",
+            "text": "Vaše údaje slouží k vytvoření a správě účtu, k ověření při přihlášení, k udržení přihlášení mezi návštěvami (správa relací) a k poskytování hlavních funkcí aplikace — kolekcí, sledování ostatních uživatelů, komentářů, lajků a zpráv."
+        },
+        "location": {
+            "title": "Poloha a datum narození",
+            "intro": "Obojí je nepovinné a můžete to kdykoli změnit nebo odstranit ve svém profilu.",
+            "items": {
+                "location": "<strong>Země a město</strong> se zobrazují ve vašem veřejném profilu a slouží k doporučování lidí, které možná znáte a kteří žijí ve stejném městě. Nesledujeme vaši přesnou polohu ani polohu podle IP adresy.",
+                "birthDate": "<strong>Datum narození</strong> je soukromé: nikdy se nezobrazuje ostatním uživatelům. Slouží jen k ověření, že splňujete minimální věk."
+            }
+        },
+        "recommendations": {
+            "title": "Doporučení",
+            "text": "Pro kanál „Pro vás“, návrhy k nástěnkám a „Lidé, které možná znáte“ používáme kategorie, které si zvolíte jako zájmy, kolekce, kterým dáte lajk, uložíte je, dáte je na nástěnky nebo je otevřete po přihlášení, štítky a kategorie těchto kolekcí, lidi, které sledujete a kteří sledují vás, a město ve vašem profilu. Pamatujeme si, které kolekce jste lajkovali nebo uložili, i když to vrátíte zpět, aby vám nebyly znovu doporučovány. Probíhá to jen uvnitř Collectify; nástěnky a historie prohlížení se ostatním uživatelům nikdy nezobrazují."
+        },
+        "age": {
+            "title": "Minimální věk",
+            "text": "Collectify je určeno lidem starším 18 let. Datum narození, podle kterého by vám bylo méně než 18, nelze uložit. Pokud zjistíme, že účet patří osobě mladší 18 let, můžeme ho pozastavit a smazat jeho data."
+        },
+        "cookies": {
+            "title": "Cookies",
+            "text": "Používáme funkční cookie relace k udržení přihlášení, funkční cookie, které si pamatuje jazyk rozhraní, a krátkodobé bezpečnostní cookie (asi 10 minut) při přihlašování přes GitHub nebo Google. Zvolený motiv se ukládá do místního úložiště prohlížeče. Nepoužíváme analytické, sledovací ani marketingové cookies."
+        },
+        "storage": {
+            "title": "Kde jsou vaše data uložena",
+            "text": "Aplikace běží na Vercelu. Údaje o účtech a obsahu jsou uloženy v naší databázi. Nahrané obrázky (avatary, bannery, obrázky položek) ukládá náš poskytovatel hostingu médií Uploadcare."
+        },
+        "moderation": {
+            "title": "Nahlášení a moderace",
+            "text": "Když nahlásíte obsah, uchováme kopii nahlášeného komentáře nebo kolekce, aby ji moderátoři mohli posoudit, i kdyby byla později smazána. Při řešení nahlášení mohou moderátoři a administrátoři prohlížet nahlášený obsah a veřejnou aktivitu účtu. Soukromé zprávy nahlásit nelze a moderátoři ani administrátoři vaše konverzace číst nemohou. Moderátorské zásahy se zapisují do interního auditního protokolu. Při smazání účtu se smaže i jeho obsah; auditní protokol uchovává jen ID účtu a uživatelské jméno."
+        },
+        "thirdParties": {
+            "title": "Třetí strany",
+            "text": "Vaše údaje neprodáváme ani nesdílíme se třetími stranami pro reklamní či marketingové účely. Pokud se zaregistrujete nebo přihlásíte přes GitHub nebo Google, tito poskytovatelé nám předají základní údaje profilu (například e-mail) potřebné k vytvoření účtu."
+        }
+    },
+    "errorPage": {
+        "title": "Něco se pokazilo",
+        "description": "Zkuste to prosím znovu."
+    },
+    "userProfile": {
+        "manage": "Spravovat"
+    }
+}

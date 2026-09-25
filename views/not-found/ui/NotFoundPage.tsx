@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@mui/material';
 import { ArrowBack, Home, SearchOff } from '@mui/icons-material';
 import styles from './NotFoundPage.module.css';
+import { useTranslations } from 'next-intl';
 
 export default function NotFoundPage() {
+    const t = useTranslations('notFound');
     const router = useRouter();
 
     return (
@@ -16,10 +18,8 @@ export default function NotFoundPage() {
                 <span className={styles.code}>404</span>
 
                 <div className={styles.text}>
-                    <h1 className={styles.title}>Page Not Found</h1>
-                    <p className={styles.description}>
-                        The page you&apos;re looking for doesn&apos;t exist or has been moved.
-                    </p>
+                    <h1 className={styles.title}>{t('title')}</h1>
+                    <p className={styles.description}>{t('description')}</p>
                 </div>
 
                 <div className={styles.actions}>
@@ -30,7 +30,7 @@ export default function NotFoundPage() {
                         component={Link}
                         href="/"
                     >
-                        Go Home
+                        {t('home')}
                     </Button>
                     <Button
                         variant="outlined"
@@ -38,7 +38,7 @@ export default function NotFoundPage() {
                         startIcon={<ArrowBack />}
                         onClick={() => router.back()}
                     >
-                        Go Back
+                        {t('back')}
                     </Button>
                 </div>
             </div>

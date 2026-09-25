@@ -13,6 +13,7 @@ import { toast } from '@/shared/model/toastStore';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { CountedTextField } from '@/shared/ui/CountedTextField';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CategoryFormProps = {
     /** `null` creates a new category. */
@@ -31,6 +32,8 @@ const emptyDraft: CategoryPayload = {
 
 /** Admin editor for one category. Mount with a `key` so it resets per category. */
 export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps) {
+    const t = useTranslations('management.categories');
+    const tc = useTranslations('common');
     const queryClient = useQueryClient();
     const [draft, setDraft] = useState<CategoryPayload>(() =>
         category
@@ -58,7 +61,7 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
                 : categoryApi.create(parsed.data!),
         onSuccess: (saved) => {
             invalidate();
-            toast.success(category ? 'Category updated.' : 'Category created.');
+            toast.success(category ? t('updated') : t('created'));
             onSaved(saved);
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
@@ -68,7 +71,7 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
         mutationFn: () => categoryApi.delete(category!.id),
         onSuccess: () => {
             invalidate();
-            toast.success('Category deleted.');
+            toast.success(t('deleted'));
             onDeleted();
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
@@ -86,7 +89,7 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
             }}
         >
             <CountedTextField
-                label="Name"
+                label={t('name')}
                 value={draft.name}
                 onChange={(name) =>
                     setDraft((current) => ({
@@ -101,19 +104,19 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
             />
 
             <TextField
-                label="Slug"
+                label={t('slug')}
                 value={draft.slug}
                 onChange={(event) => {
                     setSlugTouched(true);
                     set('slug', event.target.value);
                 }}
-                helperText="Used in links: /?category=slug"
+                helperText={t('slugHint')}
                 required
                 fullWidth
             />
 
             <CountedTextField
-                label="Description"
+                label={t('description')}
                 value={draft.description}
                 onChange={(description) => set('description', description)}
                 maxLength={CATEGORY_DESCRIPTION_MAX_LENGTH}
@@ -124,11 +127,11 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
 
             <div className={styles.row}>
                 <TextField
-                    label="Position"
+                    label={t('position')}
                     type="number"
                     value={draft.position}
                     onChange={(event) => set('position', Math.max(0, Number(event.target.value)))}
-                    helperText="Lower comes first"
+                    helperText={t('positionHint')}
                     className={styles.position}
                 />
 
@@ -139,7 +142,7 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
                             onChange={(event) => set('isActive', event.target.checked)}
                         />
                     }
-                    label={draft.isActive ? 'Active' : 'Archived'}
+                    label={draft.isActive ? t('active') : t('archived')}
                 />
             </div>
 
@@ -149,13 +152,9 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
                         color="error"
                         onClick={() => setConfirming(true)}
                         disabled={category.collections > 0 || remove.isPending}
-                        title={
-                            category.collections > 0
-                                ? 'Categories with collections can only be archived.'
-                                : undefined
-                        }
+                        title={category.collections > 0 ? t('onlyArchive') : undefined}
                     >
-                        Delete
+                        {tc('delete')}
                     </Button>
                 )}
 
@@ -164,14 +163,14 @@ export function CategoryForm({ category, onSaved, onDeleted }: CategoryFormProps
                     variant="contained"
                     disabled={!parsed.success || save.isPending}
                 >
-                    {category ? 'Save' : 'Create category'}
+                    {category ? tc('save') : t('create')}
                 </Button>
             </div>
 
             <ConfirmDialog
                 open={confirming}
-                title={`Delete “${category?.name}”?`}
-                confirmLabel="Delete"
+                title={t('deleteTitle', { name: category?.name ?? '' })}
+                confirmLabel={tc('delete')}
                 destructive
                 pending={remove.isPending}
                 onClose={() => setConfirming(false)}

@@ -48,7 +48,7 @@ export async function getOwnedBoard(boardId: number, userId: number) {
         select: { id: true, userId: true },
     });
 
-    if (!board || board.userId !== userId) throw notFound('Board not found.');
+    if (!board || board.userId !== userId) throw notFound('boardNotFound');
 
     return board;
 }

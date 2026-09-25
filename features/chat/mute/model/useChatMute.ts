@@ -7,6 +7,7 @@ import { chatQueryKeys } from '@/entities/chat/model/queryKeys';
 import { patchChat, type ChatPages } from '@/entities/chat/model/chatListCache';
 import type { MuteDuration } from '@/entities/chat/model/schemas';
 import type { ChatMuteState } from '@/entities/chat/model/types';
+import { translate } from '@/shared/i18n/translator';
 
 /** Optimistic mute/unmute of one chat in the cached chat list. */
 export function useChatMute(chatId: number) {
@@ -19,7 +20,7 @@ export function useChatMute(chatId: number) {
         );
 
     const onError = () => {
-        toast.error('Could not update notifications. Try again.');
+        toast.error(translate('chats.mute.failed'));
         void queryClient.invalidateQueries({ queryKey: key });
     };
 

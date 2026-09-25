@@ -25,7 +25,7 @@ async function resolveTarget(target: ReportTarget, reporterId: number): Promise<
                 where: { id: target.userId },
                 select: { id: true },
             });
-            if (!user) throw notFound('User not found.');
+            if (!user) throw notFound('userNotFound');
 
             return { targetUserId: user.id, targetId: user.id, snapshot: null, relation: {} };
         }
@@ -42,9 +42,9 @@ async function resolveTarget(target: ReportTarget, reporterId: number): Promise<
                     collection: { select: { userId: true, private: true } },
                 },
             });
-            if (!comment) throw notFound('Comment not found.');
+            if (!comment) throw notFound('commentNotFound');
             if (comment.collection.private && comment.collection.userId !== reporterId) {
-                throw notFound('Comment not found.');
+                throw notFound('commentNotFound');
             }
 
             return {
@@ -75,7 +75,7 @@ async function resolveTarget(target: ReportTarget, reporterId: number): Promise<
             // Private collections are invisible to everyone but the owner,
             // and owners cannot report themselves.
             if (!collection || !collection.userId || collection.private) {
-                throw notFound('Collection not found.');
+                throw notFound('collectionNotFound');
             }
 
             return {
@@ -96,10 +96,10 @@ async function resolveTarget(target: ReportTarget, reporterId: number): Promise<
 export async function createReport(reporterId: number, payload: CreateReportPayload) {
     const target = await resolveTarget(payload.target, reporterId);
 
-    if (target.targetUserId === reporterId) throw forbidden('You cannot report yourself.');
+    if (target.targetUserId === reporterId) throw forbidden('cannotReportSelf');
 
     const targetRoles = await getUserRoles(target.targetUserId);
-    if (targetRoles.includes('Admin')) throw forbidden('This account cannot be reported.');
+    if (targetRoles.includes('Admin')) throw forbidden('accountNotReportable');
 
     try {
         await db.report.create({
@@ -117,7 +117,7 @@ export async function createReport(reporterId: number, payload: CreateReportPayl
         });
     } catch (error) {
         if (isUniqueViolation(error)) {
-            throw conflict('You have already reported this. Moderators will review it soon.');
+            throw conflict('alreadyReported');
         }
         throw error;
     }

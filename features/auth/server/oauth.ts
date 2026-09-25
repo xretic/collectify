@@ -8,6 +8,9 @@ import { generateUserId } from '@/entities/user/server/generateUserId';
 import { getActiveSanction } from '@/entities/sanction/server/sanctions';
 import { createSession, setSessionCookie } from '@/entities/session/server/session';
 import { usernameSchema } from '@/shared/lib/validation/schemas';
+import { isLocale } from '@/shared/config/i18n';
+import { resolveLocale } from '@/shared/i18n/request';
+import { setLocaleCookie } from '@/shared/server/locale';
 import { USERNAME_MAX_LENGTH } from '@/shared/lib/constants';
 
 export type OAuthProvider = 'google' | 'github';
@@ -39,7 +42,7 @@ function credentials(provider: OAuthProvider) {
     const secret =
         provider === 'google' ? serverEnv.GOOGLE_CLIENT_SECRET : serverEnv.GITHUB_CLIENT_SECRET;
 
-    if (!id || !secret) throw badRequest(`${provider} sign-in is not configured.`);
+    if (!id || !secret) throw badRequest('oauthNotConfigured');
 
     return { id, secret };
 }
@@ -189,20 +192,20 @@ function usernameCandidate(login: string, fallback: number) {
 async function findOrCreateUser(
     provider: OAuthProvider,
     profile: OAuthProfile,
-): Promise<{ id: number; created: boolean }> {
+): Promise<{ id: number; created: boolean; locale: string }> {
     const providerField = provider === 'google' ? 'googleId' : 'githubId';
 
     const linked = await db.user.findFirst({
         where: { [providerField]: profile.providerId },
-        select: { id: true },
+        select: { id: true, locale: true },
     });
-    if (linked) return { id: linked.id, created: false };
+    if (linked) return { ...linked, created: false };
 
     // Link to an existing account only through a provider-verified email.
     if (profile.verifiedEmail) {
         const byEmail = await db.user.findFirst({
             where: { email: { equals: profile.verifiedEmail, mode: 'insensitive' } },
-            select: { id: true, avatarUrl: true },
+            select: { id: true, avatarUrl: true, locale: true },
         });
 
         if (byEmail) {
@@ -213,11 +216,13 @@ async function findOrCreateUser(
                     avatarUrl: byEmail.avatarUrl || profile.avatarUrl,
                 },
             });
-            return { id: byEmail.id, created: false };
+            return { id: byEmail.id, created: false, locale: byEmail.locale };
         }
     }
 
     const id = await generateUserId();
+    // New accounts keep the language the visitor was browsing in.
+    const locale = await resolveLocale();
     const data = {
         id,
         email:
@@ -225,6 +230,7 @@ async function findOrCreateUser(
         fullName: (profile.fullName || profile.login || 'User').slice(0, 30),
         avatarUrl: profile.avatarUrl,
         [providerField]: profile.providerId,
+        locale,
     };
 
     try {
@@ -236,7 +242,7 @@ async function findOrCreateUser(
         });
     }
 
-    return { id, created: true };
+    return { id, created: true, locale };
 }
 
 /** Handles the provider redirect: verifies state, signs the user in, redirects home. */
@@ -253,6 +259,7 @@ export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
 
     let userId: number;
     let created: boolean;
+    let locale: string;
 
     try {
         const profile =
@@ -260,7 +267,7 @@ export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
                 ? await fetchGoogleProfile(req, code)
                 : await fetchGithubProfile(req, code);
 
-        ({ id: userId, created } = await findOrCreateUser(provider, profile));
+        ({ id: userId, created, locale } = await findOrCreateUser(provider, profile));
     } catch (error) {
         console.error(`[oauth:${provider}]`, error);
         return fail('oauth-failed');
@@ -272,6 +279,7 @@ export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
     const res = NextResponse.redirect(created ? new URL('/onboarding', home) : home);
     res.cookies.delete({ name: STATE_COOKIE, path: '/api/auth/callback' });
     setSessionCookie(res, session);
+    if (isLocale(locale)) setLocaleCookie(res, locale);
 
     return res;
 }

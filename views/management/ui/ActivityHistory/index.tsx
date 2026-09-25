@@ -5,9 +5,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { Button } from '@mui/material';
 import { managementApi } from '@/entities/moderation/api/managementApi';
 import { managementQueryKeys } from '@/entities/moderation/model/queryKeys';
-import { formatDateTime } from '@/shared/lib/format/date';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 function useHistory<T>(
     key: readonly unknown[],
@@ -24,6 +25,9 @@ function useHistory<T>(
 }
 
 export function ActivityHistory({ userId }: { userId: number }) {
+    const t = useTranslations('management.activity');
+    const tc = useTranslations('common');
+    const format = useFormatters();
     const collections = useHistory(managementQueryKeys.collections(userId), (skip) =>
         managementApi.collections(userId, skip),
     );
@@ -34,10 +38,10 @@ export function ActivityHistory({ userId }: { userId: number }) {
     return (
         <div className={styles.grid}>
             <div className={styles.column}>
-                <h4 className={styles.heading}>Collections</h4>
+                <h4 className={styles.heading}>{t('collections')}</h4>
 
                 {collections.isSuccess && collections.rows.length === 0 && (
-                    <EmptyState title="No collections" />
+                    <EmptyState title={t('noCollections')} />
                 )}
 
                 {collections.rows.map((collection) => (
@@ -49,13 +53,10 @@ export function ActivityHistory({ userId }: { userId: number }) {
                     >
                         <span className={styles.itemTitle}>{collection.name}</span>
                         <span className={styles.muted}>
-                            {collection.category} · {formatDateTime(collection.createdAt)}
-                            {collection.isPrivate && ' · private'}
+                            {collection.category} · {format.dateTime(collection.createdAt)}
+                            {collection.isPrivate && ` · ${t('private')}`}
                         </span>
-                        <span className={styles.muted}>
-                            {collection.counts.items} items · {collection.counts.comments} comments
-                            · {collection.counts.likes} likes
-                        </span>
+                        <span className={styles.muted}>{t('counts', collection.counts)}</span>
                     </Link>
                 ))}
 
@@ -65,16 +66,16 @@ export function ActivityHistory({ userId }: { userId: number }) {
                         onClick={() => collections.fetchNextPage()}
                         disabled={collections.isFetchingNextPage}
                     >
-                        Load more
+                        {tc('loadMore')}
                     </Button>
                 )}
             </div>
 
             <div className={styles.column}>
-                <h4 className={styles.heading}>Comments</h4>
+                <h4 className={styles.heading}>{t('comments')}</h4>
 
                 {comments.isSuccess && comments.rows.length === 0 && (
-                    <EmptyState title="No comments" />
+                    <EmptyState title={t('noComments')} />
                 )}
 
                 {comments.rows.map((comment) => (
@@ -85,7 +86,7 @@ export function ActivityHistory({ userId }: { userId: number }) {
                         target="_blank"
                     >
                         <span className={styles.itemTitle}>{comment.collection.name}</span>
-                        <span className={styles.muted}>{formatDateTime(comment.createdAt)}</span>
+                        <span className={styles.muted}>{format.dateTime(comment.createdAt)}</span>
                         <p className={styles.text}>{comment.text}</p>
                     </Link>
                 ))}
@@ -96,7 +97,7 @@ export function ActivityHistory({ userId }: { userId: number }) {
                         onClick={() => comments.fetchNextPage()}
                         disabled={comments.isFetchingNextPage}
                     >
-                        Load more
+                        {tc('loadMore')}
                     </Button>
                 )}
             </div>

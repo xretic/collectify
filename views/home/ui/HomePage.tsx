@@ -18,6 +18,7 @@ import { Spinner } from '@/shared/ui/Spinner';
 import { PeopleYouMayKnow } from '@/widgets/people-you-may-know/ui/PeopleYouMayKnow';
 import { FeedTabs, type Feed } from './FeedTabs';
 import styles from './HomePage.module.css';
+import { useTranslations } from 'next-intl';
 
 /** Feed from the URL: signed-in users land on "For you"; filters and tags imply "Explore". */
 function useFeed(signedIn: boolean): Feed {
@@ -34,6 +35,8 @@ function useFeed(signedIn: boolean): Feed {
 }
 
 export default function HomePage() {
+    const t = useTranslations('home');
+    const tc = useTranslations('common');
     const { user, loading } = useSessionUser();
     const list = useCollectionListParams();
     const feed = useFeed(Boolean(user));
@@ -74,7 +77,7 @@ export default function HomePage() {
             {user ? (
                 <FeedTabs value={feed} onChange={selectFeed} />
             ) : (
-                <h1 className={styles.greeting}>Discover collections</h1>
+                <h1 className={styles.greeting}>{t('discover')}</h1>
             )}
 
             <div className={styles.layout}>
@@ -101,12 +104,8 @@ export default function HomePage() {
                         <CollectionsGridSkeleton />
                     ) : active.collections.length === 0 && feed.kind !== 'explore' ? (
                         <EmptyState
-                            title="Nothing to suggest yet"
-                            description={
-                                feed.kind === 'board'
-                                    ? 'Save a few collections with tags to this board first.'
-                                    : 'Like and save collections to tune your feed.'
-                            }
+                            title={t('emptyTitle')}
+                            description={feed.kind === 'board' ? t('emptyBoard') : t('emptyForYou')}
                         />
                     ) : (
                         <CollectionsGrid collections={active.collections} />
@@ -117,7 +116,9 @@ export default function HomePage() {
                             {active.isFetchingNextPage ? (
                                 <Spinner />
                             ) : (
-                                <Button onClick={() => active.fetchNextPage()}>Load more</Button>
+                                <Button onClick={() => active.fetchNextPage()}>
+                                    {tc('loadMore')}
+                                </Button>
                             )}
                         </div>
                     )}

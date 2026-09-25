@@ -1,7 +1,7 @@
 'use client';
 
-import { formatDateTime, formatRelative } from '@/shared/lib/format/date';
 import { useNow } from '@/shared/lib/hooks/useNow';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type RelativeTimeProps = {
     value: string;
@@ -10,15 +10,16 @@ type RelativeTimeProps = {
 
 export function RelativeTime({ value, className }: RelativeTimeProps) {
     const now = useNow();
+    const format = useFormatters();
 
     return (
         <time
             className={className}
             dateTime={value}
-            title={formatDateTime(value)}
+            title={format.dateTime(value)}
             suppressHydrationWarning
         >
-            {formatRelative(value, now)}
+            {format.relative(value, now)}
         </time>
     );
 }

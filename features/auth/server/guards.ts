@@ -7,7 +7,7 @@ import {
     SESSION_COOKIE,
     type AuthSession,
 } from '@/entities/session/server/session';
-import { getActiveSanction, sanctionMessage } from '@/entities/sanction/server/sanctions';
+import { getActiveSanction, sanctionError } from '@/entities/sanction/server/sanctions';
 import { getUserRoles } from '@/entities/user/server/roles';
 import type { UserRole } from '@/entities/user/model/types';
 import type { ModerationActor } from '@/entities/moderation/server/audit';
@@ -57,7 +57,7 @@ export async function requireViewer(req: NextRequest): Promise<Viewer> {
     if (result.viewer) return result.viewer;
 
     if (result.banned !== undefined) {
-        throw forbidden(sanctionMessage('Your account is banned.', result.banned));
+        throw sanctionError('ACCOUNT', result.banned);
     }
 
     throw unauthorized();
@@ -70,7 +70,7 @@ export async function requireViewer(req: NextRequest): Promise<Viewer> {
 export async function requireChatViewer(req: NextRequest): Promise<Viewer> {
     const viewer = await requireViewer(req);
     if (viewer.session.impersonatorUserId) {
-        throw forbidden('Chats are not available while signed in as another user.');
+        throw forbidden('chatsUnavailableImpersonating');
     }
 
     return viewer;
@@ -108,13 +108,13 @@ export async function toStaffContext(
  * other admins; moderators manage regular users only.
  */
 export async function assertCanModerate(ctx: StaffContext, targetUserId: number) {
-    if (ctx.userId === targetUserId) throw forbidden('You cannot moderate yourself.');
+    if (ctx.userId === targetUserId) throw forbidden('cannotModerateSelf');
 
     const targetRoles = await getUserRoles(targetUserId);
 
-    if (targetRoles.includes('Admin')) throw forbidden('Admins cannot be moderated.');
+    if (targetRoles.includes('Admin')) throw forbidden('adminsNotModeratable');
 
     if (!ctx.isAdmin && targetRoles.includes('Moderator')) {
-        throw forbidden('Moderators cannot manage other moderators.');
+        throw forbidden('moderatorsCannotManageModerators');
     }
 }

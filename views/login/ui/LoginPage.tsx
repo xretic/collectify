@@ -7,14 +7,19 @@ import { Alert } from '@mui/material';
 import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import { AuthLayout } from '@/features/auth/ui/AuthLayout';
 import { LoginForm } from '@/features/auth/ui/LoginForm';
+import { useTranslations } from 'next-intl';
 
-const OAUTH_ERRORS: Record<string, string> = {
-    'oauth-state': 'The sign-in link expired. Please try again.',
-    'oauth-failed': 'Sign-in with the provider failed. Please try again.',
-    'account-banned': 'This account is banned.',
-};
+const OAUTH_ERRORS = {
+    'oauth-state': 'oauthState',
+    'oauth-failed': 'oauthFailed',
+    'account-banned': 'accountBanned',
+} as const;
+
+const isOAuthError = (value: string | null): value is keyof typeof OAUTH_ERRORS =>
+    value !== null && value in OAUTH_ERRORS;
 
 export default function LoginPage() {
+    const t = useTranslations('auth');
     const router = useRouter();
     const { user } = useSessionUser();
     const error = useSearchParams().get('error');
@@ -25,15 +30,15 @@ export default function LoginPage() {
 
     return (
         <AuthLayout
-            title="Login"
-            subtitle="Enter your credentials to access your account."
-            footer={
-                <>
-                    No account yet? <Link href="/auth/register">Register</Link>
-                </>
-            }
+            title={t('login')}
+            subtitle={t('loginSubtitle')}
+            footer={t.rich('noAccount', {
+                link: (chunks) => <Link href="/auth/register">{chunks}</Link>,
+            })}
         >
-            {error && OAUTH_ERRORS[error] && <Alert severity="error">{OAUTH_ERRORS[error]}</Alert>}
+            {isOAuthError(error) && (
+                <Alert severity="error">{t(`oauthErrors.${OAUTH_ERRORS[error]}`)}</Alert>
+            )}
             <LoginForm />
         </AuthLayout>
     );

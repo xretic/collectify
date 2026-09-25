@@ -1,6 +1,6 @@
 import 'server-only';
 import { db, isUniqueViolation } from '@/shared/server/db';
-import { ApiError, badRequest, notFound } from '@/shared/server/http';
+import { apiError, badRequest, notFound } from '@/shared/server/http';
 import { TAGS_PER_USER_DAILY_LIMIT } from '@/shared/lib/constants';
 import { bumpCacheNamespace } from '@/shared/server/cache';
 import { writeAudit } from '@/entities/moderation/server/audit';
@@ -24,7 +24,7 @@ export async function findOrCreateTag(
         where: { id: input.categoryId },
         select: { isActive: true },
     });
-    if (!category?.isActive) throw badRequest('Choose an existing category.');
+    if (!category?.isActive) throw badRequest('categoryUnknown');
 
     const key = { categoryId: input.categoryId, normalized: normalizeTagName(input.name) };
 
@@ -38,7 +38,7 @@ export async function findOrCreateTag(
         where: { createdById: userId, createdAt: { gt: new Date(Date.now() - 86_400_000) } },
     });
     if (createdToday >= TAGS_PER_USER_DAILY_LIMIT) {
-        throw new ApiError(429, 'You have created too many tags today. Try again tomorrow.');
+        throw apiError(429, 'tagsDailyLimit');
     }
 
     try {
@@ -63,7 +63,7 @@ export async function deleteTag(ctx: StaffContext, tagId: number) {
             where: { id: tagId },
             select: { name: true, categoryId: true, usageCount: true },
         });
-        if (!tag) throw notFound('Tag not found.');
+        if (!tag) throw notFound('tagNotFound');
 
         await tx.tag.delete({ where: { id: tagId } });
         await writeAudit(ctx.actor, { action: 'delete-tag', metadata: { tagId, ...tag } }, tx);

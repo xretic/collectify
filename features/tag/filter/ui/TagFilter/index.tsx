@@ -8,8 +8,9 @@ import type { Tag, TagRef } from '@/entities/tag/model/types';
 import { useTags } from '@/entities/tag/model/useTag';
 import { useTagSearch } from '@/entities/tag/model/useTagSearch';
 import { FEED_TAGS_LIMIT } from '@/shared/lib/constants';
-import { formatCompact } from '@/shared/lib/format/number';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 /** Suggestions are full tags; selected ones from the URL may only be refs. */
 type Option = TagRef & Partial<Tag>;
@@ -28,6 +29,8 @@ type TagFilterProps = {
  * shown next to each tag.
  */
 export function TagFilter({ categoryId, value, onChange }: TagFilterProps) {
+    const t = useTranslations('tags');
+    const format = useFormatters();
     const [input, setInput] = useState('');
     const selected = useTags(value);
     // Tags are per category and a collection has one, so once a tag is picked
@@ -69,7 +72,7 @@ export function TagFilter({ categoryId, value, onChange }: TagFilterProps) {
             }}
             loading={search.isFetching}
             noOptionsText={
-                full ? `Up to ${FEED_TAGS_LIMIT} tags` : input ? 'No matching tags' : 'No tags yet'
+                full ? t('upTo', { limit: FEED_TAGS_LIMIT }) : input ? t('noMatches') : t('noneYet')
             }
             renderValue={(tags, getItemProps) =>
                 tags.map((tag, index) => {
@@ -97,7 +100,9 @@ export function TagFilter({ categoryId, value, onChange }: TagFilterProps) {
                             )}
                         </span>
                         {option.usageCount !== undefined && (
-                            <span className={styles.usage}>{formatCompact(option.usageCount)}</span>
+                            <span className={styles.usage}>
+                                {format.compact(option.usageCount)}
+                            </span>
                         )}
                     </span>
                 </li>
@@ -106,7 +111,7 @@ export function TagFilter({ categoryId, value, onChange }: TagFilterProps) {
                 <TextField
                     {...params}
                     size="small"
-                    placeholder={value.length === 0 ? 'Search by tags' : ''}
+                    placeholder={value.length === 0 ? t('searchByTags') : ''}
                     slotProps={{
                         input: {
                             ...params.InputProps,

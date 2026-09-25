@@ -5,7 +5,7 @@ import { setRoleSchema } from '@/features/moderation/model/schemas';
 
 export const PATCH = route<{ id: string }>(async (req, params) => {
     const ctx = await requireStaff(req);
-    await setUserRole(ctx, parseId(params.id, 'user id'), await readBody(req, setRoleSchema));
+    await setUserRole(ctx, parseId(params.id), await readBody(req, setRoleSchema));
 
     return noContent();
 });

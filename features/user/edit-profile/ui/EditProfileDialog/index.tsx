@@ -26,7 +26,7 @@ import {
     MIN_USER_AGE,
     USERNAME_MAX_LENGTH,
 } from '@/shared/lib/constants';
-import { COUNTRIES } from '@/shared/lib/geo/countries';
+import { countryOptions } from '@/shared/lib/geo/countries';
 import {
     birthDateSchema,
     citySchema,
@@ -40,6 +40,8 @@ import { CountedTextField } from '@/shared/ui/CountedTextField';
 import { DateField } from '@/shared/ui/DateField';
 import { useImagePicker } from '@/shared/lib/hooks/useImagePicker';
 import styles from './index.module.css';
+import { useLocale, useTranslations } from 'next-intl';
+import { useValidationMessage } from '@/shared/i18n/useValidationMessage';
 
 type EditProfileDialogProps = {
     open: boolean;
@@ -81,6 +83,11 @@ function latestBirthDate() {
 }
 
 export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProps) {
+    const t = useTranslations('profile.edit');
+    const tc = useTranslations('common');
+    const locale = useLocale();
+    const validationMessage = useValidationMessage();
+    const countries = countryOptions(locale);
     const { setUser } = useSessionUser();
     const [draft, setDraft] = useState<Draft>(() => pickDraft(user));
 
@@ -108,7 +115,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
         mutationFn: () => userApi.updateProfile(changes),
         onSuccess: (updated) => {
             setUser(updated);
-            toast.success('Profile updated.');
+            toast.success(t('updated'));
             onClose();
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
@@ -122,7 +129,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>{t('title')}</DialogTitle>
 
             <DialogContent className={styles.content}>
                 <div className={styles.media}>
@@ -131,7 +138,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                         className={styles.banner}
                         onClick={bannerPicker.pick}
                         disabled={bannerPicker.pending}
-                        aria-label="Change banner"
+                        aria-label={t('changeBanner')}
                     >
                         {draft.bannerUrl && (
                             <img src={draft.bannerUrl} alt="" className={styles.bannerImage} />
@@ -142,17 +149,17 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                             ) : (
                                 <PhotoCameraOutlinedIcon />
                             )}
-                            Change banner
+                            {t('changeBanner')}
                         </span>
                     </button>
 
                     {draft.bannerUrl && (
-                        <Tooltip title="Remove banner">
+                        <Tooltip title={t('removeBanner')}>
                             <IconButton
                                 size="small"
                                 className={`${styles.remove} ${styles.removeBanner}`}
                                 onClick={() => set('bannerUrl', '')}
-                                aria-label="Remove banner"
+                                aria-label={t('removeBanner')}
                             >
                                 <CloseIcon fontSize="small" />
                             </IconButton>
@@ -165,7 +172,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                             className={styles.avatarButton}
                             onClick={avatarPicker.pick}
                             disabled={avatarPicker.pending}
-                            aria-label="Change avatar"
+                            aria-label={t('changeAvatar')}
                         >
                             <Avatar
                                 src={draft.avatarUrl}
@@ -182,12 +189,12 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                         </button>
 
                         {draft.avatarUrl && (
-                            <Tooltip title="Remove avatar">
+                            <Tooltip title={t('removeAvatar')}>
                                 <IconButton
                                     size="small"
                                     className={`${styles.remove} ${styles.removeAvatar}`}
                                     onClick={() => set('avatarUrl', '')}
-                                    aria-label="Remove avatar"
+                                    aria-label={t('removeAvatar')}
                                 >
                                     <CloseIcon fontSize="small" />
                                 </IconButton>
@@ -198,7 +205,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
 
                 <div className={styles.fields}>
                     <CountedTextField
-                        label="Full name"
+                        label={t('fullName')}
                         value={draft.fullName}
                         onChange={(value) => set('fullName', value)}
                         maxLength={FULLNAME_MAX_LENGTH}
@@ -207,7 +214,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                     />
 
                     <CountedTextField
-                        label="Username"
+                        label={t('username')}
                         value={draft.username}
                         onChange={(value) => set('username', value.toLowerCase())}
                         maxLength={USERNAME_MAX_LENGTH}
@@ -215,13 +222,13 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                         helperText={
                             usernameCheck.success
                                 ? undefined
-                                : usernameCheck.error.issues[0]?.message
+                                : validationMessage(usernameCheck.error.issues[0]?.message)
                         }
                         fullWidth
                     />
 
                     <CountedTextField
-                        label="Bio"
+                        label={t('bio')}
                         value={draft.description}
                         onChange={(value) => set('description', value)}
                         maxLength={DESCRIPTION_MAX_LENGTH}
@@ -232,9 +239,9 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
 
                     <div className={styles.row}>
                         <Autocomplete
-                            options={COUNTRIES}
+                            options={countries}
                             value={
-                                COUNTRIES.find((country) => country.code === draft.country) ?? null
+                                countries.find((country) => country.code === draft.country) ?? null
                             }
                             onChange={(_, country) => {
                                 const code = country?.code ?? null;
@@ -244,12 +251,12 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                             }}
                             getOptionLabel={(country) => country.name}
                             isOptionEqualToValue={(option, value) => option.code === value.code}
-                            renderInput={(params) => <TextField {...params} label="Country" />}
+                            renderInput={(params) => <TextField {...params} label={t('country')} />}
                             className={styles.grow}
                         />
 
                         <CityAutocomplete
-                            label="City"
+                            label={t('city')}
                             value={draft.city}
                             country={draft.country}
                             onChange={(city, country) =>
@@ -265,7 +272,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                     </div>
 
                     <DateField
-                        label="Birth date"
+                        label={t('birthDate')}
                         value={draft.birthDate}
                         onChange={(value) => set('birthDate', value)}
                         max={latestBirthDate()}
@@ -273,7 +280,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                         helperText={
                             birthDateCheck.success
                                 ? undefined
-                                : birthDateCheck.error.issues[0]?.message
+                                : validationMessage(birthDateCheck.error.issues[0]?.message)
                         }
                         fullWidth
                     />
@@ -282,7 +289,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
 
             <DialogActions>
                 <Button onClick={handleClose} disabled={save.isPending}>
-                    Cancel
+                    {tc('cancel')}
                 </Button>
                 <Button
                     variant="contained"
@@ -296,7 +303,7 @@ export function EditProfileDialog({ open, user, onClose }: EditProfileDialogProp
                         Object.keys(changes).length === 0
                     }
                 >
-                    Save
+                    {tc('save')}
                 </Button>
             </DialogActions>
         </Dialog>

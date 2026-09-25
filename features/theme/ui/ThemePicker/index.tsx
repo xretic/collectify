@@ -6,6 +6,7 @@ import { THEMES } from '@/shared/config/themes';
 import { useThemeStore } from '@/shared/model/themeStore';
 import { SearchField } from '@/shared/ui/SearchField';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type Filter = 'all' | 'light' | 'dark';
 
@@ -14,6 +15,7 @@ type Filter = 'all' | 'light' | 'dark';
  * that theme's own tokens (see app/themes.css) — no colors duplicated here.
  */
 export function ThemePicker() {
+    const t = useTranslations('settings.appearance');
     const theme = useThemeStore((state) => state.theme);
     const setTheme = useThemeStore((state) => state.setTheme);
     const [search, setSearch] = useState('');
@@ -31,9 +33,9 @@ export function ThemePicker() {
     return (
         <div className={styles.picker}>
             <div className={styles.toolbar}>
-                <SearchField value={search} onChange={setSearch} placeholder="Find a theme" />
+                <SearchField value={search} onChange={setSearch} placeholder={t('search')} />
 
-                <div className={styles.filters} role="group" aria-label="Filter themes">
+                <div className={styles.filters} role="group" aria-label={t('filter')}>
                     {(['all', 'light', 'dark'] as const).map((value) => (
                         <button
                             key={value}
@@ -42,13 +44,13 @@ export function ThemePicker() {
                             onClick={() => setFilter(value)}
                             aria-pressed={filter === value}
                         >
-                            {value === 'all' ? 'All' : value === 'light' ? 'Light' : 'Dark'}
+                            {t(`filters.${value}`)}
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div className={styles.grid} role="radiogroup" aria-label="Theme">
+            <div className={styles.grid} role="radiogroup" aria-label={t('theme')}>
                 {visible.map((item) => (
                     <button
                         key={item.id}

@@ -13,12 +13,9 @@ export const tagNameSchema = z
     .pipe(
         z
             .string()
-            .min(TAG_NAME_MIN_LENGTH, `At least ${TAG_NAME_MIN_LENGTH} characters.`)
-            .max(TAG_NAME_MAX_LENGTH)
-            .regex(
-                /^[\p{L}\p{N}][\p{L}\p{N} &+.'#-]*$/u,
-                "Letters, digits, spaces and - & + . ' #",
-            ),
+            .min(TAG_NAME_MIN_LENGTH, 'validation.tagNameMin')
+            .max(TAG_NAME_MAX_LENGTH, 'validation.tooLong')
+            .regex(/^[\p{L}\p{N}][\p{L}\p{N} &+.'#-]*$/u, 'validation.tagNameChars'),
     );
 
 export const createTagSchema = z.object({

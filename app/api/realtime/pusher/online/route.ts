@@ -1,4 +1,4 @@
-import { ApiError, noContent, route } from '@/shared/server/http';
+import { apiError, noContent, route } from '@/shared/server/http';
 import { pusher } from '@/shared/server/realtime';
 import { enforceRateLimit } from '@/shared/server/rateLimit';
 import { requireChatViewer } from '@/features/auth/server/guards';
@@ -12,7 +12,7 @@ import { announceOnlineIfConnected } from '@/features/chat/server/presence';
  * "online" is not fanned out again (see `announcePresence`).
  */
 export const POST = route(async (req) => {
-    if (!pusher) throw new ApiError(503, 'Realtime provider is not configured.');
+    if (!pusher) throw apiError(503, 'realtimeUnavailable');
 
     const viewer = await requireChatViewer(req);
     await enforceRateLimit(req, 'realtime', viewer.userId);

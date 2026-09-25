@@ -19,6 +19,7 @@ import { ActionsMenu, type ActionsMenuItem } from '@/shared/ui/ActionsMenu';
 import { ScrollRow } from '@/shared/ui/ScrollRow';
 import { TabIndicator } from '@/shared/ui/TabIndicator';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export type Feed = { kind: 'for-you' } | { kind: 'explore' } | { kind: 'board'; boardId: number };
 
@@ -39,34 +40,17 @@ type Tab = {
 const feedKey = (feed: Feed) => (feed.kind === 'board' ? boardKey(feed.boardId) : feed.kind);
 
 // Always first, in this order; only board tabs can be reordered.
-const PINNED: Tab[] = [
-    {
-        key: 'for-you',
-        feed: { kind: 'for-you' },
-        label: (
-            <>
-                <AutoAwesomeIcon fontSize="small" />
-                For you
-            </>
-        ),
-    },
-    {
-        key: 'explore',
-        feed: { kind: 'explore' },
-        label: (
-            <>
-                <ExploreOutlinedIcon fontSize="small" />
-                Explore
-            </>
-        ),
-    },
-];
+const PINNED = [
+    { key: 'for-you', labelKey: 'forYou', feed: { kind: 'for-you' }, Icon: AutoAwesomeIcon },
+    { key: 'explore', labelKey: 'explore', feed: { kind: 'explore' }, Icon: ExploreOutlinedIcon },
+] as const;
 
 /**
  * Pinterest-like feed switcher: personal feed, everything, and one tab per
  * board. Board tabs can be dragged into any order; the order is saved to the account.
  */
 export function FeedTabs({ value, onChange }: FeedTabsProps) {
+    const t = useTranslations('home.feeds');
     const { boards, keys, reorder } = useBoardOrder();
     const actions = useBoardActions({
         // Its feed is gone with it.
@@ -79,7 +63,7 @@ export function FeedTabs({ value, onChange }: FeedTabsProps) {
         (board): Tab => ({
             key: boardKey(board.id),
             feed: { kind: 'board', boardId: board.id },
-            title: `More like “${board.name}”`,
+            title: t('moreLike', { name: board.name }),
             actions: actions.items(board),
             label: (
                 <>
@@ -116,8 +100,8 @@ export function FeedTabs({ value, onChange }: FeedTabsProps) {
                         rootClassName={styles.row}
                         className={styles.tabs}
                         role="tablist"
-                        aria-label="Feeds"
-                        itemsLabel="feeds"
+                        aria-label={t('label')}
+                        itemsLabel={t('items')}
                     >
                         {PINNED.map((tab) => (
                             <button
@@ -128,7 +112,8 @@ export function FeedTabs({ value, onChange }: FeedTabsProps) {
                                 className={`${styles.tab} ${tab.key === activeKey ? styles.active : ''}`}
                                 onClick={() => onChange(tab.feed)}
                             >
-                                {tab.label}
+                                <tab.Icon fontSize="small" />
+                                {t(tab.labelKey)}
                             </button>
                         ))}
                         {boardTabs.map((tab) => (
@@ -155,6 +140,7 @@ type SortableTabProps = {
 };
 
 function SortableTab({ tab, active, onSelect }: SortableTabProps) {
+    const t = useTranslations('boards');
     const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
         id: tab.key,
     });
@@ -179,7 +165,7 @@ function SortableTab({ tab, active, onSelect }: SortableTabProps) {
                 type="button"
                 role="tab"
                 aria-selected={active}
-                aria-roledescription="draggable tab"
+                aria-roledescription={t('draggableTab')}
                 className={styles.tabButton}
                 onClick={onSelect}
                 title={tab.title}
@@ -188,7 +174,7 @@ function SortableTab({ tab, active, onSelect }: SortableTabProps) {
             </button>
 
             {active && tab.actions && (
-                <ActionsMenu label="Board actions" className={styles.menu} items={tab.actions} />
+                <ActionsMenu label={t('actions')} className={styles.menu} items={tab.actions} />
             )}
         </div>
     );

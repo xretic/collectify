@@ -1,5 +1,6 @@
 import { api } from '@/shared/api/api';
 import type { SessionUser } from '@/entities/user/model/types';
+import type { Locale } from '@/shared/config/i18n';
 
 type UserResponse = { user: SessionUser };
 
@@ -12,8 +13,13 @@ export const authApi = {
         return (await api.post('auth/login', { json: payload }).json<UserResponse>()).user;
     },
 
-    async register(payload: { email: string; username: string; password: string }) {
+    async register(payload: { email: string; username: string; password: string; locale: Locale }) {
         return (await api.post('auth/register', { json: payload }).json<UserResponse>()).user;
+    },
+
+    /** Sets the language cookie (and the account language when signed in). */
+    async setLocale(locale: Locale) {
+        await api.put('locale', { json: { locale } });
     },
 
     async logout() {

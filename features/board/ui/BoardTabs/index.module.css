@@ -40,7 +40,6 @@ button.tab {
     z-index: 2;
     cursor: grabbing;
     background-color: var(--container-color);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
 
 .tab:hover {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { tagApi } from '../api/tagApi';
 import { tagQueryKeys } from './queryKeys';
 
@@ -9,10 +9,6 @@ const tagQuery = (tagId: number) => ({
     queryFn: () => tagApi.get(tagId),
     staleTime: 10 * 60_000,
 });
-
-export function useTag(tagId: number | undefined) {
-    return useQuery({ ...tagQuery(tagId ?? 0), enabled: Boolean(tagId) });
-}
 
 /** Several tags by id, in the given order; unresolved ones are `undefined`. */
 export function useTags(tagIds: number[]) {

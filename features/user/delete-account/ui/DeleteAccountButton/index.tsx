@@ -18,8 +18,11 @@ import type { SessionUser } from '@/entities/user/model/types';
 import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export function DeleteAccountButton({ user }: { user: SessionUser }) {
+    const t = useTranslations('settings.danger');
+    const tc = useTranslations('common');
     const router = useRouter();
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
@@ -46,28 +49,25 @@ export function DeleteAccountButton({ user }: { user: SessionUser }) {
     return (
         <>
             <Button variant="contained" color="error" onClick={() => setOpen(true)}>
-                Delete account
+                {t('deleteAccount')}
             </Button>
 
             <Dialog open={open} onClose={close} fullWidth maxWidth="xs">
                 <DialogTitle className={styles.title}>
                     <WarningAmberOutlinedIcon color="error" />
-                    Delete account
+                    {t('deleteAccount')}
                 </DialogTitle>
 
                 <DialogContent className={styles.content}>
-                    <DialogContentText color="inherit">
-                        This permanently deletes your profile, collections, comments and chats. It
-                        cannot be undone.
-                    </DialogContentText>
+                    <DialogContentText color="inherit">{t('warning')}</DialogContentText>
 
                     <TextField
                         autoFocus
                         type={user.hasPassword ? 'password' : 'text'}
                         label={
                             user.hasPassword
-                                ? 'Your password'
-                                : `Type "${user.username}" to confirm`
+                                ? t('yourPassword')
+                                : t('typeUsername', { username: user.username })
                         }
                         value={confirmation}
                         onChange={(event) => {
@@ -83,7 +83,7 @@ export function DeleteAccountButton({ user }: { user: SessionUser }) {
 
                 <DialogActions>
                     <Button onClick={close} disabled={remove.isPending}>
-                        Cancel
+                        {tc('cancel')}
                     </Button>
                     <Button
                         variant="contained"
@@ -91,7 +91,7 @@ export function DeleteAccountButton({ user }: { user: SessionUser }) {
                         onClick={() => remove.mutate()}
                         disabled={!confirmation || remove.isPending}
                     >
-                        Delete forever
+                        {t('deleteForever')}
                     </Button>
                 </DialogActions>
             </Dialog>

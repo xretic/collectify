@@ -17,10 +17,13 @@ import { TagFilter } from '@/features/tag/filter/ui/TagFilter';
 import { Pagination } from '@/shared/ui/Pagination';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './MyCollectionsPage.module.css';
+import { useTranslations } from 'next-intl';
 
 type Visibility = 'public' | 'private';
 
 export default function MyCollectionsPage() {
+    const t = useTranslations('myCollections');
+    const tf = useTranslations('collectionForm');
     const { user, loading } = useSessionUser();
     const list = useCollectionListParams();
     const { bySlug } = useCategories();
@@ -47,11 +50,8 @@ export default function MyCollectionsPage() {
         <section className={styles.page}>
             <div className={styles.hero}>
                 <div>
-                    <h1 className={styles.title}>My collections</h1>
-                    <p className={styles.subtitle}>
-                        Browse and manage your own collections by visibility, category, tags, and
-                        search.
-                    </p>
+                    <h1 className={styles.title}>{t('title')}</h1>
+                    <p className={styles.subtitle}>{t('subtitle')}</p>
                 </div>
 
                 <Button
@@ -60,7 +60,7 @@ export default function MyCollectionsPage() {
                     href="/collections/create"
                     startIcon={<AddIcon />}
                 >
-                    Create collection
+                    {t('create')}
                 </Button>
             </div>
 
@@ -68,13 +68,13 @@ export default function MyCollectionsPage() {
                 <div className={styles.panelHeader}>
                     <span className={styles.panelTitle}>
                         <FilterListIcon fontSize="small" />
-                        Filters
+                        {t('filters')}
                     </span>
                 </div>
 
                 <div className={styles.controls}>
                     <div className={styles.block}>
-                        <span className={styles.label}>Visibility</span>
+                        <span className={styles.label}>{tf('visibility')}</span>
                         <div className={styles.row}>
                             {(['public', 'private'] as const).map((value) => (
                                 <Button
@@ -86,7 +86,7 @@ export default function MyCollectionsPage() {
                                         })
                                     }
                                 >
-                                    {value === 'public' ? 'Public' : 'Private'}
+                                    {tf(value)}
                                 </Button>
                             ))}
                         </div>
@@ -100,12 +100,12 @@ export default function MyCollectionsPage() {
                     >
                         <div className={styles.controls}>
                             <div className={styles.block}>
-                                <span className={styles.label}>Category</span>
+                                <span className={styles.label}>{t('category')}</span>
                                 <CategoryMenu value={list.category} onChange={list.setCategory} />
                             </div>
 
                             <div className={styles.block}>
-                                <span className={styles.label}>Tags</span>
+                                <span className={styles.label}>{t('tags')}</span>
                                 <div className={styles.row}>
                                     <TagFilter
                                         categoryId={categoryId}

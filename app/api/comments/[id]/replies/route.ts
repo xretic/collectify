@@ -9,7 +9,7 @@ import { getViewer } from '@/features/auth/server/guards';
 const querySchema = z.object({ cursor: idSchema.optional() });
 
 export const GET = route<{ id: string }>(async (req, params) => {
-    const commentId = parseId(params.id, 'comment id');
+    const commentId = parseId(params.id);
     const viewer = await getViewer(req);
     await enforceRateLimit(req, 'search', viewer?.userId);
 
@@ -21,7 +21,7 @@ export const GET = route<{ id: string }>(async (req, params) => {
     // Same visibility as the collection itself.
     const { collection } = comment ?? {};
     if (!collection || (collection.private && collection.userId !== viewer?.userId)) {
-        throw notFound('Comment not found.');
+        throw notFound('commentNotFound');
     }
 
     const { cursor } = readQuery(req, querySchema);

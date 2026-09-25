@@ -7,7 +7,7 @@ export const PUT = route<{ id: string }>(async (req, params) => {
     const viewer = await requireViewer(req);
     await enforceRateLimit(req, 'mutation', viewer.userId);
 
-    await follow(viewer.userId, parseId(params.id, 'user id'));
+    await follow(viewer.userId, parseId(params.id));
     return noContent();
 });
 
@@ -15,6 +15,6 @@ export const DELETE = route<{ id: string }>(async (req, params) => {
     const viewer = await requireViewer(req);
     await enforceRateLimit(req, 'mutation', viewer.userId);
 
-    await unfollow(viewer.userId, parseId(params.id, 'user id'));
+    await unfollow(viewer.userId, parseId(params.id));
     return noContent();
 });

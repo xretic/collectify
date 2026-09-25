@@ -5,9 +5,7 @@ import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@m
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
 import { managementApi } from '@/entities/moderation/api/managementApi';
 import {
-    SANCTION_DURATION_LABELS,
     SANCTION_DURATIONS,
-    SANCTION_SCOPE_LABELS,
     SANCTION_SCOPES,
     type SanctionDuration,
     type SanctionScope,
@@ -16,6 +14,7 @@ import { MODERATION_NOTE_MAX_LENGTH } from '@/shared/lib/constants';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { useModerationMutation } from '@/entities/moderation/model/useModerationMutation';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type SanctionFormProps = {
     userId: number;
@@ -24,6 +23,8 @@ type SanctionFormProps = {
 };
 
 export function SanctionForm({ userId, username, isAdmin }: SanctionFormProps) {
+    const t = useTranslations('management.sanctions');
+    const ts = useTranslations('sanctions');
     const [scope, setScope] = useState<SanctionScope | ''>('');
     const [duration, setDuration] = useState<SanctionDuration>('1d');
     const [reason, setReason] = useState('');
@@ -36,10 +37,7 @@ export function SanctionForm({ userId, username, isAdmin }: SanctionFormProps) {
                 duration,
                 reason,
             }),
-        (result) =>
-            result.applied
-                ? 'Sanction applied.'
-                : 'A stronger sanction is already active; it was kept.',
+        (result) => (result.applied ? t('applied') : t('strongerKept')),
     );
 
     const submit = () =>
@@ -54,26 +52,26 @@ export function SanctionForm({ userId, username, isAdmin }: SanctionFormProps) {
     return (
         <div className={styles.form}>
             <FormControl size="small" className={styles.select}>
-                <InputLabel id="sanction-scope">Scope</InputLabel>
+                <InputLabel id="sanction-scope">{t('scope')}</InputLabel>
                 <Select
                     labelId="sanction-scope"
-                    label="Scope"
+                    label={t('scope')}
                     value={scope}
                     onChange={(event) => setScope(event.target.value as SanctionScope)}
                 >
                     {SANCTION_SCOPES.map((value) => (
                         <MenuItem key={value} value={value}>
-                            {SANCTION_SCOPE_LABELS[value]}
+                            {ts(`scopes.${value}`)}
                         </MenuItem>
                     ))}
                 </Select>
             </FormControl>
 
             <FormControl size="small" className={styles.select}>
-                <InputLabel id="sanction-duration">Duration</InputLabel>
+                <InputLabel id="sanction-duration">{t('duration')}</InputLabel>
                 <Select
                     labelId="sanction-duration"
-                    label="Duration"
+                    label={t('duration')}
                     value={duration}
                     onChange={(event) => setDuration(event.target.value as SanctionDuration)}
                 >
@@ -83,14 +81,14 @@ export function SanctionForm({ userId, username, isAdmin }: SanctionFormProps) {
                             value={value}
                             disabled={value === 'permanent' && !isAdmin}
                         >
-                            {SANCTION_DURATION_LABELS[value]}
+                            {ts(`durations.${value}`)}
                         </MenuItem>
                     ))}
                 </Select>
             </FormControl>
 
             <TextField
-                label="Reason"
+                label={t('reason')}
                 size="small"
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
@@ -105,19 +103,25 @@ export function SanctionForm({ userId, username, isAdmin }: SanctionFormProps) {
                 disabled={!scope || issue.isPending}
                 onClick={() => setConfirming(true)}
             >
-                Apply
+                {t('apply')}
             </Button>
 
             <ConfirmDialog
                 open={confirming}
-                title={`Sanction @${username}?`}
+                title={t('confirmTitle', { username })}
                 description={
                     scope &&
-                    `${SANCTION_SCOPE_LABELS[scope]} for ${SANCTION_DURATION_LABELS[duration].toLowerCase()}.${
-                        reason ? ` Reason: ${reason}` : ''
-                    }`
+                    [
+                        t('summary', {
+                            scope: ts(`scopes.${scope}`),
+                            duration: ts(`durations.${duration}`),
+                        }),
+                        reason && t('reasonLine', { reason }),
+                    ]
+                        .filter(Boolean)
+                        .join(' ')
                 }
-                confirmLabel="Apply sanction"
+                confirmLabel={t('confirm')}
                 destructive
                 pending={issue.isPending}
                 onClose={() => setConfirming(false)}

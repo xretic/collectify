@@ -26,6 +26,7 @@ import { COLLECTION_ITEMS_LIMIT } from '@/shared/lib/constants';
 import { ItemViewer } from './ItemViewer';
 import { SortableItem } from './SortableItem';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CollectionItemsGridProps = {
     collection: CollectionDetails;
@@ -33,6 +34,7 @@ type CollectionItemsGridProps = {
 };
 
 export function CollectionItemsGrid({ collection, isOwner }: CollectionItemsGridProps) {
+    const t = useTranslations('items');
     const { add, reorder } = useItemMutations(collection.id);
     const [adding, setAdding] = useState(false);
     const [viewing, setViewing] = useState<number | null>(null);
@@ -56,10 +58,10 @@ export function CollectionItemsGrid({ collection, isOwner }: CollectionItemsGrid
     const canAdd = isOwner && collection.items.length < COLLECTION_ITEMS_LIMIT;
 
     return (
-        <section className={styles.wrapper} aria-label="Items">
+        <section className={styles.wrapper} aria-label={t('label')}>
             <header className={styles.header}>
                 <h2 className={styles.title}>
-                    Items <span className={styles.count}>{collection.items.length}</span>
+                    {t('label')} <span className={styles.count}>{collection.items.length}</span>
                 </h2>
 
                 {canAdd && (
@@ -69,7 +71,7 @@ export function CollectionItemsGrid({ collection, isOwner }: CollectionItemsGrid
                         onClick={() => setAdding(true)}
                     >
                         <AddIcon fontSize="small" />
-                        Add item
+                        {t('add')}
                     </button>
                 )}
             </header>

@@ -136,7 +136,7 @@ export async function getReportDetails(
         },
     });
 
-    if (!report) throw notFound('Report not found.');
+    if (!report) throw notFound('reportNotFound');
 
     const [targetSanctions, targetReports, targetGuiltyReports, reporterReports, reporterRejected] =
         await Promise.all([

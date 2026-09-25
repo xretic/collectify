@@ -36,7 +36,7 @@ export async function getChatForParticipant(chatId: number, viewerId: number) {
         },
     });
 
-    if (!chat) throw notFound('Chat not found.');
+    if (!chat) throw notFound('chatNotFound');
     if (!chat.users.some((user) => user.id === viewerId)) throw forbidden();
 
     return {

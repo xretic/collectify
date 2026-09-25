@@ -1,7 +1,8 @@
-import type { Metadata, Viewport } from 'next';
+import type { Viewport } from 'next';
 import ChatsPage from '@/views/chats/ui/ChatsPage';
+import { pageMetadata } from '@/shared/i18n/metadata';
 
-export const metadata: Metadata = { title: 'Chats' };
+export const generateMetadata = pageMetadata('chats');
 
 // The on-screen keyboard shrinks the layout, so the composer stays above it.
 export const viewport: Viewport = { interactiveWidget: 'resizes-content' };

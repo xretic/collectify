@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
 import CreateCollectionPage from '@/views/create-collection/ui/CreateCollectionPage';
+import { pageMetadata } from '@/shared/i18n/metadata';
 
-export const metadata: Metadata = { title: 'Create collection' };
+export const generateMetadata = pageMetadata('createCollection');
 
 export default function CreateCollectionRoute() {
     return <CreateCollectionPage />;

@@ -11,11 +11,14 @@ import { InterestPicker } from '@/features/interest/ui/InterestPicker';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './OnboardingPage.module.css';
+import { useTranslations } from 'next-intl';
 
 const SUGGESTED_MINIMUM = 3;
 
 /** First step after sign-up: pick categories to seed the "For you" feed. */
 export default function OnboardingPage() {
+    const t = useTranslations('onboarding');
+    const tc = useTranslations('common');
     const router = useRouter();
     const queryClient = useQueryClient();
     const [selected, setSelected] = useState<number[]>([]);
@@ -35,18 +38,15 @@ export default function OnboardingPage() {
     return (
         <section className={styles.page}>
             <header className={styles.header}>
-                <h1 className={styles.title}>What are you into?</h1>
-                <p className={styles.subtitle}>
-                    Pick a few categories and we&apos;ll tailor your feed. You can change them later
-                    in settings.
-                </p>
+                <h1 className={styles.title}>{t('title')}</h1>
+                <p className={styles.subtitle}>{t('subtitle')}</p>
             </header>
 
             <InterestPicker value={selected} onChange={setSelected} />
 
             <footer className={styles.footer}>
                 <Button onClick={() => router.replace('/')} disabled={save.isPending}>
-                    Skip
+                    {tc('skip')}
                 </Button>
                 <Button
                     variant="contained"
@@ -54,7 +54,7 @@ export default function OnboardingPage() {
                     onClick={() => save.mutate()}
                     disabled={selected.length === 0 || save.isPending}
                 >
-                    {missing > 0 ? `Pick ${missing} more` : 'Continue'}
+                    {missing > 0 ? t('pickMore', { count: missing }) : t('continue')}
                 </Button>
             </footer>
         </section>

@@ -13,30 +13,33 @@ import type { CollectionStats } from '@/entities/collection/model/types';
 import { Spinner } from '@/shared/ui/Spinner';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 // Line colours are chart props (SVG attributes); the legend reuses them via CSS classes.
 const SERIES = [
-    { key: 'Likes', color: '#ff2b2e', icon: FavoriteBorderIcon, className: styles.likes },
-    { key: 'Comments', color: '#8ab3ff', icon: ForumOutlinedIcon, className: styles.comments },
-    { key: 'Favorites', color: '#ff9800', icon: BookmarkBorderIcon, className: styles.favorites },
+    { key: 'likes', color: '#ff2b2e', icon: FavoriteBorderIcon, className: styles.likes },
+    { key: 'comments', color: '#8ab3ff', icon: ForumOutlinedIcon, className: styles.comments },
+    { key: 'favorites', color: '#ff9800', icon: BookmarkBorderIcon, className: styles.favorites },
 ] as const;
 
 function toChartData(stats: CollectionStats) {
     return stats.days.map((day, index) => ({
         day,
-        Likes: stats.likes[index] ?? 0,
-        Comments: stats.comments[index] ?? 0,
-        Favorites: stats.favorites[index] ?? 0,
+        likes: stats.likes[index] ?? 0,
+        comments: stats.comments[index] ?? 0,
+        favorites: stats.favorites[index] ?? 0,
     }));
 }
 
 function ChartLegend() {
+    const t = useTranslations('collection.stats');
+
     return (
         <div className={styles.legend}>
             {SERIES.map(({ key, className, icon: Icon }) => (
                 <span key={key} className={`${styles.legendItem} ${className}`}>
                     <Icon fontSize="inherit" />
-                    <span className={styles.legendLabel}>{key}</span>
+                    <span className={styles.legendLabel}>{t(key)}</span>
                 </span>
             ))}
         </div>
@@ -50,6 +53,8 @@ type CollectionStatsDialogProps = {
 };
 
 export function CollectionStatsDialog({ collectionId, open, onClose }: CollectionStatsDialogProps) {
+    const t = useTranslations('collection.stats');
+    const tc = useTranslations('common');
     const { data, isPending, isError } = useQuery({
         queryKey: collectionQueryKeys.stats(collectionId),
         queryFn: () => collectionApi.stats(collectionId),
@@ -59,20 +64,20 @@ export function CollectionStatsDialog({ collectionId, open, onClose }: Collectio
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-            <DialogTitle>Statistics</DialogTitle>
+            <DialogTitle>{t('title')}</DialogTitle>
 
-            <IconButton className={styles.close} onClick={onClose} aria-label="Close">
+            <IconButton className={styles.close} onClick={onClose} aria-label={tc('close')}>
                 <CloseIcon />
             </IconButton>
 
             <DialogContent>
                 <DialogContentText color="inherit" className={styles.intro}>
-                    Activity on your collection by day (UTC).
+                    {t('intro')}
                 </DialogContentText>
 
                 {isPending && <Spinner />}
-                {isError && <EmptyState title="Statistics are unavailable right now." />}
-                {data && data.days.length === 0 && <EmptyState title="No activity yet." />}
+                {isError && <EmptyState title={t('unavailable')} />}
+                {data && data.days.length === 0 && <EmptyState title={t('empty')} />}
 
                 {data && data.days.length > 0 && (
                     <div className={styles.chart}>
@@ -94,6 +99,7 @@ export function CollectionStatsDialog({ collectionId, open, onClose }: Collectio
                                         key={key}
                                         type="monotone"
                                         dataKey={key}
+                                        name={t(key)}
                                         stroke={color}
                                         strokeWidth={2}
                                         dot={false}

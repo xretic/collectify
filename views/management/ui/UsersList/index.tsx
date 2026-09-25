@@ -10,6 +10,7 @@ import { EmptyState } from '@/shared/ui/EmptyState';
 import { SearchField } from '@/shared/ui/SearchField';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from '../ManagementSidebar/list.module.css';
+import { useTranslations } from 'next-intl';
 
 type UsersListProps = {
     selectedId: number | null;
@@ -17,6 +18,8 @@ type UsersListProps = {
 };
 
 export function UsersList({ selectedId, onSelect }: UsersListProps) {
+    const t = useTranslations('management.users');
+    const tc = useTranslations('common');
     const [input, setInput] = useState('');
     const query = useDebounce(input.trim());
 
@@ -34,13 +37,13 @@ export function UsersList({ selectedId, onSelect }: UsersListProps) {
             <SearchField
                 value={input}
                 onChange={setInput}
-                placeholder="Search users"
+                placeholder={t('search')}
                 className={styles.search}
             />
 
             <div className={styles.list}>
                 {users.isPending && <Spinner />}
-                {users.isSuccess && rows.length === 0 && <EmptyState title="No users found" />}
+                {users.isSuccess && rows.length === 0 && <EmptyState title={t('empty')} />}
 
                 {rows.map((user) => (
                     <button
@@ -54,7 +57,7 @@ export function UsersList({ selectedId, onSelect }: UsersListProps) {
                             <span className={styles.primary}>{user.fullName || user.username}</span>
                             <span className={styles.secondary}>
                                 @{user.username}
-                                {user.activeSanctions.length > 0 && ' · sanctioned'}
+                                {user.activeSanctions.length > 0 && ` · ${t('sanctioned')}`}
                             </span>
                         </span>
                     </button>
@@ -65,7 +68,7 @@ export function UsersList({ selectedId, onSelect }: UsersListProps) {
                         onClick={() => users.fetchNextPage()}
                         disabled={users.isFetchingNextPage}
                     >
-                        Load more
+                        {tc('loadMore')}
                     </Button>
                 )}
             </div>

@@ -14,11 +14,6 @@ export const GET = route<{ id: string }>(async (req, params) => {
     const { cursor } = readQuery(req, querySchema);
 
     return json(
-        await listFollows(
-            parseId(params.id, 'user id'),
-            'following',
-            cursor ?? null,
-            viewer?.userId ?? null,
-        ),
+        await listFollows(parseId(params.id), 'following', cursor ?? null, viewer?.userId ?? null),
     );
 });

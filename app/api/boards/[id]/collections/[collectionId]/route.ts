@@ -10,8 +10,8 @@ const handler = (save: boolean) =>
         const viewer = await requireViewer(req);
         await enforceRateLimit(req, 'mutation', viewer.userId);
 
-        const boardId = parseId(params.id, 'board id');
-        const collectionId = parseId(params.collectionId, 'collection id');
+        const boardId = parseId(params.id);
+        const collectionId = parseId(params.collectionId);
 
         if (save) await saveToBoard(viewer.userId, boardId, collectionId);
         else await removeFromBoard(viewer.userId, boardId, collectionId);

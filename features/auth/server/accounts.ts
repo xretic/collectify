@@ -1,8 +1,9 @@
 import 'server-only';
 import bcrypt from 'bcrypt';
 import { db, isUniqueViolation } from '@/shared/server/db';
-import { badRequest, conflict, forbidden, unauthorized } from '@/shared/server/http';
-import { getActiveSanction, sanctionMessage } from '@/entities/sanction/server/sanctions';
+import type { Locale } from '@/shared/config/i18n';
+import { badRequest, conflict, unauthorized } from '@/shared/server/http';
+import { getActiveSanction, sanctionError } from '@/entities/sanction/server/sanctions';
 import { generateUserId } from '@/entities/user/server/generateUserId';
 import { writeAudit } from '@/entities/moderation/server/audit';
 import type { AuthSession } from '@/entities/session/server/session';
@@ -14,7 +15,7 @@ const DUMMY_HASH = '$2b$12$EDSJTBiJRXOpprXhHxa.C.tMcycZBRpdlVL7d8f33SWUXRp2rrfvK
 
 export async function assertNotBanned(userId: number) {
     const ban = await getActiveSanction(userId, 'ACCOUNT');
-    if (ban) throw forbidden(sanctionMessage('Your account is banned.', ban.expiresAt));
+    if (ban) throw sanctionError('ACCOUNT', ban.expiresAt);
 }
 
 export async function verifyCredentials(email: string, password: string) {
@@ -24,14 +25,19 @@ export async function verifyCredentials(email: string, password: string) {
     });
 
     const matches = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
-    if (!user?.passwordHash || !matches) throw unauthorized('Invalid email or password.');
+    if (!user?.passwordHash || !matches) throw unauthorized('invalidCredentials');
 
     await assertNotBanned(user.id);
 
     return user.id;
 }
 
-export async function registerUser(input: { email: string; username: string; password: string }) {
+export async function registerUser(input: {
+    email: string;
+    username: string;
+    password: string;
+    locale: Locale;
+}) {
     const existing = await db.user.findFirst({
         where: {
             OR: [
@@ -44,9 +50,7 @@ export async function registerUser(input: { email: string; username: string; pas
 
     if (existing) {
         throw conflict(
-            existing.email.toLowerCase() === input.email
-                ? 'An account with this email already exists.'
-                : 'This username is taken.',
+            existing.email.toLowerCase() === input.email ? 'emailTaken' : 'usernameTaken',
         );
     }
 
@@ -58,13 +62,14 @@ export async function registerUser(input: { email: string; username: string; pas
                 username: input.username,
                 fullName: input.username,
                 passwordHash: await bcrypt.hash(input.password, BCRYPT_COST),
+                locale: input.locale,
             },
             select: { id: true },
         });
 
         return user.id;
     } catch (error) {
-        if (isUniqueViolation(error)) throw conflict('This email or username is already taken.');
+        if (isUniqueViolation(error)) throw conflict('emailOrUsernameTaken');
         throw error;
     }
 }
@@ -79,13 +84,13 @@ export async function changePassword(
     });
 
     if (user.passwordHash) {
-        if (!input.currentPassword) throw badRequest('Current password is required.');
+        if (!input.currentPassword) throw badRequest('currentPasswordRequired');
 
         const matches = await bcrypt.compare(input.currentPassword, user.passwordHash);
-        if (!matches) throw unauthorized('Current password is incorrect.');
+        if (!matches) throw unauthorized('currentPasswordIncorrect');
 
         if (await bcrypt.compare(input.newPassword, user.passwordHash)) {
-            throw badRequest('New password must be different from the current one.');
+            throw badRequest('passwordUnchanged');
         }
     }
 
@@ -106,9 +111,7 @@ export async function deleteOwnAccount(userId: number, confirmation: string) {
         : confirmation.trim().toLowerCase() === user.username;
 
     if (!confirmed) {
-        throw unauthorized(
-            user.passwordHash ? 'Password is incorrect.' : 'Type your username to confirm.',
-        );
+        throw unauthorized(user.passwordHash ? 'passwordIncorrect' : 'typeUsernameToConfirm');
     }
 
     await db.$transaction([
@@ -118,7 +121,7 @@ export async function deleteOwnAccount(userId: number, confirmation: string) {
 }
 
 export async function stopImpersonation(session: AuthSession) {
-    if (!session.impersonatorUserId) throw badRequest('Impersonation is not active.');
+    if (!session.impersonatorUserId) throw badRequest('impersonationInactive');
 
     const adminId = session.impersonatorUserId;
 

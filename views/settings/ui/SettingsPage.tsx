@@ -17,6 +17,9 @@ import { InterestsEditor } from '@/features/interest/ui/InterestsEditor';
 import { PeopleWidgetToggle } from '@/widgets/people-you-may-know/ui/PeopleWidgetToggle';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './SettingsPage.module.css';
+import TranslateIcon from '@mui/icons-material/Translate';
+import { useTranslations } from 'next-intl';
+import { LanguageSelect } from '@/features/locale/ui/LanguageSelect';
 
 type SectionProps = {
     icon: ReactNode;
@@ -40,6 +43,7 @@ function Section({ icon, title, description, danger = false, children }: Section
 }
 
 export default function SettingsPage() {
+    const t = useTranslations('settings');
     const { user, loading } = useSessionUser();
     const [editingProfile, setEditingProfile] = useState(false);
 
@@ -48,27 +52,25 @@ export default function SettingsPage() {
     return (
         <div className={styles.page}>
             <header className={styles.header}>
-                <h1 className={styles.title}>Settings</h1>
-                <p className={styles.subtitle}>Manage your account settings and preferences</p>
+                <h1 className={styles.title}>{t('title')}</h1>
+                <p className={styles.subtitle}>{t('subtitle')}</p>
             </header>
 
             <Section
                 icon={<PersonIcon className={styles.icon} />}
-                title="Profile"
-                description="Name, username, bio and images."
+                title={t('profile.title')}
+                description={t('profile.description')}
             >
                 <Button variant="contained" onClick={() => setEditingProfile(true)}>
-                    Edit profile
+                    {t('profile.edit')}
                 </Button>
             </Section>
 
             <Section
                 icon={<KeyOutlinedIcon className={styles.icon} />}
-                title="Privacy & Security"
+                title={t('security.title')}
                 description={
-                    user.hasPassword
-                        ? 'Change your password.'
-                        : 'Set a password to also sign in with email.'
+                    user.hasPassword ? t('security.changePassword') : t('security.setPassword')
                 }
             >
                 <ChangePasswordForm hasPassword={user.hasPassword} />
@@ -76,32 +78,40 @@ export default function SettingsPage() {
 
             <Section
                 icon={<InterestsIcon className={styles.icon} />}
-                title="Interests"
-                description="Categories you like. They shape your “For you” feed."
+                title={t('interests.title')}
+                description={t('interests.description')}
             >
                 <InterestsEditor />
             </Section>
 
             <Section
+                icon={<TranslateIcon className={styles.icon} />}
+                title={t('language.title')}
+                description={t('language.description')}
+            >
+                <LanguageSelect />
+            </Section>
+
+            <Section
                 icon={<ColorLensIcon className={styles.icon} />}
-                title="Appearance"
-                description="Pick a theme. It applies instantly and is remembered on this device."
+                title={t('appearance.title')}
+                description={t('appearance.description')}
             >
                 <ThemePicker />
             </Section>
 
             <Section
                 icon={<HomeOutlinedIcon className={styles.icon} />}
-                title="Home page"
-                description="Widgets next to your feed."
+                title={t('home.title')}
+                description={t('home.description')}
             >
                 <PeopleWidgetToggle />
             </Section>
 
             <Section
                 icon={<ShieldOutlinedIcon className={styles.dangerIcon} />}
-                title="Danger zone"
-                description="Permanently delete your account and all data."
+                title={t('danger.title')}
+                description={t('danger.description')}
                 danger
             >
                 <DeleteAccountButton user={user} />

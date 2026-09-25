@@ -10,10 +10,14 @@ import { toast } from '@/shared/model/toastStore';
 import { loginSchema } from '../../model/schemas';
 import { useAuthSuccess } from '../../model/useAuthSuccess';
 import styles from '../authForm.module.css';
+import { useTranslations } from 'next-intl';
+import { useValidationMessage } from '@/shared/i18n/useValidationMessage';
 
 type LoginValues = { email: string; password: string };
 
 export function LoginForm() {
+    const t = useTranslations('auth');
+    const validationMessage = useValidationMessage();
     const onSuccess = useAuthSuccess();
     const { register, handleSubmit, formState } = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
@@ -35,20 +39,20 @@ export function LoginForm() {
             <TextField
                 {...register('email')}
                 type="email"
-                label="Email"
+                label={t('email')}
                 autoComplete="email"
                 error={Boolean(formState.errors.email)}
-                helperText={formState.errors.email?.message}
+                helperText={validationMessage(formState.errors.email?.message)}
                 fullWidth
             />
 
             <TextField
                 {...register('password')}
                 type="password"
-                label="Password"
+                label={t('password')}
                 autoComplete="current-password"
                 error={Boolean(formState.errors.password)}
-                helperText={formState.errors.password?.message}
+                helperText={validationMessage(formState.errors.password?.message)}
                 fullWidth
             />
 
@@ -59,7 +63,7 @@ export function LoginForm() {
                 fullWidth
                 disabled={login.isPending}
             >
-                {login.isPending ? 'Signing in…' : 'Login'}
+                {login.isPending ? t('signingIn') : t('login')}
             </Button>
         </form>
     );

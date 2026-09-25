@@ -26,17 +26,6 @@ export async function getUserRoles(userId: number): Promise<UserRole[]> {
     return row ? toRoles(row) : [];
 }
 
-export async function getUserRolesMap(userIds: number[]): Promise<Map<number, UserRole[]>> {
-    if (userIds.length === 0) return new Map();
-
-    const rows = await db.user.findMany({
-        where: { id: { in: userIds } },
-        select: { id: true, ...roleSelect },
-    });
-
-    return new Map(rows.map((row) => [row.id, toRoles(row)]));
-}
-
 /** Prisma filter: users without staff roles (moderators may only see these). */
 export const nonStaffUserFilter = {
     admin: { is: null },

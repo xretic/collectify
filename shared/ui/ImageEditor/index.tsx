@@ -22,13 +22,14 @@ import { cropImage, rotatedSize } from '@/shared/lib/image/cropImage';
 import { useImageEditorStore, type ImageCropOptions } from '@/shared/model/imageEditorStore';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
 
 // `null` keeps the image's own proportions.
 const ASPECTS = [
-    { label: 'Original', value: null },
+    { label: null, value: null },
     { label: '1:1', value: 1 },
     { label: '4:3', value: 4 / 3 },
     { label: '3:4', value: 3 / 4 },
@@ -70,6 +71,8 @@ type ImageEditorProps = {
 };
 
 function ImageEditor({ file, src, options, onDone }: ImageEditorProps) {
+    const t = useTranslations('imageEditor');
+    const tc = useTranslations('common');
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(MIN_ZOOM);
     const [rotation, setRotation] = useState(0);
@@ -92,14 +95,14 @@ function ImageEditor({ file, src, options, onDone }: ImageEditorProps) {
         try {
             onDone(await cropImage(file, area, rotation));
         } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Could not edit the image.');
+            toast.error(error instanceof Error ? error.message : t('failed'));
             setSaving(false);
         }
     };
 
     return (
         <>
-            <DialogTitle>Edit image</DialogTitle>
+            <DialogTitle>{t('title')}</DialogTitle>
 
             <DialogContent className={styles.content}>
                 <div className={styles.stage}>
@@ -131,18 +134,18 @@ function ImageEditor({ file, src, options, onDone }: ImageEditorProps) {
                             step={0.01}
                             value={zoom}
                             onChange={(_, value) => setZoom(value)}
-                            aria-label="Zoom"
+                            aria-label={t('zoom')}
                         />
                         <ZoomInIcon fontSize="small" className={styles.muted} />
                     </div>
 
                     <div className={styles.rotate}>
-                        <Tooltip title="Rotate left">
+                        <Tooltip title={t('rotateLeft')}>
                             <IconButton size="small" onClick={() => rotate(-90)}>
                                 <RotateLeftIcon fontSize="small" />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Rotate right">
+                        <Tooltip title={t('rotateRight')}>
                             <IconButton size="small" onClick={() => rotate(90)}>
                                 <RotateRightIcon fontSize="small" />
                             </IconButton>
@@ -151,13 +154,13 @@ function ImageEditor({ file, src, options, onDone }: ImageEditorProps) {
                 </div>
 
                 {options.aspect === undefined && (
-                    <div className={styles.aspects} role="radiogroup" aria-label="Aspect ratio">
+                    <div className={styles.aspects} role="radiogroup" aria-label={t('aspectRatio')}>
                         {ASPECTS.map((option) => (
                             <Chip
-                                key={option.label}
+                                key={option.value ?? 'original'}
                                 role="radio"
                                 aria-checked={chosenAspect === option.value}
-                                label={option.label}
+                                label={option.label ?? t('original')}
                                 size="small"
                                 color={chosenAspect === option.value ? 'primary' : 'default'}
                                 variant={chosenAspect === option.value ? 'filled' : 'outlined'}
@@ -170,7 +173,7 @@ function ImageEditor({ file, src, options, onDone }: ImageEditorProps) {
 
             <DialogActions>
                 <Button onClick={() => onDone(null)} disabled={saving}>
-                    Cancel
+                    {tc('cancel')}
                 </Button>
                 <Button
                     variant="contained"
@@ -178,7 +181,7 @@ function ImageEditor({ file, src, options, onDone }: ImageEditorProps) {
                     disabled={!area || saving}
                     startIcon={saving ? <CircularProgress size={16} color="inherit" /> : null}
                 >
-                    Save
+                    {tc('save')}
                 </Button>
             </DialogActions>
         </>

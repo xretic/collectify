@@ -15,7 +15,8 @@
         "db:migrate": "prisma migrate deploy",
         "db:migrate:dev": "prisma migrate dev",
         "admin": "node scripts/admin.mjs",
-        "prepare": "husky"
+        "prepare": "husky",
+        "i18n:check": "node scripts/check-translations.mjs"
     },
     "dependencies": {
         "@dnd-kit/core": "^6.3.1",
@@ -40,6 +41,7 @@
         "ioredis": "^5.9.2",
         "ky": "^1.14.3",
         "next": "16.1.2",
+        "next-intl": "^4.14.7",
         "pg": "^8.22.0",
         "pusher": "^5.3.3",
         "pusher-js": "^8.5.0",
@@ -56,6 +58,7 @@
         "zustand": "^5.0.10"
     },
     "devDependencies": {
+        "@formatjs/icu-messageformat-parser": "^3.5.20",
         "@types/bcrypt": "^6.0.0",
         "@types/node": "^24.13.6",
         "@types/pg": "^8.20.0",

@@ -10,7 +10,7 @@ const handler = (liked: boolean) =>
         const viewer = await requireViewer(req);
         await enforceRateLimit(req, 'mutation', viewer.userId);
 
-        await setAuthorLike(viewer, parseId(params.id, 'comment id'), liked);
+        await setAuthorLike(viewer, parseId(params.id), liked);
         return noContent();
     });
 

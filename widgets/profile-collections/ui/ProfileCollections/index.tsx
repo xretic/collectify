@@ -15,13 +15,14 @@ import { BoardTabs } from '@/features/board/ui/BoardTabs';
 import { Pagination } from '@/shared/ui/Pagination';
 import { TabIndicator } from '@/shared/ui/TabIndicator';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type Tab = 'created' | 'favorites' | 'private';
 
 const TABS = [
-    { value: 'created', label: 'Created', icon: <AutoAwesomeMosaicIcon fontSize="small" /> },
-    { value: 'favorites', label: 'Saved', icon: <BookmarksIcon fontSize="small" /> },
-    { value: 'private', label: 'Private', icon: <LockIcon fontSize="small" /> },
+    { value: 'created', icon: <AutoAwesomeMosaicIcon fontSize="small" /> },
+    { value: 'favorites', icon: <BookmarksIcon fontSize="small" /> },
+    { value: 'private', icon: <LockIcon fontSize="small" /> },
 ] as const;
 
 type ProfileCollectionsProps = {
@@ -33,6 +34,7 @@ type ProfileCollectionsProps = {
 };
 
 export function ProfileCollections({ authorId, stats, own = false }: ProfileCollectionsProps) {
+    const t = useTranslations('profile.tabs');
     const list = useCollectionListParams();
     const searchParams = useSearchParams();
     const tabParam = searchParams.get('tab');
@@ -81,7 +83,7 @@ export function ProfileCollections({ authorId, stats, own = false }: ProfileColl
                                 }
                             >
                                 {item.icon}
-                                <span className={styles.tabLabel}>{item.label}</span>
+                                <span className={styles.tabLabel}>{t(item.value)}</span>
                             </button>
                         ))}
                         <TabIndicator />

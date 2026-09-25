@@ -8,6 +8,7 @@ import { chatApi } from '@/entities/chat/api/chatApi';
 import type { UserPreview } from '@/entities/user/model/types';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { useTranslations } from 'next-intl';
 
 /** Opens the existing chat with `recipient`, or an empty draft one that the first message creates. */
 export function MessageButton({
@@ -17,6 +18,7 @@ export function MessageButton({
     recipient: UserPreview;
     disabled?: boolean;
 }) {
+    const t = useTranslations('chats');
     const router = useRouter();
     const [pending, setPending] = useState(false);
 
@@ -33,13 +35,13 @@ export function MessageButton({
     };
 
     return (
-        <Tooltip title="Message">
+        <Tooltip title={t('message')}>
             <span>
                 <IconButton
                     color="inherit"
                     onClick={handleClick}
                     disabled={disabled || pending}
-                    aria-label="Message"
+                    aria-label={t('message')}
                 >
                     <EmailIcon />
                 </IconButton>

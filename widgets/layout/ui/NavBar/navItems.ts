@@ -10,7 +10,8 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import type { SessionUser } from '@/entities/user/model/types';
 
 export type NavItem = {
-    label: string;
+    /** Key under `nav` in the messages. */
+    labelKey: 'home' | 'collections' | 'profile' | 'notifications';
     href: string;
     icon: SvgIconComponent;
     iconOutlined: SvgIconComponent;
@@ -19,7 +20,7 @@ export type NavItem = {
 
 export function getNavItems(user: SessionUser | null): NavItem[] {
     const home: NavItem = {
-        label: 'Home',
+        labelKey: 'home',
         href: '/',
         icon: HomeIcon,
         iconOutlined: HomeOutlinedIcon,
@@ -29,19 +30,19 @@ export function getNavItems(user: SessionUser | null): NavItem[] {
     return [
         home,
         {
-            label: 'Collections',
+            labelKey: 'collections',
             href: '/collections/my',
             icon: EggAltIcon,
             iconOutlined: EggAltOutlinedIcon,
         },
         {
-            label: 'Profile',
+            labelKey: 'profile',
             href: '/users/me',
             icon: AccountCircleIcon,
             iconOutlined: AccountCircleOutlinedIcon,
         },
         {
-            label: 'Notifications',
+            labelKey: 'notifications',
             href: '/notifications',
             icon: NotificationsIcon,
             iconOutlined: NotificationsOutlinedIcon,

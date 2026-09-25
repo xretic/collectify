@@ -6,12 +6,13 @@ import { IconButton, InputBase } from '@mui/material';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import type { ChatMessage } from '@/entities/chat/model/types';
 import type { UserRestriction } from '@/entities/user/model/types';
-import { getMutePlaceholder } from '@/entities/user/lib/restrictions';
+import { useMutePlaceholder } from '@/entities/user/lib/restrictions';
 import { DIRECT_MESSAGE_MAX_LENGTH } from '@/shared/lib/constants';
 import { useTypeToFocus } from '@/shared/lib/hooks/useTypeToFocus';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type MessageComposerProps = {
     /** Delivers the message: to an existing chat, or starts one (draft chat). */
@@ -33,6 +34,8 @@ export function MessageComposer({
     onSent,
     onTyping,
 }: MessageComposerProps) {
+    const t = useTranslations('chats.composer');
+    const mutePlaceholder = useMutePlaceholder();
     const [text, setText] = useState('');
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const lastTypingPingRef = useRef(0);
@@ -88,11 +91,7 @@ export function MessageComposer({
                     value={restriction.muted ? '' : text}
                     onChange={(event) => handleChange(event.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={getMutePlaceholder(
-                        restriction,
-                        'messenger',
-                        'Write your message…',
-                    )}
+                    placeholder={mutePlaceholder(restriction, 'messenger', t('placeholder'))}
                     disabled={blocked}
                     multiline
                     maxRows={6}
@@ -101,7 +100,7 @@ export function MessageComposer({
                     inputProps={{
                         maxLength: DIRECT_MESSAGE_MAX_LENGTH,
                         enterKeyHint: 'send',
-                        'aria-label': 'Message',
+                        'aria-label': t('label'),
                     }}
                 />
             </div>
@@ -110,7 +109,7 @@ export function MessageComposer({
                 type="submit"
                 className={styles.send}
                 disabled={!canSend}
-                aria-label="Send message"
+                aria-label={t('send')}
                 // Keeps the input (and the phone keyboard) focused.
                 onPointerDown={(event) => event.preventDefault()}
             >

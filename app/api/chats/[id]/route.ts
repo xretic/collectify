@@ -10,7 +10,5 @@ export const GET = route<{ id: string }>(async (req, params) => {
     const viewer = await requireChatViewer(req);
     const { cursor } = readQuery(req, querySchema);
 
-    return json(
-        await getChatMessages(parseId(params.id, 'chat id'), viewer.userId, cursor ?? null),
-    );
+    return json(await getChatMessages(parseId(params.id), viewer.userId, cursor ?? null));
 });

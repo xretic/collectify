@@ -8,6 +8,7 @@ import { categoryQueryKeys } from '@/entities/category/model/queryKeys';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from '../ManagementSidebar/list.module.css';
+import { useTranslations } from 'next-intl';
 
 type CategoriesListProps = {
     selectedId: number | 'new' | null;
@@ -15,6 +16,7 @@ type CategoriesListProps = {
 };
 
 export function CategoriesList({ selectedId, onSelect }: CategoriesListProps) {
+    const t = useTranslations('management.categories');
     const categories = useQuery({
         queryKey: categoryQueryKeys.managed(),
         queryFn: categoryApi.listManaged,
@@ -28,12 +30,12 @@ export function CategoriesList({ selectedId, onSelect }: CategoriesListProps) {
                 className={styles.search}
                 onClick={() => onSelect('new')}
             >
-                New category
+                {t('new')}
             </Button>
 
             <div className={styles.list}>
                 {categories.isPending && <Spinner />}
-                {categories.data?.length === 0 && <EmptyState title="No categories yet" />}
+                {categories.data?.length === 0 && <EmptyState title={t('empty')} />}
 
                 {categories.data?.map((category) => (
                     <button
@@ -45,8 +47,8 @@ export function CategoriesList({ selectedId, onSelect }: CategoriesListProps) {
                         <span className={styles.meta}>
                             <span className={styles.primary}>{category.name}</span>
                             <span className={styles.secondary}>
-                                {category.collections} collections
-                                {!category.isActive && ' · archived'}
+                                {t('collections', { count: category.collections })}
+                                {!category.isActive && ` · ${t('archivedLower')}`}
                             </span>
                         </span>
                     </button>

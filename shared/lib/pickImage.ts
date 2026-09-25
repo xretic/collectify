@@ -2,6 +2,7 @@
 // the user gets the native file picker on click.
 
 import { editImage, type ImageCropOptions } from '@/shared/model/imageEditorStore';
+import { translate } from '@/shared/i18n/translator';
 
 const UPLOAD_URL = 'https://upload.uploadcare.com/base/';
 
@@ -63,15 +64,15 @@ function chooseFile(): Promise<File | null> {
 /** Throws a user-facing error for files that cannot be uploaded. */
 export function assertUploadableImage(file: File) {
     if (!ACCEPTED_TYPES.includes(file.type)) {
-        throw new Error('Choose a PNG, JPG, WEBP or GIF image.');
+        throw new Error(translate('upload.wrongType'));
     }
-    if (file.size > IMAGE_MAX_BYTES) throw new Error('The image must be 10MB or smaller.');
+    if (file.size > IMAGE_MAX_BYTES) throw new Error(translate('upload.tooBig'));
 }
 
 /** Uploads an image and returns its CDN URL. */
 export async function uploadImage(file: File): Promise<string> {
     const key = publicKey();
-    if (!key) throw new Error('Image uploads are not configured.');
+    if (!key) throw new Error(translate('upload.notConfigured'));
 
     assertUploadableImage(file);
 
@@ -85,13 +86,13 @@ export async function uploadImage(file: File): Promise<string> {
     try {
         response = await fetch(UPLOAD_URL, { method: 'POST', body });
     } catch {
-        throw new Error('Image upload failed. Check your connection.');
+        throw new Error(translate('upload.network'));
     }
 
-    if (!response.ok) throw new Error('Image upload failed.');
+    if (!response.ok) throw new Error(translate('upload.failed'));
 
     const { file: uuid } = (await response.json()) as { file?: string };
-    if (!uuid) throw new Error('Image upload failed.');
+    if (!uuid) throw new Error(translate('upload.failed'));
 
     return `${await getCdnBase(key)}/${uuid}/`;
 }

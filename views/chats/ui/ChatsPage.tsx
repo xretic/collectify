@@ -10,6 +10,7 @@ import { DraftChatWindow } from '@/widgets/chat-window/ui/ChatWindow/DraftChatWi
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './ChatsPage.module.css';
+import { useTranslations } from 'next-intl';
 
 type ChatsPageProps = {
     chatId?: number | null;
@@ -22,6 +23,7 @@ type ChatsPageProps = {
  * (the URL is the source of truth).
  */
 export default function ChatsPage({ chatId = null, draftUserId = null }: ChatsPageProps) {
+    const t = useTranslations('chats');
     const { user, loading } = useSessionUser();
     usePresenceUpdates();
     useTypingUpdates(user?.id);
@@ -29,12 +31,7 @@ export default function ChatsPage({ chatId = null, draftUserId = null }: ChatsPa
     if (loading || !user) return <Spinner variant="page" />;
 
     if (user.impersonatorUserId) {
-        return (
-            <EmptyState
-                title="Chats are private"
-                description="Direct messages are not available while signed in as another user."
-            />
-        );
+        return <EmptyState title={t('privateTitle')} description={t('privateDescription')} />;
     }
 
     return (
@@ -53,10 +50,8 @@ export default function ChatsPage({ chatId = null, draftUserId = null }: ChatsPa
                         <span className={styles.placeholderIcon}>
                             <ForumRoundedIcon />
                         </span>
-                        <h2 className={styles.placeholderTitle}>Your chats</h2>
-                        <p className={styles.placeholderText}>
-                            Pick a conversation on the left to keep talking about collections.
-                        </p>
+                        <h2 className={styles.placeholderTitle}>{t('placeholderTitle')}</h2>
+                        <p className={styles.placeholderText}>{t('placeholderText')}</p>
                     </div>
                 )}
             </div>

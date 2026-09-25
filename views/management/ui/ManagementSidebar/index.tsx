@@ -7,6 +7,7 @@ import { ReportsQueue } from '../ReportsQueue';
 import { CategoriesList } from '../CategoriesList';
 import { TabIndicator } from '@/shared/ui/TabIndicator';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type ManagementSidebarProps = {
     tab: ManagementTab;
@@ -23,17 +24,19 @@ type ManagementSidebarProps = {
 };
 
 const TABS = [
-    { value: 'users', label: 'Users' },
-    { value: 'reports', label: 'Reports' },
-    { value: 'categories', label: 'Categories', adminOnly: true },
+    { value: 'users' },
+    { value: 'reports' },
+    { value: 'categories', adminOnly: true },
 ] as const;
 
 export function ManagementSidebar(props: ManagementSidebarProps) {
+    const t = useTranslations('management');
+
     return (
         <aside className={styles.sidebar}>
             <div>
-                <h1 className={styles.title}>Management</h1>
-                <p className={styles.subtitle}>Users, reports, sanctions, categories</p>
+                <h1 className={styles.title}>{t('title')}</h1>
+                <p className={styles.subtitle}>{t('subtitle')}</p>
             </div>
 
             <div className={styles.tabs} role="tablist">
@@ -46,7 +49,7 @@ export function ManagementSidebar(props: ManagementSidebarProps) {
                         className={`${styles.tab} ${props.tab === tab.value ? styles.tabActive : ''}`}
                         onClick={() => props.onTabChange(tab.value)}
                     >
-                        {tab.label}
+                        {t(`tabs.${tab.value}`)}
                     </button>
                 ))}
                 <TabIndicator />

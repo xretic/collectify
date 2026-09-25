@@ -5,6 +5,7 @@ import { Button } from '@mui/material';
 import { COMMENT_MAX_LENGTH } from '@/shared/lib/constants';
 import { CountedTextField } from '@/shared/ui/CountedTextField';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CommentEditorProps = {
     initialText: string;
@@ -14,6 +15,7 @@ type CommentEditorProps = {
 };
 
 export function CommentEditor({ initialText, pending, onSave, onCancel }: CommentEditorProps) {
+    const t = useTranslations('common');
     const [text, setText] = useState(initialText);
     const trimmed = text.trim();
 
@@ -33,14 +35,14 @@ export function CommentEditor({ initialText, pending, onSave, onCancel }: Commen
 
             <div className={styles.actions}>
                 <Button onClick={onCancel} disabled={pending}>
-                    Cancel
+                    {t('cancel')}
                 </Button>
                 <Button
                     variant="contained"
                     onClick={() => (trimmed === initialText ? onCancel() : onSave(trimmed))}
                     disabled={!trimmed || pending}
                 >
-                    Save
+                    {t('save')}
                 </Button>
             </div>
         </div>

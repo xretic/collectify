@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import type { TagRef } from '../../model/types';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type TagChipsProps = {
     tags: TagRef[];
@@ -9,10 +12,12 @@ type TagChipsProps = {
 
 /** Tags as links to the feed filtered by that tag. */
 export function TagChips({ tags, className }: TagChipsProps) {
+    const t = useTranslations('tags');
+
     if (tags.length === 0) return null;
 
     return (
-        <ul className={`${styles.tags} ${className ?? ''}`} aria-label="Tags">
+        <ul className={`${styles.tags} ${className ?? ''}`} aria-label={t('label')}>
             {tags.map((tag) => (
                 <li key={tag.id}>
                     <Link href={`/?tag=${tag.id}`} className={styles.tag}>

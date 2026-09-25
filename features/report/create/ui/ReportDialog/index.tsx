@@ -14,18 +14,14 @@ import {
     Select,
 } from '@mui/material';
 import { reportApi } from '@/entities/report/api/reportApi';
-import {
-    REPORT_REASON_LABELS,
-    REPORT_REASONS,
-    REPORT_TARGET_LABELS,
-    type ReportReason,
-} from '@/entities/report/model/types';
+import { REPORT_REASONS, type ReportReason } from '@/entities/report/model/types';
 import { REPORT_DETAILS_MAX_LENGTH } from '@/shared/lib/constants';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import { CountedTextField } from '@/shared/ui/CountedTextField';
 import { useReportDialogStore, type ReportRequest } from '../../model/reportDialogStore';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 /** Mounted once in the root layout; opened through `useReportDialogStore`. */
 export function ReportDialog() {
@@ -39,6 +35,8 @@ export function ReportDialog() {
 }
 
 function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () => void }) {
+    const t = useTranslations('reports');
+    const tc = useTranslations('common');
     const [reason, setReason] = useState<ReportReason | ''>('');
     const [details, setDetails] = useState('');
 
@@ -46,7 +44,7 @@ function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () 
         mutationFn: () =>
             reportApi.create({ target: request.target, reason: reason as ReportReason, details }),
         onSuccess: () => {
-            toast.success('Report submitted. Moderators will review it soon.');
+            toast.success(t('submitted'));
             onClose();
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
@@ -58,9 +56,7 @@ function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () 
 
     return (
         <Dialog open onClose={handleClose} fullWidth maxWidth="sm">
-            <DialogTitle>
-                Report {REPORT_TARGET_LABELS[request.target.type].toLowerCase()}
-            </DialogTitle>
+            <DialogTitle>{t(`reportTarget.${request.target.type}`)}</DialogTitle>
 
             <DialogContent className={styles.content}>
                 <div className={styles.target}>
@@ -71,23 +67,23 @@ function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () 
                 </div>
 
                 <FormControl size="small" fullWidth required>
-                    <InputLabel id="report-reason">Reason</InputLabel>
+                    <InputLabel id="report-reason">{t('reason')}</InputLabel>
                     <Select
                         labelId="report-reason"
-                        label="Reason"
+                        label={t('reason')}
                         value={reason}
                         onChange={(event) => setReason(event.target.value as ReportReason)}
                     >
                         {REPORT_REASONS.map((value) => (
                             <MenuItem key={value} value={value}>
-                                {REPORT_REASON_LABELS[value]}
+                                {t(`reasons.${value}`)}
                             </MenuItem>
                         ))}
                     </Select>
                 </FormControl>
 
                 <CountedTextField
-                    label="Details"
+                    label={t('details')}
                     value={details}
                     onChange={setDetails}
                     maxLength={REPORT_DETAILS_MAX_LENGTH}
@@ -99,7 +95,7 @@ function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () 
 
             <DialogActions>
                 <Button onClick={handleClose} disabled={submit.isPending}>
-                    Cancel
+                    {tc('cancel')}
                 </Button>
                 <Button
                     variant="contained"
@@ -107,7 +103,7 @@ function ReportForm({ request, onClose }: { request: ReportRequest; onClose: () 
                     onClick={() => submit.mutate()}
                     disabled={!reason || submit.isPending}
                 >
-                    Submit report
+                    {t('submit')}
                 </Button>
             </DialogActions>
         </Dialog>

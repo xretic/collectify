@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import type { SessionUser } from '@/entities/user/model/types';
 import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
+import { useLocale } from 'next-intl';
 
 /** Only same-site relative paths are allowed as redirect targets (no open redirect). */
 function safeNext(value: string | null) {
@@ -13,6 +14,7 @@ function safeNext(value: string | null) {
 /** `redirectTo` overrides `?next=` (e.g. new accounts go to onboarding first). */
 export function useAuthSuccess(redirectTo?: string) {
     const router = useRouter();
+    const locale = useLocale();
     const queryClient = useQueryClient();
     const next = safeNext(useSearchParams().get('next'));
 
@@ -20,5 +22,7 @@ export function useAuthSuccess(redirectTo?: string) {
         queryClient.clear();
         queryClient.setQueryData(sessionUserQueryKey, user);
         router.replace(redirectTo ?? next);
+        // The server switched the language cookie to the account's language.
+        if (user.locale !== locale) router.refresh();
     };
 }

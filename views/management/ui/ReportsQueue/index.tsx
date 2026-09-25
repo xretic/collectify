@@ -5,9 +5,7 @@ import { Avatar, Button, FormControl, InputLabel, MenuItem, Select } from '@mui/
 import { managementApi, type ReportFilters } from '@/entities/moderation/api/managementApi';
 import { managementQueryKeys } from '@/entities/moderation/model/queryKeys';
 import {
-    REPORT_REASON_LABELS,
     REPORT_REASONS,
-    REPORT_TARGET_LABELS,
     REPORT_TARGET_TYPES,
     type ReportReason,
     type ReportStatus,
@@ -17,6 +15,7 @@ import { EmptyState } from '@/shared/ui/EmptyState';
 import { RelativeTime } from '@/shared/ui/RelativeTime';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from '../ManagementSidebar/list.module.css';
+import { useTranslations } from 'next-intl';
 
 type ReportsQueueProps = {
     filters: ReportFilters;
@@ -31,6 +30,9 @@ export function ReportsQueue({
     selectedId,
     onSelect,
 }: ReportsQueueProps) {
+    const t = useTranslations('management.queue');
+    const tr = useTranslations('reports');
+    const tc = useTranslations('common');
     const reports = useInfiniteQuery({
         queryKey: managementQueryKeys.reports(filters),
         queryFn: ({ pageParam }) => managementApi.reports(filters, pageParam),
@@ -53,18 +55,18 @@ export function ReportsQueue({
                             onClick={() => onFiltersChange({ ...filters, status })}
                         >
                             {status === 'OPEN'
-                                ? `Open (${filters.status === 'OPEN' ? total : '…'})`
-                                : 'Closed'}
+                                ? t('open', { count: filters.status === 'OPEN' ? total : '…' })
+                                : t('closed')}
                         </Button>
                     ))}
                 </div>
 
                 <div className={styles.filterRow}>
                     <FormControl size="small" fullWidth>
-                        <InputLabel id="report-type-filter">Type</InputLabel>
+                        <InputLabel id="report-type-filter">{t('type')}</InputLabel>
                         <Select
                             labelId="report-type-filter"
-                            label="Type"
+                            label={t('type')}
                             value={filters.targetType ?? ''}
                             onChange={(event) =>
                                 onFiltersChange({
@@ -75,20 +77,20 @@ export function ReportsQueue({
                                 })
                             }
                         >
-                            <MenuItem value="">All</MenuItem>
+                            <MenuItem value="">{t('all')}</MenuItem>
                             {REPORT_TARGET_TYPES.map((type) => (
                                 <MenuItem key={type} value={type}>
-                                    {REPORT_TARGET_LABELS[type]}
+                                    {tr(`targets.${type}`)}
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
 
                     <FormControl size="small" fullWidth>
-                        <InputLabel id="report-reason-filter">Reason</InputLabel>
+                        <InputLabel id="report-reason-filter">{tr('reason')}</InputLabel>
                         <Select
                             labelId="report-reason-filter"
-                            label="Reason"
+                            label={tr('reason')}
                             value={filters.reason ?? ''}
                             onChange={(event) =>
                                 onFiltersChange({
@@ -99,10 +101,10 @@ export function ReportsQueue({
                                 })
                             }
                         >
-                            <MenuItem value="">All</MenuItem>
+                            <MenuItem value="">{t('all')}</MenuItem>
                             {REPORT_REASONS.map((reason) => (
                                 <MenuItem key={reason} value={reason}>
-                                    {REPORT_REASON_LABELS[reason]}
+                                    {tr(`reasons.${reason}`)}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -113,11 +115,7 @@ export function ReportsQueue({
             <div className={styles.list}>
                 {reports.isPending && <Spinner />}
                 {reports.isSuccess && rows.length === 0 && (
-                    <EmptyState
-                        title={
-                            filters.status === 'OPEN' ? 'The queue is empty' : 'No closed reports'
-                        }
-                    />
+                    <EmptyState title={filters.status === 'OPEN' ? t('empty') : t('emptyClosed')} />
                 )}
 
                 {rows.map((report) => (
@@ -136,8 +134,8 @@ export function ReportsQueue({
                                 #{report.id} · @{report.targetUser.username}
                             </span>
                             <span className={styles.secondary}>
-                                {REPORT_TARGET_LABELS[report.targetType]} ·{' '}
-                                {REPORT_REASON_LABELS[report.reason]} ·{' '}
+                                {tr(`targets.${report.targetType}`)} ·{' '}
+                                {tr(`reasons.${report.reason}`)} ·{' '}
                                 <RelativeTime value={report.createdAt} />
                             </span>
                         </span>
@@ -149,7 +147,7 @@ export function ReportsQueue({
                         onClick={() => reports.fetchNextPage()}
                         disabled={reports.isFetchingNextPage}
                     >
-                        Load more
+                        {tc('loadMore')}
                     </Button>
                 )}
             </div>

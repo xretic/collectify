@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "Bad request.",
+        "unauthorized": "Please sign in to continue.",
+        "forbidden": "You don't have permission to do that.",
+        "notFound": "Not found.",
+        "internal": "Internal server error.",
+        "invalidInput": "Invalid input.",
+        "invalidField": "Invalid value: {field}.",
+        "invalidJson": "Invalid request body.",
+        "invalidId": "Invalid identifier.",
+        "tooManyRequests": "Too many requests. Please try again later.",
+        "realtimeUnavailable": "Realtime provider is not configured.",
+        "invalidWebhookSignature": "Invalid webhook signature.",
+        "oauthNotConfigured": "This sign-in method is not configured.",
+        "userNotFound": "User not found.",
+        "commentNotFound": "Comment not found.",
+        "collectionNotFound": "Collection not found.",
+        "tagNotFound": "Tag not found.",
+        "reportNotFound": "Report not found.",
+        "categoryNotFound": "Category not found.",
+        "sanctionNotFound": "Sanction not found.",
+        "itemNotFound": "Item not found.",
+        "chatNotFound": "Chat not found.",
+        "boardNotFound": "Board not found.",
+        "invalidCredentials": "Invalid email or password.",
+        "emailTaken": "An account with this email already exists.",
+        "usernameTaken": "This username is taken.",
+        "emailOrUsernameTaken": "This email or username is already taken.",
+        "currentPasswordRequired": "Current password is required.",
+        "currentPasswordIncorrect": "Current password is incorrect.",
+        "passwordUnchanged": "New password must be different from the current one.",
+        "passwordIncorrect": "Password is incorrect.",
+        "typeUsernameToConfirm": "Type your username to confirm.",
+        "impersonationInactive": "Impersonation is not active.",
+        "bannedUntil": "Your account is banned. It expires at {date}.",
+        "bannedPermanent": "Your account is banned. This restriction is permanent.",
+        "mutedCommentsUntil": "You are muted in comments. It expires at {date}.",
+        "mutedCommentsPermanent": "You are muted in comments. This restriction is permanent.",
+        "mutedMessengerUntil": "You are muted in the messenger. It expires at {date}.",
+        "mutedMessengerPermanent": "You are muted in the messenger. This restriction is permanent.",
+        "chatsUnavailableImpersonating": "Chats are not available while signed in as another user.",
+        "cannotModerateSelf": "You cannot moderate yourself.",
+        "adminsNotModeratable": "Admins cannot be moderated.",
+        "moderatorsCannotManageModerators": "Moderators cannot manage other moderators.",
+        "permanentSanctionAdminOnly": "Only admins can issue permanent sanctions.",
+        "liftPermanentAdminOnly": "Only admins can lift permanent sanctions.",
+        "liftAdminSanctionAdminOnly": "Only admins can lift sanctions issued by an admin.",
+        "manageModeratorsAdminOnly": "Only admins can manage moderators.",
+        "alreadySignedInAsUser": "You are already signed in as this user.",
+        "stopImpersonationFirst": "Stop the current impersonation first.",
+        "cannotImpersonateBanned": "You cannot impersonate a banned account.",
+        "categoryUnknown": "Choose an existing category.",
+        "categoriesUnknown": "Choose existing categories.",
+        "categoryExists": "A category with this name or slug exists.",
+        "categoryInUse": "The category still has collections. Archive it instead.",
+        "tagsWrongCategory": "Tags must belong to the collection category.",
+        "tagsLimit": "A collection can have at most {limit} tags.",
+        "tagsDailyLimit": "You have created too many tags today. Try again tomorrow.",
+        "signInForBoards": "Sign in to see your boards.",
+        "signInForFavorites": "Sign in to see favorites.",
+        "ownerOnly": "Only the owner can change this collection.",
+        "collectionsLimit": "You can have at most {limit} collections.",
+        "itemsLimit": "A collection can have at most {limit} items.",
+        "collectionNeedsItem": "A collection must keep at least one item.",
+        "invalidItemOrder": "The new order must contain every item of the collection exactly once.",
+        "boardNameTaken": "You already have a board with this name.",
+        "boardsLimit": "You can have at most {limit} boards.",
+        "cannotMessageSelf": "You cannot message yourself.",
+        "userDeleted": "This user has deleted their account.",
+        "editOwnCommentsOnly": "You can only edit your own comments.",
+        "heartOwnerOnly": "Only the collection owner can heart comments.",
+        "commentsLimit": "You can leave at most {limit} comments on a collection.",
+        "repliesLimit": "You can leave at most {limit} replies on a collection.",
+        "cannotReportSelf": "You cannot report yourself.",
+        "accountNotReportable": "This account cannot be reported.",
+        "alreadyReported": "You have already reported this. Moderators will review it soon.",
+        "reportClosed": "Report is already closed.",
+        "cannotReviewOwnReport": "You cannot review your own report.",
+        "nothingToRemove": "There is no content to remove for a user report.",
+        "duplicateMustMatchUser": "The original report must be another report about the same user.",
+        "reportJustReviewed": "This report was just reviewed by someone else.",
+        "nothingToUpdate": "Nothing to update.",
+        "countryRequiredForCity": "Choose a country for the city.",
+        "cityUnknown": "Unknown city.",
+        "cannotFollowSelf": "You cannot follow yourself.",
+        "generic": "Something went wrong. Please try again.",
+        "network": "Network error. Check your connection."
+    },
+    "validation": {
+        "required": "This field is required.",
+        "tooLong": "Too long.",
+        "usernameMin": "Username must be at least {usernameMin} characters.",
+        "usernameMax": "Username must be at most {usernameMax} characters.",
+        "usernameChars": "Username may contain only a-z, 0-9, \"_\" and \".\".",
+        "passwordMin": "Password must be at least {passwordMin} characters.",
+        "passwordMax": "Password must be at most {passwordMax} characters.",
+        "passwordChars": "Password contains unsupported characters.",
+        "passwordsMismatch": "Passwords do not match.",
+        "emailInvalid": "Enter a valid email.",
+        "urlInvalid": "Must be a valid http(s) URL.",
+        "countryUnknown": "Unknown country.",
+        "cityChars": "Use letters, spaces and - . , ' / ( )",
+        "dateInvalid": "Enter a valid date.",
+        "ageMin": "You must be at least {minAge}.",
+        "localeUnknown": "Unsupported language.",
+        "nameRequired": "Name is required.",
+        "descriptionRequired": "Description is required.",
+        "slugRequired": "Slug is required.",
+        "slugChars": "Use lowercase letters, digits and dashes.",
+        "messageEmpty": "Message cannot be empty.",
+        "commentEmpty": "Comment cannot be empty.",
+        "itemTitleOrImage": "Add a title or an image.",
+        "categoryRequired": "Choose a category.",
+        "tagsMax": "At most {tagsMax} tags.",
+        "tagNameMin": "At least {tagNameMin} characters.",
+        "tagNameChars": "Letters, digits, spaces and - & + . ' #",
+        "verdictRequiresGuilty": "Punishment and content removal require a guilty verdict.",
+        "duplicateRequiresOriginal": "Select the original report for a duplicate verdict."
+    },
+    "meta": {
+        "description": "Create your interesting collection with us.",
+        "privacyDescription": "How Collectify collects, uses, and stores your data.",
+        "userDescription": "{name}'s collections on Collectify.",
+        "pages": {
+            "login": "Login",
+            "register": "Register",
+            "chats": "Chats",
+            "createCollection": "Create collection",
+            "myCollections": "My collections",
+            "notifications": "Notifications",
+            "onboarding": "Choose your interests",
+            "settings": "Settings",
+            "myProfile": "My profile",
+            "management": "Management",
+            "privacyPolicy": "Privacy Policy",
+            "collection": "Collection",
+            "userNotFound": "User not found"
+        }
+    },
+    "languages": {
+        "label": "Language"
+    },
+    "auth": {
+        "email": "Email",
+        "password": "Password",
+        "username": "Username",
+        "login": "Login",
+        "register": "Register",
+        "signingIn": "Signing in…",
+        "creatingAccount": "Creating account…",
+        "usernameHint": "Lowercase letters, digits, \"_\" and \".\"",
+        "passwordHint": "At least {min} characters",
+        "languageHint": "You can change it later in settings.",
+        "orContinueWith": "or continue with",
+        "loginSubtitle": "Enter your credentials to access your account.",
+        "registerSubtitle": "Create an account to start collecting.",
+        "noAccount": "No account yet? <link>Register</link>",
+        "haveAccount": "Already have an account? <link>Login</link>",
+        "oauthErrors": {
+            "oauthState": "The sign-in link expired. Please try again.",
+            "oauthFailed": "Sign-in with the provider failed. Please try again.",
+            "accountBanned": "This account is banned."
+        }
+    },
+    "common": {
+        "cancel": "Cancel",
+        "reset": "Reset",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "close": "Close",
+        "back": "Back",
+        "retry": "Try again",
+        "loadMore": "Load more",
+        "search": "Search",
+        "next": "Next",
+        "skip": "Skip",
+        "confirm": "Confirm",
+        "create": "Create",
+        "add": "Add",
+        "moreActions": "More actions",
+        "loading": "Loading",
+        "sortBy": "Sort by"
+    },
+    "settings": {
+        "title": "Settings",
+        "subtitle": "Manage your account settings and preferences",
+        "profile": {
+            "title": "Profile",
+            "description": "Name, username, bio and images.",
+            "edit": "Edit profile"
+        },
+        "security": {
+            "title": "Privacy & Security",
+            "changePassword": "Change your password.",
+            "setPassword": "Set a password to also sign in with email.",
+            "passwordChanged": "Password changed.",
+            "passwordSet": "Password set. You can now sign in with email.",
+            "currentPassword": "Current password",
+            "newPassword": "New password",
+            "confirmPassword": "Confirm new password",
+            "change": "Change password",
+            "set": "Set password"
+        },
+        "interests": {
+            "title": "Interests",
+            "description": "Categories you like. They shape your “For you” feed.",
+            "saved": "Interests saved.",
+            "save": "Save interests"
+        },
+        "language": {
+            "title": "Language",
+            "description": "The language of the whole interface. It is saved to your account."
+        },
+        "appearance": {
+            "title": "Appearance",
+            "description": "Pick a theme. It applies instantly and is remembered on this device.",
+            "search": "Find a theme",
+            "filter": "Filter themes",
+            "theme": "Theme",
+            "filters": {
+                "all": "All",
+                "light": "Light",
+                "dark": "Dark"
+            }
+        },
+        "home": {
+            "title": "Home page",
+            "description": "Widgets next to your feed.",
+            "showPeopleWidget": "Show “People you may know” on the home page"
+        },
+        "danger": {
+            "title": "Danger zone",
+            "description": "Permanently delete your account and all data.",
+            "deleteAccount": "Delete account",
+            "warning": "This permanently deletes your profile, collections, comments and chats. It cannot be undone.",
+            "yourPassword": "Your password",
+            "typeUsername": "Type \"{username}\" to confirm",
+            "deleteForever": "Delete forever"
+        }
+    },
+    "dateField": {
+        "placeholder": "Pick a date",
+        "clear": "Clear date",
+        "open": "Open calendar",
+        "chooseYear": "Choose year",
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month"
+    },
+    "imageDropzone": {
+        "label": "Click or drop an image",
+        "hint": "PNG, JPG, WEBP up to 10MB"
+    },
+    "roles": {
+        "Admin": "Admin",
+        "Moderator": "Moderator",
+        "Verified": "Verified"
+    },
+    "imageEditor": {
+        "title": "Edit image",
+        "failed": "Could not edit the image.",
+        "zoom": "Zoom",
+        "rotateLeft": "Rotate left",
+        "rotateRight": "Rotate right",
+        "aspectRatio": "Aspect ratio",
+        "original": "Original"
+    },
+    "pagination": {
+        "label": "Pagination",
+        "previous": "Previous page",
+        "next": "Next page",
+        "page": "Page {page}"
+    },
+    "scrollRow": {
+        "back": "Scroll {items} back",
+        "forward": "Scroll {items} forward"
+    },
+    "upload": {
+        "readFailed": "Could not read the image.",
+        "editUnsupported": "Image editing is not supported in this browser.",
+        "saveFailed": "Could not save the image.",
+        "wrongType": "Choose a PNG, JPG, WEBP or GIF image.",
+        "tooBig": "The image must be 10MB or smaller.",
+        "notConfigured": "Image uploads are not configured.",
+        "network": "Image upload failed. Check your connection.",
+        "failed": "Image upload failed."
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "Account ban",
+            "COMMENTS": "Comments mute",
+            "MESSENGER": "Messenger mute"
+        },
+        "durations": {
+            "1h": "1 hour",
+            "1d": "1 day",
+            "7d": "7 days",
+            "30d": "30 days",
+            "permanent": "Permanent"
+        },
+        "until": "{scope} · until {date}",
+        "permanentScope": "{scope} · permanent",
+        "mutePlaceholder": {
+            "commentsUntil": "You are muted in comments until {date}.",
+            "commentsPermanent": "You are permanently muted in comments.",
+            "messengerUntil": "You are muted in the messenger until {date}.",
+            "messengerPermanent": "You are permanently muted in the messenger."
+        }
+    },
+    "categories": {
+        "books": "Books",
+        "movies": "Movies",
+        "games": "Games",
+        "recipes": "Recipes",
+        "apps": "Apps",
+        "travel": "Travel",
+        "music": "Music",
+        "sport": "Sport",
+        "tv-shows": "TV Shows",
+        "anime": "Anime",
+        "podcasts": "Podcasts",
+        "art": "Art",
+        "design": "Design",
+        "photography": "Photography",
+        "fashion": "Fashion",
+        "home": "Home & Interior",
+        "tech": "Tech",
+        "science": "Science",
+        "education": "Education",
+        "fitness": "Fitness",
+        "cars": "Cars",
+        "pets": "Pets",
+        "nature": "Nature",
+        "custom": "Custom"
+    },
+    "categoryMenu": {
+        "all": "All categories",
+        "search": "Find a category",
+        "nothingFound": "Nothing found",
+        "label": "Category"
+    },
+    "chats": {
+        "online": "Online",
+        "typing": "typing",
+        "message": "Message",
+        "mute": {
+            "actions": "Chat actions",
+            "mutedUntil": "Muted until {date}",
+            "off": "Notifications are off",
+            "enable": "Enable notifications",
+            "muteForMenu": "Mute for…",
+            "disable": "Disable notifications",
+            "muteFor": "Mute for",
+            "durations": {
+                "15m": "15 minutes",
+                "30m": "30 minutes",
+                "1h": "1 hour",
+                "8h": "8 hours",
+                "1d": "1 day",
+                "1w": "1 week"
+            },
+            "failed": "Could not update notifications. Try again."
+        },
+        "composer": {
+            "placeholder": "Write your message…",
+            "label": "Message",
+            "send": "Send message"
+        },
+        "title": "Chats",
+        "unread": "{count} unread",
+        "empty": "No chats yet.",
+        "deletedAccount": "Deleted account",
+        "muted": "Muted",
+        "you": "You: {text}",
+        "back": "Back to chats",
+        "directMessages": "Direct messages",
+        "viewProfile": "View profile",
+        "conversation": "Conversation",
+        "unavailable": "This chat is not available.",
+        "seen": "Seen <time></time>",
+        "sent": "Sent",
+        "privateTitle": "Chats are private",
+        "privateDescription": "Direct messages are not available while signed in as another user.",
+        "placeholderTitle": "Your chats",
+        "placeholderText": "Pick a conversation on the left to keep talking about collections."
+    },
+    "collectionCard": {
+        "items": "{count, plural, one {# item} other {# items}}",
+        "comments": "{count, plural, one {# comment} other {# comments}}",
+        "favorites": "{count, plural, one {# save} other {# saves}}",
+        "likes": "{count, plural, one {# like} other {# likes}}"
+    },
+    "collectionForm": {
+        "cover": "Cover image",
+        "coverHint": "Click to upload cover image",
+        "title": "Title",
+        "description": "Description",
+        "visibility": "Visibility",
+        "public": "Public",
+        "private": "Private"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "We found nothing",
+        "emptyDescription": "Try another filter or search."
+    },
+    "items": {
+        "open": "Open item",
+        "drag": "Drag item",
+        "image": "Image",
+        "title": "Title",
+        "description": "Description",
+        "titleRequired": "Required when there is no image",
+        "sourceUrl": "Source URL",
+        "cardSize": "Card size",
+        "sizes": {
+            "S": "Small square tile",
+            "M": "Tall tile, one column",
+            "L": "Large tile, two columns",
+            "XL": "Banner across the whole row"
+        },
+        "edit": "Edit item",
+        "delete": "Delete item",
+        "actions": "Item actions",
+        "deleteTitle": "Delete “{title}”?",
+        "deleteUntitled": "Delete this item?",
+        "deleteDescription": "This item will be removed from the collection.",
+        "add": "Add item",
+        "addIntro": "Add a new item to your collection.",
+        "editIntro": "Update the item. Changes are visible to everyone right away.",
+        "item": "Item",
+        "previous": "Previous item",
+        "next": "Next item",
+        "label": "Items"
+    },
+    "comments": {
+        "editedAt": "Edited {date}",
+        "edited": "(edited)",
+        "replyTo": "Reply to @{username}",
+        "placeholder": "Add a comment…",
+        "reply": "Reply",
+        "comment": "Comment",
+        "deleteAsModerator": "Delete as moderator",
+        "actions": "Comment actions",
+        "deleteTitle": "Delete this comment?",
+        "count": "{count, plural, one {# comment} other {# comments}}",
+        "emptyTitle": "No comments yet.",
+        "emptyDescription": "Start the conversation.",
+        "replies": "{count, plural, one {# reply} other {# replies}}",
+        "moreReplies": "Show more replies",
+        "unheart": "Remove heart",
+        "heart": "Heart this comment",
+        "heartLabel": "Heart comment",
+        "heartedBy": "♥ by {username}"
+    },
+    "notifications": {
+        "unread": "Unread",
+        "texts": {
+            "FOLLOW": "started following you",
+            "LIKE": "liked your collection",
+            "FAVORITE": "saved your collection",
+            "COMMENT": "commented on your collection",
+            "REPORT_RESOLVED": "Your report has been reviewed. Thank you for helping keep Collectify safe.",
+            "SANCTION": "A moderator restricted your account. Check your settings for details.",
+            "COMMENT_REPLY": "replied to your comment on",
+            "COMMENT_LIKED": "loved your comment on"
+        },
+        "dismiss": "Dismiss notification",
+        "title": "Notifications",
+        "markAllRead": "Mark all as read",
+        "tabs": {
+            "all": "All",
+            "unread": "Unread"
+        },
+        "emptyUnread": "No unread notifications",
+        "empty": "No notifications yet",
+        "caughtUp": "You’re all caught up.",
+        "groups": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "thisWeek": "This week",
+            "earlier": "Earlier"
+        }
+    },
+    "tags": {
+        "label": "Tags",
+        "upTo": "Up to {limit} tags",
+        "noMatches": "No matching tags",
+        "noneYet": "No tags yet",
+        "searchByTags": "Search by tags",
+        "noneInCategory": "No tags in this category yet",
+        "create": "Create “{name}”",
+        "searchOrCreate": "Search or create tags",
+        "chooseCategoryFirst": "Choose a category first.",
+        "pickerHint": "{count} / {limit} · Popular tags of the category are suggested first."
+    },
+    "profile": {
+        "usernameCopied": "Username copied.",
+        "usernameCopyFailed": "Could not copy the username.",
+        "copyUsername": "Copy username",
+        "noBio": "No bio yet",
+        "statLabel": "{count} {label}",
+        "following": "following",
+        "followers": "followers",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "follows": {
+            "followers": "Followers",
+            "following": "Following",
+            "noFollowers": "No followers yet",
+            "noFollowing": "Not following anyone",
+            "followingButton": "Following",
+            "follow": "Follow"
+        },
+        "edit": {
+            "updated": "Profile updated.",
+            "title": "Edit profile",
+            "changeBanner": "Change banner",
+            "removeBanner": "Remove banner",
+            "changeAvatar": "Change avatar",
+            "removeAvatar": "Remove avatar",
+            "fullName": "Full name",
+            "username": "Username",
+            "bio": "Bio",
+            "country": "Country",
+            "city": "City",
+            "birthDate": "Birth date"
+        },
+        "tabs": {
+            "created": "Created",
+            "favorites": "Saved",
+            "private": "Private"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "Spam",
+            "HARASSMENT": "Harassment",
+            "HATE": "Hate speech",
+            "SCAM": "Scam",
+            "ADULT": "Adult content",
+            "OTHER": "Other"
+        },
+        "targets": {
+            "USER": "User",
+            "COMMENT": "Comment",
+            "COLLECTION": "Collection"
+        },
+        "reportTarget": {
+            "USER": "Report user",
+            "COMMENT": "Report comment",
+            "COLLECTION": "Report collection"
+        },
+        "openTarget": {
+            "USER": "Open user",
+            "COMMENT": "Open comment",
+            "COLLECTION": "Open collection"
+        },
+        "verdicts": {
+            "PENDING": "Pending",
+            "GUILTY": "Guilty",
+            "NO_VIOLATION": "No violation",
+            "INSUFFICIENT_EVIDENCE": "Insufficient evidence",
+            "DUPLICATE": "Duplicate"
+        },
+        "submitted": "Report submitted. Moderators will review it soon.",
+        "reason": "Reason",
+        "details": "Details",
+        "submit": "Submit report"
+    },
+    "boards": {
+        "rename": "Rename",
+        "delete": "Delete board",
+        "renameTitle": "Rename board",
+        "deleteTitle": "Delete “{name}”?",
+        "deleteDescription": "The collections stay in All saved.",
+        "name": "Board name",
+        "label": "Boards",
+        "items": "boards",
+        "all": "All",
+        "new": "New board",
+        "actions": "Board actions",
+        "signInToSave": "Sign in to save",
+        "saved": "Saved",
+        "save": "Save",
+        "saveTo": "Save to",
+        "allSaved": "All saved",
+        "hint": "Group your saved collections into boards.",
+        "newName": "New board name",
+        "create": "Create board",
+        "draggableTab": "draggable tab"
+    },
+    "management": {
+        "categories": {
+            "updated": "Category updated.",
+            "created": "Category created.",
+            "deleted": "Category deleted.",
+            "name": "Name",
+            "slug": "Slug",
+            "slugHint": "Used in links: /?category=slug",
+            "description": "Description",
+            "position": "Position",
+            "positionHint": "Lower comes first",
+            "active": "Active",
+            "archived": "Archived",
+            "onlyArchive": "Categories with collections can only be archived.",
+            "create": "Create category",
+            "deleteTitle": "Delete “{name}”?",
+            "new": "New category",
+            "empty": "No categories yet",
+            "collections": "{count, plural, one {# collection} other {# collections}}",
+            "archivedLower": "archived",
+            "notFound": "Category not found"
+        },
+        "roles": {
+            "updated": "Roles updated.",
+            "revoke": "Revoke {role}",
+            "grant": "Grant {role}"
+        },
+        "sanctions": {
+            "applied": "Sanction applied.",
+            "strongerKept": "A stronger sanction is already active; it was kept.",
+            "scope": "Scope",
+            "duration": "Duration",
+            "reason": "Reason",
+            "apply": "Apply",
+            "confirmTitle": "Sanction @{username}?",
+            "summary": "{scope}: {duration}.",
+            "reasonLine": "Reason: {reason}",
+            "confirm": "Apply sanction",
+            "lifted": "Sanction lifted.",
+            "none": "No active sanctions",
+            "lift": "Lift"
+        },
+        "danger": {
+            "deleted": "Account deleted.",
+            "impersonate": "Sign in as user",
+            "delete": "Delete account",
+            "impersonateTitle": "Sign in as @{username}?",
+            "impersonateDescription": "Everything you do will be recorded in the audit log under your name.",
+            "signIn": "Sign in",
+            "deleteTitle": "Delete @{username}?",
+            "deleteDescription": "The account, its collections, comments and chats are deleted permanently."
+        },
+        "review": {
+            "describeVerdict": "Verdict: {verdict}.",
+            "describeRemove": "The reported content will be deleted.",
+            "describePunishment": "@{username} gets: {scope}, {duration}.",
+            "describeDuplicate": "Marked as duplicate of report #{id}.",
+            "closed": "Report closed.",
+            "closedStrongerKept": "Report closed. A stronger sanction was already active and was kept.",
+            "verdict": "Verdict",
+            "removeContent": "Delete the reported content",
+            "nothingToDelete": "Nothing to delete",
+            "sanctionUser": "Sanction the user",
+            "punishment": "Punishment",
+            "duration": "Duration",
+            "originalReport": "Original report #",
+            "resolution": "Resolution note",
+            "close": "Close report",
+            "closeTitle": "Close report #{id}?"
+        },
+        "audit": {
+            "title": "Audit",
+            "titleFor": "Audit for @{username}",
+            "empty": "No audit records yet",
+            "system": "system",
+            "via": "(via @{username})",
+            "content": "content",
+            "actions": {
+                "grant": "Granted {role}",
+                "revoke": "Revoked {role}",
+                "sanction": "Applied: {scope}",
+                "revokeSanction": "Lifted: {scope}",
+                "report": "Closed report: {verdict}",
+                "deleteUser": "Deleted user account",
+                "deleteComment": "Deleted comment",
+                "deleteCollection": "Deleted collection",
+                "impersonateUser": "Signed in as user",
+                "stopImpersonation": "Stopped impersonation"
+            }
+        },
+        "activity": {
+            "collections": "Collections",
+            "noCollections": "No collections",
+            "private": "private",
+            "counts": "{items, plural, one {# item} other {# items}} · {comments, plural, one {# comment} other {# comments}} · {likes, plural, one {# like} other {# likes}}",
+            "comments": "Comments",
+            "noComments": "No comments"
+        },
+        "tags": {
+            "deleted": "Tag deleted.",
+            "title": "Tags",
+            "hint": "Created by users, ranked by how many collections use them.",
+            "search": "Find a tag",
+            "empty": "No tags",
+            "usage": "{count, plural, one {# collection} other {# collections}}",
+            "delete": "Delete tag",
+            "deleteNamed": "Delete {name}",
+            "deleteTitle": "Delete #{name}?",
+            "deleteDescription": "The tag is removed from every collection that uses it."
+        },
+        "title": "Management",
+        "subtitle": "Users, reports, sanctions, categories",
+        "tabs": {
+            "users": "Users",
+            "reports": "Reports",
+            "categories": "Categories"
+        },
+        "selectUser": "Select a user",
+        "selectUserHint": "Search by username, name or email.",
+        "selectReport": "Select a report",
+        "selectReportHint": "The oldest open reports are at the top.",
+        "selectCategory": "Select a category",
+        "selectCategoryHint": "Or create a new one. Archived categories keep their collections.",
+        "users": {
+            "search": "Search users",
+            "empty": "No users found",
+            "sanctioned": "sanctioned"
+        },
+        "report": {
+            "aboutAccount": "The report is about the account itself.",
+            "deletedSince": "Deleted since — showing the snapshot taken at report time",
+            "posted": "Posted {date}",
+            "verdict": "Verdict",
+            "reviewedBy": "Reviewed by",
+            "sanction": "Sanction",
+            "duplicateOf": "Duplicate of",
+            "resolution": "Resolution",
+            "notFound": "Report not found",
+            "title": "Report #{id} on <user>@{username}</user>",
+            "subtitle": "{target} · reported by @{username} · {date}",
+            "open": "Open",
+            "closed": "Closed",
+            "evidence": "Evidence",
+            "context": "Context",
+            "against": "Reports against @{username}",
+            "againstCounts": "{total} total · {guilty} guilty",
+            "filedBy": "Reports filed by @{username}",
+            "filedCounts": "{total} total · {rejected} rejected",
+            "activeSanctions": "Active sanctions",
+            "none": "None",
+            "decision": "Decision",
+            "outcome": "Outcome"
+        },
+        "queue": {
+            "open": "Open ({count})",
+            "closed": "Closed",
+            "type": "Type",
+            "all": "All",
+            "empty": "The queue is empty",
+            "emptyClosed": "No closed reports"
+        },
+        "user": {
+            "notFound": "User not found",
+            "notFoundHint": "They may have been deleted, or you cannot manage them.",
+            "regularUser": "User",
+            "stats": {
+                "collections": "Collections",
+                "comments": "Comments",
+                "messages": "Messages",
+                "reportsReceived": "Reports received"
+            },
+            "sanctions": "Sanctions",
+            "sanctionsHint": "Bans and feature-specific mutes. A stronger active sanction is never shortened.",
+            "roles": "Roles",
+            "rolesHint": "Admin rights are managed with `npm run admin`.",
+            "activity": "Activity",
+            "activityHint": "Collections and comments, newest first.",
+            "danger": "Danger zone"
+        }
+    },
+    "collectionFilters": {
+        "search": "Search collections",
+        "sorts": {
+            "popular": "Popular",
+            "newest": "Newest",
+            "old": "Oldest"
+        }
+    },
+    "collection": {
+        "like": "Like",
+        "unlike": "Unlike",
+        "signInToLike": "Sign in to like",
+        "delete": {
+            "deleted": "Collection deleted.",
+            "title": "Delete “{name}”?",
+            "description": "This action cannot be undone. All items and comments will be deleted too."
+        },
+        "edit": {
+            "updated": "Collection updated.",
+            "title": "Edit collection",
+            "intro": "Changes are saved immediately and visible to other users. Items are edited right on the collection page."
+        },
+        "stats": {
+            "likes": "Likes",
+            "comments": "Comments",
+            "favorites": "Favorites",
+            "title": "Statistics",
+            "intro": "Activity on your collection by day (UTC).",
+            "unavailable": "Statistics are unavailable right now.",
+            "empty": "No activity yet."
+        },
+        "description": "Description",
+        "meta": "{count, plural, one {# item} other {# items}} · Created {date}",
+        "private": "Private",
+        "deleteAsModerator": "Delete as moderator",
+        "deleteCollection": "Delete collection",
+        "actions": "Collection actions"
+    },
+    "nav": {
+        "home": "Home",
+        "collections": "Collections",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "management": "Management",
+        "settings": "Settings",
+        "openMenu": "Open menu",
+        "createCollection": "Create collection",
+        "chats": "Chats",
+        "findUser": "Find a user",
+        "accountMenu": "Account menu",
+        "returnToAdmin": "Return to admin",
+        "logout": "Logout",
+        "startTyping": "Start typing a username",
+        "impersonating": "You are signed in as <strong>@{username}</strong>. Use “Return to admin” in the account menu to go back."
+    },
+    "footer": {
+        "privacyPolicy": "Privacy Policy"
+    },
+    "people": {
+        "mutual": "{count} mutual",
+        "livesIn": "Lives in {city}",
+        "followsYou": "Follows you",
+        "following": "Following",
+        "follow": "Follow",
+        "title": "People you may know",
+        "hide": "Hide suggestions",
+        "hideHint": "Hide (you can bring it back in Settings)",
+        "seeAll": "See all suggestions"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "Create Collection",
+            "firstItem": "Add First Item"
+        },
+        "title": "Create New Collection",
+        "itemTitle": "Add the first item",
+        "subtitle": "Add a new collection to organize your content.",
+        "itemSubtitle": "Every collection starts with at least one item.",
+        "submit": "Create collection"
+    },
+    "home": {
+        "discover": "Discover collections",
+        "emptyTitle": "Nothing to suggest yet",
+        "emptyBoard": "Save a few collections with tags to this board first.",
+        "emptyForYou": "Like and save collections to tune your feed.",
+        "feeds": {
+            "forYou": "For you",
+            "explore": "Explore",
+            "moreLike": "More like “{name}”",
+            "label": "Feeds",
+            "items": "feeds"
+        }
+    },
+    "myCollections": {
+        "title": "My collections",
+        "subtitle": "Browse and manage your own collections by visibility, category, tags, and search.",
+        "create": "Create collection",
+        "filters": "Filters",
+        "category": "Category",
+        "tags": "Tags"
+    },
+    "notFound": {
+        "title": "Page Not Found",
+        "description": "The page you’re looking for doesn’t exist or has been moved.",
+        "home": "Go Home",
+        "back": "Go Back"
+    },
+    "onboarding": {
+        "title": "What are you into?",
+        "subtitle": "Pick a few categories and we’ll tailor your feed. You can change them later in settings.",
+        "pickMore": "Pick {count} more",
+        "continue": "Continue"
+    },
+    "privacy": {
+        "title": "Privacy Policy",
+        "updated": "Last updated: {date}",
+        "collect": {
+            "title": "What data we collect",
+            "intro": "When you create an account on Collectify, we collect:",
+            "items": {
+                "email": "Your email address (used to sign in and identify your account)",
+                "names": "A username and full name you choose",
+                "password": "A password (stored as a secure hash — we never store your password in plain text), unless you sign up via GitHub or Google, in which case we store a linked account ID instead",
+                "profile": "Optional profile info you add: avatar image, banner image, bio/description, country and city, and date of birth",
+                "content": "Content you create while using the app: collections, items, comments, likes, follows, messages, and notifications"
+            }
+        },
+        "why": {
+            "title": "Why we collect it",
+            "text": "Your data is used to create and manage your account, authenticate you when you log in, keep you signed in between visits (session management), and to provide the core features of the app — collections, following other users, comments, likes, and messaging."
+        },
+        "location": {
+            "title": "Location and date of birth",
+            "intro": "Both are optional and can be changed or removed at any time in your profile.",
+            "items": {
+                "location": "<strong>Country and city</strong> are shown on your public profile and are used to suggest people you may know who live in the same city. We do not collect your precise location or IP-based location.",
+                "birthDate": "<strong>Date of birth</strong> is private: it is never shown to other users. It is used only to confirm that you meet the minimum age."
+            }
+        },
+        "recommendations": {
+            "title": "Recommendations",
+            "text": "To build your “For you” feed, board suggestions and “People you may know”, we use the categories you pick as interests, the collections you like, save, put on boards or open while signed in, the tags and categories of those collections, the people you follow and who follow you, and the city in your profile. We remember which collections you have liked or saved even after you undo it, so they are not suggested to you again. This happens inside Collectify only; boards and your viewing history are never shown to other users."
+        },
+        "age": {
+            "title": "Minimum age",
+            "text": "Collectify is intended for people who are 18 or older. A date of birth that makes you younger than 18 cannot be saved. If we learn that an account belongs to someone under 18, we may suspend it and delete its data."
+        },
+        "cookies": {
+            "title": "Cookies",
+            "text": "We use a functional session cookie to keep you signed in, a functional cookie that remembers your interface language, and a short-lived security cookie (about 10 minutes) while you sign in with GitHub or Google. Your theme choice is saved in your browser’s local storage. We do not use analytics, tracking, or marketing cookies."
+        },
+        "storage": {
+            "title": "Where your data is stored",
+            "text": "The app is hosted on Vercel. Account and content data is stored in our database. Uploaded images (avatars, banners, item images) are stored with our media hosting provider, Uploadcare."
+        },
+        "moderation": {
+            "title": "Reports and moderation",
+            "text": "When you report content, we keep a copy of the reported comment or collection so moderators can review it even if it is later deleted. Moderators and administrators may review reported content and an account’s public activity when handling a report. Direct messages cannot be reported, and moderators and administrators cannot read your conversations. Moderation actions are recorded in an internal audit log. When an account is deleted, its content is deleted too; the audit log keeps only the account ID and username."
+        },
+        "thirdParties": {
+            "title": "Third parties",
+            "text": "We do not sell or share your data with third parties for advertising or marketing purposes. If you choose to sign up or log in with GitHub or Google, those providers share basic profile information (such as your email) with us to create your account."
+        }
+    },
+    "errorPage": {
+        "title": "Something went wrong",
+        "description": "Please try again."
+    },
+    "userProfile": {
+        "manage": "Manage"
+    }
+}

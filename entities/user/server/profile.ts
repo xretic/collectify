@@ -1,5 +1,6 @@
 import 'server-only';
 import { db } from '@/shared/server/db';
+import { DEFAULT_LOCALE, isLocale } from '@/shared/config/i18n';
 import { getActiveSanctions } from '@/entities/sanction/server/sanctions';
 import type { PublicUser, SessionUser, UserRestriction } from '../model/types';
 import { roleSelect, toRoles } from './roles';
@@ -27,6 +28,7 @@ export async function getSessionUser(
             city: true,
             birthDate: true,
             feedTabOrder: true,
+            locale: true,
             passwordHash: true,
             ...roleSelect,
             _count: {
@@ -57,6 +59,7 @@ export async function getSessionUser(
         city: user.city,
         birthDate: user.birthDate?.toISOString().slice(0, 10) ?? null,
         feedTabOrder: user.feedTabOrder,
+        locale: isLocale(user.locale) ? user.locale : DEFAULT_LOCALE,
         followers: user._count.followers,
         subscriptions: user._count.subscriptions,
         notifications: user._count.notifications,

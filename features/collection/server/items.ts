@@ -27,7 +27,7 @@ async function getOwnedItem(collectionId: number, itemId: number, userId: number
         where: { id: itemId, collectionId },
         select: { id: true },
     });
-    if (!item) throw notFound('Item not found.');
+    if (!item) throw notFound('itemNotFound');
 
     return item;
 }
@@ -38,7 +38,7 @@ export async function addItem(collectionId: number, userId: number, input: Colle
     const item = await db.$transaction(async (tx) => {
         const count = await tx.item.count({ where: { collectionId } });
         if (count >= COLLECTION_ITEMS_LIMIT) {
-            throw forbidden(`A collection can have at most ${COLLECTION_ITEMS_LIMIT} items.`);
+            throw forbidden('itemsLimit', { limit: COLLECTION_ITEMS_LIMIT });
         }
 
         await normalizeItemOrder(tx, collectionId);
@@ -70,7 +70,7 @@ export async function removeItem(collectionId: number, itemId: number, userId: n
 
     await db.$transaction(async (tx) => {
         const count = await tx.item.count({ where: { collectionId } });
-        if (count <= 1) throw forbidden('A collection must keep at least one item.');
+        if (count <= 1) throw forbidden('collectionNeedsItem');
 
         await tx.item.delete({ where: { id: itemId } });
         await normalizeItemOrder(tx, collectionId);
@@ -92,9 +92,7 @@ export async function reorderItems(collectionId: number, userId: number, itemIds
             new Set(itemIds).size !== itemIds.length ||
             itemIds.some((id) => !known.has(id))
         ) {
-            throw badRequest(
-                'The new order must contain every item of the collection exactly once.',
-            );
+            throw badRequest('invalidItemOrder');
         }
 
         await Promise.all(

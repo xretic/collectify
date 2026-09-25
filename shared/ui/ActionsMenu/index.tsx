@@ -4,6 +4,7 @@ import { useState, type MouseEvent, type ReactNode } from 'react';
 import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export type ActionsMenuItem = {
     key: string;
@@ -21,12 +22,8 @@ type ActionsMenuProps = {
 };
 
 /** "⋯" button with a menu of secondary actions (edit, delete, report…). */
-export function ActionsMenu({
-    items,
-    label = 'More actions',
-    size = 'small',
-    className,
-}: ActionsMenuProps) {
+export function ActionsMenu({ items, label, size = 'small', className }: ActionsMenuProps) {
+    const t = useTranslations('common');
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
     if (items.length === 0) return null;
@@ -43,7 +40,7 @@ export function ActionsMenu({
                     event.stopPropagation();
                     setAnchorEl(event.currentTarget);
                 }}
-                aria-label={label}
+                aria-label={label ?? t('moreActions')}
                 aria-haspopup="menu"
             >
                 <MoreHorizIcon fontSize={size} />

@@ -77,12 +77,12 @@ export async function assertTagsInCategory(
     const unique = [...new Set(tagIds)];
 
     if (unique.length > COLLECTION_TAGS_LIMIT) {
-        throw badRequest(`A collection can have at most ${COLLECTION_TAGS_LIMIT} tags.`);
+        throw badRequest('tagsLimit', { limit: COLLECTION_TAGS_LIMIT });
     }
     if (unique.length === 0) return unique;
 
     const found = await client.tag.count({ where: { id: { in: unique }, categoryId } });
-    if (found !== unique.length) throw badRequest('Tags must belong to the collection category.');
+    if (found !== unique.length) throw badRequest('tagsWrongCategory');
 
     return unique;
 }

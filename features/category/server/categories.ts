@@ -35,7 +35,7 @@ async function invalidate() {
 }
 
 function duplicate(error: unknown): never {
-    if (isUniqueViolation(error)) throw conflict('A category with this name or slug exists.');
+    if (isUniqueViolation(error)) throw conflict('categoryExists');
     throw error;
 }
 
@@ -76,7 +76,7 @@ export async function updateCategory(
             return updated;
         })
         .catch((error) => {
-            if (isNotFound(error)) throw notFound('Category not found.');
+            if (isNotFound(error)) throw notFound('categoryNotFound');
             return duplicate(error);
         });
 
@@ -92,9 +92,9 @@ export async function deleteCategory(ctx: StaffContext, categoryId: number) {
             select: { id: true, name: true, _count: { select: { collections: true } } },
         });
 
-        if (!category) throw notFound('Category not found.');
+        if (!category) throw notFound('categoryNotFound');
         if (category._count.collections > 0) {
-            throw conflict('The category still has collections. Archive it instead.');
+            throw conflict('categoryInUse');
         }
 
         await tx.category.delete({ where: { id: categoryId } });

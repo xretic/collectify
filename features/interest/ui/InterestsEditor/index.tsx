@@ -11,9 +11,12 @@ import { toast } from '@/shared/model/toastStore';
 import { Spinner } from '@/shared/ui/Spinner';
 import { InterestPicker } from '../InterestPicker';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 /** Settings section: edit the categories that seed recommendations. */
 export function InterestsEditor() {
+    const t = useTranslations('settings.interests');
+    const tc = useTranslations('common');
     const queryClient = useQueryClient();
     const saved = useQuery({ queryKey: userQueryKeys.interests(), queryFn: userApi.interests });
     const [draft, setDraft] = useState<number[] | null>(null);
@@ -24,7 +27,7 @@ export function InterestsEditor() {
             queryClient.setQueryData(userQueryKeys.interests(), categoryIds);
             queryClient.invalidateQueries({ queryKey: collectionQueryKeys.lists() });
             setDraft(null);
-            toast.success('Interests saved.');
+            toast.success(t('saved'));
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
     });
@@ -40,14 +43,14 @@ export function InterestsEditor() {
 
             <div className={styles.actions}>
                 <Button onClick={() => setDraft(null)} disabled={!changed || save.isPending}>
-                    Reset
+                    {tc('reset')}
                 </Button>
                 <Button
                     variant="contained"
                     onClick={() => save.mutate(value)}
                     disabled={!changed || save.isPending}
                 >
-                    Save interests
+                    {t('save')}
                 </Button>
             </div>
         </div>

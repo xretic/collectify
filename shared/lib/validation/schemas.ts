@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { isCountryCode } from '@/shared/lib/geo/countries';
+import { LOCALES } from '@/shared/config/i18n';
 import {
     CITY_MAX_LENGTH,
     DESCRIPTION_MAX_LENGTH,
@@ -20,21 +21,33 @@ export const usernameSchema = z
     .string()
     .trim()
     .toLowerCase()
-    .min(USERNAME_MIN_LENGTH, `Username must be at least ${USERNAME_MIN_LENGTH} characters.`)
-    .max(USERNAME_MAX_LENGTH, `Username must be at most ${USERNAME_MAX_LENGTH} characters.`)
-    .regex(/^[a-z0-9_.]+$/, 'Username may contain only a-z, 0-9, "_" and ".".');
+    .min(USERNAME_MIN_LENGTH, 'validation.usernameMin')
+    .max(USERNAME_MAX_LENGTH, 'validation.usernameMax')
+    .regex(/^[a-z0-9_.]+$/, 'validation.usernameChars');
 
 export const passwordSchema = z
     .string()
-    .min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`)
-    .max(PASSWORD_MAX_LENGTH, `Password must be at most ${PASSWORD_MAX_LENGTH} characters.`)
-    .regex(/^[a-zA-Z0-9!@#$%^&*()]+$/, 'Password contains unsupported characters.');
+    .min(PASSWORD_MIN_LENGTH, 'validation.passwordMin')
+    .max(PASSWORD_MAX_LENGTH, 'validation.passwordMax')
+    .regex(/^[a-zA-Z0-9!@#$%^&*()]+$/, 'validation.passwordChars');
 
-export const emailSchema = z.string().trim().toLowerCase().max(EMAIL_MAX_LENGTH).email();
+export const emailSchema = z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(EMAIL_MAX_LENGTH, 'validation.tooLong')
+    .email('validation.emailInvalid');
 
-export const fullNameSchema = z.string().trim().min(1).max(FULLNAME_MAX_LENGTH);
+export const fullNameSchema = z
+    .string()
+    .trim()
+    .min(1, 'validation.required')
+    .max(FULLNAME_MAX_LENGTH, 'validation.tooLong');
 
-export const profileDescriptionSchema = z.string().trim().max(DESCRIPTION_MAX_LENGTH);
+export const profileDescriptionSchema = z
+    .string()
+    .trim()
+    .max(DESCRIPTION_MAX_LENGTH, 'validation.tooLong');
 
 /** Only http(s) — blocks `javascript:`/`data:` URLs that would become stored XSS. */
 export function isHttpUrl(value: string): boolean {
@@ -48,7 +61,7 @@ export function isHttpUrl(value: string): boolean {
     }
 }
 
-export const httpUrlSchema = z.string().trim().refine(isHttpUrl, 'Must be a valid http(s) URL.');
+export const httpUrlSchema = z.string().trim().refine(isHttpUrl, 'validation.urlInvalid');
 
 /** Optional URL field: empty string / null / undefined all mean "no URL". */
 export const optionalHttpUrlSchema = z
@@ -59,7 +72,7 @@ export const optionalHttpUrlSchema = z
 /** Optional country: ISO code, `null`/'' clears it. */
 export const countrySchema = z
     .union([
-        z.string().trim().toUpperCase().refine(isCountryCode, 'Unknown country.'),
+        z.string().trim().toUpperCase().refine(isCountryCode, 'validation.countryUnknown'),
         z.literal(''),
         z.null(),
     ])
@@ -74,11 +87,8 @@ export const citySchema = z
             .pipe(
                 z
                     .string()
-                    .max(CITY_MAX_LENGTH)
-                    .regex(
-                        /^[\p{L}\p{M}\p{N} .,'‘’ʼ`/()-]*$/u,
-                        "Use letters, spaces and - . , ' / ( )",
-                    ),
+                    .max(CITY_MAX_LENGTH, 'validation.tooLong')
+                    .regex(/^[\p{L}\p{M}\p{N} .,'‘’ʼ`/()-]*$/u, 'validation.cityChars'),
             ),
         z.null(),
     ])
@@ -98,16 +108,12 @@ export function ageOn(birthDate: string, today = new Date()): number {
 export const birthDateSchema = z
     .union([
         z.iso
-            .date('Enter a valid date.')
-            .refine(
-                (value) => ageOn(value) >= MIN_USER_AGE,
-                `You must be at least ${MIN_USER_AGE}.`,
-            )
-            .refine((value) => ageOn(value) <= MAX_USER_AGE, 'Enter a valid date.'),
+            .date('validation.dateInvalid')
+            .refine((value) => ageOn(value) >= MIN_USER_AGE, 'validation.ageMin')
+            .refine((value) => ageOn(value) <= MAX_USER_AGE, 'validation.dateInvalid'),
         z.literal(''),
         z.null(),
     ])
     .transform((value) => value || null);
 
-export const isUsernameValid = (value: string) => usernameSchema.safeParse(value).success;
-export const isPasswordValid = (value: string) => passwordSchema.safeParse(value).success;
+export const localeSchema = z.enum(LOCALES, 'validation.localeUnknown');

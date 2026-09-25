@@ -16,7 +16,7 @@ import { COLLECTIONS_CACHE_NAMESPACE } from '@/entities/collection/server/querie
 
 async function assertUserExists(userId: number) {
     const user = await db.user.findUnique({ where: { id: userId }, select: { id: true } });
-    if (!user) throw notFound('User not found.');
+    if (!user) throw notFound('userNotFound');
 }
 
 export async function issueManualSanction(
@@ -28,8 +28,7 @@ export async function issueManualSanction(
     await assertCanModerate(ctx, targetUserId);
 
     const expiresAt = expiresAtFromDuration(input.duration);
-    if (expiresAt === null && !ctx.isAdmin)
-        throw forbidden('Only admins can issue permanent sanctions.');
+    if (expiresAt === null && !ctx.isAdmin) throw forbidden('permanentSanctionAdminOnly');
 
     let notificationId: number | null = null;
 
@@ -84,17 +83,15 @@ export async function revokeSanction(ctx: StaffContext, sanctionId: number) {
         },
     });
 
-    if (!sanction || sanction.revokedAt) throw notFound('Sanction not found.');
+    if (!sanction || sanction.revokedAt) throw notFound('sanctionNotFound');
 
     await assertCanModerate(ctx, sanction.userId);
 
     if (!ctx.isAdmin) {
-        if (sanction.expiresAt === null)
-            throw forbidden('Only admins can lift permanent sanctions.');
+        if (sanction.expiresAt === null) throw forbidden('liftPermanentAdminOnly');
 
         const issuerRoles = sanction.moderatorId ? await getUserRoles(sanction.moderatorId) : [];
-        if (issuerRoles.includes('Admin'))
-            throw forbidden('Only admins can lift sanctions issued by an admin.');
+        if (issuerRoles.includes('Admin')) throw forbidden('liftAdminSanctionAdminOnly');
     }
 
     await db.$transaction(async (tx) => {
@@ -120,8 +117,7 @@ export async function setUserRole(
     targetUserId: number,
     input: { role: 'Moderator' | 'Verified'; enabled: boolean; reason: string },
 ) {
-    if (input.role === 'Moderator' && !ctx.isAdmin)
-        throw forbidden('Only admins can manage moderators.');
+    if (input.role === 'Moderator' && !ctx.isAdmin) throw forbidden('manageModeratorsAdminOnly');
 
     await assertUserExists(targetUserId);
     await assertCanModerate(ctx, targetUserId);
@@ -168,7 +164,7 @@ export async function deleteUserAccount(ctx: StaffContext, targetUserId: number)
         where: { id: targetUserId },
         select: { id: true, username: true },
     });
-    if (!target) throw notFound('User not found.');
+    if (!target) throw notFound('userNotFound');
 
     await assertCanModerate(ctx, targetUserId);
 
@@ -190,19 +186,19 @@ export async function deleteUserAccount(ctx: StaffContext, targetUserId: number)
 }
 
 export async function startImpersonation(ctx: StaffContext, targetUserId: number) {
-    if (targetUserId === ctx.userId) throw forbidden('You are already signed in as this user.');
-    if (ctx.session.impersonatorUserId) throw forbidden('Stop the current impersonation first.');
+    if (targetUserId === ctx.userId) throw forbidden('alreadySignedInAsUser');
+    if (ctx.session.impersonatorUserId) throw forbidden('stopImpersonationFirst');
 
     const target = await db.user.findUnique({
         where: { id: targetUserId },
         select: { id: true, username: true },
     });
-    if (!target) throw notFound('User not found.');
+    if (!target) throw notFound('userNotFound');
 
     await assertCanModerate(ctx, targetUserId);
 
     if (await getActiveSanction(targetUserId, 'ACCOUNT')) {
-        throw forbidden('You cannot impersonate a banned account.');
+        throw forbidden('cannotImpersonateBanned');
     }
 
     await db.$transaction(async (tx) => {

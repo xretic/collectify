@@ -1,0 +1,944 @@
+{
+    "errors": {
+        "badRequest": "请求无效。",
+        "unauthorized": "请登录后继续。",
+        "forbidden": "你没有执行此操作的权限。",
+        "notFound": "未找到。",
+        "internal": "服务器内部错误。",
+        "invalidInput": "输入无效。",
+        "invalidField": "无效的值：{field}。",
+        "invalidJson": "请求内容无效。",
+        "invalidId": "无效的 ID。",
+        "tooManyRequests": "请求过多，请稍后再试。",
+        "realtimeUnavailable": "实时服务未配置。",
+        "invalidWebhookSignature": "Webhook 签名无效。",
+        "oauthNotConfigured": "此登录方式未配置。",
+        "userNotFound": "未找到用户。",
+        "commentNotFound": "未找到评论。",
+        "collectionNotFound": "未找到收藏集。",
+        "tagNotFound": "未找到标签。",
+        "reportNotFound": "未找到举报。",
+        "categoryNotFound": "未找到分类。",
+        "sanctionNotFound": "未找到处罚。",
+        "itemNotFound": "未找到条目。",
+        "chatNotFound": "未找到聊天。",
+        "boardNotFound": "未找到画板。",
+        "invalidCredentials": "邮箱或密码错误。",
+        "emailTaken": "该邮箱已注册账号。",
+        "usernameTaken": "该用户名已被占用。",
+        "emailOrUsernameTaken": "该邮箱或用户名已被占用。",
+        "currentPasswordRequired": "请输入当前密码。",
+        "currentPasswordIncorrect": "当前密码不正确。",
+        "passwordUnchanged": "新密码必须与当前密码不同。",
+        "passwordIncorrect": "密码不正确。",
+        "typeUsernameToConfirm": "请输入你的用户名以确认。",
+        "impersonationInactive": "当前未以其他用户身份登录。",
+        "bannedUntil": "你的账号已被封禁，将于 {date} 解封。",
+        "bannedPermanent": "你的账号已被封禁，此限制为永久。",
+        "mutedCommentsUntil": "你已被禁止评论，将于 {date} 解除。",
+        "mutedCommentsPermanent": "你已被禁止评论，此限制为永久。",
+        "mutedMessengerUntil": "你已被禁止发送私信，将于 {date} 解除。",
+        "mutedMessengerPermanent": "你已被禁止发送私信，此限制为永久。",
+        "chatsUnavailableImpersonating": "以其他用户身份登录时无法使用聊天。",
+        "cannotModerateSelf": "你不能管理自己。",
+        "adminsNotModeratable": "管理员不能被管理。",
+        "moderatorsCannotManageModerators": "版主不能管理其他版主。",
+        "permanentSanctionAdminOnly": "只有管理员可以施加永久处罚。",
+        "liftPermanentAdminOnly": "只有管理员可以解除永久处罚。",
+        "liftAdminSanctionAdminOnly": "只有管理员可以解除由管理员施加的处罚。",
+        "manageModeratorsAdminOnly": "只有管理员可以管理版主。",
+        "alreadySignedInAsUser": "你已经以该用户身份登录。",
+        "stopImpersonationFirst": "请先结束当前的代理登录。",
+        "cannotImpersonateBanned": "不能以被封禁的账号身份登录。",
+        "categoryUnknown": "请选择现有分类。",
+        "categoriesUnknown": "请选择现有分类。",
+        "categoryExists": "已存在同名或同 slug 的分类。",
+        "categoryInUse": "该分类下仍有收藏集，请改为归档。",
+        "tagsWrongCategory": "标签必须属于收藏集所在的分类。",
+        "tagsLimit": "一个收藏集最多只能有 {limit} 个标签。",
+        "tagsDailyLimit": "你今天创建的标签过多，请明天再试。",
+        "signInForBoards": "登录后查看你的画板。",
+        "signInForFavorites": "登录后查看你的收藏。",
+        "ownerOnly": "只有所有者可以修改此收藏集。",
+        "collectionsLimit": "你最多只能有 {limit} 个收藏集。",
+        "itemsLimit": "一个收藏集最多只能有 {limit} 个条目。",
+        "collectionNeedsItem": "收藏集至少要保留一个条目。",
+        "invalidItemOrder": "新顺序必须恰好包含收藏集中的每个条目一次。",
+        "boardNameTaken": "你已经有同名的画板。",
+        "boardsLimit": "你最多只能有 {limit} 个画板。",
+        "cannotMessageSelf": "你不能给自己发私信。",
+        "userDeleted": "该用户已删除账号。",
+        "editOwnCommentsOnly": "你只能编辑自己的评论。",
+        "heartOwnerOnly": "只有收藏集所有者可以给评论点爱心。",
+        "commentsLimit": "你在一个收藏集下最多只能发表 {limit} 条评论。",
+        "repliesLimit": "你在一个收藏集中最多只能发表 {limit} 条回复。",
+        "cannotReportSelf": "你不能举报自己。",
+        "accountNotReportable": "该账号无法被举报。",
+        "alreadyReported": "你已经举报过了，版主会尽快处理。",
+        "reportClosed": "该举报已关闭。",
+        "cannotReviewOwnReport": "你不能审核自己的举报。",
+        "nothingToRemove": "用户举报没有可删除的内容。",
+        "duplicateMustMatchUser": "原始举报必须是针对同一用户的另一条举报。",
+        "reportJustReviewed": "该举报刚刚已由其他人审核。",
+        "nothingToUpdate": "没有需要更新的内容。",
+        "countryRequiredForCity": "请为该城市选择国家。",
+        "cityUnknown": "未知城市。",
+        "cannotFollowSelf": "你不能关注自己。",
+        "generic": "出了点问题，请重试。",
+        "network": "网络错误，请检查网络连接。"
+    },
+    "validation": {
+        "required": "此项为必填项。",
+        "tooLong": "内容过长。",
+        "usernameMin": "用户名至少需要 {usernameMin} 个字符。",
+        "usernameMax": "用户名最多 {usernameMax} 个字符。",
+        "usernameChars": "用户名只能包含 a-z、0-9、“_” 和 “.”。",
+        "passwordMin": "密码至少需要 {passwordMin} 个字符。",
+        "passwordMax": "密码最多 {passwordMax} 个字符。",
+        "passwordChars": "密码包含不支持的字符。",
+        "passwordsMismatch": "两次输入的密码不一致。",
+        "emailInvalid": "请输入有效的邮箱。",
+        "urlInvalid": "请输入有效的 http(s) 网址。",
+        "countryUnknown": "未知国家。",
+        "cityChars": "请使用字母、空格和 - . , ' / ( )",
+        "dateInvalid": "请输入有效的日期。",
+        "ageMin": "你必须年满 {minAge} 岁。",
+        "localeUnknown": "不支持的语言。",
+        "nameRequired": "名称为必填项。",
+        "descriptionRequired": "描述为必填项。",
+        "slugRequired": "Slug 为必填项。",
+        "slugChars": "请使用小写字母、数字和连字符。",
+        "messageEmpty": "消息不能为空。",
+        "commentEmpty": "评论不能为空。",
+        "itemTitleOrImage": "请添加标题或图片。",
+        "categoryRequired": "请选择分类。",
+        "tagsMax": "最多 {tagsMax} 个标签。",
+        "tagNameMin": "至少 {tagNameMin} 个字符。",
+        "tagNameChars": "字母、数字、空格和 - & + . ' #",
+        "verdictRequiresGuilty": "处罚和删除内容需要“违规”判定。",
+        "duplicateRequiresOriginal": "“重复”判定需要选择原始举报。"
+    },
+    "meta": {
+        "description": "和我们一起创建有趣的收藏集。",
+        "privacyDescription": "Collectify 如何收集、使用和存储你的数据。",
+        "userDescription": "{name} 在 Collectify 上的收藏集。",
+        "pages": {
+            "login": "登录",
+            "register": "注册",
+            "chats": "聊天",
+            "createCollection": "创建收藏集",
+            "myCollections": "我的收藏集",
+            "notifications": "通知",
+            "onboarding": "选择你的兴趣",
+            "settings": "设置",
+            "myProfile": "我的主页",
+            "management": "管理",
+            "privacyPolicy": "隐私政策",
+            "collection": "收藏集",
+            "userNotFound": "未找到用户"
+        }
+    },
+    "languages": {
+        "label": "语言"
+    },
+    "auth": {
+        "email": "邮箱",
+        "password": "密码",
+        "username": "用户名",
+        "login": "登录",
+        "register": "注册",
+        "signingIn": "正在登录…",
+        "creatingAccount": "正在创建账号…",
+        "usernameHint": "小写字母、数字、“_” 和 “.”",
+        "passwordHint": "至少 {min} 个字符",
+        "languageHint": "之后可以在设置中更改。",
+        "orContinueWith": "或使用以下方式继续",
+        "loginSubtitle": "输入你的账号信息以登录。",
+        "registerSubtitle": "创建账号，开始你的收藏。",
+        "noAccount": "还没有账号？<link>注册</link>",
+        "haveAccount": "已有账号？<link>登录</link>",
+        "oauthErrors": {
+            "oauthState": "登录链接已过期，请重试。",
+            "oauthFailed": "通过第三方登录失败，请重试。",
+            "accountBanned": "该账号已被封禁。"
+        }
+    },
+    "common": {
+        "cancel": "取消",
+        "reset": "重置",
+        "save": "保存",
+        "delete": "删除",
+        "edit": "编辑",
+        "close": "关闭",
+        "back": "返回",
+        "retry": "重试",
+        "loadMore": "加载更多",
+        "search": "搜索",
+        "next": "下一步",
+        "skip": "跳过",
+        "confirm": "确认",
+        "create": "创建",
+        "add": "添加",
+        "moreActions": "更多操作",
+        "loading": "加载中",
+        "sortBy": "排序方式"
+    },
+    "settings": {
+        "title": "设置",
+        "subtitle": "管理你的账号设置和偏好",
+        "profile": {
+            "title": "个人资料",
+            "description": "姓名、用户名、简介和图片。",
+            "edit": "编辑个人资料"
+        },
+        "security": {
+            "title": "隐私与安全",
+            "changePassword": "修改你的密码。",
+            "setPassword": "设置密码后也可以使用邮箱登录。",
+            "passwordChanged": "密码已修改。",
+            "passwordSet": "密码已设置，现在可以使用邮箱登录。",
+            "currentPassword": "当前密码",
+            "newPassword": "新密码",
+            "confirmPassword": "确认新密码",
+            "change": "修改密码",
+            "set": "设置密码"
+        },
+        "interests": {
+            "title": "兴趣",
+            "description": "你喜欢的分类，会影响“为你推荐”信息流。",
+            "saved": "兴趣已保存。",
+            "save": "保存兴趣"
+        },
+        "language": {
+            "title": "语言",
+            "description": "整个界面的语言，会保存到你的账号中。"
+        },
+        "appearance": {
+            "title": "外观",
+            "description": "选择主题，立即生效并在此设备上记住。",
+            "search": "查找主题",
+            "filter": "筛选主题",
+            "theme": "主题",
+            "filters": {
+                "all": "全部",
+                "light": "浅色",
+                "dark": "深色"
+            }
+        },
+        "home": {
+            "title": "首页",
+            "description": "信息流旁边的小组件。",
+            "showPeopleWidget": "在首页显示“你可能认识的人”"
+        },
+        "danger": {
+            "title": "危险操作",
+            "description": "永久删除你的账号和所有数据。",
+            "deleteAccount": "删除账号",
+            "warning": "这将永久删除你的个人资料、收藏集、评论和聊天，且无法撤销。",
+            "yourPassword": "你的密码",
+            "typeUsername": "输入“{username}”以确认",
+            "deleteForever": "永久删除"
+        }
+    },
+    "dateField": {
+        "placeholder": "选择日期",
+        "clear": "清除日期",
+        "open": "打开日历",
+        "chooseYear": "选择年份",
+        "previousMonth": "上个月",
+        "nextMonth": "下个月"
+    },
+    "imageDropzone": {
+        "label": "点击或拖放图片",
+        "hint": "PNG、JPG、WEBP，不超过 10MB"
+    },
+    "roles": {
+        "Admin": "管理员",
+        "Moderator": "版主",
+        "Verified": "已认证"
+    },
+    "imageEditor": {
+        "title": "编辑图片",
+        "failed": "无法编辑图片。",
+        "zoom": "缩放",
+        "rotateLeft": "向左旋转",
+        "rotateRight": "向右旋转",
+        "aspectRatio": "宽高比",
+        "original": "原始比例"
+    },
+    "pagination": {
+        "label": "分页",
+        "previous": "上一页",
+        "next": "下一页",
+        "page": "第 {page} 页"
+    },
+    "scrollRow": {
+        "back": "向后滚动{items}",
+        "forward": "向前滚动{items}"
+    },
+    "upload": {
+        "readFailed": "无法读取图片。",
+        "editUnsupported": "此浏览器不支持编辑图片。",
+        "saveFailed": "无法保存图片。",
+        "wrongType": "请选择 PNG、JPG、WEBP 或 GIF 图片。",
+        "tooBig": "图片不能超过 10MB。",
+        "notConfigured": "图片上传未配置。",
+        "network": "图片上传失败，请检查网络连接。",
+        "failed": "图片上传失败。"
+    },
+    "sanctions": {
+        "scopes": {
+            "ACCOUNT": "封禁账号",
+            "COMMENTS": "禁止评论",
+            "MESSENGER": "禁止私信"
+        },
+        "durations": {
+            "1h": "1 小时",
+            "1d": "1 天",
+            "7d": "7 天",
+            "30d": "30 天",
+            "permanent": "永久"
+        },
+        "until": "{scope} · 至 {date}",
+        "permanentScope": "{scope} · 永久",
+        "mutePlaceholder": {
+            "commentsUntil": "你在 {date} 前被禁止评论。",
+            "commentsPermanent": "你已被永久禁止评论。",
+            "messengerUntil": "你在 {date} 前被禁止发送私信。",
+            "messengerPermanent": "你已被永久禁止发送私信。"
+        }
+    },
+    "categories": {
+        "books": "书籍",
+        "movies": "电影",
+        "games": "游戏",
+        "recipes": "食谱",
+        "apps": "应用",
+        "travel": "旅行",
+        "music": "音乐",
+        "sport": "运动",
+        "tv-shows": "电视剧",
+        "anime": "动漫",
+        "podcasts": "播客",
+        "art": "艺术",
+        "design": "设计",
+        "photography": "摄影",
+        "fashion": "时尚",
+        "home": "家居与室内",
+        "tech": "科技",
+        "science": "科学",
+        "education": "教育",
+        "fitness": "健身",
+        "cars": "汽车",
+        "pets": "宠物",
+        "nature": "自然",
+        "custom": "其他"
+    },
+    "categoryMenu": {
+        "all": "所有分类",
+        "search": "查找分类",
+        "nothingFound": "未找到",
+        "label": "分类"
+    },
+    "chats": {
+        "online": "在线",
+        "typing": "正在输入",
+        "message": "发私信",
+        "mute": {
+            "actions": "聊天操作",
+            "mutedUntil": "已静音至 {date}",
+            "off": "通知已关闭",
+            "enable": "开启通知",
+            "muteForMenu": "静音时长…",
+            "disable": "关闭通知",
+            "muteFor": "静音时长",
+            "durations": {
+                "15m": "15 分钟",
+                "30m": "30 分钟",
+                "1h": "1 小时",
+                "8h": "8 小时",
+                "1d": "1 天",
+                "1w": "1 周"
+            },
+            "failed": "无法更新通知设置，请重试。"
+        },
+        "composer": {
+            "placeholder": "输入消息…",
+            "label": "消息",
+            "send": "发送消息"
+        },
+        "title": "聊天",
+        "unread": "{count} 条未读",
+        "empty": "还没有聊天。",
+        "deletedAccount": "已删除的账号",
+        "muted": "已静音",
+        "you": "你：{text}",
+        "back": "返回聊天列表",
+        "directMessages": "私信",
+        "viewProfile": "查看主页",
+        "conversation": "对话",
+        "unavailable": "此聊天不可用。",
+        "seen": "已读 <time></time>",
+        "sent": "已发送",
+        "privateTitle": "聊天是私密的",
+        "privateDescription": "以其他用户身份登录时无法使用私信。",
+        "placeholderTitle": "你的聊天",
+        "placeholderText": "从左侧选择一个对话，继续聊聊收藏集吧。"
+    },
+    "collectionCard": {
+        "items": "{count, plural, other {# 个条目}}",
+        "comments": "{count, plural, other {# 条评论}}",
+        "favorites": "{count, plural, other {# 次收藏}}",
+        "likes": "{count, plural, other {# 个赞}}"
+    },
+    "collectionForm": {
+        "cover": "封面图片",
+        "coverHint": "点击上传封面图片",
+        "title": "标题",
+        "description": "描述",
+        "visibility": "可见性",
+        "public": "公开",
+        "private": "私密"
+    },
+    "collectionsGrid": {
+        "emptyTitle": "什么都没找到",
+        "emptyDescription": "试试其他筛选条件或搜索词。"
+    },
+    "items": {
+        "open": "打开条目",
+        "drag": "拖动条目",
+        "image": "图片",
+        "title": "标题",
+        "description": "描述",
+        "titleRequired": "没有图片时必填",
+        "sourceUrl": "来源网址",
+        "cardSize": "卡片尺寸",
+        "sizes": {
+            "S": "小方块",
+            "M": "竖长方块，占一列",
+            "L": "大方块，占两列",
+            "XL": "横跨整行的横幅"
+        },
+        "edit": "编辑条目",
+        "delete": "删除条目",
+        "actions": "条目操作",
+        "deleteTitle": "删除“{title}”？",
+        "deleteUntitled": "删除此条目？",
+        "deleteDescription": "此条目将从收藏集中移除。",
+        "add": "添加条目",
+        "addIntro": "向你的收藏集添加新条目。",
+        "editIntro": "更新条目，修改会立即对所有人可见。",
+        "item": "条目",
+        "previous": "上一个条目",
+        "next": "下一个条目",
+        "label": "条目"
+    },
+    "comments": {
+        "editedAt": "编辑于 {date}",
+        "edited": "（已编辑）",
+        "replyTo": "回复 @{username}",
+        "placeholder": "添加评论…",
+        "reply": "回复",
+        "comment": "评论",
+        "deleteAsModerator": "以版主身份删除",
+        "actions": "评论操作",
+        "deleteTitle": "删除这条评论？",
+        "count": "{count, plural, other {# 条评论}}",
+        "emptyTitle": "还没有评论。",
+        "emptyDescription": "来发起讨论吧。",
+        "replies": "{count, plural, other {# 条回复}}",
+        "moreReplies": "显示更多回复",
+        "unheart": "取消爱心",
+        "heart": "给这条评论点爱心",
+        "heartLabel": "为评论点爱心",
+        "heartedBy": "♥ 来自 {username}"
+    },
+    "notifications": {
+        "unread": "未读",
+        "texts": {
+            "FOLLOW": "关注了你",
+            "LIKE": "赞了你的收藏集",
+            "FAVORITE": "收藏了你的收藏集",
+            "COMMENT": "评论了你的收藏集",
+            "REPORT_RESOLVED": "你的举报已处理。感谢你帮助维护 Collectify 的安全。",
+            "SANCTION": "版主限制了你的账号，详情请查看设置。",
+            "COMMENT_REPLY": "回复了你在以下收藏集中的评论：",
+            "COMMENT_LIKED": "为你在以下收藏集中的评论点了爱心："
+        },
+        "dismiss": "关闭通知",
+        "title": "通知",
+        "markAllRead": "全部标为已读",
+        "tabs": {
+            "all": "全部",
+            "unread": "未读"
+        },
+        "emptyUnread": "没有未读通知",
+        "empty": "还没有通知",
+        "caughtUp": "你已看完所有通知。",
+        "groups": {
+            "today": "今天",
+            "yesterday": "昨天",
+            "thisWeek": "本周",
+            "earlier": "更早"
+        }
+    },
+    "tags": {
+        "label": "标签",
+        "upTo": "最多 {limit} 个标签",
+        "noMatches": "没有匹配的标签",
+        "noneYet": "还没有标签",
+        "searchByTags": "按标签搜索",
+        "noneInCategory": "此分类下还没有标签",
+        "create": "创建“{name}”",
+        "searchOrCreate": "搜索或创建标签",
+        "chooseCategoryFirst": "请先选择分类。",
+        "pickerHint": "{count} / {limit} · 优先推荐该分类的热门标签。"
+    },
+    "profile": {
+        "usernameCopied": "用户名已复制。",
+        "usernameCopyFailed": "无法复制用户名。",
+        "copyUsername": "复制用户名",
+        "noBio": "还没有简介",
+        "statLabel": "{label} {count}",
+        "following": "关注",
+        "followers": "粉丝",
+        "follow": "关注",
+        "unfollow": "取消关注",
+        "follows": {
+            "followers": "粉丝",
+            "following": "关注",
+            "noFollowers": "还没有粉丝",
+            "noFollowing": "还没有关注任何人",
+            "followingButton": "已关注",
+            "follow": "关注"
+        },
+        "edit": {
+            "updated": "个人资料已更新。",
+            "title": "编辑个人资料",
+            "changeBanner": "更换横幅",
+            "removeBanner": "移除横幅",
+            "changeAvatar": "更换头像",
+            "removeAvatar": "移除头像",
+            "fullName": "姓名",
+            "username": "用户名",
+            "bio": "简介",
+            "country": "国家",
+            "city": "城市",
+            "birthDate": "出生日期"
+        },
+        "tabs": {
+            "created": "已创建",
+            "favorites": "已收藏",
+            "private": "私密"
+        }
+    },
+    "reports": {
+        "reasons": {
+            "SPAM": "垃圾信息",
+            "HARASSMENT": "骚扰",
+            "HATE": "仇恨言论",
+            "SCAM": "诈骗",
+            "ADULT": "成人内容",
+            "OTHER": "其他"
+        },
+        "targets": {
+            "USER": "用户",
+            "COMMENT": "评论",
+            "COLLECTION": "收藏集"
+        },
+        "reportTarget": {
+            "USER": "举报用户",
+            "COMMENT": "举报评论",
+            "COLLECTION": "举报收藏集"
+        },
+        "openTarget": {
+            "USER": "打开用户",
+            "COMMENT": "打开评论",
+            "COLLECTION": "打开收藏集"
+        },
+        "verdicts": {
+            "PENDING": "待处理",
+            "GUILTY": "违规",
+            "NO_VIOLATION": "未违规",
+            "INSUFFICIENT_EVIDENCE": "证据不足",
+            "DUPLICATE": "重复"
+        },
+        "submitted": "举报已提交，版主会尽快处理。",
+        "reason": "原因",
+        "details": "详情",
+        "submit": "提交举报"
+    },
+    "boards": {
+        "rename": "重命名",
+        "delete": "删除画板",
+        "renameTitle": "重命名画板",
+        "deleteTitle": "删除“{name}”？",
+        "deleteDescription": "收藏集仍会保留在“全部收藏”中。",
+        "name": "画板名称",
+        "label": "画板",
+        "items": "画板",
+        "all": "全部",
+        "new": "新建画板",
+        "actions": "画板操作",
+        "signInToSave": "登录后收藏",
+        "saved": "已收藏",
+        "save": "收藏",
+        "saveTo": "收藏到",
+        "allSaved": "全部收藏",
+        "hint": "把收藏的收藏集整理到画板中。",
+        "newName": "新画板名称",
+        "create": "创建画板",
+        "draggableTab": "可拖动的标签页"
+    },
+    "management": {
+        "categories": {
+            "updated": "分类已更新。",
+            "created": "分类已创建。",
+            "deleted": "分类已删除。",
+            "name": "名称",
+            "slug": "Slug",
+            "slugHint": "用于链接：/?category=slug",
+            "description": "描述",
+            "position": "排序",
+            "positionHint": "数值越小越靠前",
+            "active": "启用",
+            "archived": "已归档",
+            "onlyArchive": "包含收藏集的分类只能归档。",
+            "create": "创建分类",
+            "deleteTitle": "删除“{name}”？",
+            "new": "新建分类",
+            "empty": "还没有分类",
+            "collections": "{count, plural, other {# 个收藏集}}",
+            "archivedLower": "已归档",
+            "notFound": "未找到分类"
+        },
+        "roles": {
+            "updated": "角色已更新。",
+            "revoke": "撤销{role}",
+            "grant": "授予{role}"
+        },
+        "sanctions": {
+            "applied": "处罚已生效。",
+            "strongerKept": "已有更严厉的处罚生效，已保留该处罚。",
+            "scope": "范围",
+            "duration": "时长",
+            "reason": "原因",
+            "apply": "执行",
+            "confirmTitle": "处罚 @{username}？",
+            "summary": "{scope}：{duration}。",
+            "reasonLine": "原因：{reason}",
+            "confirm": "执行处罚",
+            "lifted": "处罚已解除。",
+            "none": "没有生效中的处罚",
+            "lift": "解除"
+        },
+        "danger": {
+            "deleted": "账号已删除。",
+            "impersonate": "以该用户身份登录",
+            "delete": "删除账号",
+            "impersonateTitle": "以 @{username} 身份登录？",
+            "impersonateDescription": "你的所有操作都会以你的名义记录在审计日志中。",
+            "signIn": "登录",
+            "deleteTitle": "删除 @{username}？",
+            "deleteDescription": "该账号及其收藏集、评论和聊天将被永久删除。"
+        },
+        "review": {
+            "describeVerdict": "判定：{verdict}。",
+            "describeRemove": "被举报的内容将被删除。",
+            "describePunishment": "@{username} 将受到：{scope}，{duration}。",
+            "describeDuplicate": "标记为举报 #{id} 的重复。",
+            "closed": "举报已关闭。",
+            "closedStrongerKept": "举报已关闭。已有更严厉的处罚生效，已保留该处罚。",
+            "verdict": "判定",
+            "removeContent": "删除被举报的内容",
+            "nothingToDelete": "没有可删除的内容",
+            "sanctionUser": "处罚该用户",
+            "punishment": "处罚",
+            "duration": "时长",
+            "originalReport": "原始举报 #",
+            "resolution": "处理说明",
+            "close": "关闭举报",
+            "closeTitle": "关闭举报 #{id}？"
+        },
+        "audit": {
+            "title": "审计",
+            "titleFor": "@{username} 的审计",
+            "empty": "还没有审计记录",
+            "system": "系统",
+            "via": "（通过 @{username}）",
+            "content": "内容",
+            "actions": {
+                "grant": "已授予{role}",
+                "revoke": "已撤销{role}",
+                "sanction": "已执行：{scope}",
+                "revokeSanction": "已解除：{scope}",
+                "report": "已关闭举报：{verdict}",
+                "deleteUser": "已删除用户账号",
+                "deleteComment": "已删除评论",
+                "deleteCollection": "已删除收藏集",
+                "impersonateUser": "以用户身份登录",
+                "stopImpersonation": "结束代理登录"
+            }
+        },
+        "activity": {
+            "collections": "收藏集",
+            "noCollections": "没有收藏集",
+            "private": "私密",
+            "counts": "{items, plural, other {# 个条目}} · {comments, plural, other {# 条评论}} · {likes, plural, other {# 个赞}}",
+            "comments": "评论",
+            "noComments": "没有评论"
+        },
+        "tags": {
+            "deleted": "标签已删除。",
+            "title": "标签",
+            "hint": "由用户创建，按使用它们的收藏集数量排序。",
+            "search": "查找标签",
+            "empty": "没有标签",
+            "usage": "{count, plural, other {# 个收藏集}}",
+            "delete": "删除标签",
+            "deleteNamed": "删除 {name}",
+            "deleteTitle": "删除 #{name}？",
+            "deleteDescription": "该标签将从所有使用它的收藏集中移除。"
+        },
+        "title": "管理",
+        "subtitle": "用户、举报、处罚、分类",
+        "tabs": {
+            "users": "用户",
+            "reports": "举报",
+            "categories": "分类"
+        },
+        "selectUser": "选择用户",
+        "selectUserHint": "按用户名、姓名或邮箱搜索。",
+        "selectReport": "选择举报",
+        "selectReportHint": "最早的未处理举报排在最前。",
+        "selectCategory": "选择分类",
+        "selectCategoryHint": "或新建一个。已归档的分类会保留其中的收藏集。",
+        "users": {
+            "search": "搜索用户",
+            "empty": "未找到用户",
+            "sanctioned": "受处罚"
+        },
+        "report": {
+            "aboutAccount": "该举报针对账号本身。",
+            "deletedSince": "已被删除 — 显示举报时保存的快照",
+            "posted": "发布于 {date}",
+            "verdict": "判定",
+            "reviewedBy": "审核人",
+            "sanction": "处罚",
+            "duplicateOf": "重复于",
+            "resolution": "处理结果",
+            "notFound": "未找到举报",
+            "title": "关于 <user>@{username}</user> 的举报 #{id}",
+            "subtitle": "{target} · 举报人 @{username} · {date}",
+            "open": "未处理",
+            "closed": "已关闭",
+            "evidence": "证据",
+            "context": "背景",
+            "against": "针对 @{username} 的举报",
+            "againstCounts": "共 {total} · 违规 {guilty}",
+            "filedBy": "@{username} 提交的举报",
+            "filedCounts": "共 {total} · 驳回 {rejected}",
+            "activeSanctions": "生效中的处罚",
+            "none": "无",
+            "decision": "决定",
+            "outcome": "结果"
+        },
+        "queue": {
+            "open": "未处理（{count}）",
+            "closed": "已关闭",
+            "type": "类型",
+            "all": "全部",
+            "empty": "队列为空",
+            "emptyClosed": "没有已关闭的举报"
+        },
+        "user": {
+            "notFound": "未找到用户",
+            "notFoundHint": "该用户可能已被删除，或你无权管理。",
+            "regularUser": "用户",
+            "stats": {
+                "collections": "收藏集",
+                "comments": "评论",
+                "messages": "私信",
+                "reportsReceived": "被举报次数"
+            },
+            "sanctions": "处罚",
+            "sanctionsHint": "封禁和按功能的禁言。生效中的更严厉处罚不会被缩短。",
+            "roles": "角色",
+            "rolesHint": "管理员权限通过 `npm run admin` 管理。",
+            "activity": "动态",
+            "activityHint": "收藏集和评论，最新的在前。",
+            "danger": "危险操作"
+        }
+    },
+    "collectionFilters": {
+        "search": "搜索收藏集",
+        "sorts": {
+            "popular": "最热门",
+            "newest": "最新",
+            "old": "最早"
+        }
+    },
+    "collection": {
+        "like": "点赞",
+        "unlike": "取消点赞",
+        "signInToLike": "登录后点赞",
+        "delete": {
+            "deleted": "收藏集已删除。",
+            "title": "删除“{name}”？",
+            "description": "此操作无法撤销，所有条目和评论也会被删除。"
+        },
+        "edit": {
+            "updated": "收藏集已更新。",
+            "title": "编辑收藏集",
+            "intro": "修改会立即保存并对其他用户可见。条目可直接在收藏集页面编辑。"
+        },
+        "stats": {
+            "likes": "点赞",
+            "comments": "评论",
+            "favorites": "收藏",
+            "title": "统计",
+            "intro": "你的收藏集每日动态（UTC）。",
+            "unavailable": "统计数据暂时不可用。",
+            "empty": "还没有动态。"
+        },
+        "description": "描述",
+        "meta": "{count, plural, other {# 个条目}} · 创建于 {date}",
+        "private": "私密",
+        "deleteAsModerator": "以版主身份删除",
+        "deleteCollection": "删除收藏集",
+        "actions": "收藏集操作"
+    },
+    "nav": {
+        "home": "首页",
+        "collections": "收藏集",
+        "profile": "主页",
+        "notifications": "通知",
+        "management": "管理",
+        "settings": "设置",
+        "openMenu": "打开菜单",
+        "createCollection": "创建收藏集",
+        "chats": "聊天",
+        "findUser": "查找用户",
+        "accountMenu": "账号菜单",
+        "returnToAdmin": "返回管理员",
+        "logout": "退出登录",
+        "startTyping": "开始输入用户名",
+        "impersonating": "你正以 <strong>@{username}</strong> 的身份登录。可通过账号菜单中的“返回管理员”返回。"
+    },
+    "footer": {
+        "privacyPolicy": "隐私政策"
+    },
+    "people": {
+        "mutual": "{count} 位共同好友",
+        "livesIn": "居住在{city}",
+        "followsYou": "关注了你",
+        "following": "已关注",
+        "follow": "关注",
+        "title": "你可能认识的人",
+        "hide": "隐藏推荐",
+        "hideHint": "隐藏（可在设置中恢复）",
+        "seeAll": "查看全部推荐"
+    },
+    "createCollection": {
+        "steps": {
+            "details": "创建收藏集",
+            "firstItem": "添加第一个条目"
+        },
+        "title": "创建新收藏集",
+        "itemTitle": "添加第一个条目",
+        "subtitle": "添加一个新收藏集来整理你的内容。",
+        "itemSubtitle": "每个收藏集至少从一个条目开始。",
+        "submit": "创建收藏集"
+    },
+    "home": {
+        "discover": "发现收藏集",
+        "emptyTitle": "暂时没有推荐",
+        "emptyBoard": "先在这个画板里收藏几个带标签的收藏集吧。",
+        "emptyForYou": "点赞和收藏收藏集，让信息流更懂你。",
+        "feeds": {
+            "forYou": "为你推荐",
+            "explore": "发现",
+            "moreLike": "更多类似“{name}”",
+            "label": "信息流",
+            "items": "信息流"
+        }
+    },
+    "myCollections": {
+        "title": "我的收藏集",
+        "subtitle": "按可见性、分类、标签和搜索浏览并管理你的收藏集。",
+        "create": "创建收藏集",
+        "filters": "筛选",
+        "category": "分类",
+        "tags": "标签"
+    },
+    "notFound": {
+        "title": "页面未找到",
+        "description": "你要找的页面不存在或已被移动。",
+        "home": "返回首页",
+        "back": "返回上一页"
+    },
+    "onboarding": {
+        "title": "你对什么感兴趣？",
+        "subtitle": "选几个分类，我们会为你定制信息流。之后可以在设置中更改。",
+        "pickMore": "再选 {count} 个",
+        "continue": "继续"
+    },
+    "privacy": {
+        "title": "隐私政策",
+        "updated": "最后更新：{date}",
+        "collect": {
+            "title": "我们收集哪些数据",
+            "intro": "当你在 Collectify 创建账号时，我们会收集：",
+            "items": {
+                "email": "你的邮箱地址（用于登录和识别你的账号）",
+                "names": "你选择的用户名和姓名",
+                "password": "密码（以安全哈希形式存储——我们从不以明文存储你的密码）；如果你通过 GitHub 或 Google 注册，我们会改为存储关联账号的 ID",
+                "profile": "你添加的可选资料：头像、横幅、简介/描述、国家和城市以及出生日期",
+                "content": "你在应用中创建的内容：收藏集、条目、评论、点赞、关注、私信和通知"
+            }
+        },
+        "why": {
+            "title": "我们为什么收集",
+            "text": "你的数据用于创建和管理你的账号、在登录时验证你的身份、在多次访问之间保持登录状态（会话管理），以及提供应用的核心功能——收藏集、关注其他用户、评论、点赞和私信。"
+        },
+        "location": {
+            "title": "所在地和出生日期",
+            "intro": "两者均为可选项，可随时在个人资料中修改或删除。",
+            "items": {
+                "location": "<strong>国家和城市</strong>会显示在你的公开主页上，并用于推荐住在同一城市、你可能认识的人。我们不会收集你的精确位置或基于 IP 的位置。",
+                "birthDate": "<strong>出生日期</strong>是私密的：绝不会向其他用户显示，仅用于确认你满足最低年龄要求。"
+            }
+        },
+        "recommendations": {
+            "title": "推荐",
+            "text": "为了生成“为你推荐”信息流、画板推荐和“你可能认识的人”，我们会使用你选择的兴趣分类、你在登录状态下点赞、收藏、加入画板或打开的收藏集、这些收藏集的标签和分类、你关注的人和关注你的人，以及你个人资料中的城市。即使你撤销了点赞或收藏，我们也会记住这些收藏集，以免再次向你推荐。这些都只在 Collectify 内部进行；画板和浏览记录绝不会向其他用户显示。"
+        },
+        "age": {
+            "title": "最低年龄",
+            "text": "Collectify 面向 18 岁及以上的用户。无法保存显示你未满 18 岁的出生日期。如果我们得知某个账号属于未满 18 岁的人，可能会暂停该账号并删除其数据。"
+        },
+        "cookies": {
+            "title": "Cookie",
+            "text": "我们使用一个功能性会话 Cookie 保持你的登录状态，一个功能性 Cookie 记住你的界面语言，以及在你通过 GitHub 或 Google 登录时使用的短期安全 Cookie（约 10 分钟）。你选择的主题保存在浏览器的本地存储中。我们不使用分析、跟踪或营销类 Cookie。"
+        },
+        "storage": {
+            "title": "你的数据存储在哪里",
+            "text": "应用托管在 Vercel 上。账号和内容数据存储在我们的数据库中。上传的图片（头像、横幅、条目图片）存储在我们的媒体托管服务商 Uploadcare 处。"
+        },
+        "moderation": {
+            "title": "举报与管理",
+            "text": "当你举报内容时，我们会保存被举报评论或收藏集的副本，以便即使之后被删除，版主仍可审核。在处理举报时，版主和管理员可以查看被举报的内容以及账号的公开动态。私信无法被举报，版主和管理员也无法阅读你的对话。管理操作会记录在内部审计日志中。账号被删除时，其内容也会被删除；审计日志仅保留账号 ID 和用户名。"
+        },
+        "thirdParties": {
+            "title": "第三方",
+            "text": "我们不会出于广告或营销目的向第三方出售或分享你的数据。如果你选择通过 GitHub 或 Google 注册或登录，这些服务商会与我们共享基本的个人资料信息（例如你的邮箱），以便创建你的账号。"
+        }
+    },
+    "errorPage": {
+        "title": "出了点问题",
+        "description": "请重试。"
+    },
+    "userProfile": {
+        "manage": "管理"
+    }
+}

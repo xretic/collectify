@@ -20,6 +20,7 @@ import { CollectionDetailsFields } from '@/entities/collection/ui/CollectionDeta
 import { CategorySelect } from '@/entities/category/ui/CategorySelect';
 import { TagPicker } from '@/features/tag/pick/ui/TagPicker';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type CollectionEditDialogProps = {
     collection: CollectionDetails;
@@ -28,6 +29,8 @@ type CollectionEditDialogProps = {
 
 /** Mount only while open so the form starts from the current collection. */
 export function CollectionEditDialog({ collection, onClose }: CollectionEditDialogProps) {
+    const t = useTranslations('collection.edit');
+    const tc = useTranslations('common');
     const cache = useCollectionCache(collection.id);
     const [draft, setDraft] = useState(() => toCollectionDraft(collection));
     const payload = toCollectionPayload(draft);
@@ -37,7 +40,7 @@ export function CollectionEditDialog({ collection, onClose }: CollectionEditDial
         onSuccess: (updated) => {
             cache.update(() => updated);
             cache.invalidateLists();
-            toast.success('Collection updated.');
+            toast.success(t('updated'));
             onClose();
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
@@ -45,12 +48,11 @@ export function CollectionEditDialog({ collection, onClose }: CollectionEditDial
 
     return (
         <Dialog open onClose={save.isPending ? undefined : onClose} fullWidth maxWidth="sm">
-            <DialogTitle>Edit collection</DialogTitle>
+            <DialogTitle>{t('title')}</DialogTitle>
 
             <DialogContent className={styles.content}>
                 <DialogContentText color="inherit" className={styles.intro}>
-                    Changes are saved immediately and visible to other users. Items are edited right
-                    on the collection page.
+                    {t('intro')}
                 </DialogContentText>
 
                 <CollectionDetailsFields value={draft} onChange={setDraft} />
@@ -77,14 +79,14 @@ export function CollectionEditDialog({ collection, onClose }: CollectionEditDial
 
             <DialogActions>
                 <Button onClick={onClose} disabled={save.isPending}>
-                    Cancel
+                    {tc('cancel')}
                 </Button>
                 <Button
                     variant="contained"
                     onClick={() => save.mutate()}
                     disabled={!payload || save.isPending}
                 >
-                    Save
+                    {tc('save')}
                 </Button>
             </DialogActions>
         </Dialog>

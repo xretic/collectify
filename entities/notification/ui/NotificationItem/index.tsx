@@ -1,3 +1,5 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@mui/material';
@@ -10,13 +12,9 @@ import GavelIcon from '@mui/icons-material/Gavel';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import ShieldIcon from '@mui/icons-material/Shield';
 import { RelativeTime } from '@/shared/ui/RelativeTime';
-import {
-    NOTIFICATION_TEXTS,
-    notificationHref,
-    type AppNotification,
-    type NotificationType,
-} from '../../model/types';
+import { notificationHref, type AppNotification, type NotificationType } from '../../model/types';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 const ICONS: Record<NotificationType, { Icon: SvgIconComponent; tone: string }> = {
     LIKE: { Icon: FavoriteIcon, tone: styles.like },
@@ -46,6 +44,7 @@ export function NotificationItem({
     onOpen,
     aside,
 }: NotificationItemProps) {
+    const t = useTranslations('notifications');
     const { Icon, tone } = ICONS[notification.type];
     const { sender, collection, comment } = notification;
 
@@ -80,7 +79,7 @@ export function NotificationItem({
                 <span className={styles.content}>
                     <span className={styles.text}>
                         {sender && <strong className={styles.strong}>{sender.username}</strong>}{' '}
-                        {NOTIFICATION_TEXTS[notification.type]}
+                        {t(`texts.${notification.type}`)}
                         {collection && (
                             <>
                                 {' '}
@@ -106,7 +105,7 @@ export function NotificationItem({
 
             {aside}
             {!notification.isRead && variant === 'row' && (
-                <span className={styles.dot} aria-label="Unread" />
+                <span className={styles.dot} aria-label={t('unread')} />
             )}
         </article>
     );

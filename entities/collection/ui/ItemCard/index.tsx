@@ -1,8 +1,11 @@
+'use client';
+
 import type { HTMLAttributes, KeyboardEvent, ReactNode } from 'react';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import LaunchIcon from '@mui/icons-material/Launch';
 import type { CollectionItem } from '../../model/types';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 type ItemCardProps = {
     item: CollectionItem;
@@ -29,6 +32,7 @@ const stop = (event: { stopPropagation: () => void }) => event.stopPropagation()
  * shaded strip at the bottom; items without an image are plain text cards.
  */
 export function ItemCard({ item, onOpen, dragHandleProps, actions }: ItemCardProps) {
+    const t = useTranslations('items');
     const onKeyDown = (event: KeyboardEvent) => {
         if (onOpen && (event.key === 'Enter' || event.key === ' ')) {
             event.preventDefault();
@@ -45,7 +49,7 @@ export function ItemCard({ item, onOpen, dragHandleProps, actions }: ItemCardPro
             onKeyDown={onKeyDown}
             role={onOpen ? 'button' : undefined}
             tabIndex={onOpen ? 0 : undefined}
-            aria-label={item.title || 'Open item'}
+            aria-label={item.title || t('open')}
         >
             {item.imageUrl && (
                 <img className={styles.image} src={item.imageUrl} alt={item.title} loading="lazy" />
@@ -78,7 +82,7 @@ export function ItemCard({ item, onOpen, dragHandleProps, actions }: ItemCardPro
                         <button
                             type="button"
                             className={styles.control}
-                            aria-label="Drag item"
+                            aria-label={t('drag')}
                             {...dragHandleProps}
                         >
                             <DragIndicatorIcon fontSize="small" />

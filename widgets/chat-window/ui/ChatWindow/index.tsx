@@ -18,10 +18,11 @@ import { MessageComposer } from '@/features/chat/send/ui/MessageComposer';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { RelativeTime } from '@/shared/ui/RelativeTime';
 import { Spinner } from '@/shared/ui/Spinner';
-import { formatChatTimestamp } from '@/shared/lib/format/date';
 import { ChatHeader, ChatIntro } from './ChatHeader';
 import { useChatMessages } from './useChatMessages';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
+import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 const NEAR_BOTTOM_PX = 120;
 const LOAD_OLDER_AT_PX = 10;
@@ -32,6 +33,8 @@ type ChatWindowProps = {
 };
 
 export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
+    const t = useTranslations('chats');
+    const format = useFormatters();
     const queryClient = useQueryClient();
     const setActiveChatId = useActiveChatStore((state) => state.setActiveChatId);
     const { chat, messages, query, append, removeMessage, setSeen } = useChatMessages(chatId);
@@ -137,7 +140,7 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
     };
 
     return (
-        <section className={styles.window} aria-label="Conversation">
+        <section className={styles.window} aria-label={t('conversation')}>
             <ChatHeader
                 peer={peer}
                 deleted={chat !== null && !peer}
@@ -147,7 +150,7 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
 
             {query.isError ? (
                 <div className={styles.messages}>
-                    <EmptyState title="This chat is not available." />
+                    <EmptyState title={t('unavailable')} />
                 </div>
             ) : (
                 <div className={styles.messages} ref={listRef} onScroll={handleScroll}>
@@ -167,7 +170,7 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
                                         dateTime={message.createdAt}
                                         suppressHydrationWarning
                                     >
-                                        {formatChatTimestamp(message.createdAt)}
+                                        {format.chatTimestamp(message.createdAt)}
                                     </time>
                                 )}
 
@@ -187,12 +190,14 @@ export function ChatWindow({ chatId, viewer }: ChatWindowProps) {
                                 {seen ? (
                                     <>
                                         <DoneAllRoundedIcon className={styles.receiptIcon} />
-                                        Seen <RelativeTime value={seen.readAt} />
+                                        {t.rich('seen', {
+                                            time: () => <RelativeTime value={seen.readAt} />,
+                                        })}
                                     </>
                                 ) : (
                                     <>
                                         <DoneRoundedIcon className={styles.receiptIcon} />
-                                        Sent
+                                        {t('sent')}
                                     </>
                                 )}
                             </p>

@@ -17,8 +17,11 @@ import { userQueryKeys } from '@/entities/user/model/queryKeys';
 import type { UserPreview } from '@/entities/user/model/types';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce';
 import styles from './index.module.css';
+import { useTranslations } from 'next-intl';
 
 export default function UserSearchBar({ onClose }: { onClose: () => void }) {
+    const t = useTranslations('nav');
+    const tc = useTranslations('categoryMenu');
     const router = useRouter();
     const [inputValue, setInputValue] = useState('');
     const query = useDebounce(inputValue.trim(), 300);
@@ -45,7 +48,7 @@ export default function UserSearchBar({ onClose }: { onClose: () => void }) {
             options={users}
             loading={isFetching}
             filterOptions={(options) => options}
-            noOptionsText={query ? 'Nothing found' : 'Start typing a username'}
+            noOptionsText={query ? tc('nothingFound') : t('startTyping')}
             getOptionLabel={(option) => (typeof option === 'string' ? option : option.username)}
             inputValue={inputValue}
             onChange={handleSelect}
@@ -68,7 +71,7 @@ export default function UserSearchBar({ onClose }: { onClose: () => void }) {
                     {...params}
                     autoFocus
                     size="small"
-                    placeholder="Find a user"
+                    placeholder={t('findUser')}
                     onBlur={onClose}
                     slotProps={{
                         input: {
