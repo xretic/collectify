@@ -48,3 +48,4 @@ next-env.d.ts
 # local tooling
 /.claude
 .husky/_/
+/.editorconfig
