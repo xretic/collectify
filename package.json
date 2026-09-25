@@ -2,6 +2,7 @@
     "name": "collectify",
     "version": "0.1.0",
     "private": true,
+    "license": "SEE LICENSE IN LICENSE",
     "scripts": {
         "postinstall": "prisma generate",
         "dev": "NODE_OPTIONS=--disable-warning=DEP0169 node server.mjs",

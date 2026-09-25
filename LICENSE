@@ -1,0 +1,191 @@
+Collectify Source-Available License
+Non-Commercial, View-and-Run-Locally Edition, Version 1.0
+
+Copyright (c) 2026 xretic (https://github.com/xretic). All rights reserved.
+
+This is not an open-source license. The source code of Collectify is published
+so that people can read it, learn from it and run it on their own machines. Any
+other use requires a separate written license from the Licensor.
+
+-------------------------------------------------------------------------------
+1. DEFINITIONS
+-------------------------------------------------------------------------------
+
+"Software" means the Collectify source code, object code, documentation,
+database schema and migrations, scripts, styles, themes, images, screenshots,
+presentation materials and every other file in this repository, including any
+part, copy or modified version of them.
+
+"Licensor" means the copyright holder named above.
+
+"You" means the individual or legal entity exercising rights under this
+License. If You act on behalf of an organisation, "You" includes that
+organisation.
+
+"Personal Device" means computer hardware or a virtual machine that You own or
+exclusively control, used only by You.
+
+"Permitted Purpose" means any of the following, provided it is not a Commercial
+Purpose:
+  (a) reading, studying and reviewing the Software;
+  (b) personal learning, research and experimentation;
+  (c) teaching or academic coursework, where the Software is not sold or
+      provided as part of a paid product or service;
+  (d) evaluating the Software, including to decide whether to request a
+      commercial license;
+  (e) preparing Contributions to the official repository (Section 5).
+
+"Commercial Purpose" means any use that is intended for, or directed toward,
+commercial advantage or monetary compensation, directly or indirectly,
+including without limitation:
+  (a) using the Software, or any part of it, in or for a product or service
+      that is sold, licensed, rented, subscribed to or otherwise monetised;
+  (b) using the Software in the course of a business, a job or a paid
+      engagement, including internal use by a for-profit organisation;
+  (c) offering the Software, or a service built on it, to third parties,
+      whether paid, free, ad-supported or funded by data collection;
+  (d) using the Software to attract customers, users or investors to a
+      commercial offering;
+  (e) selling, reselling or charging for access to, support for, hosting of,
+      or consulting about the Software.
+
+"Public Deployment" means making the Software, or any service that runs on or
+exposes the Software, accessible over a network to anyone other than You,
+whether on the public internet or on a shared or organisational network.
+
+"Derivative Work" means any work based on the Software, including
+modifications, translations, adaptations, forks and works that incorporate a
+substantial part of the Software.
+
+"Contribution" means any change, fix or addition that You submit to the
+Licensor through the official repository (for example, as a pull request).
+
+-------------------------------------------------------------------------------
+2. LICENSE GRANT
+-------------------------------------------------------------------------------
+
+Subject to Your full compliance with this License, the Licensor grants You a
+personal, worldwide, non-exclusive, non-transferable, non-sublicensable,
+royalty-free and revocable license to, solely for a Permitted Purpose:
+
+  (a) view, read and study the Software;
+  (b) download or clone the Software;
+  (c) install, build and run the Software on Your Personal Devices;
+  (d) configure the Software and make private modifications to it that stay
+      on Your Personal Devices;
+  (e) fork the official repository on the hosting platform, but only to
+      prepare and submit Contributions under Section 5.
+
+-------------------------------------------------------------------------------
+3. RESTRICTIONS
+-------------------------------------------------------------------------------
+
+Except as expressly permitted in Section 2, You must not, and must not allow or
+help anyone else to:
+
+  (a) use the Software, or any part of it, for any Commercial Purpose;
+  (b) make any Public Deployment of the Software or of any Derivative Work;
+  (c) copy, publish, distribute, share, sell, rent, lease, lend, sublicense or
+      otherwise transfer the Software or any Derivative Work, in whole or in
+      part, in source or compiled form, including by publishing a fork or a
+      modified copy other than as allowed in Section 2(e);
+  (d) incorporate the Software, or any substantial part of it, into another
+      product, project, template, boilerplate or library;
+  (e) remove, alter or obscure this License, any copyright notice or any
+      other proprietary notice in the Software;
+  (f) use the names "Collectify" or "Colleo", the Collectify logo or any
+      confusingly similar name or mark, or the Licensor's name, to identify,
+      endorse or promote any product, service or project;
+  (g) use the Software, or any part of it, to create a training dataset for,
+      or to train, fine-tune or evaluate, any machine-learning or artificial
+      intelligence model;
+  (h) circumvent or attempt to circumvent any of these restrictions.
+
+Screenshots, presentation slides and other media in this repository may not be
+reused outside the Software without the Licensor's prior written permission.
+
+-------------------------------------------------------------------------------
+4. THIRD-PARTY COMPONENTS
+-------------------------------------------------------------------------------
+
+The Software depends on third-party packages that are not part of the Software
+and are licensed under their own terms. This License does not change those
+terms, and nothing in this License restricts rights You have under them.
+
+-------------------------------------------------------------------------------
+5. CONTRIBUTIONS
+-------------------------------------------------------------------------------
+
+By submitting a Contribution You represent that You have the right to do so,
+and You grant the Licensor a perpetual, worldwide, non-exclusive, royalty-free,
+irrevocable license to use, reproduce, modify, distribute, sublicense and
+otherwise exploit the Contribution for any purpose, including commercial
+purposes and relicensing of the Software. The Licensor has no obligation to
+accept or use any Contribution.
+
+-------------------------------------------------------------------------------
+6. COMMERCIAL AND OTHER LICENSES
+-------------------------------------------------------------------------------
+
+Any use not permitted by this License, including any Commercial Purpose or
+Public Deployment, requires a separate written license from the Licensor.
+Requests can be made through https://github.com/xretic.
+
+-------------------------------------------------------------------------------
+7. TERMINATION
+-------------------------------------------------------------------------------
+
+This License terminates automatically if You breach any of its terms. If it is
+Your first breach and You cure it within thirty (30) days after becoming aware
+of it, Your license is reinstated. Otherwise, upon termination You must stop
+using the Software and delete every copy of the Software and of any Derivative
+Work in Your possession or control. Sections 3, 5, 8, 9 and 10 survive
+termination.
+
+The Licensor may publish a new version of this License. Versions of the
+Software published after that point are governed by the new version.
+
+-------------------------------------------------------------------------------
+8. DISCLAIMER OF WARRANTY
+-------------------------------------------------------------------------------
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. YOU USE THE
+SOFTWARE ENTIRELY AT YOUR OWN RISK.
+
+-------------------------------------------------------------------------------
+9. LIMITATION OF LIABILITY
+-------------------------------------------------------------------------------
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE
+LICENSOR OR ANY CONTRIBUTOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY OR
+CONSEQUENTIAL (INCLUDING LOSS OF DATA, PROFITS OR BUSINESS INTERRUPTION),
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OF OR OTHER DEALINGS IN THE SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------------------------
+10. GENERAL
+-------------------------------------------------------------------------------
+
+(a) Reservation of rights. The Software is licensed, not sold. All rights not
+    expressly granted in this License are reserved by the Licensor. No license
+    is granted by implication, estoppel or otherwise.
+
+(b) Severability. If any provision of this License is held unenforceable, it
+    shall be enforced to the maximum extent permissible and the remaining
+    provisions shall remain in full force.
+
+(c) No waiver. Failure to enforce any provision is not a waiver of the right
+    to enforce it later.
+
+(d) Hosting platform. Nothing in this License limits rights that the hosting
+    platform's terms of service grant to its users to view and fork public
+    repositories on that platform; any such fork remains subject to all
+    other restrictions of this License.
+
+(e) Entire agreement. This License is the entire agreement between You and the
+    Licensor regarding the Software, unless You have a separate written
+    license signed by the Licensor.
