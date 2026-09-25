@@ -34,19 +34,128 @@ books, records, games, places, gear.
 
 ## ✨ Features
 
+<table>
+<tr>
+<td width="58%">
+
 <img src="docs/presentation/02-collections.jpg" alt="Collections" width="100%" />
+
+</td>
+<td width="42%" valign="middle">
+
+### 📚 Collections
+
+Every collection gets a cover, a story, a category and tags.
+
+- Public or private
+- Up to **10 tags** per collection
+- Likes, saves and per-collection statistics
+- Threaded comments with replies and author hearts
+
+</td>
+</tr>
+<tr>
+<td width="42%" valign="middle">
+
+### 🧱 Items
+
+A Pinterest-style masonry grid that adapts to the content.
+
+- Four card sizes: **S · M · L · XL**
+- Drag-and-drop ordering
+- Image, title, note and source link per item
+- Full-screen viewer with arrow-key navigation
+
+</td>
+<td width="58%">
 
 <img src="docs/presentation/03-masonry.jpg" alt="Items" width="100%" />
 
+</td>
+</tr>
+<tr>
+<td width="58%">
+
 <img src="docs/presentation/04-discovery.jpg" alt="Discovery" width="100%" />
+
+</td>
+<td width="42%" valign="middle">
+
+### 🧭 Discovery
+
+A feed that learns from what you like, save and open.
+
+- **For you** — ranked by tags, categories, follows, popularity and freshness
+- **Boards** of saved collections, each with a "more like this" feed
+- **Explore** by category, tag, search and sort — all in the URL
+- Onboarding seeds the feed with your interests
+
+</td>
+</tr>
+<tr>
+<td width="42%" valign="middle">
+
+### 💬 Social
+
+Follow collectors, chat in real time and never miss a reaction.
+
+- Realtime direct messages with read receipts, presence and mute
+- Live notifications and pop-ups (Socket.IO or Pusher)
+- **People you may know**: mutuals, same city, followers
+- Followers and following lists
+
+</td>
+<td width="58%">
 
 <img src="docs/presentation/05-social.jpg" alt="Social" width="100%" />
 
+</td>
+</tr>
+<tr>
+<td width="58%">
+
 <img src="docs/presentation/06-moderation.jpg" alt="Moderation" width="100%" />
+
+</td>
+<td width="42%" valign="middle">
+
+### 🛡️ Trust & safety
+
+A complete moderation toolkit at `/management`.
+
+- Reports on users, comments and collections with evidence snapshots
+- FIFO review queue with context and atomic verdicts
+- Sanctions: account bans, comment and messenger mutes
+- Roles, audit log, impersonation, category and tag management
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🎨 45 themes
+
+Every color in the UI is a theme token from [`app/themes.css`](app/themes.css) — light, dark,
+Dracula, Nord, Tokyo Night, Rosé Pine and many more. The saved theme applies before first paint.
 
 <img src="docs/presentation/07-themes.jpg" alt="Themes" width="100%" />
 
+</td>
+<td width="50%" valign="top">
+
+### 📱 Responsive
+
+The same experience from a 4K monitor to a phone: every screen, including chats and moderation,
+adapts to small viewports.
+
 <img src="docs/presentation/08-mobile.jpg" alt="Mobile" width="100%" />
+
+</td>
+</tr>
+</table>
 
 ## 🚀 Quick start
 
