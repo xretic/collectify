@@ -85,7 +85,10 @@
         "cityUnknown": "Unknown city.",
         "cannotFollowSelf": "You cannot follow yourself.",
         "generic": "Something went wrong. Please try again.",
-        "network": "Network error. Check your connection."
+        "network": "Network error. Check your connection.",
+        "linkInvalid": "This link is invalid or has already been used.",
+        "linkExpired": "This link has expired. Request a new one.",
+        "emailNotConfigured": "Sending emails is not available right now."
     },
     "validation": {
         "required": "This field is required.",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "Select the original report for a duplicate verdict."
     },
     "meta": {
-        "description": "Create your interesting collection with us.",
+        "description": "Discover, save and share collections of books, games, movies, places and gear. Follow people with great taste and build your own collections on Collectify - free.",
         "privacyDescription": "How Collectify collects, uses, and stores your data.",
-        "userDescription": "{name}'s collections on Collectify.",
+        "userDescription": "Collections by {name} (@{username}) on Collectify.",
         "pages": {
             "login": "Login",
             "register": "Register",
@@ -135,8 +138,18 @@
             "management": "Management",
             "privacyPolicy": "Privacy Policy",
             "collection": "Collection",
-            "userNotFound": "User not found"
-        }
+            "userNotFound": "User not found",
+            "forgotPassword": "Reset password",
+            "resetPassword": "New password",
+            "verifyEmail": "Confirm email"
+        },
+        "title": "Collectify - Collections of anything, curated by people with taste",
+        "keywords": "collections, curated lists, top lists, book lists, game collections, movie lists, travel ideas, wishlist, moodboard, Pinterest alternative",
+        "categoryTitle": "Best {category} collections",
+        "categoryDescription": "Discover the best {category} collections curated by real people. Save your favorites, follow collectors and share your own on Collectify.",
+        "tagTitle": "#{tag} collections",
+        "tagDescription": "Collections tagged #{tag}, curated by people on Collectify. Save, follow and share what you love.",
+        "collectionLead": "{count, plural, one {# item} other {# items}} in {category} by {name}."
     },
     "languages": {
         "label": "Language"
@@ -161,7 +174,40 @@
             "oauthState": "The sign-in link expired. Please try again.",
             "oauthFailed": "Sign-in with the provider failed. Please try again.",
             "accountBanned": "This account is banned."
-        }
+        },
+        "forgotPassword": "Forgot password?",
+        "forgot": {
+            "title": "Reset password",
+            "subtitle": "Enter the email of your account and we’ll send you a link to set a new password.",
+            "submit": "Send link",
+            "sending": "Sending…",
+            "sentTitle": "Check your inbox",
+            "sent": "If an account exists for <strong>{email}</strong>, a link to set a new password is on its way. It works for {hours, plural, one {# hour} other {# hours}}.",
+            "notReceived": "Nothing after a few minutes? Check your spam folder or <link>try again</link>.",
+            "backToLogin": "Back to login"
+        },
+        "reset": {
+            "title": "New password",
+            "subtitle": "Choose a new password. You’ll be signed out on other devices.",
+            "password": "New password",
+            "confirmPassword": "Repeat password",
+            "submit": "Save and sign in",
+            "saving": "Saving…",
+            "done": "Password updated. Welcome back!",
+            "missingToken": "This link is incomplete. Open it from the email again or request a new one.",
+            "requestNew": "Request a new link"
+        },
+        "verify": {
+            "verifying": "Confirming your email…",
+            "successTitle": "Email confirmed",
+            "success": "Thanks! You can now always recover your account by email.",
+            "failedTitle": "The link didn’t work",
+            "continue": "Go to Collectify",
+            "resend": "Send a new link",
+            "signInToResend": "Sign in to get a new link",
+            "sent": "A new link is on its way to {email}."
+        },
+        "continueWith": "Continue with {provider}"
     },
     "common": {
         "cancel": "Cancel",
@@ -451,7 +497,9 @@
         "unheart": "Remove heart",
         "heart": "Heart this comment",
         "heartLabel": "Heart comment",
-        "heartedBy": "♥ by {username}"
+        "heartedBy": "♥ by {username}",
+        "guestPlaceholder": "Add a comment…",
+        "showAll": "Show all {count, plural, one {# comment} other {# comments}}"
     },
     "notifications": {
         "unread": "Unread",
@@ -588,7 +636,8 @@
         "hint": "Group your saved collections into boards.",
         "newName": "New board name",
         "create": "Create board",
-        "draggableTab": "draggable tab"
+        "draggableTab": "draggable tab",
+        "savedToAll": "Saved to “All saved”"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "The report is about the account itself.",
-            "deletedSince": "Deleted since — showing the snapshot taken at report time",
+            "deletedSince": "Deleted since - showing the snapshot taken at report time",
             "posted": "Posted {date}",
             "verdict": "Verdict",
             "reviewedBy": "Reviewed by",
@@ -776,7 +825,8 @@
             "popular": "Popular",
             "newest": "Newest",
             "old": "Oldest"
-        }
+        },
+        "filters": "Filters"
     },
     "collection": {
         "like": "Like",
@@ -806,7 +856,11 @@
         "private": "Private",
         "deleteAsModerator": "Delete as moderator",
         "deleteCollection": "Delete collection",
-        "actions": "Collection actions"
+        "actions": "Collection actions",
+        "related": {
+            "title": "More like this",
+            "more": "More in {category}"
+        }
     },
     "nav": {
         "home": "Home",
@@ -823,7 +877,13 @@
         "returnToAdmin": "Return to admin",
         "logout": "Logout",
         "startTyping": "Start typing a username",
-        "impersonating": "You are signed in as <strong>@{username}</strong>. Use “Return to admin” in the account menu to go back."
+        "impersonating": "You are signed in as <strong>@{username}</strong>. Use “Return to admin” in the account menu to go back.",
+        "verifyEmail": "Confirm your email so you can always recover your account. We sent a link to <strong>{email}</strong>.",
+        "resendLink": "Send again",
+        "linkSent": "Sent! Check your inbox.",
+        "dismiss": "Dismiss",
+        "mobileNav": "Main navigation",
+        "search": "Search"
     },
     "footer": {
         "privacyPolicy": "Privacy Policy"
@@ -861,7 +921,8 @@
             "moreLike": "More like “{name}”",
             "label": "Feeds",
             "items": "feeds"
-        }
+        },
+        "popularNow": "Popular right now"
     },
     "myCollections": {
         "title": "My collections",
@@ -892,14 +953,14 @@
             "items": {
                 "email": "Your email address (used to sign in and identify your account)",
                 "names": "A username and full name you choose",
-                "password": "A password (stored as a secure hash — we never store your password in plain text), unless you sign up via GitHub or Google, in which case we store a linked account ID instead",
+                "password": "A password (stored as a secure hash - we never store your password in plain text), unless you sign up via GitHub or Google, in which case we store a linked account ID instead",
                 "profile": "Optional profile info you add: avatar image, banner image, bio/description, country and city, and date of birth",
                 "content": "Content you create while using the app: collections, items, comments, likes, follows, messages, and notifications"
             }
         },
         "why": {
             "title": "Why we collect it",
-            "text": "Your data is used to create and manage your account, authenticate you when you log in, keep you signed in between visits (session management), and to provide the core features of the app — collections, following other users, comments, likes, and messaging."
+            "text": "Your data is used to create and manage your account, authenticate you when you log in, keep you signed in between visits (session management), and to provide the core features of the app - collections, following other users, comments, likes, and messaging."
         },
         "location": {
             "title": "Location and date of birth",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "Where your data is stored",
-            "text": "The app is hosted on Vercel. Account and content data is stored in our database. Uploaded images (avatars, banners, item images) are stored with our media hosting provider, Uploadcare."
+            "text": "The app is hosted on Vercel. Account and content data is stored in our database. Uploaded images (avatars, banners, item images) are stored with our media hosting provider, Uploadcare. Account emails (password reset and email confirmation links) are sent through our email provider, Resend, which receives your email address and name for that purpose only."
         },
         "moderation": {
             "title": "Reports and moderation",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "Manage"
+    },
+    "emails": {
+        "greeting": "Hi {name},",
+        "linkCaption": "If the button doesn’t work, copy this link into your browser:",
+        "footer": "You’re getting this email because it is linked to a Collectify account.",
+        "passwordReset": {
+            "subject": "Reset your Collectify password",
+            "preheader": "Set a new password in one click.",
+            "heading": "Reset your password",
+            "intro": "Someone (hopefully you) asked to reset the password of your Collectify account. Click the button to choose a new one.",
+            "button": "Set a new password",
+            "expires": "The link works once and expires in {hours, plural, one {# hour} other {# hours}}.",
+            "ignore": "Didn’t ask for this? Just ignore this email - your password stays the same."
+        },
+        "verification": {
+            "subject": "Confirm your email for Collectify",
+            "preheader": "One click and your account is secured.",
+            "heading": "Confirm your email",
+            "intro": "Welcome to Collectify! Confirm your email so you can always get back into your account.",
+            "button": "Confirm email",
+            "expires": "The link expires in {days, plural, one {# day} other {# days}}.",
+            "ignore": "Didn’t sign up? Just ignore this email."
+        }
+    },
+    "share": {
+        "label": "Share",
+        "copyLink": "Copy link",
+        "copied": "Link copied",
+        "copyFailed": "Couldn’t copy the link",
+        "more": "More…",
+        "collectionText": "“{name}” on Collectify",
+        "profileText": "{name} on Collectify"
+    },
+    "og": {
+        "tagline": "Curate what you love. Share it with everyone.",
+        "siteStats": "Collections of anything: books, games, places, gear",
+        "profile": "Profile",
+        "items": "{count, plural, one {# item} other {# items}}",
+        "likes": "{count, plural, one {{formatted} like} other {{formatted} likes}}",
+        "collections": "{count, plural, one {# collection} other {# collections}}",
+        "followers": "{count, plural, one {{formatted} follower} other {{formatted} followers}}"
+    },
+    "authPrompt": {
+        "close": "Close",
+        "titles": {
+            "like": "Loved it? Let the author know",
+            "save": "Save it for later",
+            "comment": "Join the conversation",
+            "follow": "Follow collectors you like",
+            "message": "Start a conversation",
+            "report": "Sign in to report",
+            "create": "Start your own collection"
+        },
+        "subtitle": "Create a free account in seconds to save collections, follow people and build your own.",
+        "email": "Sign up with email",
+        "haveAccount": "Already have an account? <link>Log in</link>"
+    },
+    "search": {
+        "open": "Search",
+        "placeholder": "Search collections, tags and people",
+        "close": "Close",
+        "recent": "Recent",
+        "clearRecent": "Clear",
+        "hint": "Tip: press / or ⌘K anywhere to search.",
+        "tagCount": "{count, plural, one {# collection} other {# collections}}",
+        "nothing": "Nothing found for “{query}”.",
+        "showAll": "All collections with “{query}”",
+        "sections": {
+            "collections": "Collections",
+            "tags": "Tags",
+            "people": "People"
+        },
+        "categories": "Browse categories"
+    },
+    "landing": {
+        "title": "Curate what you love. Share it with everyone.",
+        "subtitle": "Collections of anything - books, games, places, gear - made by people with great taste.",
+        "start": "Start collecting - it’s free",
+        "explore": "Explore collections",
+        "points": {
+            "save": "Save what inspires you to your own boards",
+            "follow": "Follow people with great taste",
+            "create": "Build and share collections of anything"
+        },
+        "browse": "Browse by category",
+        "categoriesLabel": "categories"
     }
 }

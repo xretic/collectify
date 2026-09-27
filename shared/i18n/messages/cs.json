@@ -85,7 +85,10 @@
         "cityUnknown": "Neznámé město.",
         "cannotFollowSelf": "Nemůžete sledovat sami sebe.",
         "generic": "Něco se pokazilo. Zkuste to prosím znovu.",
-        "network": "Chyba sítě. Zkontrolujte připojení."
+        "network": "Chyba sítě. Zkontrolujte připojení.",
+        "linkInvalid": "Tento odkaz je neplatný nebo už byl použit.",
+        "linkExpired": "Platnost odkazu vypršela. Požádejte o nový.",
+        "emailNotConfigured": "Odesílání e-mailů teď není k dispozici."
     },
     "validation": {
         "required": "Toto pole je povinné.",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "U verdiktu „duplikát“ vyberte původní nahlášení."
     },
     "meta": {
-        "description": "Vytvořte si s námi zajímavou kolekci.",
+        "description": "Objevujte, ukládejte a sdílejte sbírky knih, her, filmů, míst a vybavení. Sledujte lidi s dobrým vkusem a tvořte vlastní sbírky na Collectify - zdarma.",
         "privacyDescription": "Jak Collectify shromažďuje, používá a ukládá vaše data.",
-        "userDescription": "Kolekce uživatele {name} na Collectify.",
+        "userDescription": "Sbírky uživatele {name} (@{username}) na Collectify.",
         "pages": {
             "login": "Přihlášení",
             "register": "Registrace",
@@ -135,8 +138,18 @@
             "management": "Správa",
             "privacyPolicy": "Zásady ochrany osobních údajů",
             "collection": "Kolekce",
-            "userNotFound": "Uživatel nenalezen"
-        }
+            "userNotFound": "Uživatel nenalezen",
+            "forgotPassword": "Obnovení hesla",
+            "resetPassword": "Nové heslo",
+            "verifyEmail": "Potvrzení e-mailu"
+        },
+        "title": "Collectify - sbírky čehokoli od lidí s dobrým vkusem",
+        "keywords": "sbírky, seznamy, žebříčky, seznam knih, sbírka her, seznam filmů, tipy na cesty, wishlist, moodboard, alternativa Pinterestu",
+        "categoryTitle": "Nejlepší sbírky: {category}",
+        "categoryDescription": "Objevte nejlepší sbírky v kategorii {category} od skutečných lidí. Ukládejte oblíbené, sledujte sběratele a sdílejte vlastní na Collectify.",
+        "tagTitle": "Sbírky #{tag}",
+        "tagDescription": "Sbírky se štítkem #{tag} od lidí na Collectify. Ukládejte, sledujte a sdílejte, co máte rádi.",
+        "collectionLead": "{count, plural, one {# položka} few {# položky} many {# položky} other {# položek}} v kategorii {category} od {name}."
     },
     "languages": {
         "label": "Jazyk"
@@ -161,7 +174,40 @@
             "oauthState": "Platnost přihlašovacího odkazu vypršela. Zkuste to prosím znovu.",
             "oauthFailed": "Přihlášení přes poskytovatele selhalo. Zkuste to prosím znovu.",
             "accountBanned": "Tento účet je zablokován."
-        }
+        },
+        "forgotPassword": "Zapomenuté heslo?",
+        "forgot": {
+            "title": "Obnovení hesla",
+            "subtitle": "Zadejte e-mail svého účtu a pošleme vám odkaz pro nastavení nového hesla.",
+            "submit": "Poslat odkaz",
+            "sending": "Odesílání…",
+            "sentTitle": "Zkontrolujte schránku",
+            "sent": "Pokud existuje účet pro <strong>{email}</strong>, odkaz pro nastavení nového hesla je na cestě. Platí {hours, plural, one {# hodinu} few {# hodiny} many {# hodiny} other {# hodin}}.",
+            "notReceived": "Nic nepřišlo? Zkontrolujte spam nebo <link>to zkuste znovu</link>.",
+            "backToLogin": "Zpět na přihlášení"
+        },
+        "reset": {
+            "title": "Nové heslo",
+            "subtitle": "Zvolte nové heslo. Na ostatních zařízeních budete odhlášeni.",
+            "password": "Nové heslo",
+            "confirmPassword": "Zopakujte heslo",
+            "submit": "Uložit a přihlásit se",
+            "saving": "Ukládání…",
+            "done": "Heslo změněno. Vítejte zpět!",
+            "missingToken": "Odkaz je neúplný. Otevřete ho znovu z e-mailu nebo požádejte o nový.",
+            "requestNew": "Požádat o nový odkaz"
+        },
+        "verify": {
+            "verifying": "Potvrzujeme váš e-mail…",
+            "successTitle": "E-mail potvrzen",
+            "success": "Děkujeme! Svůj účet teď můžete vždy obnovit přes e-mail.",
+            "failedTitle": "Odkaz nefungoval",
+            "continue": "Přejít do Collectify",
+            "resend": "Poslat nový odkaz",
+            "signInToResend": "Pro nový odkaz se přihlaste",
+            "sent": "Nový odkaz je na cestě na {email}."
+        },
+        "continueWith": "Pokračovat přes {provider}"
     },
     "common": {
         "cancel": "Zrušit",
@@ -451,7 +497,9 @@
         "unheart": "Odebrat srdíčko",
         "heart": "Dát komentáři srdíčko",
         "heartLabel": "Srdíčko komentáři",
-        "heartedBy": "♥ od {username}"
+        "heartedBy": "♥ od {username}",
+        "guestPlaceholder": "Přidat komentář…",
+        "showAll": "Zobrazit {count, plural, one {# komentář} few {všechny # komentáře} many {všech # komentáře} other {všech # komentářů}}"
     },
     "notifications": {
         "unread": "Nepřečtené",
@@ -588,7 +636,8 @@
         "hint": "Seskupte uložené kolekce do nástěnek.",
         "newName": "Název nové nástěnky",
         "create": "Vytvořit nástěnku",
-        "draggableTab": "přetahovatelná karta"
+        "draggableTab": "přetahovatelná karta",
+        "savedToAll": "Uloženo do „Vše uložené“"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "Nahlášení se týká samotného účtu.",
-            "deletedSince": "Mezitím smazáno — zobrazuje se snímek z doby nahlášení",
+            "deletedSince": "Mezitím smazáno - zobrazuje se snímek z doby nahlášení",
             "posted": "Zveřejněno {date}",
             "verdict": "Verdikt",
             "reviewedBy": "Posoudil(a)",
@@ -776,7 +825,8 @@
             "popular": "Oblíbené",
             "newest": "Nejnovější",
             "old": "Nejstarší"
-        }
+        },
+        "filters": "Filtry"
     },
     "collection": {
         "like": "Líbí se mi",
@@ -806,7 +856,11 @@
         "private": "Soukromá",
         "deleteAsModerator": "Smazat jako moderátor",
         "deleteCollection": "Smazat kolekci",
-        "actions": "Akce kolekce"
+        "actions": "Akce kolekce",
+        "related": {
+            "title": "Více podobných",
+            "more": "Další v kategorii {category}"
+        }
     },
     "nav": {
         "home": "Domů",
@@ -823,7 +877,13 @@
         "returnToAdmin": "Zpět k administrátorovi",
         "logout": "Odhlásit se",
         "startTyping": "Začněte psát uživatelské jméno",
-        "impersonating": "Jste přihlášeni jako <strong>@{username}</strong>. Pro návrat použijte „Zpět k administrátorovi“ v menu účtu."
+        "impersonating": "Jste přihlášeni jako <strong>@{username}</strong>. Pro návrat použijte „Zpět k administrátorovi“ v menu účtu.",
+        "verifyEmail": "Potvrďte svůj e-mail, abyste mohli účet vždy obnovit. Odkaz jsme poslali na <strong>{email}</strong>.",
+        "resendLink": "Poslat znovu",
+        "linkSent": "Odesláno! Zkontrolujte schránku.",
+        "dismiss": "Zavřít",
+        "mobileNav": "Hlavní navigace",
+        "search": "Hledat"
     },
     "footer": {
         "privacyPolicy": "Ochrana osobních údajů"
@@ -861,7 +921,8 @@
             "moreLike": "Více jako „{name}“",
             "label": "Kanály",
             "items": "kanály"
-        }
+        },
+        "popularNow": "Právě populární"
     },
     "myCollections": {
         "title": "Moje kolekce",
@@ -892,14 +953,14 @@
             "items": {
                 "email": "Vaši e-mailovou adresu (slouží k přihlášení a identifikaci účtu)",
                 "names": "Uživatelské jméno a celé jméno, které si zvolíte",
-                "password": "Heslo (uložené jako bezpečný hash — heslo nikdy neukládáme v čitelné podobě), ledaže se zaregistrujete přes GitHub nebo Google; pak místo něj ukládáme ID propojeného účtu",
+                "password": "Heslo (uložené jako bezpečný hash - heslo nikdy neukládáme v čitelné podobě), ledaže se zaregistrujete přes GitHub nebo Google; pak místo něj ukládáme ID propojeného účtu",
                 "profile": "Nepovinné údaje profilu, které přidáte: avatar, banner, bio/popis, zemi a město a datum narození",
                 "content": "Obsah, který v aplikaci vytvoříte: kolekce, položky, komentáře, lajky, sledování, zprávy a oznámení"
             }
         },
         "why": {
             "title": "Proč je shromažďujeme",
-            "text": "Vaše údaje slouží k vytvoření a správě účtu, k ověření při přihlášení, k udržení přihlášení mezi návštěvami (správa relací) a k poskytování hlavních funkcí aplikace — kolekcí, sledování ostatních uživatelů, komentářů, lajků a zpráv."
+            "text": "Vaše údaje slouží k vytvoření a správě účtu, k ověření při přihlášení, k udržení přihlášení mezi návštěvami (správa relací) a k poskytování hlavních funkcí aplikace - kolekcí, sledování ostatních uživatelů, komentářů, lajků a zpráv."
         },
         "location": {
             "title": "Poloha a datum narození",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "Kde jsou vaše data uložena",
-            "text": "Aplikace běží na Vercelu. Údaje o účtech a obsahu jsou uloženy v naší databázi. Nahrané obrázky (avatary, bannery, obrázky položek) ukládá náš poskytovatel hostingu médií Uploadcare."
+            "text": "Aplikace běží na Vercelu. Údaje o účtech a obsahu jsou uloženy v naší databázi. Nahrané obrázky (avatary, bannery, obrázky položek) ukládá náš poskytovatel hostingu médií Uploadcare. Účetní e-maily (odkazy pro obnovení hesla a potvrzení e-mailu) odesíláme přes našeho poskytovatele e-mailů Resend, který k tomu dostává pouze vaši e-mailovou adresu a jméno."
         },
         "moderation": {
             "title": "Nahlášení a moderace",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "Spravovat"
+    },
+    "emails": {
+        "greeting": "Dobrý den, {name},",
+        "linkCaption": "Pokud tlačítko nefunguje, zkopírujte tento odkaz do prohlížeče:",
+        "footer": "Tento e-mail dostáváte, protože je propojený s účtem Collectify.",
+        "passwordReset": {
+            "subject": "Obnovení hesla do Collectify",
+            "preheader": "Nastavte si nové heslo jedním kliknutím.",
+            "heading": "Obnovení hesla",
+            "intro": "Někdo (snad vy) požádal o obnovení hesla k vašemu účtu Collectify. Klikněte na tlačítko a zvolte nové.",
+            "button": "Nastavit nové heslo",
+            "expires": "Odkaz funguje jednou a platí {hours, plural, one {# hodinu} few {# hodiny} many {# hodiny} other {# hodin}}.",
+            "ignore": "Nežádali jste o to? E-mail ignorujte - heslo zůstane stejné."
+        },
+        "verification": {
+            "subject": "Potvrďte svůj e-mail pro Collectify",
+            "preheader": "Jedno kliknutí a váš účet je zabezpečený.",
+            "heading": "Potvrďte svůj e-mail",
+            "intro": "Vítejte v Collectify! Potvrďte svůj e-mail, abyste se do účtu vždy dostali zpět.",
+            "button": "Potvrdit e-mail",
+            "expires": "Odkaz platí {days, plural, one {# den} few {# dny} many {# dne} other {# dní}}.",
+            "ignore": "Neregistrovali jste se? E-mail ignorujte."
+        }
+    },
+    "share": {
+        "label": "Sdílet",
+        "copyLink": "Kopírovat odkaz",
+        "copied": "Odkaz zkopírován",
+        "copyFailed": "Odkaz se nepodařilo zkopírovat",
+        "more": "Další…",
+        "collectionText": "„{name}“ na Collectify",
+        "profileText": "{name} na Collectify"
+    },
+    "og": {
+        "tagline": "Sbírejte, co máte rádi. Sdílejte to se všemi.",
+        "siteStats": "Sbírky čehokoli: knihy, hry, místa, vybavení",
+        "profile": "Profil",
+        "items": "{count, plural, one {# položka} few {# položky} many {# položky} other {# položek}}",
+        "likes": "{count, plural, one {{formatted} lajk} few {{formatted} lajky} many {{formatted} lajku} other {{formatted} lajků}}",
+        "collections": "{count, plural, one {# sbírka} few {# sbírky} many {# sbírky} other {# sbírek}}",
+        "followers": "{count, plural, one {{formatted} sledující} few {{formatted} sledující} many {{formatted} sledujícího} other {{formatted} sledujících}}"
+    },
+    "authPrompt": {
+        "close": "Zavřít",
+        "titles": {
+            "like": "Líbí se vám? Dejte vědět autorovi",
+            "save": "Uložte si to na později",
+            "comment": "Zapojte se do diskuse",
+            "follow": "Sledujte sběratele, které máte rádi",
+            "message": "Začněte konverzaci",
+            "report": "Pro nahlášení se přihlaste",
+            "create": "Založte vlastní sbírku"
+        },
+        "subtitle": "Vytvořte si za pár sekund účet zdarma a ukládejte sbírky, sledujte lidi a tvořte vlastní.",
+        "email": "Registrovat se e-mailem",
+        "haveAccount": "Už máte účet? <link>Přihlaste se</link>"
+    },
+    "search": {
+        "open": "Hledat",
+        "placeholder": "Hledat sbírky, štítky a lidi",
+        "close": "Zavřít",
+        "recent": "Nedávné",
+        "clearRecent": "Vymazat",
+        "hint": "Tip: kdekoli stiskněte / nebo ⌘K a hledejte.",
+        "tagCount": "{count, plural, one {# sbírka} few {# sbírky} many {# sbírky} other {# sbírek}}",
+        "nothing": "Pro „{query}“ nebylo nic nalezeno.",
+        "showAll": "Všechny sbírky s „{query}“",
+        "sections": {
+            "collections": "Sbírky",
+            "tags": "Štítky",
+            "people": "Lidé"
+        },
+        "categories": "Procházet kategorie"
+    },
+    "landing": {
+        "title": "Sbírejte, co máte rádi. Sdílejte to se všemi.",
+        "subtitle": "Sbírky čehokoli - knihy, hry, místa, vybavení - od lidí s dobrým vkusem.",
+        "start": "Začít sbírat - zdarma",
+        "explore": "Prozkoumat sbírky",
+        "points": {
+            "save": "Ukládejte si inspiraci na vlastní nástěnky",
+            "follow": "Sledujte lidi s dobrým vkusem",
+            "create": "Tvořte a sdílejte sbírky čehokoli"
+        },
+        "browse": "Procházet podle kategorií",
+        "categoriesLabel": "kategorie"
     }
 }

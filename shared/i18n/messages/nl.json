@@ -85,7 +85,10 @@
         "cityUnknown": "Onbekende stad.",
         "cannotFollowSelf": "Je kunt jezelf niet volgen.",
         "generic": "Er ging iets mis. Probeer het opnieuw.",
-        "network": "Netwerkfout. Controleer je verbinding."
+        "network": "Netwerkfout. Controleer je verbinding.",
+        "linkInvalid": "Deze link is ongeldig of al gebruikt.",
+        "linkExpired": "Deze link is verlopen. Vraag een nieuwe aan.",
+        "emailNotConfigured": "E-mails versturen is nu niet mogelijk."
     },
     "validation": {
         "required": "Dit veld is verplicht.",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "Kies bij het oordeel ‘duplicaat’ de oorspronkelijke melding."
     },
     "meta": {
-        "description": "Maak samen met ons je interessante collectie.",
+        "description": "Ontdek, bewaar en deel collecties van boeken, games, films, plekken en gear. Volg mensen met goede smaak en maak gratis je eigen collecties op Collectify.",
         "privacyDescription": "Hoe Collectify je gegevens verzamelt, gebruikt en bewaart.",
-        "userDescription": "Collecties van {name} op Collectify.",
+        "userDescription": "Collecties van {name} (@{username}) op Collectify.",
         "pages": {
             "login": "Inloggen",
             "register": "Registreren",
@@ -135,8 +138,18 @@
             "management": "Beheer",
             "privacyPolicy": "Privacybeleid",
             "collection": "Collectie",
-            "userNotFound": "Gebruiker niet gevonden"
-        }
+            "userNotFound": "Gebruiker niet gevonden",
+            "forgotPassword": "Wachtwoord herstellen",
+            "resetPassword": "Nieuw wachtwoord",
+            "verifyEmail": "E-mail bevestigen"
+        },
+        "title": "Collectify - Collecties van alles, samengesteld door mensen met smaak",
+        "keywords": "collecties, lijstjes, toplijsten, boekenlijsten, gamecollecties, filmlijsten, reisideeën, verlanglijst, moodboard, Pinterest-alternatief",
+        "categoryTitle": "De beste {category}-collecties",
+        "categoryDescription": "Ontdek de beste {category}-collecties, samengesteld door echte mensen. Bewaar je favorieten, volg verzamelaars en deel je eigen op Collectify.",
+        "tagTitle": "#{tag}-collecties",
+        "tagDescription": "Collecties met de tag #{tag}, samengesteld door mensen op Collectify. Bewaar, volg en deel waar je van houdt.",
+        "collectionLead": "{count, plural, one {# item} other {# items}} in {category} van {name}."
     },
     "languages": {
         "label": "Taal"
@@ -161,7 +174,40 @@
             "oauthState": "De inloglink is verlopen. Probeer het opnieuw.",
             "oauthFailed": "Inloggen via de provider is mislukt. Probeer het opnieuw.",
             "accountBanned": "Dit account is geblokkeerd."
-        }
+        },
+        "forgotPassword": "Wachtwoord vergeten?",
+        "forgot": {
+            "title": "Wachtwoord herstellen",
+            "subtitle": "Vul het e-mailadres van je account in en we sturen je een link om een nieuw wachtwoord in te stellen.",
+            "submit": "Link versturen",
+            "sending": "Versturen…",
+            "sentTitle": "Check je inbox",
+            "sent": "Als er een account bestaat voor <strong>{email}</strong>, is er een link onderweg om een nieuw wachtwoord in te stellen. Hij is {hours, plural, one {# uur} other {# uur}} geldig.",
+            "notReceived": "Na een paar minuten nog niets? Kijk in je spammap of <link>probeer het opnieuw</link>.",
+            "backToLogin": "Terug naar inloggen"
+        },
+        "reset": {
+            "title": "Nieuw wachtwoord",
+            "subtitle": "Kies een nieuw wachtwoord. Je wordt op andere apparaten uitgelogd.",
+            "password": "Nieuw wachtwoord",
+            "confirmPassword": "Herhaal wachtwoord",
+            "submit": "Opslaan en inloggen",
+            "saving": "Opslaan…",
+            "done": "Wachtwoord bijgewerkt. Welkom terug!",
+            "missingToken": "Deze link is onvolledig. Open hem opnieuw vanuit de e-mail of vraag een nieuwe aan.",
+            "requestNew": "Nieuwe link aanvragen"
+        },
+        "verify": {
+            "verifying": "Je e-mail wordt bevestigd…",
+            "successTitle": "E-mail bevestigd",
+            "success": "Bedankt! Je kunt je account nu altijd via e-mail herstellen.",
+            "failedTitle": "De link werkte niet",
+            "continue": "Naar Collectify",
+            "resend": "Nieuwe link versturen",
+            "signInToResend": "Log in om een nieuwe link te krijgen",
+            "sent": "Er is een nieuwe link onderweg naar {email}."
+        },
+        "continueWith": "Doorgaan met {provider}"
     },
     "common": {
         "cancel": "Annuleren",
@@ -451,7 +497,9 @@
         "unheart": "Hartje verwijderen",
         "heart": "Geef deze reactie een hartje",
         "heartLabel": "Hartje voor reactie",
-        "heartedBy": "♥ van {username}"
+        "heartedBy": "♥ van {username}",
+        "guestPlaceholder": "Voeg een reactie toe…",
+        "showAll": "{count, plural, one {# reactie tonen} other {Alle # reacties tonen}}"
     },
     "notifications": {
         "unread": "Ongelezen",
@@ -588,7 +636,8 @@
         "hint": "Groepeer je bewaarde collecties in borden.",
         "newName": "Naam nieuw bord",
         "create": "Bord maken",
-        "draggableTab": "versleepbaar tabblad"
+        "draggableTab": "versleepbaar tabblad",
+        "savedToAll": "Bewaard in ‘Alles bewaard’"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "De melding gaat over het account zelf.",
-            "deletedSince": "Inmiddels verwijderd — de momentopname van het moment van melden wordt getoond",
+            "deletedSince": "Inmiddels verwijderd - de momentopname van het moment van melden wordt getoond",
             "posted": "Geplaatst {date}",
             "verdict": "Oordeel",
             "reviewedBy": "Beoordeeld door",
@@ -776,7 +825,8 @@
             "popular": "Populair",
             "newest": "Nieuwste",
             "old": "Oudste"
-        }
+        },
+        "filters": "Filters"
     },
     "collection": {
         "like": "Leuk vinden",
@@ -806,7 +856,11 @@
         "private": "Privé",
         "deleteAsModerator": "Verwijderen als moderator",
         "deleteCollection": "Collectie verwijderen",
-        "actions": "Collectieacties"
+        "actions": "Collectieacties",
+        "related": {
+            "title": "Meer zoals deze",
+            "more": "Meer in {category}"
+        }
     },
     "nav": {
         "home": "Home",
@@ -823,7 +877,13 @@
         "returnToAdmin": "Terug naar beheerder",
         "logout": "Uitloggen",
         "startTyping": "Begin met typen van een gebruikersnaam",
-        "impersonating": "Je bent ingelogd als <strong>@{username}</strong>. Gebruik ‘Terug naar beheerder’ in het accountmenu om terug te gaan."
+        "impersonating": "Je bent ingelogd als <strong>@{username}</strong>. Gebruik ‘Terug naar beheerder’ in het accountmenu om terug te gaan.",
+        "verifyEmail": "Bevestig je e-mail zodat je je account altijd kunt herstellen. We hebben een link gestuurd naar <strong>{email}</strong>.",
+        "resendLink": "Opnieuw versturen",
+        "linkSent": "Verstuurd! Check je inbox.",
+        "dismiss": "Sluiten",
+        "mobileNav": "Hoofdnavigatie",
+        "search": "Zoeken"
     },
     "footer": {
         "privacyPolicy": "Privacybeleid"
@@ -861,7 +921,8 @@
             "moreLike": "Meer zoals ‘{name}’",
             "label": "Feeds",
             "items": "feeds"
-        }
+        },
+        "popularNow": "Nu populair"
     },
     "myCollections": {
         "title": "Mijn collecties",
@@ -892,14 +953,14 @@
             "items": {
                 "email": "Je e-mailadres (om in te loggen en je account te herkennen)",
                 "names": "Een gebruikersnaam en volledige naam die je zelf kiest",
-                "password": "Een wachtwoord (opgeslagen als veilige hash — we slaan je wachtwoord nooit als leesbare tekst op), tenzij je je registreert via GitHub of Google; dan slaan we in plaats daarvan de id van het gekoppelde account op",
+                "password": "Een wachtwoord (opgeslagen als veilige hash - we slaan je wachtwoord nooit als leesbare tekst op), tenzij je je registreert via GitHub of Google; dan slaan we in plaats daarvan de id van het gekoppelde account op",
                 "profile": "Optionele profielgegevens die je toevoegt: avatar, banner, bio/beschrijving, land en stad, en geboortedatum",
                 "content": "Inhoud die je in de app maakt: collecties, items, reacties, likes, volgers, berichten en meldingen"
             }
         },
         "why": {
             "title": "Waarom we ze verzamelen",
-            "text": "Je gegevens worden gebruikt om je account aan te maken en te beheren, je te verifiëren bij het inloggen, je tussen bezoeken ingelogd te houden (sessiebeheer) en de kernfuncties van de app te leveren — collecties, andere gebruikers volgen, reacties, likes en berichten."
+            "text": "Je gegevens worden gebruikt om je account aan te maken en te beheren, je te verifiëren bij het inloggen, je tussen bezoeken ingelogd te houden (sessiebeheer) en de kernfuncties van de app te leveren - collecties, andere gebruikers volgen, reacties, likes en berichten."
         },
         "location": {
             "title": "Locatie en geboortedatum",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "Waar je gegevens worden opgeslagen",
-            "text": "De app wordt gehost bij Vercel. Account- en inhoudsgegevens worden opgeslagen in onze database. Geüploade afbeeldingen (avatars, banners, itemafbeeldingen) worden opgeslagen bij onze mediahostingprovider, Uploadcare."
+            "text": "De app wordt gehost bij Vercel. Account- en inhoudsgegevens worden opgeslagen in onze database. Geüploade afbeeldingen (avatars, banners, itemafbeeldingen) worden opgeslagen bij onze mediahostingprovider, Uploadcare. Account-e-mails (links om je wachtwoord te herstellen en je e-mail te bevestigen) worden verstuurd via onze e-mailprovider Resend, die daarvoor alleen je e-mailadres en naam ontvangt."
         },
         "moderation": {
             "title": "Meldingen en moderatie",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "Beheren"
+    },
+    "emails": {
+        "greeting": "Hoi {name},",
+        "linkCaption": "Werkt de knop niet? Kopieer deze link naar je browser:",
+        "footer": "Je krijgt deze e-mail omdat hij gekoppeld is aan een Collectify-account.",
+        "passwordReset": {
+            "subject": "Herstel je Collectify-wachtwoord",
+            "preheader": "Stel met één klik een nieuw wachtwoord in.",
+            "heading": "Herstel je wachtwoord",
+            "intro": "Iemand (hopelijk jij) wil het wachtwoord van je Collectify-account herstellen. Klik op de knop om een nieuw te kiezen.",
+            "button": "Nieuw wachtwoord instellen",
+            "expires": "De link werkt één keer en verloopt over {hours, plural, one {# uur} other {# uur}}.",
+            "ignore": "Niet aangevraagd? Negeer deze e-mail gewoon - je wachtwoord blijft hetzelfde."
+        },
+        "verification": {
+            "subject": "Bevestig je e-mail voor Collectify",
+            "preheader": "Eén klik en je account is beveiligd.",
+            "heading": "Bevestig je e-mail",
+            "intro": "Welkom bij Collectify! Bevestig je e-mail zodat je altijd weer in je account komt.",
+            "button": "E-mail bevestigen",
+            "expires": "De link verloopt over {days, plural, one {# dag} other {# dagen}}.",
+            "ignore": "Niet aangemeld? Negeer deze e-mail gewoon."
+        }
+    },
+    "share": {
+        "label": "Delen",
+        "copyLink": "Link kopiëren",
+        "copied": "Link gekopieerd",
+        "copyFailed": "Kon de link niet kopiëren",
+        "more": "Meer…",
+        "collectionText": "‘{name}’ op Collectify",
+        "profileText": "{name} op Collectify"
+    },
+    "og": {
+        "tagline": "Verzamel waar je van houdt. Deel het met iedereen.",
+        "siteStats": "Collecties van alles: boeken, games, plekken, gear",
+        "profile": "Profiel",
+        "items": "{count, plural, one {# item} other {# items}}",
+        "likes": "{count, plural, one {{formatted} like} other {{formatted} likes}}",
+        "collections": "{count, plural, one {# collectie} other {# collecties}}",
+        "followers": "{count, plural, one {{formatted} volger} other {{formatted} volgers}}"
+    },
+    "authPrompt": {
+        "close": "Sluiten",
+        "titles": {
+            "like": "Mooi? Laat het de maker weten",
+            "save": "Bewaar het voor later",
+            "comment": "Doe mee aan het gesprek",
+            "follow": "Volg verzamelaars die je leuk vindt",
+            "message": "Begin een gesprek",
+            "report": "Log in om te melden",
+            "create": "Begin je eigen collectie"
+        },
+        "subtitle": "Maak in een paar seconden een gratis account om collecties te bewaren, mensen te volgen en je eigen te maken.",
+        "email": "Aanmelden met e-mail",
+        "haveAccount": "Heb je al een account? <link>Inloggen</link>"
+    },
+    "search": {
+        "open": "Zoeken",
+        "placeholder": "Zoek collecties, tags en mensen",
+        "close": "Sluiten",
+        "recent": "Recent",
+        "clearRecent": "Wissen",
+        "hint": "Tip: druk overal op / of ⌘K om te zoeken.",
+        "tagCount": "{count, plural, one {# collectie} other {# collecties}}",
+        "nothing": "Niets gevonden voor ‘{query}’.",
+        "showAll": "Alle collecties met ‘{query}’",
+        "sections": {
+            "collections": "Collecties",
+            "tags": "Tags",
+            "people": "Mensen"
+        },
+        "categories": "Blader door categorieën"
+    },
+    "landing": {
+        "title": "Verzamel waar je van houdt. Deel het met iedereen.",
+        "subtitle": "Collecties van alles - boeken, games, plekken, gear - van mensen met goede smaak.",
+        "start": "Begin gratis met verzamelen",
+        "explore": "Collecties ontdekken",
+        "points": {
+            "save": "Bewaar wat je inspireert op je eigen borden",
+            "follow": "Volg mensen met goede smaak",
+            "create": "Maak en deel collecties van alles"
+        },
+        "browse": "Bladeren per categorie",
+        "categoriesLabel": "categorieën"
     }
 }

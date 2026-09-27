@@ -23,7 +23,7 @@ export function SanctionList({ sanctions }: { sanctions: ActiveSanction[] }) {
                     <span>
                         {formatSanction(sanction)}
                         {sanction.reason && (
-                            <span className={styles.reason}> — {sanction.reason}</span>
+                            <span className={styles.reason}> - {sanction.reason}</span>
                         )}
                     </span>
 

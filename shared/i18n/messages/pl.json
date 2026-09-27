@@ -85,7 +85,10 @@
         "cityUnknown": "Nieznane miasto.",
         "cannotFollowSelf": "Nie możesz obserwować samego siebie.",
         "generic": "Coś poszło nie tak. Spróbuj ponownie.",
-        "network": "Błąd sieci. Sprawdź połączenie."
+        "network": "Błąd sieci. Sprawdź połączenie.",
+        "linkInvalid": "Ten link jest nieprawidłowy lub został już użyty.",
+        "linkExpired": "Ten link wygasł. Poproś o nowy.",
+        "emailNotConfigured": "Wysyłanie e-maili jest teraz niedostępne."
     },
     "validation": {
         "required": "To pole jest wymagane.",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "Przy werdykcie „duplikat” wybierz pierwotne zgłoszenie."
     },
     "meta": {
-        "description": "Twórz z nami ciekawe kolekcje.",
+        "description": "Odkrywaj, zapisuj i udostępniaj kolekcje książek, gier, filmów, miejsc i sprzętu. Obserwuj ludzi z dobrym gustem i twórz własne kolekcje w Collectify - za darmo.",
         "privacyDescription": "Jak Collectify zbiera, wykorzystuje i przechowuje Twoje dane.",
-        "userDescription": "Kolekcje użytkownika {name} w Collectify.",
+        "userDescription": "Kolekcje użytkownika {name} (@{username}) w Collectify.",
         "pages": {
             "login": "Logowanie",
             "register": "Rejestracja",
@@ -135,8 +138,18 @@
             "management": "Zarządzanie",
             "privacyPolicy": "Polityka prywatności",
             "collection": "Kolekcja",
-            "userNotFound": "Nie znaleziono użytkownika"
-        }
+            "userNotFound": "Nie znaleziono użytkownika",
+            "forgotPassword": "Resetowanie hasła",
+            "resetPassword": "Nowe hasło",
+            "verifyEmail": "Potwierdzenie e-maila"
+        },
+        "title": "Collectify - kolekcje czegokolwiek od ludzi z dobrym gustem",
+        "keywords": "kolekcje, listy, rankingi, listy książek, kolekcje gier, listy filmów, pomysły na podróż, lista życzeń, moodboard, alternatywa dla Pinteresta",
+        "categoryTitle": "Najlepsze kolekcje: {category}",
+        "categoryDescription": "Odkryj najlepsze kolekcje w kategorii {category} tworzone przez prawdziwych ludzi. Zapisuj ulubione, obserwuj kolekcjonerów i dziel się własnymi w Collectify.",
+        "tagTitle": "Kolekcje #{tag}",
+        "tagDescription": "Kolekcje z tagiem #{tag} tworzone przez ludzi w Collectify. Zapisuj, obserwuj i dziel się tym, co kochasz.",
+        "collectionLead": "{count, plural, one {# element} few {# elementy} many {# elementów} other {# elementu}} w kategorii {category} od {name}."
     },
     "languages": {
         "label": "Język"
@@ -161,7 +174,40 @@
             "oauthState": "Link logowania wygasł. Spróbuj ponownie.",
             "oauthFailed": "Logowanie przez dostawcę nie powiodło się. Spróbuj ponownie.",
             "accountBanned": "To konto jest zablokowane."
-        }
+        },
+        "forgotPassword": "Nie pamiętasz hasła?",
+        "forgot": {
+            "title": "Resetowanie hasła",
+            "subtitle": "Podaj e-mail swojego konta, a wyślemy ci link do ustawienia nowego hasła.",
+            "submit": "Wyślij link",
+            "sending": "Wysyłanie…",
+            "sentTitle": "Sprawdź skrzynkę",
+            "sent": "Jeśli istnieje konto dla <strong>{email}</strong>, link do ustawienia nowego hasła jest w drodze. Działa przez {hours, plural, one {# godzinę} few {# godziny} many {# godzin} other {# godziny}}.",
+            "notReceived": "Nic nie przyszło? Sprawdź spam lub <link>spróbuj ponownie</link>.",
+            "backToLogin": "Wróć do logowania"
+        },
+        "reset": {
+            "title": "Nowe hasło",
+            "subtitle": "Wybierz nowe hasło. Zostaniesz wylogowany na innych urządzeniach.",
+            "password": "Nowe hasło",
+            "confirmPassword": "Powtórz hasło",
+            "submit": "Zapisz i zaloguj się",
+            "saving": "Zapisywanie…",
+            "done": "Hasło zmienione. Witaj z powrotem!",
+            "missingToken": "Ten link jest niekompletny. Otwórz go ponownie z e-maila lub poproś o nowy.",
+            "requestNew": "Poproś o nowy link"
+        },
+        "verify": {
+            "verifying": "Potwierdzamy twój e-mail…",
+            "successTitle": "E-mail potwierdzony",
+            "success": "Dzięki! Teraz zawsze odzyskasz konto przez e-mail.",
+            "failedTitle": "Link nie zadziałał",
+            "continue": "Przejdź do Collectify",
+            "resend": "Wyślij nowy link",
+            "signInToResend": "Zaloguj się, aby dostać nowy link",
+            "sent": "Nowy link jest w drodze na {email}."
+        },
+        "continueWith": "Kontynuuj przez {provider}"
     },
     "common": {
         "cancel": "Anuluj",
@@ -451,7 +497,9 @@
         "unheart": "Usuń serduszko",
         "heart": "Daj serduszko temu komentarzowi",
         "heartLabel": "Serduszko dla komentarza",
-        "heartedBy": "♥ od {username}"
+        "heartedBy": "♥ od {username}",
+        "guestPlaceholder": "Dodaj komentarz…",
+        "showAll": "Pokaż {count, plural, one {# komentarz} few {wszystkie # komentarze} many {wszystkie # komentarzy} other {wszystkie # komentarza}}"
     },
     "notifications": {
         "unread": "Nieprzeczytane",
@@ -588,7 +636,8 @@
         "hint": "Grupuj zapisane kolekcje w tablice.",
         "newName": "Nazwa nowej tablicy",
         "create": "Utwórz tablicę",
-        "draggableTab": "karta do przeciągania"
+        "draggableTab": "karta do przeciągania",
+        "savedToAll": "Zapisano w „Wszystkie zapisane”"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "Zgłoszenie dotyczy samego konta.",
-            "deletedSince": "Usunięto w międzyczasie — widoczna kopia z chwili zgłoszenia",
+            "deletedSince": "Usunięto w międzyczasie - widoczna kopia z chwili zgłoszenia",
             "posted": "Opublikowano {date}",
             "verdict": "Werdykt",
             "reviewedBy": "Rozpatrzył(a)",
@@ -776,7 +825,8 @@
             "popular": "Popularne",
             "newest": "Najnowsze",
             "old": "Najstarsze"
-        }
+        },
+        "filters": "Filtry"
     },
     "collection": {
         "like": "Polub",
@@ -806,7 +856,11 @@
         "private": "Prywatna",
         "deleteAsModerator": "Usuń jako moderator",
         "deleteCollection": "Usuń kolekcję",
-        "actions": "Akcje kolekcji"
+        "actions": "Akcje kolekcji",
+        "related": {
+            "title": "Więcej podobnych",
+            "more": "Więcej w kategorii {category}"
+        }
     },
     "nav": {
         "home": "Start",
@@ -823,7 +877,13 @@
         "returnToAdmin": "Wróć do administratora",
         "logout": "Wyloguj się",
         "startTyping": "Zacznij wpisywać nazwę użytkownika",
-        "impersonating": "Jesteś zalogowany jako <strong>@{username}</strong>. Aby wrócić, użyj „Wróć do administratora” w menu konta."
+        "impersonating": "Jesteś zalogowany jako <strong>@{username}</strong>. Aby wrócić, użyj „Wróć do administratora” w menu konta.",
+        "verifyEmail": "Potwierdź e-mail, aby zawsze móc odzyskać konto. Wysłaliśmy link na <strong>{email}</strong>.",
+        "resendLink": "Wyślij ponownie",
+        "linkSent": "Wysłano! Sprawdź skrzynkę.",
+        "dismiss": "Zamknij",
+        "mobileNav": "Nawigacja główna",
+        "search": "Szukaj"
     },
     "footer": {
         "privacyPolicy": "Polityka prywatności"
@@ -861,7 +921,8 @@
             "moreLike": "Więcej podobnych do „{name}”",
             "label": "Kanały",
             "items": "kanały"
-        }
+        },
+        "popularNow": "Teraz popularne"
     },
     "myCollections": {
         "title": "Moje kolekcje",
@@ -892,14 +953,14 @@
             "items": {
                 "email": "Twój adres e-mail (służy do logowania i identyfikacji konta)",
                 "names": "Wybraną przez Ciebie nazwę użytkownika i imię i nazwisko",
-                "password": "Hasło (przechowywane jako bezpieczny hash — nigdy nie przechowujemy hasła w postaci jawnej), chyba że rejestrujesz się przez GitHub lub Google — wtedy zapisujemy identyfikator powiązanego konta",
+                "password": "Hasło (przechowywane jako bezpieczny hash - nigdy nie przechowujemy hasła w postaci jawnej), chyba że rejestrujesz się przez GitHub lub Google - wtedy zapisujemy identyfikator powiązanego konta",
                 "profile": "Opcjonalne dane profilu, które dodasz: awatar, baner, bio/opis, kraj i miasto oraz datę urodzenia",
                 "content": "Treści, które tworzysz w aplikacji: kolekcje, elementy, komentarze, polubienia, obserwacje, wiadomości i powiadomienia"
             }
         },
         "why": {
             "title": "Dlaczego je zbieramy",
-            "text": "Twoje dane służą do utworzenia konta i zarządzania nim, uwierzytelniania przy logowaniu, utrzymania zalogowania między wizytami (zarządzanie sesją) oraz do działania głównych funkcji aplikacji — kolekcji, obserwowania innych użytkowników, komentarzy, polubień i wiadomości."
+            "text": "Twoje dane służą do utworzenia konta i zarządzania nim, uwierzytelniania przy logowaniu, utrzymania zalogowania między wizytami (zarządzanie sesją) oraz do działania głównych funkcji aplikacji - kolekcji, obserwowania innych użytkowników, komentarzy, polubień i wiadomości."
         },
         "location": {
             "title": "Lokalizacja i data urodzenia",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "Gdzie przechowujemy Twoje dane",
-            "text": "Aplikacja jest hostowana w Vercel. Dane kont i treści są przechowywane w naszej bazie danych. Przesłane obrazy (awatary, banery, obrazy elementów) przechowuje nasz dostawca hostingu multimediów, Uploadcare."
+            "text": "Aplikacja jest hostowana w Vercel. Dane kont i treści są przechowywane w naszej bazie danych. Przesłane obrazy (awatary, banery, obrazy elementów) przechowuje nasz dostawca hostingu multimediów, Uploadcare. E-maile dotyczące konta (linki do resetu hasła i potwierdzenia adresu) wysyłamy przez naszego dostawcę poczty, Resend, który otrzymuje w tym celu tylko twój adres e-mail i imię."
         },
         "moderation": {
             "title": "Zgłoszenia i moderacja",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "Zarządzaj"
+    },
+    "emails": {
+        "greeting": "Cześć {name},",
+        "linkCaption": "Jeśli przycisk nie działa, skopiuj ten link do przeglądarki:",
+        "footer": "Otrzymujesz ten e-mail, ponieważ jest powiązany z kontem Collectify.",
+        "passwordReset": {
+            "subject": "Zresetuj hasło do Collectify",
+            "preheader": "Ustaw nowe hasło jednym kliknięciem.",
+            "heading": "Zresetuj hasło",
+            "intro": "Ktoś (mamy nadzieję, że ty) poprosił o zresetowanie hasła do twojego konta Collectify. Kliknij przycisk, aby wybrać nowe.",
+            "button": "Ustaw nowe hasło",
+            "expires": "Link działa tylko raz i wygasa za {hours, plural, one {# godzinę} few {# godziny} many {# godzin} other {# godziny}}.",
+            "ignore": "To nie ty? Po prostu zignoruj ten e-mail - hasło się nie zmieni."
+        },
+        "verification": {
+            "subject": "Potwierdź e-mail w Collectify",
+            "preheader": "Jedno kliknięcie i konto jest zabezpieczone.",
+            "heading": "Potwierdź swój e-mail",
+            "intro": "Witaj w Collectify! Potwierdź e-mail, aby zawsze móc wrócić do swojego konta.",
+            "button": "Potwierdź e-mail",
+            "expires": "Link wygasa za {days, plural, one {# dzień} few {# dni} many {# dni} other {# dnia}}.",
+            "ignore": "Nie zakładałeś konta? Zignoruj ten e-mail."
+        }
+    },
+    "share": {
+        "label": "Udostępnij",
+        "copyLink": "Kopiuj link",
+        "copied": "Link skopiowany",
+        "copyFailed": "Nie udało się skopiować linku",
+        "more": "Więcej…",
+        "collectionText": "„{name}” w Collectify",
+        "profileText": "{name} w Collectify"
+    },
+    "og": {
+        "tagline": "Zbieraj to, co kochasz. Dziel się tym ze wszystkimi.",
+        "siteStats": "Kolekcje czegokolwiek: książki, gry, miejsca, sprzęt",
+        "profile": "Profil",
+        "items": "{count, plural, one {# element} few {# elementy} many {# elementów} other {# elementu}}",
+        "likes": "{count, plural, one {{formatted} polubienie} few {{formatted} polubienia} many {{formatted} polubień} other {{formatted} polubienia}}",
+        "collections": "{count, plural, one {# kolekcja} few {# kolekcje} many {# kolekcji} other {# kolekcji}}",
+        "followers": "{count, plural, one {{formatted} obserwujący} few {{formatted} obserwujących} many {{formatted} obserwujących} other {{formatted} obserwującego}}"
+    },
+    "authPrompt": {
+        "close": "Zamknij",
+        "titles": {
+            "like": "Podoba się? Daj znać autorowi",
+            "save": "Zapisz na później",
+            "comment": "Dołącz do rozmowy",
+            "follow": "Obserwuj kolekcjonerów, których lubisz",
+            "message": "Rozpocznij rozmowę",
+            "report": "Zaloguj się, aby zgłosić",
+            "create": "Załóż własną kolekcję"
+        },
+        "subtitle": "Załóż darmowe konto w kilka sekund, aby zapisywać kolekcje, obserwować ludzi i tworzyć własne.",
+        "email": "Zarejestruj się przez e-mail",
+        "haveAccount": "Masz już konto? <link>Zaloguj się</link>"
+    },
+    "search": {
+        "open": "Szukaj",
+        "placeholder": "Szukaj kolekcji, tagów i ludzi",
+        "close": "Zamknij",
+        "recent": "Ostatnie",
+        "clearRecent": "Wyczyść",
+        "hint": "Wskazówka: naciśnij / lub ⌘K w dowolnym miejscu, aby szukać.",
+        "tagCount": "{count, plural, one {# kolekcja} few {# kolekcje} many {# kolekcji} other {# kolekcji}}",
+        "nothing": "Brak wyników dla „{query}”.",
+        "showAll": "Wszystkie kolekcje z „{query}”",
+        "sections": {
+            "collections": "Kolekcje",
+            "tags": "Tagi",
+            "people": "Ludzie"
+        },
+        "categories": "Przeglądaj kategorie"
+    },
+    "landing": {
+        "title": "Zbieraj to, co kochasz. Dziel się tym ze wszystkimi.",
+        "subtitle": "Kolekcje czegokolwiek - książki, gry, miejsca, sprzęt - od ludzi z dobrym gustem.",
+        "start": "Zacznij kolekcjonować za darmo",
+        "explore": "Przeglądaj kolekcje",
+        "points": {
+            "save": "Zapisuj inspiracje na własnych tablicach",
+            "follow": "Obserwuj ludzi z dobrym gustem",
+            "create": "Twórz i udostępniaj kolekcje czegokolwiek"
+        },
+        "browse": "Przeglądaj według kategorii",
+        "categoriesLabel": "kategorie"
     }
 }

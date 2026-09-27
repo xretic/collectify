@@ -85,7 +85,10 @@
         "cityUnknown": "不明な都市です。",
         "cannotFollowSelf": "自分自身をフォローすることはできません。",
         "generic": "問題が発生しました。もう一度お試しください。",
-        "network": "ネットワークエラーです。接続を確認してください。"
+        "network": "ネットワークエラーです。接続を確認してください。",
+        "linkInvalid": "このリンクは無効か、すでに使用されています。",
+        "linkExpired": "このリンクは期限切れです。新しいリンクをリクエストしてください。",
+        "emailNotConfigured": "現在メールを送信できません。"
     },
     "validation": {
         "required": "この項目は必須です。",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "「重複」の判定には元の通報を選択してください。"
     },
     "meta": {
-        "description": "あなただけの素敵なコレクションを作りましょう。",
+        "description": "本、ゲーム、映画、場所、ギアのコレクションを見つけて、保存して、シェアしよう。センスのいい人をフォローして、自分のコレクションも作れます。無料。",
         "privacyDescription": "Collectify がデータをどのように収集・利用・保存するか。",
-        "userDescription": "Collectify の {name} さんのコレクション。",
+        "userDescription": "Collectify での {name}（@{username}）のコレクション。",
         "pages": {
             "login": "ログイン",
             "register": "新規登録",
@@ -135,8 +138,18 @@
             "management": "管理",
             "privacyPolicy": "プライバシーポリシー",
             "collection": "コレクション",
-            "userNotFound": "ユーザーが見つかりません"
-        }
+            "userNotFound": "ユーザーが見つかりません",
+            "forgotPassword": "パスワードの再設定",
+            "resetPassword": "新しいパスワード",
+            "verifyEmail": "メールアドレスの確認"
+        },
+        "title": "Collectify - センスのいい人がまとめた、なんでもコレクション",
+        "keywords": "コレクション, まとめ, ランキング, おすすめ本, ゲームコレクション, 映画リスト, 旅行アイデア, ほしい物リスト, ムードボード, Pinterest 代替",
+        "categoryTitle": "人気の{category}コレクション",
+        "categoryDescription": "実在のユーザーがまとめた{category}のベストコレクション。お気に入りを保存して、コレクターをフォローし、自分のコレクションもシェアしよう。",
+        "tagTitle": "#{tag} のコレクション",
+        "tagDescription": "Collectify のユーザーがまとめた #{tag} タグのコレクション。好きなものを保存、フォロー、シェアしよう。",
+        "collectionLead": "{name} による{category}のコレクション（{count}件）。"
     },
     "languages": {
         "label": "言語"
@@ -161,7 +174,40 @@
             "oauthState": "ログインリンクの有効期限が切れました。もう一度お試しください。",
             "oauthFailed": "プロバイダーでのログインに失敗しました。もう一度お試しください。",
             "accountBanned": "このアカウントは停止されています。"
-        }
+        },
+        "forgotPassword": "パスワードをお忘れですか？",
+        "forgot": {
+            "title": "パスワードの再設定",
+            "subtitle": "アカウントのメールアドレスを入力してください。新しいパスワードを設定するリンクをお送りします。",
+            "submit": "リンクを送信",
+            "sending": "送信中…",
+            "sentTitle": "受信トレイを確認してください",
+            "sent": "<strong>{email}</strong> のアカウントが存在する場合、パスワード再設定用のリンクを送信しました。有効期限は{hours}時間です。",
+            "notReceived": "数分待っても届かない場合は、迷惑メールフォルダを確認するか<link>もう一度お試しください</link>。",
+            "backToLogin": "ログインに戻る"
+        },
+        "reset": {
+            "title": "新しいパスワード",
+            "subtitle": "新しいパスワードを設定してください。他のデバイスからはログアウトされます。",
+            "password": "新しいパスワード",
+            "confirmPassword": "パスワード（確認）",
+            "submit": "保存してログイン",
+            "saving": "保存中…",
+            "done": "パスワードを更新しました。おかえりなさい！",
+            "missingToken": "このリンクは不完全です。メールからもう一度開くか、新しいリンクをリクエストしてください。",
+            "requestNew": "新しいリンクをリクエスト"
+        },
+        "verify": {
+            "verifying": "メールアドレスを確認しています…",
+            "successTitle": "メールアドレスを確認しました",
+            "success": "ありがとうございます！これでいつでもメールでアカウントを復旧できます。",
+            "failedTitle": "リンクが機能しませんでした",
+            "continue": "Collectifyへ",
+            "resend": "新しいリンクを送信",
+            "signInToResend": "新しいリンクを受け取るにはログインしてください",
+            "sent": "{email} に新しいリンクを送信しました。"
+        },
+        "continueWith": "{provider}で続ける"
     },
     "common": {
         "cancel": "キャンセル",
@@ -451,7 +497,9 @@
         "unheart": "ハートを外す",
         "heart": "このコメントにハートを付ける",
         "heartLabel": "コメントにハート",
-        "heartedBy": "♥ {username}"
+        "heartedBy": "♥ {username}",
+        "guestPlaceholder": "コメントを追加…",
+        "showAll": "コメントを{count}件すべて表示"
     },
     "notifications": {
         "unread": "未読",
@@ -588,7 +636,8 @@
         "hint": "保存したコレクションをボードにまとめましょう。",
         "newName": "新しいボード名",
         "create": "ボードを作成",
-        "draggableTab": "ドラッグできるタブ"
+        "draggableTab": "ドラッグできるタブ",
+        "savedToAll": "「保存済み」に保存しました"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "この通報はアカウント自体に関するものです。",
-            "deletedSince": "その後削除されました — 通報時点のスナップショットを表示しています",
+            "deletedSince": "その後削除されました - 通報時点のスナップショットを表示しています",
             "posted": "{date} に投稿",
             "verdict": "判定",
             "reviewedBy": "審査者",
@@ -776,7 +825,8 @@
             "popular": "人気順",
             "newest": "新しい順",
             "old": "古い順"
-        }
+        },
+        "filters": "フィルター"
     },
     "collection": {
         "like": "いいね",
@@ -806,7 +856,11 @@
         "private": "非公開",
         "deleteAsModerator": "モデレーターとして削除",
         "deleteCollection": "コレクションを削除",
-        "actions": "コレクションの操作"
+        "actions": "コレクションの操作",
+        "related": {
+            "title": "似たコレクション",
+            "more": "{category}をもっと見る"
+        }
     },
     "nav": {
         "home": "ホーム",
@@ -823,7 +877,13 @@
         "returnToAdmin": "管理者に戻る",
         "logout": "ログアウト",
         "startTyping": "ユーザー名を入力してください",
-        "impersonating": "<strong>@{username}</strong> としてログインしています。戻るにはアカウントメニューの「管理者に戻る」を使ってください。"
+        "impersonating": "<strong>@{username}</strong> としてログインしています。戻るにはアカウントメニューの「管理者に戻る」を使ってください。",
+        "verifyEmail": "アカウントをいつでも復旧できるよう、メールアドレスを確認してください。<strong>{email}</strong> にリンクを送信しました。",
+        "resendLink": "再送信",
+        "linkSent": "送信しました！受信トレイを確認してください。",
+        "dismiss": "閉じる",
+        "mobileNav": "メインナビゲーション",
+        "search": "検索"
     },
     "footer": {
         "privacyPolicy": "プライバシーポリシー"
@@ -861,7 +921,8 @@
             "moreLike": "「{name}」に似たもの",
             "label": "フィード",
             "items": "フィード"
-        }
+        },
+        "popularNow": "今人気のコレクション"
     },
     "myCollections": {
         "title": "マイコレクション",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "データの保存場所",
-            "text": "アプリは Vercel でホストされています。アカウントとコンテンツのデータは当社のデータベースに保存されます。アップロードされた画像（アバター、バナー、アイテム画像）はメディアホスティングプロバイダーの Uploadcare に保存されます。"
+            "text": "アプリは Vercel でホストされています。アカウントとコンテンツのデータは当社のデータベースに保存されます。アップロードされた画像（アバター、バナー、アイテム画像）はメディアホスティングプロバイダーの Uploadcare に保存されます。アカウント関連のメール（パスワード再設定とメールアドレス確認のリンク）はメール配信サービスの Resend を通じて送信され、その目的に限りメールアドレスと名前が共有されます。"
         },
         "moderation": {
             "title": "通報とモデレーション",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "管理"
+    },
+    "emails": {
+        "greeting": "{name} さん",
+        "linkCaption": "ボタンが機能しない場合は、このリンクをブラウザにコピーしてください：",
+        "footer": "このメールは、Collectifyアカウントに登録されているアドレスにお送りしています。",
+        "passwordReset": {
+            "subject": "Collectifyのパスワード再設定",
+            "preheader": "ワンクリックで新しいパスワードを設定できます。",
+            "heading": "パスワードの再設定",
+            "intro": "Collectifyアカウントのパスワード再設定がリクエストされました。ボタンをクリックして新しいパスワードを設定してください。",
+            "button": "新しいパスワードを設定",
+            "expires": "このリンクは1回のみ有効で、{hours}時間後に期限切れになります。",
+            "ignore": "お心当たりがない場合は、このメールを無視してください。パスワードは変更されません。"
+        },
+        "verification": {
+            "subject": "Collectifyのメールアドレス確認",
+            "preheader": "ワンクリックでアカウントを保護できます。",
+            "heading": "メールアドレスを確認してください",
+            "intro": "Collectifyへようこそ！いつでもアカウントに戻れるよう、メールアドレスを確認してください。",
+            "button": "メールアドレスを確認",
+            "expires": "このリンクは{days}日後に期限切れになります。",
+            "ignore": "ご登録の覚えがない場合は、このメールを無視してください。"
+        }
+    },
+    "share": {
+        "label": "共有",
+        "copyLink": "リンクをコピー",
+        "copied": "リンクをコピーしました",
+        "copyFailed": "リンクをコピーできませんでした",
+        "more": "その他…",
+        "collectionText": "Collectify の「{name}」",
+        "profileText": "Collectify の {name}"
+    },
+    "og": {
+        "tagline": "好きなものを集めて、みんなとシェアしよう。",
+        "siteStats": "本、ゲーム、場所、ギア…なんでもコレクション",
+        "profile": "プロフィール",
+        "items": "{count}件のアイテム",
+        "likes": "いいね {formatted}件",
+        "collections": "{count}件のコレクション",
+        "followers": "フォロワー {formatted}人"
+    },
+    "authPrompt": {
+        "close": "閉じる",
+        "titles": {
+            "like": "気に入りましたか？作者に伝えましょう",
+            "save": "あとで見るために保存",
+            "comment": "会話に参加しよう",
+            "follow": "好きなコレクターをフォロー",
+            "message": "会話を始めましょう",
+            "report": "報告するにはログインしてください",
+            "create": "自分のコレクションを始めよう"
+        },
+        "subtitle": "無料アカウントを数秒で作成して、コレクションの保存、フォロー、自分のコレクション作りを始めましょう。",
+        "email": "メールで登録",
+        "haveAccount": "アカウントをお持ちですか？<link>ログイン</link>"
+    },
+    "search": {
+        "open": "検索",
+        "placeholder": "コレクション、タグ、ユーザーを検索",
+        "close": "閉じる",
+        "recent": "最近の検索",
+        "clearRecent": "クリア",
+        "hint": "ヒント：どこでも / または ⌘K で検索できます。",
+        "tagCount": "{count}件のコレクション",
+        "nothing": "「{query}」に一致する結果はありません。",
+        "showAll": "「{query}」を含むすべてのコレクション",
+        "sections": {
+            "collections": "コレクション",
+            "tags": "タグ",
+            "people": "ユーザー"
+        },
+        "categories": "カテゴリから探す"
+    },
+    "landing": {
+        "title": "好きなものを集めて、みんなとシェアしよう。",
+        "subtitle": "本、ゲーム、場所、ギア…センスのいい人たちが作った、なんでもコレクション。",
+        "start": "無料でコレクションを始める",
+        "explore": "コレクションを見る",
+        "points": {
+            "save": "気になったものを自分のボードに保存",
+            "follow": "センスのいい人をフォロー",
+            "create": "どんなものでもコレクションにしてシェア"
+        },
+        "browse": "カテゴリから探す",
+        "categoriesLabel": "カテゴリ"
     }
 }

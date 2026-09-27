@@ -85,7 +85,10 @@
         "cityUnknown": "Bilinmeyen şehir.",
         "cannotFollowSelf": "Kendinizi takip edemezsiniz.",
         "generic": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
-        "network": "Ağ hatası. Bağlantınızı kontrol edin."
+        "network": "Ağ hatası. Bağlantınızı kontrol edin.",
+        "linkInvalid": "Bu bağlantı geçersiz veya zaten kullanılmış.",
+        "linkExpired": "Bu bağlantının süresi doldu. Yenisini isteyin.",
+        "emailNotConfigured": "Şu anda e-posta gönderilemiyor."
     },
     "validation": {
         "required": "Bu alan zorunludur.",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "“Tekrar” kararı için asıl şikâyeti seçin."
     },
     "meta": {
-        "description": "İlginç koleksiyonunu bizimle oluştur.",
+        "description": "Kitap, oyun, film, mekân ve ekipman koleksiyonlarını keşfedin, kaydedin ve paylaşın. Zevk sahibi insanları takip edin ve Collectify’da ücretsiz olarak kendi koleksiyonlarınızı oluşturun.",
         "privacyDescription": "Collectify verilerinizi nasıl topluyor, kullanıyor ve saklıyor.",
-        "userDescription": "{name} kullanıcısının Collectify koleksiyonları.",
+        "userDescription": "{name} (@{username}) kullanıcısının Collectify koleksiyonları.",
         "pages": {
             "login": "Giriş yap",
             "register": "Kayıt ol",
@@ -135,8 +138,18 @@
             "management": "Yönetim",
             "privacyPolicy": "Gizlilik Politikası",
             "collection": "Koleksiyon",
-            "userNotFound": "Kullanıcı bulunamadı"
-        }
+            "userNotFound": "Kullanıcı bulunamadı",
+            "forgotPassword": "Şifre sıfırlama",
+            "resetPassword": "Yeni şifre",
+            "verifyEmail": "E-posta doğrulama"
+        },
+        "title": "Collectify - Zevk sahibi insanlardan her şeyin koleksiyonu",
+        "keywords": "koleksiyonlar, listeler, en iyiler, kitap listeleri, oyun koleksiyonları, film listeleri, seyahat fikirleri, istek listesi, moodboard, Pinterest alternatifi",
+        "categoryTitle": "En iyi {category} koleksiyonları",
+        "categoryDescription": "Gerçek insanların hazırladığı en iyi {category} koleksiyonlarını keşfedin. Favorilerinizi kaydedin, koleksiyoncuları takip edin ve kendinizinkini Collectify’da paylaşın.",
+        "tagTitle": "#{tag} koleksiyonları",
+        "tagDescription": "Collectify’daki insanların hazırladığı #{tag} etiketli koleksiyonlar. Sevdiklerinizi kaydedin, takip edin ve paylaşın.",
+        "collectionLead": "{name} tarafından {category} kategorisinde {count} öğe."
     },
     "languages": {
         "label": "Dil"
@@ -161,7 +174,40 @@
             "oauthState": "Giriş bağlantısının süresi doldu. Lütfen tekrar deneyin.",
             "oauthFailed": "Sağlayıcı ile giriş başarısız oldu. Lütfen tekrar deneyin.",
             "accountBanned": "Bu hesap engellendi."
-        }
+        },
+        "forgotPassword": "Şifrenizi mi unuttunuz?",
+        "forgot": {
+            "title": "Şifre sıfırlama",
+            "subtitle": "Hesabınızın e-posta adresini girin, yeni şifre belirlemeniz için bir bağlantı gönderelim.",
+            "submit": "Bağlantı gönder",
+            "sending": "Gönderiliyor…",
+            "sentTitle": "Gelen kutunuzu kontrol edin",
+            "sent": "<strong>{email}</strong> için bir hesap varsa, yeni şifre bağlantısı yolda. Bağlantı {hours} saat geçerlidir.",
+            "notReceived": "Birkaç dakika sonra hâlâ gelmedi mi? Spam klasörünü kontrol edin veya <link>tekrar deneyin</link>.",
+            "backToLogin": "Girişe dön"
+        },
+        "reset": {
+            "title": "Yeni şifre",
+            "subtitle": "Yeni bir şifre seçin. Diğer cihazlarda oturumunuz kapatılacak.",
+            "password": "Yeni şifre",
+            "confirmPassword": "Şifreyi tekrarlayın",
+            "submit": "Kaydet ve giriş yap",
+            "saving": "Kaydediliyor…",
+            "done": "Şifre güncellendi. Tekrar hoş geldiniz!",
+            "missingToken": "Bu bağlantı eksik. E-postadan tekrar açın veya yenisini isteyin.",
+            "requestNew": "Yeni bağlantı iste"
+        },
+        "verify": {
+            "verifying": "E-postanız doğrulanıyor…",
+            "successTitle": "E-posta doğrulandı",
+            "success": "Teşekkürler! Artık hesabınızı her zaman e-postayla kurtarabilirsiniz.",
+            "failedTitle": "Bağlantı çalışmadı",
+            "continue": "Collectify’a git",
+            "resend": "Yeni bağlantı gönder",
+            "signInToResend": "Yeni bağlantı almak için giriş yapın",
+            "sent": "{email} adresine yeni bir bağlantı gönderildi."
+        },
+        "continueWith": "{provider} ile devam et"
     },
     "common": {
         "cancel": "İptal",
@@ -451,7 +497,9 @@
         "unheart": "Kalbi kaldır",
         "heart": "Bu yoruma kalp ver",
         "heartLabel": "Yoruma kalp ver",
-        "heartedBy": "♥ {username}"
+        "heartedBy": "♥ {username}",
+        "guestPlaceholder": "Yorum ekle…",
+        "showAll": "{count} yorumun tümünü göster"
     },
     "notifications": {
         "unread": "Okunmamış",
@@ -588,7 +636,8 @@
         "hint": "Kaydettiğiniz koleksiyonları panolarda gruplayın.",
         "newName": "Yeni pano adı",
         "create": "Pano oluştur",
-        "draggableTab": "sürüklenebilir sekme"
+        "draggableTab": "sürüklenebilir sekme",
+        "savedToAll": "“Tüm kaydedilenler”e kaydedildi"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "Şikâyet hesabın kendisiyle ilgili.",
-            "deletedSince": "O zamandan beri silindi — şikâyet anındaki kopya gösteriliyor",
+            "deletedSince": "O zamandan beri silindi - şikâyet anındaki kopya gösteriliyor",
             "posted": "Yayınlandı: {date}",
             "verdict": "Karar",
             "reviewedBy": "İnceleyen",
@@ -776,7 +825,8 @@
             "popular": "Popüler",
             "newest": "En yeni",
             "old": "En eski"
-        }
+        },
+        "filters": "Filtreler"
     },
     "collection": {
         "like": "Beğen",
@@ -806,7 +856,11 @@
         "private": "Gizli",
         "deleteAsModerator": "Moderatör olarak sil",
         "deleteCollection": "Koleksiyonu sil",
-        "actions": "Koleksiyon işlemleri"
+        "actions": "Koleksiyon işlemleri",
+        "related": {
+            "title": "Buna benzer daha fazlası",
+            "more": "{category} kategorisinde daha fazlası"
+        }
     },
     "nav": {
         "home": "Ana sayfa",
@@ -823,7 +877,13 @@
         "returnToAdmin": "Yöneticiye dön",
         "logout": "Çıkış yap",
         "startTyping": "Bir kullanıcı adı yazmaya başlayın",
-        "impersonating": "<strong>@{username}</strong> olarak giriş yaptınız. Geri dönmek için hesap menüsündeki “Yöneticiye dön”ü kullanın."
+        "impersonating": "<strong>@{username}</strong> olarak giriş yaptınız. Geri dönmek için hesap menüsündeki “Yöneticiye dön”ü kullanın.",
+        "verifyEmail": "Hesabınızı her zaman kurtarabilmek için e-postanızı doğrulayın. <strong>{email}</strong> adresine bir bağlantı gönderdik.",
+        "resendLink": "Tekrar gönder",
+        "linkSent": "Gönderildi! Gelen kutunuzu kontrol edin.",
+        "dismiss": "Kapat",
+        "mobileNav": "Ana gezinme",
+        "search": "Ara"
     },
     "footer": {
         "privacyPolicy": "Gizlilik Politikası"
@@ -861,7 +921,8 @@
             "moreLike": "“{name}” gibi daha fazlası",
             "label": "Akışlar",
             "items": "akışlar"
-        }
+        },
+        "popularNow": "Şu an popüler"
     },
     "myCollections": {
         "title": "Koleksiyonlarım",
@@ -892,14 +953,14 @@
             "items": {
                 "email": "E-posta adresiniz (giriş yapmak ve hesabınızı tanımlamak için)",
                 "names": "Seçtiğiniz kullanıcı adı ve ad soyad",
-                "password": "Bir şifre (güvenli bir hash olarak saklanır — şifrenizi asla düz metin olarak saklamayız); GitHub veya Google ile kaydolursanız bunun yerine bağlı hesabın kimliğini saklarız",
+                "password": "Bir şifre (güvenli bir hash olarak saklanır - şifrenizi asla düz metin olarak saklamayız); GitHub veya Google ile kaydolursanız bunun yerine bağlı hesabın kimliğini saklarız",
                 "profile": "Eklediğiniz isteğe bağlı profil bilgileri: avatar, afiş, biyografi/açıklama, ülke ve şehir ile doğum tarihi",
                 "content": "Uygulamada oluşturduğunuz içerik: koleksiyonlar, öğeler, yorumlar, beğeniler, takipler, mesajlar ve bildirimler"
             }
         },
         "why": {
             "title": "Neden topluyoruz",
-            "text": "Verileriniz hesabınızı oluşturmak ve yönetmek, giriş yaptığınızda kimliğinizi doğrulamak, ziyaretler arasında oturumunuzu açık tutmak (oturum yönetimi) ve uygulamanın temel özelliklerini — koleksiyonlar, diğer kullanıcıları takip etme, yorumlar, beğeniler ve mesajlaşma — sunmak için kullanılır."
+            "text": "Verileriniz hesabınızı oluşturmak ve yönetmek, giriş yaptığınızda kimliğinizi doğrulamak, ziyaretler arasında oturumunuzu açık tutmak (oturum yönetimi) ve uygulamanın temel özelliklerini - koleksiyonlar, diğer kullanıcıları takip etme, yorumlar, beğeniler ve mesajlaşma - sunmak için kullanılır."
         },
         "location": {
             "title": "Konum ve doğum tarihi",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "Verileriniz nerede saklanıyor",
-            "text": "Uygulama Vercel üzerinde barındırılır. Hesap ve içerik verileri veritabanımızda saklanır. Yüklenen görseller (avatarlar, afişler, öğe görselleri) medya barındırma sağlayıcımız Uploadcare’de saklanır."
+            "text": "Uygulama Vercel üzerinde barındırılır. Hesap ve içerik verileri veritabanımızda saklanır. Yüklenen görseller (avatarlar, afişler, öğe görselleri) medya barındırma sağlayıcımız Uploadcare’de saklanır. Hesap e-postaları (şifre sıfırlama ve e-posta doğrulama bağlantıları) e-posta sağlayıcımız Resend üzerinden gönderilir; Resend yalnızca bu amaçla e-posta adresinizi ve adınızı alır."
         },
         "moderation": {
             "title": "Şikâyetler ve moderasyon",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "Yönet"
+    },
+    "emails": {
+        "greeting": "Merhaba {name},",
+        "linkCaption": "Düğme çalışmazsa bu bağlantıyı tarayıcınıza kopyalayın:",
+        "footer": "Bu e-postayı bir Collectify hesabına bağlı olduğu için alıyorsunuz.",
+        "passwordReset": {
+            "subject": "Collectify şifrenizi sıfırlayın",
+            "preheader": "Tek tıkla yeni şifre belirleyin.",
+            "heading": "Şifrenizi sıfırlayın",
+            "intro": "Birisi (umarız sizsiniz) Collectify hesabınızın şifresini sıfırlamak istedi. Yeni bir şifre seçmek için düğmeye tıklayın.",
+            "button": "Yeni şifre belirle",
+            "expires": "Bağlantı yalnızca bir kez çalışır ve {hours} saat içinde geçersiz olur.",
+            "ignore": "Bunu siz istemediyseniz bu e-postayı yok sayın - şifreniz değişmez."
+        },
+        "verification": {
+            "subject": "Collectify için e-postanızı doğrulayın",
+            "preheader": "Tek tıkla hesabınız güvende.",
+            "heading": "E-postanızı doğrulayın",
+            "intro": "Collectify’a hoş geldiniz! Hesabınıza her zaman geri dönebilmek için e-postanızı doğrulayın.",
+            "button": "E-postayı doğrula",
+            "expires": "Bağlantı {days} gün içinde geçersiz olur.",
+            "ignore": "Kayıt olmadıysanız bu e-postayı yok sayın."
+        }
+    },
+    "share": {
+        "label": "Paylaş",
+        "copyLink": "Bağlantıyı kopyala",
+        "copied": "Bağlantı kopyalandı",
+        "copyFailed": "Bağlantı kopyalanamadı",
+        "more": "Diğer…",
+        "collectionText": "Collectify’da “{name}”",
+        "profileText": "Collectify’da {name}"
+    },
+    "og": {
+        "tagline": "Sevdiklerini biriktir. Herkesle paylaş.",
+        "siteStats": "Her şeyin koleksiyonu: kitaplar, oyunlar, yerler, ekipman",
+        "profile": "Profil",
+        "items": "{count} öğe",
+        "likes": "{formatted} beğeni",
+        "collections": "{count} koleksiyon",
+        "followers": "{formatted} takipçi"
+    },
+    "authPrompt": {
+        "close": "Kapat",
+        "titles": {
+            "like": "Beğendiniz mi? Yazara bildirin",
+            "save": "Daha sonrası için kaydedin",
+            "comment": "Sohbete katılın",
+            "follow": "Sevdiğiniz koleksiyoncuları takip edin",
+            "message": "Bir sohbet başlatın",
+            "report": "Bildirmek için giriş yapın",
+            "create": "Kendi koleksiyonunuzu başlatın"
+        },
+        "subtitle": "Koleksiyonları kaydetmek, insanları takip etmek ve kendinizinkini oluşturmak için saniyeler içinde ücretsiz hesap açın.",
+        "email": "E-postayla kaydol",
+        "haveAccount": "Zaten hesabınız var mı? <link>Giriş yapın</link>"
+    },
+    "search": {
+        "open": "Ara",
+        "placeholder": "Koleksiyon, etiket ve kişi ara",
+        "close": "Kapat",
+        "recent": "Son aramalar",
+        "clearRecent": "Temizle",
+        "hint": "İpucu: aramak için her yerde / veya ⌘K tuşuna basın.",
+        "tagCount": "{count} koleksiyon",
+        "nothing": "“{query}” için sonuç bulunamadı.",
+        "showAll": "“{query}” içeren tüm koleksiyonlar",
+        "sections": {
+            "collections": "Koleksiyonlar",
+            "tags": "Etiketler",
+            "people": "Kişiler"
+        },
+        "categories": "Kategorilere göz at"
+    },
+    "landing": {
+        "title": "Sevdiklerini biriktir. Herkesle paylaş.",
+        "subtitle": "Her şeyin koleksiyonu - kitaplar, oyunlar, yerler, ekipman - zevk sahibi insanlardan.",
+        "start": "Ücretsiz koleksiyona başla",
+        "explore": "Koleksiyonları keşfet",
+        "points": {
+            "save": "İlham veren şeyleri kendi panolarına kaydet",
+            "follow": "Zevk sahibi insanları takip et",
+            "create": "Her şeyden koleksiyon oluştur ve paylaş"
+        },
+        "browse": "Kategoriye göre göz at",
+        "categoriesLabel": "kategoriler"
     }
 }

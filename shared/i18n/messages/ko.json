@@ -85,7 +85,10 @@
         "cityUnknown": "알 수 없는 도시입니다.",
         "cannotFollowSelf": "자기 자신을 팔로우할 수 없습니다.",
         "generic": "문제가 발생했습니다. 다시 시도하세요.",
-        "network": "네트워크 오류입니다. 연결을 확인하세요."
+        "network": "네트워크 오류입니다. 연결을 확인하세요.",
+        "linkInvalid": "이 링크는 유효하지 않거나 이미 사용되었습니다.",
+        "linkExpired": "이 링크는 만료되었습니다. 새 링크를 요청하세요.",
+        "emailNotConfigured": "지금은 이메일을 보낼 수 없습니다."
     },
     "validation": {
         "required": "필수 입력 항목입니다.",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "‘중복’ 판정에는 원래 신고를 선택하세요."
     },
     "meta": {
-        "description": "우리와 함께 흥미로운 컬렉션을 만들어 보세요.",
+        "description": "책, 게임, 영화, 장소, 장비 컬렉션을 발견하고 저장하고 공유하세요. 안목 있는 사람들을 팔로우하고 Collectify에서 나만의 컬렉션을 무료로 만드세요.",
         "privacyDescription": "Collectify가 데이터를 수집, 사용, 저장하는 방법.",
-        "userDescription": "Collectify의 {name} 님 컬렉션.",
+        "userDescription": "Collectify의 {name}(@{username}) 컬렉션.",
         "pages": {
             "login": "로그인",
             "register": "회원가입",
@@ -135,8 +138,18 @@
             "management": "관리",
             "privacyPolicy": "개인정보 처리방침",
             "collection": "컬렉션",
-            "userNotFound": "사용자를 찾을 수 없음"
-        }
+            "userNotFound": "사용자를 찾을 수 없음",
+            "forgotPassword": "비밀번호 재설정",
+            "resetPassword": "새 비밀번호",
+            "verifyEmail": "이메일 확인"
+        },
+        "title": "Collectify - 안목 있는 사람들이 만든 무엇이든 컬렉션",
+        "keywords": "컬렉션, 큐레이션, 랭킹, 책 추천, 게임 컬렉션, 영화 목록, 여행 아이디어, 위시리스트, 무드보드, 핀터레스트 대안",
+        "categoryTitle": "인기 {category} 컬렉션",
+        "categoryDescription": "실제 사람들이 만든 최고의 {category} 컬렉션을 발견하세요. 마음에 드는 것을 저장하고, 수집가를 팔로우하고, Collectify에서 나만의 컬렉션을 공유하세요.",
+        "tagTitle": "#{tag} 컬렉션",
+        "tagDescription": "Collectify 사람들이 만든 #{tag} 태그 컬렉션. 좋아하는 것을 저장하고 팔로우하고 공유하세요.",
+        "collectionLead": "{name}님의 {category} 컬렉션, 항목 {count}개."
     },
     "languages": {
         "label": "언어"
@@ -161,7 +174,40 @@
             "oauthState": "로그인 링크가 만료되었습니다. 다시 시도하세요.",
             "oauthFailed": "외부 계정으로 로그인하지 못했습니다. 다시 시도하세요.",
             "accountBanned": "이 계정은 정지되었습니다."
-        }
+        },
+        "forgotPassword": "비밀번호를 잊으셨나요?",
+        "forgot": {
+            "title": "비밀번호 재설정",
+            "subtitle": "계정 이메일을 입력하면 새 비밀번호를 설정할 수 있는 링크를 보내드립니다.",
+            "submit": "링크 보내기",
+            "sending": "보내는 중…",
+            "sentTitle": "받은편지함을 확인하세요",
+            "sent": "<strong>{email}</strong> 계정이 있다면 새 비밀번호 설정 링크를 보냈습니다. {hours}시간 동안 유효합니다.",
+            "notReceived": "몇 분이 지나도 오지 않나요? 스팸함을 확인하거나 <link>다시 시도</link>하세요.",
+            "backToLogin": "로그인으로 돌아가기"
+        },
+        "reset": {
+            "title": "새 비밀번호",
+            "subtitle": "새 비밀번호를 정하세요. 다른 기기에서는 로그아웃됩니다.",
+            "password": "새 비밀번호",
+            "confirmPassword": "비밀번호 다시 입력",
+            "submit": "저장하고 로그인",
+            "saving": "저장 중…",
+            "done": "비밀번호가 변경되었습니다. 다시 오신 것을 환영합니다!",
+            "missingToken": "링크가 불완전합니다. 이메일에서 다시 열거나 새 링크를 요청하세요.",
+            "requestNew": "새 링크 요청"
+        },
+        "verify": {
+            "verifying": "이메일을 확인하는 중…",
+            "successTitle": "이메일이 확인되었습니다",
+            "success": "감사합니다! 이제 언제든 이메일로 계정을 복구할 수 있습니다.",
+            "failedTitle": "링크가 작동하지 않았습니다",
+            "continue": "Collectify로 이동",
+            "resend": "새 링크 보내기",
+            "signInToResend": "새 링크를 받으려면 로그인하세요",
+            "sent": "{email}(으)로 새 링크를 보냈습니다."
+        },
+        "continueWith": "{provider}(으)로 계속"
     },
     "common": {
         "cancel": "취소",
@@ -451,7 +497,9 @@
         "unheart": "하트 취소",
         "heart": "이 댓글에 하트 주기",
         "heartLabel": "댓글에 하트",
-        "heartedBy": "♥ {username}"
+        "heartedBy": "♥ {username}",
+        "guestPlaceholder": "댓글 추가…",
+        "showAll": "댓글 {count}개 모두 보기"
     },
     "notifications": {
         "unread": "읽지 않음",
@@ -588,7 +636,8 @@
         "hint": "저장한 컬렉션을 보드로 묶어 보세요.",
         "newName": "새 보드 이름",
         "create": "보드 만들기",
-        "draggableTab": "끌어서 옮길 수 있는 탭"
+        "draggableTab": "끌어서 옮길 수 있는 탭",
+        "savedToAll": "“저장한 항목 전체”에 저장했습니다"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "계정 자체에 대한 신고입니다.",
-            "deletedSince": "이후 삭제됨 — 신고 당시의 스냅샷을 표시합니다",
+            "deletedSince": "이후 삭제됨 - 신고 당시의 스냅샷을 표시합니다",
             "posted": "{date}에 게시됨",
             "verdict": "판정",
             "reviewedBy": "검토자",
@@ -776,7 +825,8 @@
             "popular": "인기순",
             "newest": "최신순",
             "old": "오래된순"
-        }
+        },
+        "filters": "필터"
     },
     "collection": {
         "like": "좋아요",
@@ -806,7 +856,11 @@
         "private": "비공개",
         "deleteAsModerator": "모더레이터로 삭제",
         "deleteCollection": "컬렉션 삭제",
-        "actions": "컬렉션 작업"
+        "actions": "컬렉션 작업",
+        "related": {
+            "title": "비슷한 컬렉션",
+            "more": "{category} 더 보기"
+        }
     },
     "nav": {
         "home": "홈",
@@ -823,7 +877,13 @@
         "returnToAdmin": "관리자로 돌아가기",
         "logout": "로그아웃",
         "startTyping": "사용자 이름을 입력하세요",
-        "impersonating": "<strong>@{username}</strong>(으)로 로그인되어 있습니다. 돌아가려면 계정 메뉴의 ‘관리자로 돌아가기’를 사용하세요."
+        "impersonating": "<strong>@{username}</strong>(으)로 로그인되어 있습니다. 돌아가려면 계정 메뉴의 ‘관리자로 돌아가기’를 사용하세요.",
+        "verifyEmail": "언제든 계정을 복구할 수 있도록 이메일을 확인하세요. <strong>{email}</strong>(으)로 링크를 보냈습니다.",
+        "resendLink": "다시 보내기",
+        "linkSent": "보냈습니다! 받은편지함을 확인하세요.",
+        "dismiss": "닫기",
+        "mobileNav": "주 메뉴",
+        "search": "검색"
     },
     "footer": {
         "privacyPolicy": "개인정보 처리방침"
@@ -861,7 +921,8 @@
             "moreLike": "“{name}”와 비슷한 항목",
             "label": "피드",
             "items": "피드"
-        }
+        },
+        "popularNow": "지금 인기"
     },
     "myCollections": {
         "title": "내 컬렉션",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "데이터 저장 위치",
-            "text": "앱은 Vercel에서 호스팅됩니다. 계정과 콘텐츠 데이터는 당사 데이터베이스에 저장됩니다. 업로드한 이미지(아바타, 배너, 항목 이미지)는 미디어 호스팅 업체인 Uploadcare에 저장됩니다."
+            "text": "앱은 Vercel에서 호스팅됩니다. 계정과 콘텐츠 데이터는 당사 데이터베이스에 저장됩니다. 업로드한 이미지(아바타, 배너, 항목 이미지)는 미디어 호스팅 업체인 Uploadcare에 저장됩니다. 계정 이메일(비밀번호 재설정 및 이메일 확인 링크)은 이메일 서비스 업체 Resend를 통해 발송되며, 이 목적으로만 이메일 주소와 이름이 전달됩니다."
         },
         "moderation": {
             "title": "신고와 관리",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "관리"
+    },
+    "emails": {
+        "greeting": "{name}님, 안녕하세요.",
+        "linkCaption": "버튼이 작동하지 않으면 이 링크를 브라우저에 복사하세요:",
+        "footer": "Collectify 계정에 연결된 주소이므로 이 이메일을 받으셨습니다.",
+        "passwordReset": {
+            "subject": "Collectify 비밀번호 재설정",
+            "preheader": "클릭 한 번으로 새 비밀번호를 설정하세요.",
+            "heading": "비밀번호 재설정",
+            "intro": "Collectify 계정의 비밀번호 재설정이 요청되었습니다. 버튼을 눌러 새 비밀번호를 정하세요.",
+            "button": "새 비밀번호 설정",
+            "expires": "이 링크는 한 번만 사용할 수 있으며 {hours}시간 후 만료됩니다.",
+            "ignore": "요청하지 않으셨다면 이 이메일을 무시하세요. 비밀번호는 그대로 유지됩니다."
+        },
+        "verification": {
+            "subject": "Collectify 이메일 확인",
+            "preheader": "클릭 한 번으로 계정을 보호하세요.",
+            "heading": "이메일을 확인하세요",
+            "intro": "Collectify에 오신 것을 환영합니다! 언제든 계정에 다시 들어올 수 있도록 이메일을 확인하세요.",
+            "button": "이메일 확인",
+            "expires": "이 링크는 {days}일 후 만료됩니다.",
+            "ignore": "가입하지 않으셨다면 이 이메일을 무시하세요."
+        }
+    },
+    "share": {
+        "label": "공유",
+        "copyLink": "링크 복사",
+        "copied": "링크를 복사했습니다",
+        "copyFailed": "링크를 복사할 수 없습니다",
+        "more": "더보기…",
+        "collectionText": "Collectify의 “{name}”",
+        "profileText": "Collectify의 {name}"
+    },
+    "og": {
+        "tagline": "좋아하는 것을 모으고, 모두와 공유하세요.",
+        "siteStats": "책, 게임, 장소, 장비… 무엇이든 컬렉션으로",
+        "profile": "프로필",
+        "items": "항목 {count}개",
+        "likes": "좋아요 {formatted}개",
+        "collections": "컬렉션 {count}개",
+        "followers": "팔로워 {formatted}명"
+    },
+    "authPrompt": {
+        "close": "닫기",
+        "titles": {
+            "like": "마음에 드셨나요? 작성자에게 알려주세요",
+            "save": "나중에 보려면 저장하세요",
+            "comment": "대화에 참여하세요",
+            "follow": "좋아하는 수집가를 팔로우하세요",
+            "message": "대화를 시작하세요",
+            "report": "신고하려면 로그인하세요",
+            "create": "나만의 컬렉션을 시작하세요"
+        },
+        "subtitle": "몇 초 만에 무료 계정을 만들고 컬렉션 저장, 팔로우, 나만의 컬렉션 만들기를 시작하세요.",
+        "email": "이메일로 가입",
+        "haveAccount": "이미 계정이 있나요? <link>로그인</link>"
+    },
+    "search": {
+        "open": "검색",
+        "placeholder": "컬렉션, 태그, 사람 검색",
+        "close": "닫기",
+        "recent": "최근 검색",
+        "clearRecent": "지우기",
+        "hint": "팁: 어디서든 / 또는 ⌘K를 눌러 검색하세요.",
+        "tagCount": "컬렉션 {count}개",
+        "nothing": "“{query}”에 대한 결과가 없습니다.",
+        "showAll": "“{query}”이(가) 포함된 모든 컬렉션",
+        "sections": {
+            "collections": "컬렉션",
+            "tags": "태그",
+            "people": "사람"
+        },
+        "categories": "카테고리 둘러보기"
+    },
+    "landing": {
+        "title": "좋아하는 것을 모으고, 모두와 공유하세요.",
+        "subtitle": "책, 게임, 장소, 장비… 안목 있는 사람들이 만든 무엇이든 컬렉션.",
+        "start": "무료로 수집 시작하기",
+        "explore": "컬렉션 둘러보기",
+        "points": {
+            "save": "영감을 주는 것을 나만의 보드에 저장",
+            "follow": "안목 있는 사람들을 팔로우",
+            "create": "무엇이든 컬렉션으로 만들고 공유"
+        },
+        "browse": "카테고리별 둘러보기",
+        "categoriesLabel": "카테고리"
     }
 }

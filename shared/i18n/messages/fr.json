@@ -85,7 +85,10 @@
         "cityUnknown": "Ville inconnue.",
         "cannotFollowSelf": "Vous ne pouvez pas vous suivre vous-même.",
         "generic": "Une erreur s’est produite. Veuillez réessayer.",
-        "network": "Erreur réseau. Vérifiez votre connexion."
+        "network": "Erreur réseau. Vérifiez votre connexion.",
+        "linkInvalid": "Ce lien est invalide ou a déjà été utilisé.",
+        "linkExpired": "Ce lien a expiré. Demandez-en un nouveau.",
+        "emailNotConfigured": "L’envoi d’e-mails est indisponible pour le moment."
     },
     "validation": {
         "required": "Ce champ est obligatoire.",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "Sélectionnez le signalement d’origine pour un verdict « doublon »."
     },
     "meta": {
-        "description": "Créez votre collection passionnante avec nous.",
+        "description": "Découvrez, enregistrez et partagez des collections de livres, jeux, films, lieux et matériel. Suivez des gens qui ont du goût et créez vos propres collections sur Collectify, gratuitement.",
         "privacyDescription": "Comment Collectify collecte, utilise et conserve vos données.",
-        "userDescription": "Collections de {name} sur Collectify.",
+        "userDescription": "Collections de {name} (@{username}) sur Collectify.",
         "pages": {
             "login": "Connexion",
             "register": "Inscription",
@@ -135,8 +138,18 @@
             "management": "Administration",
             "privacyPolicy": "Politique de confidentialité",
             "collection": "Collection",
-            "userNotFound": "Utilisateur introuvable"
-        }
+            "userNotFound": "Utilisateur introuvable",
+            "forgotPassword": "Réinitialiser le mot de passe",
+            "resetPassword": "Nouveau mot de passe",
+            "verifyEmail": "Confirmer l’e-mail"
+        },
+        "title": "Collectify - Des collections de tout, par des gens qui ont du goût",
+        "keywords": "collections, listes, classements, listes de livres, collections de jeux, listes de films, idées de voyage, liste de souhaits, moodboard, alternative à Pinterest",
+        "categoryTitle": "Les meilleures collections {category}",
+        "categoryDescription": "Découvrez les meilleures collections {category} créées par de vraies personnes. Enregistrez vos favorites, suivez des collectionneurs et partagez les vôtres sur Collectify.",
+        "tagTitle": "Collections #{tag}",
+        "tagDescription": "Collections avec le tag #{tag}, créées par la communauté Collectify. Enregistrez, suivez et partagez ce que vous aimez.",
+        "collectionLead": "{count, plural, one {# élément} other {# éléments}} dans {category} par {name}."
     },
     "languages": {
         "label": "Langue"
@@ -161,7 +174,40 @@
             "oauthState": "Le lien de connexion a expiré. Veuillez réessayer.",
             "oauthFailed": "La connexion via le fournisseur a échoué. Veuillez réessayer.",
             "accountBanned": "Ce compte est suspendu."
-        }
+        },
+        "forgotPassword": "Mot de passe oublié ?",
+        "forgot": {
+            "title": "Réinitialiser le mot de passe",
+            "subtitle": "Saisissez l’e-mail de votre compte et nous vous enverrons un lien pour choisir un nouveau mot de passe.",
+            "submit": "Envoyer le lien",
+            "sending": "Envoi…",
+            "sentTitle": "Consultez votre boîte mail",
+            "sent": "Si un compte existe pour <strong>{email}</strong>, un lien pour choisir un nouveau mot de passe est en route. Il est valable {hours, plural, one {# heure} other {# heures}}.",
+            "notReceived": "Rien reçu après quelques minutes ? Vérifiez vos spams ou <link>réessayez</link>.",
+            "backToLogin": "Retour à la connexion"
+        },
+        "reset": {
+            "title": "Nouveau mot de passe",
+            "subtitle": "Choisissez un nouveau mot de passe. Vous serez déconnecté de vos autres appareils.",
+            "password": "Nouveau mot de passe",
+            "confirmPassword": "Répétez le mot de passe",
+            "submit": "Enregistrer et se connecter",
+            "saving": "Enregistrement…",
+            "done": "Mot de passe mis à jour. Bon retour !",
+            "missingToken": "Ce lien est incomplet. Ouvrez-le à nouveau depuis l’e-mail ou demandez-en un nouveau.",
+            "requestNew": "Demander un nouveau lien"
+        },
+        "verify": {
+            "verifying": "Confirmation de votre e-mail…",
+            "successTitle": "E-mail confirmé",
+            "success": "Merci ! Vous pourrez désormais toujours récupérer votre compte par e-mail.",
+            "failedTitle": "Le lien n’a pas fonctionné",
+            "continue": "Aller sur Collectify",
+            "resend": "Envoyer un nouveau lien",
+            "signInToResend": "Connectez-vous pour recevoir un nouveau lien",
+            "sent": "Un nouveau lien est en route vers {email}."
+        },
+        "continueWith": "Continuer avec {provider}"
     },
     "common": {
         "cancel": "Annuler",
@@ -451,7 +497,9 @@
         "unheart": "Retirer le cœur",
         "heart": "Mettre un cœur à ce commentaire",
         "heartLabel": "Mettre un cœur au commentaire",
-        "heartedBy": "♥ par {username}"
+        "heartedBy": "♥ par {username}",
+        "guestPlaceholder": "Ajouter un commentaire…",
+        "showAll": "{count, plural, one {Voir # commentaire} other {Voir les # commentaires}}"
     },
     "notifications": {
         "unread": "Non lue",
@@ -588,7 +636,8 @@
         "hint": "Regroupez vos collections enregistrées dans des tableaux.",
         "newName": "Nom du nouveau tableau",
         "create": "Créer un tableau",
-        "draggableTab": "onglet déplaçable"
+        "draggableTab": "onglet déplaçable",
+        "savedToAll": "Enregistrée dans « Tous les enregistrements »"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "Le signalement concerne le compte lui-même.",
-            "deletedSince": "Supprimé depuis — affichage de la copie prise au moment du signalement",
+            "deletedSince": "Supprimé depuis - affichage de la copie prise au moment du signalement",
             "posted": "Publié {date}",
             "verdict": "Verdict",
             "reviewedBy": "Examiné par",
@@ -776,7 +825,8 @@
             "popular": "Populaires",
             "newest": "Plus récentes",
             "old": "Plus anciennes"
-        }
+        },
+        "filters": "Filtres"
     },
     "collection": {
         "like": "J’aime",
@@ -806,7 +856,11 @@
         "private": "Privée",
         "deleteAsModerator": "Supprimer en tant que modérateur",
         "deleteCollection": "Supprimer la collection",
-        "actions": "Actions de la collection"
+        "actions": "Actions de la collection",
+        "related": {
+            "title": "Dans le même esprit",
+            "more": "Plus dans {category}"
+        }
     },
     "nav": {
         "home": "Accueil",
@@ -823,7 +877,13 @@
         "returnToAdmin": "Revenir à l’administrateur",
         "logout": "Se déconnecter",
         "startTyping": "Commencez à saisir un nom d’utilisateur",
-        "impersonating": "Vous êtes connecté en tant que <strong>@{username}</strong>. Utilisez « Revenir à l’administrateur » dans le menu du compte pour revenir."
+        "impersonating": "Vous êtes connecté en tant que <strong>@{username}</strong>. Utilisez « Revenir à l’administrateur » dans le menu du compte pour revenir.",
+        "verifyEmail": "Confirmez votre e-mail pour pouvoir toujours récupérer votre compte. Nous avons envoyé un lien à <strong>{email}</strong>.",
+        "resendLink": "Renvoyer",
+        "linkSent": "Envoyé ! Consultez votre boîte mail.",
+        "dismiss": "Fermer",
+        "mobileNav": "Navigation principale",
+        "search": "Rechercher"
     },
     "footer": {
         "privacyPolicy": "Politique de confidentialité"
@@ -861,7 +921,8 @@
             "moreLike": "Plus comme « {name} »",
             "label": "Fils",
             "items": "fils"
-        }
+        },
+        "popularNow": "Populaire en ce moment"
     },
     "myCollections": {
         "title": "Mes collections",
@@ -892,7 +953,7 @@
             "items": {
                 "email": "Votre adresse e-mail (pour vous connecter et identifier votre compte)",
                 "names": "Un nom d’utilisateur et un nom complet que vous choisissez",
-                "password": "Un mot de passe (stocké sous forme de hachage sécurisé — nous ne stockons jamais votre mot de passe en clair), sauf si vous vous inscrivez via GitHub ou Google, auquel cas nous stockons l’identifiant du compte associé",
+                "password": "Un mot de passe (stocké sous forme de hachage sécurisé - nous ne stockons jamais votre mot de passe en clair), sauf si vous vous inscrivez via GitHub ou Google, auquel cas nous stockons l’identifiant du compte associé",
                 "profile": "Les informations de profil facultatives que vous ajoutez : avatar, bannière, bio/description, pays et ville, et date de naissance",
                 "content": "Le contenu que vous créez dans l’application : collections, éléments, commentaires, j’aime, abonnements, messages et notifications"
             }
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "Où vos données sont stockées",
-            "text": "L’application est hébergée chez Vercel. Les données des comptes et du contenu sont stockées dans notre base de données. Les images envoyées (avatars, bannières, images d’éléments) sont stockées chez notre hébergeur de médias, Uploadcare."
+            "text": "L’application est hébergée chez Vercel. Les données des comptes et du contenu sont stockées dans notre base de données. Les images envoyées (avatars, bannières, images d’éléments) sont stockées chez notre hébergeur de médias, Uploadcare. Les e-mails liés au compte (liens de réinitialisation du mot de passe et de confirmation de l’e-mail) sont envoyés via notre prestataire d’e-mails, Resend, qui reçoit votre adresse et votre nom uniquement à cette fin."
         },
         "moderation": {
             "title": "Signalements et modération",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "Gérer"
+    },
+    "emails": {
+        "greeting": "Bonjour {name},",
+        "linkCaption": "Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :",
+        "footer": "Vous recevez cet e-mail car il est associé à un compte Collectify.",
+        "passwordReset": {
+            "subject": "Réinitialisez votre mot de passe Collectify",
+            "preheader": "Un nouveau mot de passe en un clic.",
+            "heading": "Réinitialisez votre mot de passe",
+            "intro": "Quelqu’un (vous, espérons-le) a demandé à réinitialiser le mot de passe de votre compte Collectify. Cliquez sur le bouton pour en choisir un nouveau.",
+            "button": "Choisir un nouveau mot de passe",
+            "expires": "Le lien ne fonctionne qu’une fois et expire dans {hours, plural, one {# heure} other {# heures}}.",
+            "ignore": "Vous n’êtes pas à l’origine de cette demande ? Ignorez cet e-mail : votre mot de passe reste inchangé."
+        },
+        "verification": {
+            "subject": "Confirmez votre e-mail pour Collectify",
+            "preheader": "Un clic et votre compte est sécurisé.",
+            "heading": "Confirmez votre e-mail",
+            "intro": "Bienvenue sur Collectify ! Confirmez votre e-mail pour pouvoir toujours retrouver l’accès à votre compte.",
+            "button": "Confirmer l’e-mail",
+            "expires": "Le lien expire dans {days, plural, one {# jour} other {# jours}}.",
+            "ignore": "Vous ne vous êtes pas inscrit ? Ignorez cet e-mail."
+        }
+    },
+    "share": {
+        "label": "Partager",
+        "copyLink": "Copier le lien",
+        "copied": "Lien copié",
+        "copyFailed": "Impossible de copier le lien",
+        "more": "Plus…",
+        "collectionText": "« {name} » sur Collectify",
+        "profileText": "{name} sur Collectify"
+    },
+    "og": {
+        "tagline": "Collectionnez ce que vous aimez. Partagez-le avec tous.",
+        "siteStats": "Des collections de tout : livres, jeux, lieux, matériel",
+        "profile": "Profil",
+        "items": "{count, plural, one {# élément} other {# éléments}}",
+        "likes": "{count, plural, one {{formatted} j’aime} other {{formatted} j’aime}}",
+        "collections": "{count, plural, one {# collection} other {# collections}}",
+        "followers": "{count, plural, one {{formatted} abonné} other {{formatted} abonnés}}"
+    },
+    "authPrompt": {
+        "close": "Fermer",
+        "titles": {
+            "like": "Vous aimez ? Dites-le à l’auteur",
+            "save": "Enregistrez-la pour plus tard",
+            "comment": "Rejoignez la conversation",
+            "follow": "Suivez les collectionneurs que vous aimez",
+            "message": "Démarrez une conversation",
+            "report": "Connectez-vous pour signaler",
+            "create": "Créez votre propre collection"
+        },
+        "subtitle": "Créez un compte gratuit en quelques secondes pour enregistrer des collections, suivre des personnes et créer les vôtres.",
+        "email": "S’inscrire avec un e-mail",
+        "haveAccount": "Vous avez déjà un compte ? <link>Connectez-vous</link>"
+    },
+    "search": {
+        "open": "Rechercher",
+        "placeholder": "Rechercher des collections, tags et personnes",
+        "close": "Fermer",
+        "recent": "Récentes",
+        "clearRecent": "Effacer",
+        "hint": "Astuce : appuyez sur / ou ⌘K n’importe où pour rechercher.",
+        "tagCount": "{count, plural, one {# collection} other {# collections}}",
+        "nothing": "Aucun résultat pour « {query} ».",
+        "showAll": "Toutes les collections avec « {query} »",
+        "sections": {
+            "collections": "Collections",
+            "tags": "Tags",
+            "people": "Personnes"
+        },
+        "categories": "Parcourir les catégories"
+    },
+    "landing": {
+        "title": "Collectionnez ce que vous aimez. Partagez-le avec tous.",
+        "subtitle": "Des collections de tout - livres, jeux, lieux, matériel - par des gens qui ont du goût.",
+        "start": "Commencer à collectionner - gratuit",
+        "explore": "Explorer les collections",
+        "points": {
+            "save": "Enregistrez ce qui vous inspire sur vos tableaux",
+            "follow": "Suivez des gens qui ont du goût",
+            "create": "Créez et partagez des collections de tout"
+        },
+        "browse": "Parcourir par catégorie",
+        "categoriesLabel": "catégories"
     }
 }

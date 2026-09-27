@@ -85,7 +85,10 @@
         "cityUnknown": "未知城市。",
         "cannotFollowSelf": "你不能关注自己。",
         "generic": "出了点问题，请重试。",
-        "network": "网络错误，请检查网络连接。"
+        "network": "网络错误，请检查网络连接。",
+        "linkInvalid": "此链接无效或已被使用。",
+        "linkExpired": "此链接已过期，请重新申请。",
+        "emailNotConfigured": "目前无法发送邮件。"
     },
     "validation": {
         "required": "此项为必填项。",
@@ -119,9 +122,9 @@
         "duplicateRequiresOriginal": "“重复”判定需要选择原始举报。"
     },
     "meta": {
-        "description": "和我们一起创建有趣的收藏集。",
+        "description": "发现、保存和分享书籍、游戏、电影、地点和装备的收藏集。关注品味出众的人，在 Collectify 免费创建你自己的收藏集。",
         "privacyDescription": "Collectify 如何收集、使用和存储你的数据。",
-        "userDescription": "{name} 在 Collectify 上的收藏集。",
+        "userDescription": "{name}（@{username}）在 Collectify 上的收藏集。",
         "pages": {
             "login": "登录",
             "register": "注册",
@@ -135,8 +138,18 @@
             "management": "管理",
             "privacyPolicy": "隐私政策",
             "collection": "收藏集",
-            "userNotFound": "未找到用户"
-        }
+            "userNotFound": "未找到用户",
+            "forgotPassword": "重置密码",
+            "resetPassword": "新密码",
+            "verifyEmail": "确认邮箱"
+        },
+        "title": "Collectify - 由品味出众的人整理的各类收藏集",
+        "keywords": "收藏集, 清单, 排行榜, 书单, 游戏收藏, 片单, 旅行灵感, 心愿单, 灵感板, Pinterest 替代",
+        "categoryTitle": "最佳{category}收藏集",
+        "categoryDescription": "发现由真实用户整理的最佳{category}收藏集。保存你喜欢的内容，关注收藏家，并在 Collectify 分享你自己的收藏集。",
+        "tagTitle": "#{tag} 收藏集",
+        "tagDescription": "由 Collectify 用户整理的 #{tag} 标签收藏集。保存、关注并分享你喜爱的内容。",
+        "collectionLead": "{name} 整理的{category}收藏集，共 {count} 个条目。"
     },
     "languages": {
         "label": "语言"
@@ -161,7 +174,40 @@
             "oauthState": "登录链接已过期，请重试。",
             "oauthFailed": "通过第三方登录失败，请重试。",
             "accountBanned": "该账号已被封禁。"
-        }
+        },
+        "forgotPassword": "忘记密码？",
+        "forgot": {
+            "title": "重置密码",
+            "subtitle": "输入账号邮箱，我们会发送一个设置新密码的链接。",
+            "submit": "发送链接",
+            "sending": "发送中…",
+            "sentTitle": "请查收邮件",
+            "sent": "如果 <strong>{email}</strong> 已注册账号，设置新密码的链接已发出，{hours} 小时内有效。",
+            "notReceived": "几分钟后还没收到？请检查垃圾邮件或<link>重试</link>。",
+            "backToLogin": "返回登录"
+        },
+        "reset": {
+            "title": "新密码",
+            "subtitle": "设置一个新密码。其他设备将退出登录。",
+            "password": "新密码",
+            "confirmPassword": "再次输入密码",
+            "submit": "保存并登录",
+            "saving": "保存中…",
+            "done": "密码已更新，欢迎回来！",
+            "missingToken": "此链接不完整。请从邮件中重新打开，或申请新的链接。",
+            "requestNew": "申请新链接"
+        },
+        "verify": {
+            "verifying": "正在确认你的邮箱…",
+            "successTitle": "邮箱已确认",
+            "success": "谢谢！现在你随时可以通过邮箱找回账号。",
+            "failedTitle": "链接无效",
+            "continue": "前往 Collectify",
+            "resend": "发送新链接",
+            "signInToResend": "登录后即可获取新链接",
+            "sent": "新链接已发送至 {email}。"
+        },
+        "continueWith": "使用 {provider} 继续"
     },
     "common": {
         "cancel": "取消",
@@ -451,7 +497,9 @@
         "unheart": "取消爱心",
         "heart": "给这条评论点爱心",
         "heartLabel": "为评论点爱心",
-        "heartedBy": "♥ 来自 {username}"
+        "heartedBy": "♥ 来自 {username}",
+        "guestPlaceholder": "添加评论…",
+        "showAll": "查看全部 {count} 条评论"
     },
     "notifications": {
         "unread": "未读",
@@ -588,7 +636,8 @@
         "hint": "把收藏的收藏集整理到画板中。",
         "newName": "新画板名称",
         "create": "创建画板",
-        "draggableTab": "可拖动的标签页"
+        "draggableTab": "可拖动的标签页",
+        "savedToAll": "已保存到“全部已保存”"
     },
     "management": {
         "categories": {
@@ -720,7 +769,7 @@
         },
         "report": {
             "aboutAccount": "该举报针对账号本身。",
-            "deletedSince": "已被删除 — 显示举报时保存的快照",
+            "deletedSince": "已被删除 - 显示举报时保存的快照",
             "posted": "发布于 {date}",
             "verdict": "判定",
             "reviewedBy": "审核人",
@@ -776,7 +825,8 @@
             "popular": "最热门",
             "newest": "最新",
             "old": "最早"
-        }
+        },
+        "filters": "筛选"
     },
     "collection": {
         "like": "点赞",
@@ -806,7 +856,11 @@
         "private": "私密",
         "deleteAsModerator": "以版主身份删除",
         "deleteCollection": "删除收藏集",
-        "actions": "收藏集操作"
+        "actions": "收藏集操作",
+        "related": {
+            "title": "更多类似内容",
+            "more": "更多{category}"
+        }
     },
     "nav": {
         "home": "首页",
@@ -823,7 +877,13 @@
         "returnToAdmin": "返回管理员",
         "logout": "退出登录",
         "startTyping": "开始输入用户名",
-        "impersonating": "你正以 <strong>@{username}</strong> 的身份登录。可通过账号菜单中的“返回管理员”返回。"
+        "impersonating": "你正以 <strong>@{username}</strong> 的身份登录。可通过账号菜单中的“返回管理员”返回。",
+        "verifyEmail": "确认邮箱，以便随时找回账号。我们已向 <strong>{email}</strong> 发送了链接。",
+        "resendLink": "重新发送",
+        "linkSent": "已发送！请查收邮件。",
+        "dismiss": "关闭",
+        "mobileNav": "主导航",
+        "search": "搜索"
     },
     "footer": {
         "privacyPolicy": "隐私政策"
@@ -861,7 +921,8 @@
             "moreLike": "更多类似“{name}”",
             "label": "信息流",
             "items": "信息流"
-        }
+        },
+        "popularNow": "当下热门"
     },
     "myCollections": {
         "title": "我的收藏集",
@@ -892,14 +953,14 @@
             "items": {
                 "email": "你的邮箱地址（用于登录和识别你的账号）",
                 "names": "你选择的用户名和姓名",
-                "password": "密码（以安全哈希形式存储——我们从不以明文存储你的密码）；如果你通过 GitHub 或 Google 注册，我们会改为存储关联账号的 ID",
+                "password": "密码（以安全哈希形式存储--我们从不以明文存储你的密码）；如果你通过 GitHub 或 Google 注册，我们会改为存储关联账号的 ID",
                 "profile": "你添加的可选资料：头像、横幅、简介/描述、国家和城市以及出生日期",
                 "content": "你在应用中创建的内容：收藏集、条目、评论、点赞、关注、私信和通知"
             }
         },
         "why": {
             "title": "我们为什么收集",
-            "text": "你的数据用于创建和管理你的账号、在登录时验证你的身份、在多次访问之间保持登录状态（会话管理），以及提供应用的核心功能——收藏集、关注其他用户、评论、点赞和私信。"
+            "text": "你的数据用于创建和管理你的账号、在登录时验证你的身份、在多次访问之间保持登录状态（会话管理），以及提供应用的核心功能--收藏集、关注其他用户、评论、点赞和私信。"
         },
         "location": {
             "title": "所在地和出生日期",
@@ -923,7 +984,7 @@
         },
         "storage": {
             "title": "你的数据存储在哪里",
-            "text": "应用托管在 Vercel 上。账号和内容数据存储在我们的数据库中。上传的图片（头像、横幅、条目图片）存储在我们的媒体托管服务商 Uploadcare 处。"
+            "text": "应用托管在 Vercel 上。账号和内容数据存储在我们的数据库中。上传的图片（头像、横幅、条目图片）存储在我们的媒体托管服务商 Uploadcare 处。账号相关邮件（重置密码和确认邮箱的链接）通过我们的邮件服务商 Resend 发送，Resend 仅为此目的获取你的邮箱地址和名字。"
         },
         "moderation": {
             "title": "举报与管理",
@@ -940,5 +1001,91 @@
     },
     "userProfile": {
         "manage": "管理"
+    },
+    "emails": {
+        "greeting": "{name}，你好：",
+        "linkCaption": "如果按钮无法使用，请将此链接复制到浏览器：",
+        "footer": "你收到这封邮件，是因为此地址关联了一个 Collectify 账号。",
+        "passwordReset": {
+            "subject": "重置你的 Collectify 密码",
+            "preheader": "一键设置新密码。",
+            "heading": "重置密码",
+            "intro": "有人（希望是你）申请重置 Collectify 账号的密码。点击按钮设置新密码。",
+            "button": "设置新密码",
+            "expires": "该链接仅可使用一次，{hours} 小时后失效。",
+            "ignore": "如果不是你本人操作，请忽略此邮件，密码不会改变。"
+        },
+        "verification": {
+            "subject": "确认你在 Collectify 的邮箱",
+            "preheader": "一键保护你的账号。",
+            "heading": "确认你的邮箱",
+            "intro": "欢迎来到 Collectify！确认邮箱，以便随时找回账号。",
+            "button": "确认邮箱",
+            "expires": "该链接 {days} 天后失效。",
+            "ignore": "如果你没有注册，请忽略此邮件。"
+        }
+    },
+    "share": {
+        "label": "分享",
+        "copyLink": "复制链接",
+        "copied": "链接已复制",
+        "copyFailed": "无法复制链接",
+        "more": "更多…",
+        "collectionText": "Collectify 上的“{name}”",
+        "profileText": "Collectify 上的 {name}"
+    },
+    "og": {
+        "tagline": "收藏你所爱，与所有人分享。",
+        "siteStats": "什么都能收藏：书籍、游戏、地点、装备",
+        "profile": "个人主页",
+        "items": "{count} 个条目",
+        "likes": "{formatted} 个赞",
+        "collections": "{count} 个收藏集",
+        "followers": "{formatted} 位关注者"
+    },
+    "authPrompt": {
+        "close": "关闭",
+        "titles": {
+            "like": "喜欢吗？告诉作者吧",
+            "save": "保存起来以后再看",
+            "comment": "加入讨论",
+            "follow": "关注你喜欢的收藏家",
+            "message": "开始聊天",
+            "report": "登录后即可举报",
+            "create": "开始你自己的收藏集"
+        },
+        "subtitle": "几秒钟即可免费注册，保存收藏集、关注他人并创建你自己的收藏。",
+        "email": "使用邮箱注册",
+        "haveAccount": "已有账号？<link>登录</link>"
+    },
+    "search": {
+        "open": "搜索",
+        "placeholder": "搜索收藏集、标签和用户",
+        "close": "关闭",
+        "recent": "最近搜索",
+        "clearRecent": "清除",
+        "hint": "提示：在任意页面按 / 或 ⌘K 即可搜索。",
+        "tagCount": "{count} 个收藏集",
+        "nothing": "没有找到与“{query}”相关的结果。",
+        "showAll": "包含“{query}”的所有收藏集",
+        "sections": {
+            "collections": "收藏集",
+            "tags": "标签",
+            "people": "用户"
+        },
+        "categories": "浏览分类"
+    },
+    "landing": {
+        "title": "收藏你所爱，与所有人分享。",
+        "subtitle": "书籍、游戏、地点、装备……由品味出众的人整理的各种收藏集。",
+        "start": "免费开始收藏",
+        "explore": "浏览收藏集",
+        "points": {
+            "save": "把喜欢的内容保存到自己的看板",
+            "follow": "关注品味出众的人",
+            "create": "创建并分享任何主题的收藏集"
+        },
+        "browse": "按分类浏览",
+        "categoriesLabel": "分类"
     }
 }
