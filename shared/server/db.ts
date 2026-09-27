@@ -27,3 +27,6 @@ export function isUniqueViolation(error: unknown): boolean {
 export function isNotFound(error: unknown): boolean {
     return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025';
 }
+
+/** Escapes `%`, `_` and backslashes, so a LIKE pattern matches them literally. */
+export const escapeLike = (value: string) => value.replace(/[\\%_]/g, (char) => `\\${char}`);

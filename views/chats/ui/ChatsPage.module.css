@@ -4,7 +4,7 @@
     grid-template-columns: 340px minmax(0, 1fr);
     gap: 20px;
     max-width: 1400px;
-    height: calc(100dvh - 50px);
+    height: calc(100dvh - var(--header-height) - var(--tabbar-height));
     margin: 0 auto;
     padding: 20px 35px;
 }

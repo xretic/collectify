@@ -70,7 +70,7 @@
 @media (max-width: 600px) {
     .stack {
         right: 16px;
-        bottom: 16px;
+        bottom: calc(var(--tabbar-height) + 16px);
     }
 }
 

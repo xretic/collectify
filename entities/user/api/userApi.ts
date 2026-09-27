@@ -5,7 +5,6 @@ import type {
     PublicUser,
     SessionUser,
     SuggestionsPage,
-    UserPreview,
 } from '@/entities/user/model/types';
 
 type UserResponse = { user: SessionUser };
@@ -24,14 +23,6 @@ export type UpdateProfilePayload = Partial<{
 export const userApi = {
     async getById(userId: number | string) {
         return (await api.get(`users/${userId}`).json<{ user: PublicUser }>()).user;
-    },
-
-    async search(query: string) {
-        return (
-            await api
-                .get('users/search', { searchParams: { q: query } })
-                .json<{ users: UserPreview[] }>()
-        ).users;
     },
 
     suggestions(skip: number, take: number) {

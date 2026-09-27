@@ -310,6 +310,7 @@ model Collection {
     engagedBy         EngagedCollection[]
 
     @@index([lowerCaseName])
+    @@index([lowerCaseName(ops: raw("gin_trgm_ops"))], map: "Collection_lowerCaseName_trgm_idx", type: Gin)
     @@index([userId])
     @@index([private, categoryId, createdAt])
     @@index([private, likeCount(sort: Desc)])

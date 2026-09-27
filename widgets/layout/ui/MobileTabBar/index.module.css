@@ -1,0 +1,58 @@
+.bar {
+    display: none;
+}
+
+@media (max-width: 899px) {
+    .bar {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1100;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        height: var(--tabbar-height);
+        padding-bottom: env(safe-area-inset-bottom);
+        background-color: color-mix(in srgb, var(--container-color) 92%, transparent);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid var(--border-color);
+    }
+}
+
+.tab {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-icon);
+    transition: color 0.15s ease;
+}
+
+.tab svg {
+    font-size: 26px;
+}
+
+.active {
+    color: var(--text-color);
+}
+
+.create {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 34px;
+    color: var(--on-accent);
+    background-color: var(--accent);
+    border-radius: 12px;
+}
+
+.avatar {
+    width: 28px !important;
+    height: 28px !important;
+}
+
+.active .avatar {
+    outline: 2px solid var(--text-color);
+    outline-offset: 1px;
+}

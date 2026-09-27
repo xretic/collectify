@@ -13,7 +13,15 @@
     font-size: 27px;
 }
 
+.sectionTitle {
+    margin: 32px 0 16px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 22px;
+}
+
+/* The navbar is sticky: in-page jumps ("Explore collections") must not end under it. */
 .layout {
+    scroll-margin-top: calc(var(--header-height) + 16px);
     display: grid;
     grid-template-columns: minmax(0, 1fr) 260px;
     align-items: start;
@@ -27,7 +35,7 @@
 /* Starts level with the first row of cards (the grid has the same top margin). */
 .aside {
     position: sticky;
-    top: 20px;
+    top: calc(var(--header-height) + 20px);
     margin-top: 25px;
 }
 

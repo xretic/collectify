@@ -1,23 +1,22 @@
 import type { SvgIconComponent } from '@mui/icons-material';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import CollectionsBookmarkOutlinedIcon from '@mui/icons-material/CollectionsBookmarkOutlined';
 import HomeIcon from '@mui/icons-material/Home';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import EggAltIcon from '@mui/icons-material/EggAlt';
-import EggAltOutlinedIcon from '@mui/icons-material/EggAltOutlined';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import type { SessionUser } from '@/entities/user/model/types';
 
 export type NavItem = {
     /** Key under `nav` in the messages. */
-    labelKey: 'home' | 'collections' | 'profile' | 'notifications';
+    labelKey: 'home' | 'collections' | 'notifications';
     href: string;
     icon: SvgIconComponent;
     iconOutlined: SvgIconComponent;
     badge?: number;
 };
 
+/** The desktop navbar links; the profile lives in the account menu. */
 export function getNavItems(user: SessionUser | null): NavItem[] {
     const home: NavItem = {
         labelKey: 'home',
@@ -32,14 +31,8 @@ export function getNavItems(user: SessionUser | null): NavItem[] {
         {
             labelKey: 'collections',
             href: '/collections/my',
-            icon: EggAltIcon,
-            iconOutlined: EggAltOutlinedIcon,
-        },
-        {
-            labelKey: 'profile',
-            href: '/users/me',
-            icon: AccountCircleIcon,
-            iconOutlined: AccountCircleOutlinedIcon,
+            icon: CollectionsBookmarkIcon,
+            iconOutlined: CollectionsBookmarkOutlinedIcon,
         },
         {
             labelKey: 'notifications',

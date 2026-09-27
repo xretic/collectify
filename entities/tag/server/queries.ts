@@ -1,5 +1,5 @@
 import 'server-only';
-import { db, type Tx } from '@/shared/server/db';
+import { db, escapeLike, type Tx } from '@/shared/server/db';
 import { badRequest } from '@/shared/server/http';
 import { COLLECTION_TAGS_LIMIT, TAG_SEARCH_LIMIT } from '@/shared/lib/constants';
 import { normalizeTagName } from '../model/schemas';
@@ -13,8 +13,6 @@ export function findTag(tagId: number): Promise<Tag | null> {
         select: { ...tagRefSelect, categoryId: true, usageCount: true },
     });
 }
-
-const escapeLike = (value: string) => value.replace(/[\\%_]/g, (char) => `\\${char}`);
 
 /**
  * Tag suggestions inside one category, or across all of them when

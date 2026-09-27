@@ -1,5 +1,6 @@
 .header {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1100;
 }
 
@@ -13,18 +14,6 @@
     padding: 0 10px;
     background-color: var(--container-color);
     border-bottom: 1px solid var(--border-color);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    min-width: 0;
-}
-
-.drawerToggle {
-    display: none !important;
-    color: var(--text-color) !important;
 }
 
 .logo {
@@ -74,25 +63,27 @@
     gap: 8px;
 }
 
-.drawer {
-    background-color: var(--bg-color) !important;
-}
-
-.drawerList {
-    width: 260px;
-}
-
+/* Tablets: icons only. */
 @media (max-width: 1200px) {
-    .links {
+    .linkLabel {
         display: none;
     }
 
-    .drawerToggle {
-        display: inline-flex !important;
+    .search {
+        width: 44px;
     }
 
-    /* The menu button replaces the logo; Home is the first item in the drawer. */
-    .brand:has(.drawerToggle) .logo {
+    .search > span,
+    .search > kbd {
         display: none;
+    }
+}
+
+/* Phones: Home, Search, Create and Notifications move to the bottom tab bar. */
+@media (max-width: 899px) {
+    .links,
+    .search,
+    .desktopOnly {
+        display: none !important;
     }
 }

@@ -41,6 +41,13 @@ export function useCollectionListParams() {
     const [queryInput, setQueryInput] = useState(urlQuery);
     const debouncedQuery = useDebounce(queryInput.trim());
 
+    // The URL can also change from outside (global search, back button): follow it.
+    const [syncedQuery, setSyncedQuery] = useState(urlQuery);
+    if (urlQuery !== syncedQuery) {
+        setSyncedQuery(urlQuery);
+        setQueryInput(urlQuery);
+    }
+
     const update = useCallback(
         (changes: Record<string, string | number | undefined>, resetPage = true) => {
             const next = new URLSearchParams(searchParams.toString());
@@ -58,9 +65,12 @@ export function useCollectionListParams() {
         [pathname, router, searchParams],
     );
 
+    // Only once the debounce settled: a stale value would undo an outside change.
+    const settled = debouncedQuery === queryInput.trim();
+
     useEffect(() => {
-        if (debouncedQuery !== urlQuery) update({ q: debouncedQuery });
-    }, [debouncedQuery, urlQuery, update]);
+        if (settled && debouncedQuery !== urlQuery) update({ q: debouncedQuery });
+    }, [settled, debouncedQuery, urlQuery, update]);
 
     return {
         sort,

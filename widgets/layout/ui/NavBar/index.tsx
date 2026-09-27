@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,20 +8,39 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Badge, Button, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import { sessionUserQueryKey, useSessionUser } from '@/entities/user/model/useSessionUser';
 import { useRealtimeEvent } from '@/shared/lib/realtime/RealtimeProvider';
 import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
-import UserSearchBar from '../UserSearchBar';
+import { GlobalSearch } from '@/widgets/global-search/ui/GlobalSearch';
 import { UserMenu } from '../UserMenu';
 import { ImpersonationBanner } from '../ImpersonationBanner';
 import { VerifyEmailBanner } from '../VerifyEmailBanner';
+import { MobileTabBar } from '../MobileTabBar';
+import { SearchTrigger } from '../SearchTrigger';
 import { getNavItems } from './navItems';
 import { NavItemIcon } from './NavItemIcon';
-import { NavDrawer } from './NavDrawer';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
+
+/** Publishes the header's height (banners included) as `--header-height` for sticky / full-height layouts. */
+function useHeaderHeight() {
+    const ref = useRef<HTMLElement>(null);
+
+    useEffect(() => {
+        const header = ref.current;
+        if (!header) return;
+
+        const observer = new ResizeObserver(([entry]) => {
+            const height = Math.round(entry.borderBoxSize[0]?.blockSize ?? header.offsetHeight);
+            document.documentElement.style.setProperty('--header-height', `${height}px`);
+        });
+
+        observer.observe(header);
+        return () => observer.disconnect();
+    }, []);
+
+    return ref;
+}
 
 export default function NavBar() {
     const t = useTranslations('nav');
@@ -30,8 +49,7 @@ export default function NavBar() {
     const queryClient = useQueryClient();
     const { user, loading, setUser } = useSessionUser();
     const activeChatId = useActiveChatStore((state) => state.activeChatId);
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [searchOpen, setSearchOpen] = useState(false);
+    const headerRef = useHeaderHeight();
 
     const items = getNavItems(user);
 
@@ -48,113 +66,92 @@ export default function NavBar() {
     });
 
     return (
-        <header className={styles.header}>
-            {user?.impersonatorUserId && <ImpersonationBanner username={user.username} />}
-            {user?.email && !user.emailVerified && !user.impersonatorUserId && (
-                <VerifyEmailBanner email={user.email} />
-            )}
+        <>
+            <header ref={headerRef} className={styles.header}>
+                {user?.impersonatorUserId && <ImpersonationBanner username={user.username} />}
+                {user?.email && !user.emailVerified && !user.impersonatorUserId && (
+                    <VerifyEmailBanner email={user.email} />
+                )}
 
-            <nav className={styles.bar}>
-                <div className={styles.brand}>
-                    {user && (
-                        <IconButton
-                            className={styles.drawerToggle}
-                            onClick={() => setDrawerOpen(true)}
-                            aria-label={t('openMenu')}
-                        >
-                            <Badge color="error" variant="dot" invisible={!user.notifications}>
-                                <MenuIcon />
-                            </Badge>
-                        </IconButton>
-                    )}
-
+                <nav className={styles.bar}>
                     <Link href="/" className={styles.logo}>
                         <Image src="/icon.svg" alt="" width={35} height={35} priority />
                         <span className={styles.title}>Collectify</span>
                     </Link>
-                </div>
 
-                {user && (
-                    <div className={styles.links}>
-                        {items.map((item) => {
-                            const active = pathname === item.href;
+                    {user && (
+                        <div className={styles.links}>
+                            {items.map((item) => {
+                                const active = pathname === item.href;
 
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`${styles.link} ${active ? styles.linkActive : ''}`}
-                                    aria-current={active ? 'page' : undefined}
-                                >
-                                    <NavItemIcon item={item} active={active} />
-                                    <span>{t(item.labelKey)}</span>
-                                </Link>
-                            );
-                        })}
-                    </div>
-                )}
-
-                <div className={styles.actions}>
-                    {user && searchOpen && <UserSearchBar onClose={() => setSearchOpen(false)} />}
-
-                    {user && !searchOpen && (
-                        <>
-                            <Tooltip title={t('createCollection')}>
-                                <IconButton
-                                    component={Link}
-                                    href="/collections/create"
-                                    aria-label={t('createCollection')}
-                                >
-                                    <AddIcon />
-                                </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title={t('chats')}>
-                                <IconButton component={Link} href="/chats" aria-label={t('chats')}>
-                                    <Badge
-                                        badgeContent={user.unreadMessages}
-                                        max={99}
-                                        color="error"
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={`${styles.link} ${active ? styles.linkActive : ''}`}
+                                        aria-current={active ? 'page' : undefined}
+                                        title={t(item.labelKey)}
                                     >
-                                        <EmailOutlinedIcon />
-                                    </Badge>
-                                </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title={t('findUser')}>
-                                <IconButton
-                                    onClick={() => setSearchOpen(true)}
-                                    aria-label={t('findUser')}
-                                >
-                                    <SearchIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </>
-                    )}
-
-                    {user && <UserMenu user={user} />}
-
-                    {!user && !loading && (
-                        <div className={styles.auth}>
-                            <Button variant="contained" component={Link} href="/auth/login">
-                                {ta('login')}
-                            </Button>
-                            <Button variant="outlined" component={Link} href="/auth/register">
-                                {ta('register')}
-                            </Button>
+                                        <NavItemIcon item={item} active={active} />
+                                        <span className={styles.linkLabel}>{t(item.labelKey)}</span>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     )}
-                </div>
-            </nav>
 
-            {user && (
-                <NavDrawer
-                    open={drawerOpen}
-                    items={items}
-                    pathname={pathname}
-                    onClose={() => setDrawerOpen(false)}
-                />
-            )}
-        </header>
+                    <div className={styles.actions}>
+                        <SearchTrigger className={styles.search} />
+
+                        {user && (
+                            <>
+                                <Tooltip title={t('createCollection')}>
+                                    <IconButton
+                                        component={Link}
+                                        href="/collections/create"
+                                        aria-label={t('createCollection')}
+                                        className={styles.desktopOnly}
+                                    >
+                                        <AddIcon />
+                                    </IconButton>
+                                </Tooltip>
+
+                                <Tooltip title={t('chats')}>
+                                    <IconButton
+                                        component={Link}
+                                        href="/chats"
+                                        aria-label={t('chats')}
+                                    >
+                                        <Badge
+                                            badgeContent={user.unreadMessages}
+                                            max={99}
+                                            color="error"
+                                        >
+                                            <EmailOutlinedIcon />
+                                        </Badge>
+                                    </IconButton>
+                                </Tooltip>
+
+                                <UserMenu user={user} />
+                            </>
+                        )}
+
+                        {!user && !loading && (
+                            <div className={styles.auth}>
+                                <Button variant="contained" component={Link} href="/auth/register">
+                                    {ta('register')}
+                                </Button>
+                                <Button variant="outlined" component={Link} href="/auth/login">
+                                    {ta('login')}
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </nav>
+            </header>
+
+            <MobileTabBar user={user} loading={loading} />
+            <GlobalSearch />
+        </>
     );
 }

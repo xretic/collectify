@@ -92,6 +92,23 @@ body {
     flex: 1 0 auto;
 }
 
+/*
+ * Chrome sizes, for sticky and full-height layouts. The navbar keeps
+ * `--header-height` up to date (banners change it); the tab bar only
+ * exists on phones and only on screens that show it.
+ */
+:root {
+    --header-height: 50px;
+    --tabbar-height: 0px;
+}
+
+@media (max-width: 899px) {
+    body:has([data-tabbar]) {
+        --tabbar-height: calc(60px + env(safe-area-inset-bottom));
+        padding-bottom: var(--tabbar-height);
+    }
+}
+
 /* ---------------------------------------------------------------------------
    Scrollbars
    --------------------------------------------------------------------------- */

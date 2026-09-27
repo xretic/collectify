@@ -2,6 +2,7 @@
 
 import { Alert, Snackbar } from '@mui/material';
 import { useToastStore } from '@/shared/model/toastStore';
+import styles from './index.module.css';
 
 /** Renders the latest toast. Mounted once in the root layout. */
 export function Toaster() {
@@ -15,6 +16,7 @@ export function Toaster() {
             autoHideDuration={5000}
             onClose={(_, reason) => reason !== 'clickaway' && dismiss()}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            className={styles.snackbar}
         >
             <Alert severity={current?.severity ?? 'info'} variant="filled" onClose={dismiss}>
                 {current?.message}
