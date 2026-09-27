@@ -164,7 +164,7 @@
         "creatingAccount": "Vytváření účtu…",
         "usernameHint": "Malá písmena, číslice, „_“ a „.“",
         "passwordHint": "Alespoň {min} znaků",
-        "loginSubtitle": "Zadejte své údaje pro přístup k účtu.",
+        "loginSubtitle": "Přihlaste se ke svým sbírkám, nástěnkám a chatům.",
         "registerSubtitle": "Vytvořte si účet a začněte sbírat.",
         "noAccount": "Ještě nemáte účet? <link>Zaregistrujte se</link>",
         "haveAccount": "Už máte účet? <link>Přihlaste se</link>",
@@ -206,8 +206,12 @@
             "sent": "Nový odkaz je na cestě na {email}."
         },
         "continueWith": "Pokračovat přes {provider}",
-        "languageHint": "Později ho můžete změnit v nastavení.",
-        "orContinueWith": "nebo pokračujte přes"
+        "orEmail": "nebo e-mailem",
+        "showPassword": "Zobrazit heslo",
+        "hidePassword": "Skrýt heslo",
+        "createAccount": "Vytvořit účet",
+        "loginTitle": "Vítejte zpět",
+        "registerTitle": "Přidejte se ke Collectify"
     },
     "common": {
         "cancel": "Zrušit",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "Vyberte ještě {count}",
         "continue": "Pokračovat",
-        "title": "Co vás baví?",
-        "subtitle": "Vyberte pár kategorií a my vám přizpůsobíme kanál. Později je můžete změnit v nastavení."
+        "progress": "Krok {step} z {total}",
+        "noCreators": "Zatím žádné tipy - lidi najdete při procházení.",
+        "toFeed": "Přejít do kanálu",
+        "createFirst": "Vytvořit první sbírku",
+        "steps": {
+            "interests": {
+                "title": "Co vás baví?",
+                "subtitle": "Vyberte pár kategorií a přizpůsobíme vám kanál. Později je můžete změnit v nastavení."
+            },
+            "creators": {
+                "title": "Sledujte pár sběratelů",
+                "subtitle": "Jejich nové sbírky uvidíte v kanálu jako první. Sledujte kolik chcete."
+            },
+            "start": {
+                "title": "Založte první sbírku",
+                "subtitle": "Vyberte nápad a začněte - název můžete změnit a přidat cokoli."
+            }
+        },
+        "ideas": {
+            "books": "Moje nejoblíbenější knihy",
+            "movies": "Filmy, ke kterým se vracím",
+            "games": "Hry, které formovaly mé dětství",
+            "music": "Alba, která pořád poslouchám",
+            "travel": "Místa, která chci navštívit",
+            "recipes": "Recepty, ke kterým se vracím",
+            "anime": "Anime, které doporučím každému",
+            "tvShows": "Seriály, které stojí za maraton",
+            "tech": "Můj pracovní stůl",
+            "fashion": "Můj každodenní šatník",
+            "art": "Umění, které mi utkvělo",
+            "fitness": "Moje výbava na cvičení",
+            "topTen": "Moje top 10 všech dob",
+            "thisYear": "Co chci letos vyzkoušet",
+            "gifts": "Dárky, které bych rád dostal"
+        }
     },
     "privacy": {
         "title": "Zásady ochrany osobních údajů",

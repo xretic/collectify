@@ -3,10 +3,11 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import { authApi } from '@/entities/auth/api/authApi';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { PasswordField } from '@/shared/ui/PasswordField';
 import { newPasswordSchema } from '../../model/schemas';
 import { useAuthSuccess } from '../../model/useAuthSuccess';
 import styles from '../authForm.module.css';
@@ -40,9 +41,8 @@ export function ResetPasswordForm({ token }: { token: string }) {
             onSubmit={handleSubmit((values) => reset.mutate(values))}
             noValidate
         >
-            <TextField
+            <PasswordField
                 {...register('password')}
-                type="password"
                 label={t('password')}
                 autoComplete="new-password"
                 autoFocus
@@ -51,9 +51,8 @@ export function ResetPasswordForm({ token }: { token: string }) {
                 fullWidth
             />
 
-            <TextField
+            <PasswordField
                 {...register('confirmPassword')}
-                type="password"
                 label={t('confirmPassword')}
                 autoComplete="new-password"
                 error={Boolean(formState.errors.confirmPassword)}

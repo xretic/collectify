@@ -164,7 +164,7 @@
         "creatingAccount": "アカウントを作成中…",
         "usernameHint": "小文字、数字、「_」と「.」",
         "passwordHint": "{min} 文字以上",
-        "loginSubtitle": "アカウントにアクセスするには認証情報を入力してください。",
+        "loginSubtitle": "コレクション、ボード、チャットにログインしましょう。",
         "registerSubtitle": "アカウントを作成してコレクションを始めましょう。",
         "noAccount": "アカウントをお持ちでない方は <link>新規登録</link>",
         "haveAccount": "すでにアカウントをお持ちの方は <link>ログイン</link>",
@@ -206,8 +206,12 @@
             "sent": "{email} に新しいリンクを送信しました。"
         },
         "continueWith": "{provider}で続ける",
-        "languageHint": "あとで設定から変更できます。",
-        "orContinueWith": "または次の方法で続行"
+        "orEmail": "またはメールで",
+        "showPassword": "パスワードを表示",
+        "hidePassword": "パスワードを隠す",
+        "createAccount": "アカウントを作成",
+        "loginTitle": "おかえりなさい",
+        "registerTitle": "Collectify に参加"
     },
     "common": {
         "cancel": "キャンセル",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "あと {count} つ選択",
         "continue": "続ける",
-        "title": "何に興味がありますか？",
-        "subtitle": "カテゴリをいくつか選ぶと、フィードをあなた向けに調整します。あとで設定から変更できます。"
+        "progress": "ステップ {step}/{total}",
+        "noCreators": "まだおすすめはありません。見て回るうちに見つかります。",
+        "toFeed": "フィードへ",
+        "createFirst": "最初のコレクションを作る",
+        "steps": {
+            "interests": {
+                "title": "どんなことに興味がありますか？",
+                "subtitle": "いくつかカテゴリを選ぶと、フィードをあなた向けに調整します。あとから設定で変更できます。"
+            },
+            "creators": {
+                "title": "コレクターをフォローしよう",
+                "subtitle": "フォローした人の新しいコレクションがフィードに優先して表示されます。何人でもフォローできます。"
+            },
+            "start": {
+                "title": "最初のコレクションを作ろう",
+                "subtitle": "アイデアを選んで始めましょう。名前は変更でき、何でも追加できます。"
+            }
+        },
+        "ideas": {
+            "books": "何度でも読みたい好きな本",
+            "movies": "何度も観たくなる映画",
+            "games": "子どもの頃に夢中だったゲーム",
+            "music": "ヘビロテ中のアルバム",
+            "travel": "行ってみたい場所",
+            "recipes": "いつも作るレシピ",
+            "anime": "誰にでもすすめたいアニメ",
+            "tvShows": "一気見したいドラマ",
+            "tech": "私のデスク環境",
+            "fashion": "毎日のワードローブ",
+            "art": "心に残ったアート",
+            "fitness": "トレーニングの必需品",
+            "topTen": "私の歴代トップ10",
+            "thisYear": "今年やってみたいこと",
+            "gifts": "もらえたら嬉しいギフト"
+        }
     },
     "privacy": {
         "title": "プライバシーポリシー",

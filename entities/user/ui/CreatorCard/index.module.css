@@ -1,0 +1,73 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+}
+
+/* One to three covers side by side, like a board preview. */
+.covers {
+    display: flex;
+    gap: 2px;
+    height: 120px;
+    background-color: var(--border-color);
+}
+
+.cover {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    object-fit: cover;
+}
+
+.body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px;
+}
+
+.identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.avatar {
+    width: 40px !important;
+    height: 40px !important;
+}
+
+.names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.name,
+.meta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.name {
+    font-weight: 600;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.heart {
+    font-size: 13px !important;
+    color: var(--danger);
+}

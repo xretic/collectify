@@ -4,6 +4,7 @@ export const userQueryKeys = {
     follows: (userId: number, kind: 'followers' | 'following') =>
         [...userQueryKeys.allFollows(), userId, kind] as const,
     interests: () => ['users', 'me', 'interests'] as const,
+    creators: (categoryIds: number[]) => ['users', 'creators', categoryIds] as const,
     allSuggestions: () => ['users', 'suggestions'] as const,
     suggestions: (take: number) => [...userQueryKeys.allSuggestions(), take] as const,
 };

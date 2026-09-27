@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Step, StepLabel, Stepper } from '@mui/material';
 import { collectionApi } from '@/entities/collection/api/collectionApi';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { CategorySelect } from '@/entities/category/ui/CategorySelect';
+import { useCategories } from '@/entities/category/model/useCategories';
 import { TagPicker } from '@/features/tag/pick/ui/TagPicker';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
@@ -20,6 +21,7 @@ import {
 } from '@/entities/collection/model/drafts';
 import { CollectionDetailsFields } from '@/entities/collection/ui/CollectionDetailsFields';
 import { ItemFormFields } from '@/entities/collection/ui/ItemFormFields';
+import { COLLECTION_NAME_MAX_LENGTH } from '@/shared/lib/constants';
 import styles from './CreateCollectionPage.module.css';
 import { useTranslations } from 'next-intl';
 
@@ -31,9 +33,19 @@ export default function CreateCollectionPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
 
+    const searchParams = useSearchParams();
+    const { bySlug } = useCategories();
     const [step, setStep] = useState(0);
-    const [details, setDetails] = useState<CollectionDraft>(emptyCollectionDraft);
+    // `?name=` / `?category=` prefill the form (collection ideas from onboarding).
+    const [draft, setDetails] = useState<CollectionDraft>(() => ({
+        ...emptyCollectionDraft,
+        name: searchParams.get('name')?.slice(0, COLLECTION_NAME_MAX_LENGTH) ?? '',
+    }));
     const [item, setItem] = useState<ItemDraft>(emptyItemDraft);
+
+    // The suggested category applies until the user picks one (categories load after the page).
+    const suggestedCategory = bySlug.get(searchParams.get('category') ?? '')?.id ?? null;
+    const details = { ...draft, categoryId: draft.categoryId ?? suggestedCategory };
 
     const detailsPayload = toCollectionPayload(details);
     const itemPayload = toItemPayload(item);

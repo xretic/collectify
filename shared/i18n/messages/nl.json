@@ -164,7 +164,7 @@
         "creatingAccount": "Account wordt gemaakt…",
         "usernameHint": "Kleine letters, cijfers, ‘_’ en ‘.’",
         "passwordHint": "Minstens {min} tekens",
-        "loginSubtitle": "Voer je gegevens in om toegang te krijgen tot je account.",
+        "loginSubtitle": "Log in voor je collecties, borden en chats.",
         "registerSubtitle": "Maak een account om te beginnen met verzamelen.",
         "noAccount": "Nog geen account? <link>Registreer je</link>",
         "haveAccount": "Heb je al een account? <link>Log in</link>",
@@ -206,8 +206,12 @@
             "sent": "Er is een nieuwe link onderweg naar {email}."
         },
         "continueWith": "Doorgaan met {provider}",
-        "languageHint": "Je kunt dit later wijzigen in de instellingen.",
-        "orContinueWith": "of ga verder met"
+        "orEmail": "of met e-mail",
+        "showPassword": "Wachtwoord tonen",
+        "hidePassword": "Wachtwoord verbergen",
+        "createAccount": "Account aanmaken",
+        "loginTitle": "Welkom terug",
+        "registerTitle": "Word lid van Collectify"
     },
     "common": {
         "cancel": "Annuleren",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "Kies er nog {count}",
         "continue": "Doorgaan",
-        "title": "Waar ben je in geïnteresseerd?",
-        "subtitle": "Kies een paar categorieën en we stemmen je feed erop af. Je kunt ze later wijzigen in de instellingen."
+        "progress": "Stap {step} van {total}",
+        "noCreators": "Nog geen suggesties - je vindt mensen terwijl je rondkijkt.",
+        "toFeed": "Naar mijn feed",
+        "createFirst": "Mijn eerste collectie maken",
+        "steps": {
+            "interests": {
+                "title": "Waar hou je van?",
+                "subtitle": "Kies een paar categorieën en we stemmen je feed erop af. Je kunt ze later wijzigen in de instellingen."
+            },
+            "creators": {
+                "title": "Volg een paar verzamelaars",
+                "subtitle": "Hun nieuwe collecties verschijnen als eerste in je feed. Volg er zoveel als je wilt."
+            },
+            "start": {
+                "title": "Begin je eerste collectie",
+                "subtitle": "Kies een idee om te beginnen - je kunt de naam aanpassen en alles toevoegen."
+            }
+        },
+        "ideas": {
+            "books": "Mijn favoriete boeken ooit",
+            "movies": "Films die ik steeds opnieuw kijk",
+            "games": "Games die mijn jeugd bepaalden",
+            "music": "Albums die ik grijsdraai",
+            "travel": "Plekken die ik wil bezoeken",
+            "recipes": "Recepten waar ik altijd op terugval",
+            "anime": "Anime die ik iedereen aanraad",
+            "tvShows": "Series om te bingewatchen",
+            "tech": "Mijn bureau-setup",
+            "fashion": "Mijn dagelijkse garderobe",
+            "art": "Kunst die me is bijgebleven",
+            "fitness": "Mijn sportessentials",
+            "topTen": "Mijn top 10 aller tijden",
+            "thisYear": "Wat ik dit jaar wil proberen",
+            "gifts": "Cadeau-ideeën voor mezelf"
+        }
     },
     "privacy": {
         "title": "Privacybeleid",

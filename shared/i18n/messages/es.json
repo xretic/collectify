@@ -164,7 +164,7 @@
         "creatingAccount": "Creando la cuenta…",
         "usernameHint": "Minúsculas, números, «_» y «.»",
         "passwordHint": "Al menos {min} caracteres",
-        "loginSubtitle": "Introduce tus credenciales para acceder a tu cuenta.",
+        "loginSubtitle": "Inicia sesión para ver tus colecciones, tableros y chats.",
         "registerSubtitle": "Crea una cuenta para empezar a coleccionar.",
         "noAccount": "¿Aún no tienes cuenta? <link>Regístrate</link>",
         "haveAccount": "¿Ya tienes una cuenta? <link>Inicia sesión</link>",
@@ -206,8 +206,12 @@
             "sent": "Hemos enviado un enlace nuevo a {email}."
         },
         "continueWith": "Continuar con {provider}",
-        "languageHint": "Puedes cambiarlo más tarde en los ajustes.",
-        "orContinueWith": "o continúa con"
+        "orEmail": "o con correo",
+        "showPassword": "Mostrar contraseña",
+        "hidePassword": "Ocultar contraseña",
+        "createAccount": "Crear cuenta",
+        "loginTitle": "Hola de nuevo",
+        "registerTitle": "Únete a Collectify"
     },
     "common": {
         "cancel": "Cancelar",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "Elige {count} más",
         "continue": "Continuar",
-        "title": "¿Qué te interesa?",
-        "subtitle": "Elige algunas categorías y adaptaremos tu feed. Podrás cambiarlas más tarde en los ajustes."
+        "progress": "Paso {step} de {total}",
+        "noCreators": "Aún no hay sugerencias: encontrarás gente mientras exploras.",
+        "toFeed": "Ir a mi feed",
+        "createFirst": "Crear mi primera colección",
+        "steps": {
+            "interests": {
+                "title": "¿Qué te gusta?",
+                "subtitle": "Elige algunas categorías y adaptaremos tu feed. Puedes cambiarlas más tarde en ajustes."
+            },
+            "creators": {
+                "title": "Sigue a algunos coleccionistas",
+                "subtitle": "Sus nuevas colecciones aparecerán primero en tu feed. Sigue a tantos como quieras."
+            },
+            "start": {
+                "title": "Crea tu primera colección",
+                "subtitle": "Elige una idea para empezar: puedes cambiarle el nombre y añadir lo que quieras."
+            }
+        },
+        "ideas": {
+            "books": "Mis libros favoritos de siempre",
+            "movies": "Películas que siempre vuelvo a ver",
+            "games": "Juegos que marcaron mi infancia",
+            "music": "Discos que no dejo de escuchar",
+            "travel": "Lugares que quiero visitar",
+            "recipes": "Recetas a las que siempre vuelvo",
+            "anime": "Anime que recomendaría a cualquiera",
+            "tvShows": "Series para maratonear",
+            "tech": "Mi escritorio",
+            "fashion": "Mi armario del día a día",
+            "art": "Arte que se me quedó grabado",
+            "fitness": "Lo imprescindible para entrenar",
+            "topTen": "Mi top 10 de todos los tiempos",
+            "thisYear": "Cosas que quiero probar este año",
+            "gifts": "Regalos que me encantaría recibir"
+        }
     },
     "privacy": {
         "title": "Política de privacidad",

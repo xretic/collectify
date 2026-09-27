@@ -8,6 +8,7 @@ import { Button, TextField } from '@mui/material';
 import { authApi } from '@/entities/auth/api/authApi';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { PasswordField } from '@/shared/ui/PasswordField';
 import { loginSchema } from '../../model/schemas';
 import { useAuthSuccess } from '../../model/useAuthSuccess';
 import styles from '../authForm.module.css';
@@ -47,9 +48,8 @@ export function LoginForm() {
                 fullWidth
             />
 
-            <TextField
+            <PasswordField
                 {...register('password')}
-                type="password"
                 label={t('password')}
                 autoComplete="current-password"
                 error={Boolean(formState.errors.password)}

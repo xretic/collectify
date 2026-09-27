@@ -164,7 +164,7 @@
         "creatingAccount": "正在创建账号…",
         "usernameHint": "小写字母、数字、“_” 和 “.”",
         "passwordHint": "至少 {min} 个字符",
-        "loginSubtitle": "输入你的账号信息以登录。",
+        "loginSubtitle": "登录查看你的收藏集、看板和聊天。",
         "registerSubtitle": "创建账号，开始你的收藏。",
         "noAccount": "还没有账号？<link>注册</link>",
         "haveAccount": "已有账号？<link>登录</link>",
@@ -206,8 +206,12 @@
             "sent": "新链接已发送至 {email}。"
         },
         "continueWith": "使用 {provider} 继续",
-        "languageHint": "之后可以在设置中更改。",
-        "orContinueWith": "或使用以下方式继续"
+        "orEmail": "或使用邮箱",
+        "showPassword": "显示密码",
+        "hidePassword": "隐藏密码",
+        "createAccount": "创建账号",
+        "loginTitle": "欢迎回来",
+        "registerTitle": "加入 Collectify"
     },
     "common": {
         "cancel": "取消",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "再选 {count} 个",
         "continue": "继续",
-        "title": "你对什么感兴趣？",
-        "subtitle": "选几个分类，我们会为你定制信息流。之后可以在设置中更改。"
+        "progress": "第 {step} 步，共 {total} 步",
+        "noCreators": "暂时没有推荐 - 多逛逛就能找到感兴趣的人。",
+        "toFeed": "前往我的信息流",
+        "createFirst": "创建我的第一个收藏集",
+        "steps": {
+            "interests": {
+                "title": "你喜欢什么？",
+                "subtitle": "选择几个分类，我们会为你定制信息流。之后可以在设置中更改。"
+            },
+            "creators": {
+                "title": "关注几位收藏家",
+                "subtitle": "他们的新收藏集会优先出现在你的信息流中。想关注多少都可以。"
+            },
+            "start": {
+                "title": "创建你的第一个收藏集",
+                "subtitle": "选一个灵感开始吧 - 名称可以修改，内容随你添加。"
+            }
+        },
+        "ideas": {
+            "books": "我最爱的书",
+            "movies": "百看不厌的电影",
+            "games": "陪伴我童年的游戏",
+            "music": "单曲循环的专辑",
+            "travel": "想去的地方",
+            "recipes": "反复做的菜谱",
+            "anime": "推荐给所有人的动画",
+            "tvShows": "值得一口气看完的剧",
+            "tech": "我的桌面布置",
+            "fashion": "我的日常衣橱",
+            "art": "让我难忘的艺术作品",
+            "fitness": "我的健身必备",
+            "topTen": "我心中的十佳",
+            "thisYear": "今年想尝试的事",
+            "gifts": "想收到的礼物"
+        }
     },
     "privacy": {
         "title": "隐私政策",

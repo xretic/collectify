@@ -164,7 +164,7 @@
         "creatingAccount": "Création du compte…",
         "usernameHint": "Minuscules, chiffres, « _ » et « . »",
         "passwordHint": "Au moins {min} caractères",
-        "loginSubtitle": "Saisissez vos identifiants pour accéder à votre compte.",
+        "loginSubtitle": "Connectez-vous pour retrouver vos collections, tableaux et discussions.",
         "registerSubtitle": "Créez un compte pour commencer à collectionner.",
         "noAccount": "Pas encore de compte ? <link>S’inscrire</link>",
         "haveAccount": "Vous avez déjà un compte ? <link>Se connecter</link>",
@@ -206,8 +206,12 @@
             "sent": "Un nouveau lien est en route vers {email}."
         },
         "continueWith": "Continuer avec {provider}",
-        "languageHint": "Vous pourrez la changer plus tard dans les paramètres.",
-        "orContinueWith": "ou continuer avec"
+        "orEmail": "ou par e-mail",
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Masquer le mot de passe",
+        "createAccount": "Créer un compte",
+        "loginTitle": "Bon retour",
+        "registerTitle": "Rejoignez Collectify"
     },
     "common": {
         "cancel": "Annuler",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "Encore {count} à choisir",
         "continue": "Continuer",
-        "title": "Qu’est-ce qui vous intéresse ?",
-        "subtitle": "Choisissez quelques catégories et nous adapterons votre fil. Vous pourrez les modifier plus tard dans les paramètres."
+        "progress": "Étape {step} sur {total}",
+        "noCreators": "Pas encore de suggestions - vous trouverez des gens en explorant.",
+        "toFeed": "Aller à mon fil",
+        "createFirst": "Créer ma première collection",
+        "steps": {
+            "interests": {
+                "title": "Qu’est-ce qui vous plaît ?",
+                "subtitle": "Choisissez quelques catégories et nous adapterons votre fil. Vous pourrez les modifier dans les paramètres."
+            },
+            "creators": {
+                "title": "Suivez quelques collectionneurs",
+                "subtitle": "Leurs nouvelles collections apparaîtront en premier dans votre fil. Suivez-en autant que vous voulez."
+            },
+            "start": {
+                "title": "Créez votre première collection",
+                "subtitle": "Choisissez une idée pour démarrer - vous pourrez la renommer et y ajouter ce que vous voulez."
+            }
+        },
+        "ideas": {
+            "books": "Mes livres préférés de tous les temps",
+            "movies": "Les films que je revois sans me lasser",
+            "games": "Les jeux qui ont marqué mon enfance",
+            "music": "Les albums que j’écoute en boucle",
+            "travel": "Les lieux que je veux visiter",
+            "recipes": "Les recettes que je refais toujours",
+            "anime": "Des anime à recommander à tout le monde",
+            "tvShows": "Des séries à dévorer",
+            "tech": "Mon setup de bureau",
+            "fashion": "Ma garde-robe du quotidien",
+            "art": "Des œuvres qui m’ont marqué",
+            "fitness": "Mes indispensables pour le sport",
+            "topTen": "Mon top 10 de tous les temps",
+            "thisYear": "Ce que je veux essayer cette année",
+            "gifts": "Des idées de cadeaux pour moi"
+        }
     },
     "privacy": {
         "title": "Politique de confidentialité",

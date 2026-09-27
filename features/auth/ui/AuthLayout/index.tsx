@@ -24,14 +24,15 @@ export function AuthLayout({ title, subtitle, children, footer, oauth = true }: 
             <h1 className={styles.title}>{title}</h1>
             {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
 
-            <div className={styles.form}>{children}</div>
-
+            {/* One tap beats a form: providers first, email below. */}
             {oauth && (
-                <>
-                    <div className={styles.divider}>{t('orContinueWith')}</div>
-                    <OAuthButtons next={next} />
-                </>
+                <div className={styles.form}>
+                    <OAuthButtons next={next} layout="stack" />
+                    <div className={styles.divider}>{t('orEmail')}</div>
+                </div>
             )}
+
+            <div className={styles.form}>{children}</div>
 
             {footer && <p className={styles.footer}>{footer}</p>}
         </section>

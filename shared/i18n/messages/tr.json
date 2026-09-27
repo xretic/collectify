@@ -164,7 +164,7 @@
         "creatingAccount": "Hesap oluşturuluyor…",
         "usernameHint": "Küçük harfler, rakamlar, \"_\" ve \".\"",
         "passwordHint": "En az {min} karakter",
-        "loginSubtitle": "Hesabınıza erişmek için bilgilerinizi girin.",
+        "loginSubtitle": "Koleksiyonlarınıza, panolarınıza ve sohbetlerinize giriş yapın.",
         "registerSubtitle": "Koleksiyon yapmaya başlamak için bir hesap oluşturun.",
         "noAccount": "Hesabınız yok mu? <link>Kayıt olun</link>",
         "haveAccount": "Zaten hesabınız var mı? <link>Giriş yapın</link>",
@@ -206,8 +206,12 @@
             "sent": "{email} adresine yeni bir bağlantı gönderildi."
         },
         "continueWith": "{provider} ile devam et",
-        "languageHint": "Daha sonra ayarlardan değiştirebilirsiniz.",
-        "orContinueWith": "veya şununla devam et"
+        "orEmail": "ya da e-postayla",
+        "showPassword": "Şifreyi göster",
+        "hidePassword": "Şifreyi gizle",
+        "createAccount": "Hesap oluştur",
+        "loginTitle": "Tekrar hoş geldiniz",
+        "registerTitle": "Collectify’a katılın"
     },
     "common": {
         "cancel": "İptal",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "{count} tane daha seç",
         "continue": "Devam",
-        "title": "Nelerle ilgileniyorsun?",
-        "subtitle": "Birkaç kategori seç, akışını sana göre ayarlayalım. Daha sonra ayarlardan değiştirebilirsin."
+        "progress": "Adım {step}/{total}",
+        "noCreators": "Henüz öneri yok - keşfettikçe insanlar bulacaksınız.",
+        "toFeed": "Akışıma git",
+        "createFirst": "İlk koleksiyonumu oluştur",
+        "steps": {
+            "interests": {
+                "title": "Nelerle ilgileniyorsunuz?",
+                "subtitle": "Birkaç kategori seçin, akışınızı size göre ayarlayalım. Daha sonra ayarlardan değiştirebilirsiniz."
+            },
+            "creators": {
+                "title": "Birkaç koleksiyoncuyu takip edin",
+                "subtitle": "Yeni koleksiyonları akışınızda önce görünür. İstediğiniz kadar kişiyi takip edin."
+            },
+            "start": {
+                "title": "İlk koleksiyonunuzu başlatın",
+                "subtitle": "Başlamak için bir fikir seçin - adını değiştirebilir, istediğinizi ekleyebilirsiniz."
+            }
+        },
+        "ideas": {
+            "books": "Tüm zamanların en sevdiğim kitapları",
+            "movies": "Tekrar tekrar izlediğim filmler",
+            "games": "Çocukluğumu şekillendiren oyunlar",
+            "music": "Sürekli dinlediğim albümler",
+            "travel": "Gitmek istediğim yerler",
+            "recipes": "Hep döndüğüm tarifler",
+            "anime": "Herkese önereceğim animeler",
+            "tvShows": "Bir solukta izlenecek diziler",
+            "tech": "Masa düzenim",
+            "fashion": "Günlük gardırobum",
+            "art": "Aklımda kalan sanat eserleri",
+            "fitness": "Spor için olmazsa olmazlarım",
+            "topTen": "Tüm zamanların ilk 10’um",
+            "thisYear": "Bu yıl denemek istediklerim",
+            "gifts": "Almak istediğim hediyeler"
+        }
     },
     "privacy": {
         "title": "Gizlilik Politikası",

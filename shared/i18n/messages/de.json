@@ -164,7 +164,7 @@
         "creatingAccount": "Konto wird erstellt…",
         "usernameHint": "Kleinbuchstaben, Ziffern, „_“ und „.“",
         "passwordHint": "Mindestens {min} Zeichen",
-        "loginSubtitle": "Gib deine Zugangsdaten ein, um auf dein Konto zuzugreifen.",
+        "loginSubtitle": "Melde dich an, um zu deinen Sammlungen, Boards und Chats zu gelangen.",
         "registerSubtitle": "Erstelle ein Konto und fang an zu sammeln.",
         "noAccount": "Noch kein Konto? <link>Registrieren</link>",
         "haveAccount": "Du hast schon ein Konto? <link>Anmelden</link>",
@@ -206,8 +206,12 @@
             "sent": "Ein neuer Link ist an {email} unterwegs."
         },
         "continueWith": "Weiter mit {provider}",
-        "languageHint": "Du kannst sie später in den Einstellungen ändern.",
-        "orContinueWith": "oder weiter mit"
+        "orEmail": "oder mit E-Mail",
+        "showPassword": "Passwort anzeigen",
+        "hidePassword": "Passwort verbergen",
+        "createAccount": "Konto erstellen",
+        "loginTitle": "Willkommen zurück",
+        "registerTitle": "Werde Teil von Collectify"
     },
     "common": {
         "cancel": "Abbrechen",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "Noch {count} auswählen",
         "continue": "Weiter",
-        "title": "Was interessiert dich?",
-        "subtitle": "Wähle ein paar Kategorien und wir stimmen deinen Feed darauf ab. Du kannst sie später in den Einstellungen ändern."
+        "progress": "Schritt {step} von {total}",
+        "noCreators": "Noch keine Vorschläge - beim Stöbern findest du Leute.",
+        "toFeed": "Zu meinem Feed",
+        "createFirst": "Erste Sammlung erstellen",
+        "steps": {
+            "interests": {
+                "title": "Was interessiert dich?",
+                "subtitle": "Wähle ein paar Kategorien und wir stimmen deinen Feed darauf ab. Du kannst sie später in den Einstellungen ändern."
+            },
+            "creators": {
+                "title": "Folge ein paar Sammlern",
+                "subtitle": "Ihre neuen Sammlungen erscheinen zuerst in deinem Feed. Folge so vielen, wie du willst."
+            },
+            "start": {
+                "title": "Starte deine erste Sammlung",
+                "subtitle": "Wähle eine Idee zum Loslegen - du kannst sie umbenennen und alles hinzufügen."
+            }
+        },
+        "ideas": {
+            "books": "Meine Lieblingsbücher aller Zeiten",
+            "movies": "Wohlfühlfilme, die ich immer wieder schaue",
+            "games": "Spiele, die meine Kindheit geprägt haben",
+            "music": "Alben in Dauerschleife",
+            "travel": "Orte, die ich besuchen will",
+            "recipes": "Rezepte, zu denen ich immer zurückkehre",
+            "anime": "Anime, die ich jedem empfehle",
+            "tvShows": "Serien zum Durchschauen",
+            "tech": "Mein Schreibtisch-Setup",
+            "fashion": "Meine Alltagsgarderobe",
+            "art": "Kunst, die mir im Kopf geblieben ist",
+            "fitness": "Meine Trainings-Essentials",
+            "topTen": "Meine Top 10 aller Zeiten",
+            "thisYear": "Was ich dieses Jahr ausprobieren will",
+            "gifts": "Geschenkideen für mich"
+        }
     },
     "privacy": {
         "title": "Datenschutzerklärung",

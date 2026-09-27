@@ -5,6 +5,7 @@ import type {
     PublicUser,
     SessionUser,
     SuggestionsPage,
+    TopCreator,
 } from '@/entities/user/model/types';
 
 type UserResponse = { user: SessionUser };
@@ -33,6 +34,14 @@ export const userApi = {
 
     async setFeedTabOrder(order: string[]) {
         await api.put('users/me/feed-tabs', { json: { order } });
+    },
+
+    /** Popular authors in these categories, for new accounts to follow. */
+    async creators(categoryIds: number[]) {
+        const searchParams = categoryIds.length ? { categories: categoryIds.join(',') } : {};
+        return (
+            await api.get('users/creators', { searchParams }).json<{ creators: TopCreator[] }>()
+        ).creators;
     },
 
     async interests() {

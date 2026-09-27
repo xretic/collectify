@@ -164,7 +164,7 @@
         "creatingAccount": "A criar a conta…",
         "usernameHint": "Letras minúsculas, algarismos, «_» e «.»",
         "passwordHint": "Pelo menos {min} caracteres",
-        "loginSubtitle": "Introduza as suas credenciais para aceder à conta.",
+        "loginSubtitle": "Inicie sessão para aceder às suas coleções, quadros e conversas.",
         "registerSubtitle": "Crie uma conta para começar a colecionar.",
         "noAccount": "Ainda não tem conta? <link>Registe-se</link>",
         "haveAccount": "Já tem uma conta? <link>Inicie sessão</link>",
@@ -206,8 +206,12 @@
             "sent": "Uma nova ligação está a caminho de {email}."
         },
         "continueWith": "Continuar com {provider}",
-        "languageHint": "Pode alterá-lo mais tarde nas definições.",
-        "orContinueWith": "ou continue com"
+        "orEmail": "ou com e-mail",
+        "showPassword": "Mostrar palavra-passe",
+        "hidePassword": "Ocultar palavra-passe",
+        "createAccount": "Criar conta",
+        "loginTitle": "Bem-vindo de volta",
+        "registerTitle": "Junte-se ao Collectify"
     },
     "common": {
         "cancel": "Cancelar",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "Escolha mais {count}",
         "continue": "Continuar",
-        "title": "O que lhe interessa?",
-        "subtitle": "Escolha algumas categorias e adaptamos o seu feed. Pode alterá-las mais tarde nas definições."
+        "progress": "Passo {step} de {total}",
+        "noCreators": "Ainda sem sugestões - vai encontrar pessoas enquanto explora.",
+        "toFeed": "Ir para o meu feed",
+        "createFirst": "Criar a minha primeira coleção",
+        "steps": {
+            "interests": {
+                "title": "Do que gosta?",
+                "subtitle": "Escolha algumas categorias e adaptamos o seu feed. Pode alterá-las mais tarde nas definições."
+            },
+            "creators": {
+                "title": "Siga alguns colecionadores",
+                "subtitle": "As novas coleções deles aparecem primeiro no seu feed. Siga quantos quiser."
+            },
+            "start": {
+                "title": "Comece a sua primeira coleção",
+                "subtitle": "Escolha uma ideia para começar - pode mudar o nome e adicionar o que quiser."
+            }
+        },
+        "ideas": {
+            "books": "Os meus livros preferidos de sempre",
+            "movies": "Filmes que revejo sempre",
+            "games": "Jogos que marcaram a minha infância",
+            "music": "Álbuns em repetição",
+            "travel": "Lugares que quero visitar",
+            "recipes": "Receitas a que volto sempre",
+            "anime": "Anime que recomendaria a qualquer pessoa",
+            "tvShows": "Séries para ver de seguida",
+            "tech": "A minha secretária",
+            "fashion": "O meu guarda-roupa do dia a dia",
+            "art": "Arte que me ficou na memória",
+            "fitness": "Os meus essenciais de treino",
+            "topTen": "O meu top 10 de sempre",
+            "thisYear": "Coisas que quero experimentar este ano",
+            "gifts": "Ideias de presentes para mim"
+        }
     },
     "privacy": {
         "title": "Política de privacidade",

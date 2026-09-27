@@ -164,7 +164,7 @@
         "creatingAccount": "Creating account…",
         "usernameHint": "Lowercase letters, digits, \"_\" and \".\"",
         "passwordHint": "At least {min} characters",
-        "loginSubtitle": "Enter your credentials to access your account.",
+        "loginSubtitle": "Sign in to your collections, boards and chats.",
         "registerSubtitle": "Create an account to start collecting.",
         "noAccount": "No account yet? <link>Register</link>",
         "haveAccount": "Already have an account? <link>Login</link>",
@@ -206,8 +206,12 @@
             "sent": "A new link is on its way to {email}."
         },
         "continueWith": "Continue with {provider}",
-        "languageHint": "You can change it later in settings.",
-        "orContinueWith": "or continue with"
+        "orEmail": "or with email",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "createAccount": "Create account",
+        "loginTitle": "Welcome back",
+        "registerTitle": "Join Collectify"
     },
     "common": {
         "cancel": "Cancel",
@@ -936,8 +940,41 @@
     "onboarding": {
         "pickMore": "Pick {count} more",
         "continue": "Continue",
-        "title": "What are you into?",
-        "subtitle": "Pick a few categories and we’ll tailor your feed. You can change them later in settings."
+        "progress": "Step {step} of {total}",
+        "noCreators": "No suggestions yet - you’ll find people as you explore.",
+        "toFeed": "Go to my feed",
+        "createFirst": "Create my first collection",
+        "steps": {
+            "interests": {
+                "title": "What are you into?",
+                "subtitle": "Pick a few categories and we’ll tailor your feed. You can change them later in settings."
+            },
+            "creators": {
+                "title": "Follow a few collectors",
+                "subtitle": "Their new collections show up first in your feed. Follow as many as you like."
+            },
+            "start": {
+                "title": "Start your first collection",
+                "subtitle": "Pick an idea to get going - you can rename it and add anything you like."
+            }
+        },
+        "ideas": {
+            "books": "My all-time favorite books",
+            "movies": "Comfort movies I rewatch",
+            "games": "Games that shaped my childhood",
+            "music": "Albums on repeat",
+            "travel": "Places I want to visit",
+            "recipes": "Recipes I always come back to",
+            "anime": "Anime I’d recommend to anyone",
+            "tvShows": "Shows worth binge-watching",
+            "tech": "My desk setup",
+            "fashion": "My everyday wardrobe",
+            "art": "Art that stuck with me",
+            "fitness": "My workout essentials",
+            "topTen": "My top 10 of all time",
+            "thisYear": "Things I want to try this year",
+            "gifts": "Gift ideas I’d love to get"
+        }
     },
     "privacy": {
         "title": "Privacy Policy",

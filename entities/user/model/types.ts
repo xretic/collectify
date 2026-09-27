@@ -62,6 +62,17 @@ export type PublicUser = {
     roles: UserRole[];
 };
 
+/** A popular author suggested to new accounts (onboarding). */
+export type TopCreator = UserPreview & {
+    fullName: string;
+    /** Covers of their most liked collections (up to 3). */
+    covers: string[];
+    /** Likes on those collections. */
+    likes: number;
+    /** Always `false` from the server; flips in the cache when followed. */
+    isFollowed: boolean;
+};
+
 /** A "people you may know" suggestion and why it was made. */
 export type SuggestedUser = UserPreview & {
     fullName: string;

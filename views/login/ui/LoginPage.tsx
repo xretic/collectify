@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     return (
         <AuthLayout
-            title={t('login')}
+            title={t('loginTitle')}
             subtitle={t('loginSubtitle')}
             footer={t.rich('noAccount', {
                 link: (chunks) => <Link href={withNext('/auth/register', next)}>{chunks}</Link>,
