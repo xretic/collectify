@@ -141,7 +141,12 @@ const themeOptions: ThemeOptions = {
             },
         },
         MuiFormHelperText: {
-            styleOverrides: { root: { color: 'var(--soft-text)' } },
+            styleOverrides: {
+                root: {
+                    color: 'var(--soft-text)',
+                    '&.Mui-disabled': { color: 'var(--soft-text)' },
+                },
+            },
         },
         MuiSelect: {
             styleOverrides: { icon: { color: 'var(--soft-text)' } },
