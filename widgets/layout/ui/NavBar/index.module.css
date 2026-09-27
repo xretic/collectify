@@ -40,7 +40,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--muted-icon);
+    /* Labels are text: they need the text contrast, not the icon one. */
+    color: var(--soft-text);
     font-family: var(--font-rubik-medium), sans-serif;
     font-weight: 500;
     font-size: 14px;

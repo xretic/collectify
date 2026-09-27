@@ -164,8 +164,6 @@
         "creatingAccount": "A criar a conta…",
         "usernameHint": "Letras minúsculas, algarismos, «_» e «.»",
         "passwordHint": "Pelo menos {min} caracteres",
-        "languageHint": "Pode alterá-lo mais tarde nas definições.",
-        "orContinueWith": "ou continue com",
         "loginSubtitle": "Introduza as suas credenciais para aceder à conta.",
         "registerSubtitle": "Crie uma conta para começar a colecionar.",
         "noAccount": "Ainda não tem conta? <link>Registe-se</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Inicie sessão para receber uma nova ligação",
             "sent": "Uma nova ligação está a caminho de {email}."
         },
-        "continueWith": "Continuar com {provider}"
+        "continueWith": "Continuar com {provider}",
+        "languageHint": "Pode alterá-lo mais tarde nas definições.",
+        "orContinueWith": "ou continue com"
     },
     "common": {
         "cancel": "Cancelar",
@@ -227,7 +227,8 @@
         "add": "Adicionar",
         "moreActions": "Mais ações",
         "loading": "A carregar",
-        "sortBy": "Ordenar por"
+        "sortBy": "Ordenar por",
+        "skipToContent": "Saltar para o conteúdo"
     },
     "settings": {
         "title": "Definições",
@@ -933,14 +934,13 @@
         "back": "Voltar"
     },
     "onboarding": {
-        "title": "O que lhe interessa?",
-        "subtitle": "Escolha algumas categorias e adaptamos o seu feed. Pode alterá-las mais tarde nas definições.",
         "pickMore": "Escolha mais {count}",
-        "continue": "Continuar"
+        "continue": "Continuar",
+        "title": "O que lhe interessa?",
+        "subtitle": "Escolha algumas categorias e adaptamos o seu feed. Pode alterá-las mais tarde nas definições."
     },
     "privacy": {
         "title": "Política de privacidade",
-        "updated": "Última atualização: {date}",
         "collect": {
             "title": "Que dados recolhemos",
             "intro": "Quando cria uma conta no Collectify, recolhemos:",
@@ -976,10 +976,6 @@
             "title": "Cookies",
             "text": "Usamos um cookie de sessão funcional para manter a sua sessão iniciada, um cookie funcional que memoriza o idioma da interface e um cookie de segurança de curta duração (cerca de 10 minutos) enquanto inicia sessão com o GitHub ou o Google. O tema escolhido é guardado no armazenamento local do navegador. Não usamos cookies de análise, rastreamento ou marketing."
         },
-        "storage": {
-            "title": "Onde os seus dados são guardados",
-            "text": "A aplicação está alojada na Vercel. Os dados das contas e do conteúdo são guardados na nossa base de dados. As imagens carregadas (avatares, faixas, imagens de itens) são guardadas pelo nosso fornecedor de alojamento multimédia, a Uploadcare. Os e-mails da conta (ligações para repor a palavra-passe e confirmar o e-mail) são enviados através do nosso fornecedor de e-mail, a Resend, que recebe o seu endereço e nome apenas para esse fim."
-        },
         "moderation": {
             "title": "Denúncias e moderação",
             "text": "Quando denuncia conteúdo, guardamos uma cópia do comentário ou da coleção denunciados para que os moderadores o possam analisar mesmo que seja eliminado depois. Ao tratar uma denúncia, os moderadores e administradores podem analisar o conteúdo denunciado e a atividade pública de uma conta. As mensagens diretas não podem ser denunciadas, e os moderadores e administradores não podem ler as suas conversas. As ações de moderação ficam registadas num registo de auditoria interno. Quando uma conta é eliminada, o seu conteúdo também é; o registo de auditoria guarda apenas o ID da conta e o nome de utilizador."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Terceiros",
             "text": "Não vendemos nem partilhamos os seus dados com terceiros para fins de publicidade ou marketing. Se se registar ou iniciar sessão com o GitHub ou o Google, esses fornecedores partilham connosco informações básicas do perfil (como o seu e-mail) para criar a sua conta."
+        },
+        "updated": "Última atualização: {date}",
+        "storage": {
+            "title": "Onde os seus dados são guardados",
+            "text": "A aplicação está alojada na Vercel. Os dados das contas e do conteúdo são guardados na nossa base de dados. As imagens carregadas (avatares, faixas, imagens de itens) são guardadas pelo nosso fornecedor de alojamento multimédia, a Uploadcare. Os e-mails da conta (ligações para repor a palavra-passe e confirmar o e-mail) são enviados através do nosso fornecedor de e-mail, a Resend, que recebe o seu endereço e nome apenas para esse fim."
         }
     },
     "errorPage": {

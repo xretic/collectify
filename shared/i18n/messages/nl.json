@@ -164,8 +164,6 @@
         "creatingAccount": "Account wordt gemaakt…",
         "usernameHint": "Kleine letters, cijfers, ‘_’ en ‘.’",
         "passwordHint": "Minstens {min} tekens",
-        "languageHint": "Je kunt dit later wijzigen in de instellingen.",
-        "orContinueWith": "of ga verder met",
         "loginSubtitle": "Voer je gegevens in om toegang te krijgen tot je account.",
         "registerSubtitle": "Maak een account om te beginnen met verzamelen.",
         "noAccount": "Nog geen account? <link>Registreer je</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Log in om een nieuwe link te krijgen",
             "sent": "Er is een nieuwe link onderweg naar {email}."
         },
-        "continueWith": "Doorgaan met {provider}"
+        "continueWith": "Doorgaan met {provider}",
+        "languageHint": "Je kunt dit later wijzigen in de instellingen.",
+        "orContinueWith": "of ga verder met"
     },
     "common": {
         "cancel": "Annuleren",
@@ -227,7 +227,8 @@
         "add": "Toevoegen",
         "moreActions": "Meer acties",
         "loading": "Laden",
-        "sortBy": "Sorteren op"
+        "sortBy": "Sorteren op",
+        "skipToContent": "Naar de inhoud"
     },
     "settings": {
         "title": "Instellingen",
@@ -933,14 +934,13 @@
         "back": "Terug"
     },
     "onboarding": {
-        "title": "Waar ben je in geïnteresseerd?",
-        "subtitle": "Kies een paar categorieën en we stemmen je feed erop af. Je kunt ze later wijzigen in de instellingen.",
         "pickMore": "Kies er nog {count}",
-        "continue": "Doorgaan"
+        "continue": "Doorgaan",
+        "title": "Waar ben je in geïnteresseerd?",
+        "subtitle": "Kies een paar categorieën en we stemmen je feed erop af. Je kunt ze later wijzigen in de instellingen."
     },
     "privacy": {
         "title": "Privacybeleid",
-        "updated": "Laatst bijgewerkt: {date}",
         "collect": {
             "title": "Welke gegevens we verzamelen",
             "intro": "Als je een account aanmaakt op Collectify, verzamelen we:",
@@ -976,10 +976,6 @@
             "title": "Cookies",
             "text": "We gebruiken een functionele sessiecookie om je ingelogd te houden, een functionele cookie die je interfacetaal onthoudt en een kortlevende beveiligingscookie (ongeveer 10 minuten) terwijl je inlogt met GitHub of Google. Je gekozen thema wordt opgeslagen in de lokale opslag van je browser. We gebruiken geen analyse-, tracking- of marketingcookies."
         },
-        "storage": {
-            "title": "Waar je gegevens worden opgeslagen",
-            "text": "De app wordt gehost bij Vercel. Account- en inhoudsgegevens worden opgeslagen in onze database. Geüploade afbeeldingen (avatars, banners, itemafbeeldingen) worden opgeslagen bij onze mediahostingprovider, Uploadcare. Account-e-mails (links om je wachtwoord te herstellen en je e-mail te bevestigen) worden verstuurd via onze e-mailprovider Resend, die daarvoor alleen je e-mailadres en naam ontvangt."
-        },
         "moderation": {
             "title": "Meldingen en moderatie",
             "text": "Als je inhoud meldt, bewaren we een kopie van de gemelde reactie of collectie, zodat moderators die kunnen beoordelen, ook als die later wordt verwijderd. Bij het afhandelen van een melding kunnen moderators en beheerders de gemelde inhoud en de openbare activiteit van een account bekijken. Privéberichten kunnen niet worden gemeld, en moderators en beheerders kunnen je gesprekken niet lezen. Moderatieacties worden vastgelegd in een intern auditlogboek. Als een account wordt verwijderd, wordt ook de inhoud ervan verwijderd; het auditlogboek bewaart alleen de account-id en de gebruikersnaam."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Derden",
             "text": "We verkopen je gegevens niet en delen ze niet met derden voor reclame- of marketingdoeleinden. Als je je registreert of inlogt met GitHub of Google, delen die providers basisprofielgegevens (zoals je e-mailadres) met ons om je account aan te maken."
+        },
+        "updated": "Laatst bijgewerkt: {date}",
+        "storage": {
+            "title": "Waar je gegevens worden opgeslagen",
+            "text": "De app wordt gehost bij Vercel. Account- en inhoudsgegevens worden opgeslagen in onze database. Geüploade afbeeldingen (avatars, banners, itemafbeeldingen) worden opgeslagen bij onze mediahostingprovider, Uploadcare. Account-e-mails (links om je wachtwoord te herstellen en je e-mail te bevestigen) worden verstuurd via onze e-mailprovider Resend, die daarvoor alleen je e-mailadres en naam ontvangt."
         }
     },
     "errorPage": {

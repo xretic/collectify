@@ -11,7 +11,7 @@ export function GuestComposer() {
 
     return (
         <button type="button" className={styles.composer} onClick={() => promptSignIn('comment')}>
-            <Avatar className={styles.avatar} />
+            <Avatar className={styles.avatar} alt="" />
             <span className={styles.field}>{t('guestPlaceholder')}</span>
         </button>
     );

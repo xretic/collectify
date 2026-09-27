@@ -164,8 +164,6 @@
         "creatingAccount": "Vytváření účtu…",
         "usernameHint": "Malá písmena, číslice, „_“ a „.“",
         "passwordHint": "Alespoň {min} znaků",
-        "languageHint": "Později ho můžete změnit v nastavení.",
-        "orContinueWith": "nebo pokračujte přes",
         "loginSubtitle": "Zadejte své údaje pro přístup k účtu.",
         "registerSubtitle": "Vytvořte si účet a začněte sbírat.",
         "noAccount": "Ještě nemáte účet? <link>Zaregistrujte se</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Pro nový odkaz se přihlaste",
             "sent": "Nový odkaz je na cestě na {email}."
         },
-        "continueWith": "Pokračovat přes {provider}"
+        "continueWith": "Pokračovat přes {provider}",
+        "languageHint": "Později ho můžete změnit v nastavení.",
+        "orContinueWith": "nebo pokračujte přes"
     },
     "common": {
         "cancel": "Zrušit",
@@ -227,7 +227,8 @@
         "add": "Přidat",
         "moreActions": "Další akce",
         "loading": "Načítání",
-        "sortBy": "Řadit podle"
+        "sortBy": "Řadit podle",
+        "skipToContent": "Přeskočit na obsah"
     },
     "settings": {
         "title": "Nastavení",
@@ -933,14 +934,13 @@
         "back": "Zpět"
     },
     "onboarding": {
-        "title": "Co vás baví?",
-        "subtitle": "Vyberte pár kategorií a my vám přizpůsobíme kanál. Později je můžete změnit v nastavení.",
         "pickMore": "Vyberte ještě {count}",
-        "continue": "Pokračovat"
+        "continue": "Pokračovat",
+        "title": "Co vás baví?",
+        "subtitle": "Vyberte pár kategorií a my vám přizpůsobíme kanál. Později je můžete změnit v nastavení."
     },
     "privacy": {
         "title": "Zásady ochrany osobních údajů",
-        "updated": "Poslední aktualizace: {date}",
         "collect": {
             "title": "Jaké údaje shromažďujeme",
             "intro": "Když si na Collectify vytvoříte účet, shromažďujeme:",
@@ -976,10 +976,6 @@
             "title": "Cookies",
             "text": "Používáme funkční cookie relace k udržení přihlášení, funkční cookie, které si pamatuje jazyk rozhraní, a krátkodobé bezpečnostní cookie (asi 10 minut) při přihlašování přes GitHub nebo Google. Zvolený motiv se ukládá do místního úložiště prohlížeče. Nepoužíváme analytické, sledovací ani marketingové cookies."
         },
-        "storage": {
-            "title": "Kde jsou vaše data uložena",
-            "text": "Aplikace běží na Vercelu. Údaje o účtech a obsahu jsou uloženy v naší databázi. Nahrané obrázky (avatary, bannery, obrázky položek) ukládá náš poskytovatel hostingu médií Uploadcare. Účetní e-maily (odkazy pro obnovení hesla a potvrzení e-mailu) odesíláme přes našeho poskytovatele e-mailů Resend, který k tomu dostává pouze vaši e-mailovou adresu a jméno."
-        },
         "moderation": {
             "title": "Nahlášení a moderace",
             "text": "Když nahlásíte obsah, uchováme kopii nahlášeného komentáře nebo kolekce, aby ji moderátoři mohli posoudit, i kdyby byla později smazána. Při řešení nahlášení mohou moderátoři a administrátoři prohlížet nahlášený obsah a veřejnou aktivitu účtu. Soukromé zprávy nahlásit nelze a moderátoři ani administrátoři vaše konverzace číst nemohou. Moderátorské zásahy se zapisují do interního auditního protokolu. Při smazání účtu se smaže i jeho obsah; auditní protokol uchovává jen ID účtu a uživatelské jméno."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Třetí strany",
             "text": "Vaše údaje neprodáváme ani nesdílíme se třetími stranami pro reklamní či marketingové účely. Pokud se zaregistrujete nebo přihlásíte přes GitHub nebo Google, tito poskytovatelé nám předají základní údaje profilu (například e-mail) potřebné k vytvoření účtu."
+        },
+        "updated": "Poslední aktualizace: {date}",
+        "storage": {
+            "title": "Kde jsou vaše data uložena",
+            "text": "Aplikace běží na Vercelu. Údaje o účtech a obsahu jsou uloženy v naší databázi. Nahrané obrázky (avatary, bannery, obrázky položek) ukládá náš poskytovatel hostingu médií Uploadcare. Účetní e-maily (odkazy pro obnovení hesla a potvrzení e-mailu) odesíláme přes našeho poskytovatele e-mailů Resend, který k tomu dostává pouze vaši e-mailovou adresu a jméno."
         }
     },
     "errorPage": {

@@ -164,8 +164,6 @@
         "creatingAccount": "正在创建账号…",
         "usernameHint": "小写字母、数字、“_” 和 “.”",
         "passwordHint": "至少 {min} 个字符",
-        "languageHint": "之后可以在设置中更改。",
-        "orContinueWith": "或使用以下方式继续",
         "loginSubtitle": "输入你的账号信息以登录。",
         "registerSubtitle": "创建账号，开始你的收藏。",
         "noAccount": "还没有账号？<link>注册</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "登录后即可获取新链接",
             "sent": "新链接已发送至 {email}。"
         },
-        "continueWith": "使用 {provider} 继续"
+        "continueWith": "使用 {provider} 继续",
+        "languageHint": "之后可以在设置中更改。",
+        "orContinueWith": "或使用以下方式继续"
     },
     "common": {
         "cancel": "取消",
@@ -227,7 +227,8 @@
         "add": "添加",
         "moreActions": "更多操作",
         "loading": "加载中",
-        "sortBy": "排序方式"
+        "sortBy": "排序方式",
+        "skipToContent": "跳到内容"
     },
     "settings": {
         "title": "设置",
@@ -933,14 +934,13 @@
         "back": "返回上一页"
     },
     "onboarding": {
-        "title": "你对什么感兴趣？",
-        "subtitle": "选几个分类，我们会为你定制信息流。之后可以在设置中更改。",
         "pickMore": "再选 {count} 个",
-        "continue": "继续"
+        "continue": "继续",
+        "title": "你对什么感兴趣？",
+        "subtitle": "选几个分类，我们会为你定制信息流。之后可以在设置中更改。"
     },
     "privacy": {
         "title": "隐私政策",
-        "updated": "最后更新：{date}",
         "collect": {
             "title": "我们收集哪些数据",
             "intro": "当你在 Collectify 创建账号时，我们会收集：",
@@ -976,10 +976,6 @@
             "title": "Cookie",
             "text": "我们使用一个功能性会话 Cookie 保持你的登录状态，一个功能性 Cookie 记住你的界面语言，以及在你通过 GitHub 或 Google 登录时使用的短期安全 Cookie（约 10 分钟）。你选择的主题保存在浏览器的本地存储中。我们不使用分析、跟踪或营销类 Cookie。"
         },
-        "storage": {
-            "title": "你的数据存储在哪里",
-            "text": "应用托管在 Vercel 上。账号和内容数据存储在我们的数据库中。上传的图片（头像、横幅、条目图片）存储在我们的媒体托管服务商 Uploadcare 处。账号相关邮件（重置密码和确认邮箱的链接）通过我们的邮件服务商 Resend 发送，Resend 仅为此目的获取你的邮箱地址和名字。"
-        },
         "moderation": {
             "title": "举报与管理",
             "text": "当你举报内容时，我们会保存被举报评论或收藏集的副本，以便即使之后被删除，版主仍可审核。在处理举报时，版主和管理员可以查看被举报的内容以及账号的公开动态。私信无法被举报，版主和管理员也无法阅读你的对话。管理操作会记录在内部审计日志中。账号被删除时，其内容也会被删除；审计日志仅保留账号 ID 和用户名。"
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "第三方",
             "text": "我们不会出于广告或营销目的向第三方出售或分享你的数据。如果你选择通过 GitHub 或 Google 注册或登录，这些服务商会与我们共享基本的个人资料信息（例如你的邮箱），以便创建你的账号。"
+        },
+        "updated": "最后更新：{date}",
+        "storage": {
+            "title": "你的数据存储在哪里",
+            "text": "应用托管在 Vercel 上。账号和内容数据存储在我们的数据库中。上传的图片（头像、横幅、条目图片）存储在我们的媒体托管服务商 Uploadcare 处。账号相关邮件（重置密码和确认邮箱的链接）通过我们的邮件服务商 Resend 发送，Resend 仅为此目的获取你的邮箱地址和名字。"
         }
     },
     "errorPage": {

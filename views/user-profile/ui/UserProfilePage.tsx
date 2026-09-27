@@ -95,6 +95,7 @@ export default function UserProfilePage() {
                                     color="inherit"
                                     component={Link}
                                     href={`/management?userId=${profile.id}`}
+                                    aria-label={t('manage')}
                                 >
                                     <AdminPanelSettingsOutlinedIcon />
                                 </IconButton>

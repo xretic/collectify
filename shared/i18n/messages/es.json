@@ -164,8 +164,6 @@
         "creatingAccount": "Creando la cuenta…",
         "usernameHint": "Minúsculas, números, «_» y «.»",
         "passwordHint": "Al menos {min} caracteres",
-        "languageHint": "Puedes cambiarlo más tarde en los ajustes.",
-        "orContinueWith": "o continúa con",
         "loginSubtitle": "Introduce tus credenciales para acceder a tu cuenta.",
         "registerSubtitle": "Crea una cuenta para empezar a coleccionar.",
         "noAccount": "¿Aún no tienes cuenta? <link>Regístrate</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Inicia sesión para recibir un enlace nuevo",
             "sent": "Hemos enviado un enlace nuevo a {email}."
         },
-        "continueWith": "Continuar con {provider}"
+        "continueWith": "Continuar con {provider}",
+        "languageHint": "Puedes cambiarlo más tarde en los ajustes.",
+        "orContinueWith": "o continúa con"
     },
     "common": {
         "cancel": "Cancelar",
@@ -227,7 +227,8 @@
         "add": "Añadir",
         "moreActions": "Más acciones",
         "loading": "Cargando",
-        "sortBy": "Ordenar por"
+        "sortBy": "Ordenar por",
+        "skipToContent": "Saltar al contenido"
     },
     "settings": {
         "title": "Ajustes",
@@ -933,14 +934,13 @@
         "back": "Volver"
     },
     "onboarding": {
-        "title": "¿Qué te interesa?",
-        "subtitle": "Elige algunas categorías y adaptaremos tu feed. Podrás cambiarlas más tarde en los ajustes.",
         "pickMore": "Elige {count} más",
-        "continue": "Continuar"
+        "continue": "Continuar",
+        "title": "¿Qué te interesa?",
+        "subtitle": "Elige algunas categorías y adaptaremos tu feed. Podrás cambiarlas más tarde en los ajustes."
     },
     "privacy": {
         "title": "Política de privacidad",
-        "updated": "Última actualización: {date}",
         "collect": {
             "title": "Qué datos recopilamos",
             "intro": "Cuando creas una cuenta en Collectify, recopilamos:",
@@ -976,10 +976,6 @@
             "title": "Cookies",
             "text": "Usamos una cookie de sesión funcional para mantener tu sesión iniciada, una cookie funcional que recuerda el idioma de la interfaz y una cookie de seguridad de corta duración (unos 10 minutos) mientras inicias sesión con GitHub o Google. El tema que eliges se guarda en el almacenamiento local de tu navegador. No usamos cookies de análisis, seguimiento ni marketing."
         },
-        "storage": {
-            "title": "Dónde se almacenan tus datos",
-            "text": "La app está alojada en Vercel. Los datos de las cuentas y del contenido se almacenan en nuestra base de datos. Las imágenes subidas (avatares, banners, imágenes de elementos) se almacenan en nuestro proveedor de alojamiento multimedia, Uploadcare. Los correos de la cuenta (enlaces para restablecer la contraseña y confirmar el correo) se envían a través de nuestro proveedor de correo, Resend, que recibe tu dirección y tu nombre solo para ese fin."
-        },
         "moderation": {
             "title": "Denuncias y moderación",
             "text": "Cuando denuncias contenido, guardamos una copia del comentario o la colección denunciados para que los moderadores puedan revisarlo aunque se elimine después. Al gestionar una denuncia, los moderadores y administradores pueden revisar el contenido denunciado y la actividad pública de una cuenta. Los mensajes directos no se pueden denunciar, y los moderadores y administradores no pueden leer tus conversaciones. Las acciones de moderación se registran en un registro de auditoría interno. Cuando se elimina una cuenta, también se elimina su contenido; el registro de auditoría solo conserva el ID de la cuenta y el nombre de usuario."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Terceros",
             "text": "No vendemos ni compartimos tus datos con terceros con fines publicitarios o de marketing. Si te registras o inicias sesión con GitHub o Google, esos proveedores nos comparten información básica del perfil (como tu correo) para crear tu cuenta."
+        },
+        "updated": "Última actualización: {date}",
+        "storage": {
+            "title": "Dónde se almacenan tus datos",
+            "text": "La app está alojada en Vercel. Los datos de las cuentas y del contenido se almacenan en nuestra base de datos. Las imágenes subidas (avatares, banners, imágenes de elementos) se almacenan en nuestro proveedor de alojamiento multimedia, Uploadcare. Los correos de la cuenta (enlaces para restablecer la contraseña y confirmar el correo) se envían a través de nuestro proveedor de correo, Resend, que recibe tu dirección y tu nombre solo para ese fin."
         }
     },
     "errorPage": {

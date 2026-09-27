@@ -81,7 +81,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-    const locale = await getLocale();
+    const [locale, tc] = await Promise.all([getLocale(), getTranslations('common')]);
 
     return (
         <html
@@ -97,8 +97,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <NextIntlClientProvider>
                     <I18nBridge />
                     <AppProviders>
+                        <a href="#main" className="skip-link">
+                            {tc('skipToContent')}
+                        </a>
                         <NavBar />
-                        <main className="app-content">{children}</main>
+                        <main id="main" className="app-content" tabIndex={-1}>
+                            {children}
+                        </main>
                         <Footer />
                         <Toaster />
                         <ImageEditorHost />

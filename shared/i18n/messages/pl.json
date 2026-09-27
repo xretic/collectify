@@ -164,8 +164,6 @@
         "creatingAccount": "Tworzenie konta…",
         "usernameHint": "Małe litery, cyfry, „_” i „.”",
         "passwordHint": "Co najmniej {min} znaków",
-        "languageHint": "Możesz go później zmienić w ustawieniach.",
-        "orContinueWith": "lub kontynuuj przez",
         "loginSubtitle": "Podaj dane logowania, aby uzyskać dostęp do konta.",
         "registerSubtitle": "Załóż konto i zacznij kolekcjonować.",
         "noAccount": "Nie masz konta? <link>Zarejestruj się</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Zaloguj się, aby dostać nowy link",
             "sent": "Nowy link jest w drodze na {email}."
         },
-        "continueWith": "Kontynuuj przez {provider}"
+        "continueWith": "Kontynuuj przez {provider}",
+        "languageHint": "Możesz go później zmienić w ustawieniach.",
+        "orContinueWith": "lub kontynuuj przez"
     },
     "common": {
         "cancel": "Anuluj",
@@ -227,7 +227,8 @@
         "add": "Dodaj",
         "moreActions": "Więcej akcji",
         "loading": "Ładowanie",
-        "sortBy": "Sortuj według"
+        "sortBy": "Sortuj według",
+        "skipToContent": "Przejdź do treści"
     },
     "settings": {
         "title": "Ustawienia",
@@ -933,14 +934,13 @@
         "back": "Wstecz"
     },
     "onboarding": {
-        "title": "Co Cię interesuje?",
-        "subtitle": "Wybierz kilka kategorii, a dopasujemy Twój kanał. Możesz je później zmienić w ustawieniach.",
         "pickMore": "Wybierz jeszcze {count}",
-        "continue": "Dalej"
+        "continue": "Dalej",
+        "title": "Co Cię interesuje?",
+        "subtitle": "Wybierz kilka kategorii, a dopasujemy Twój kanał. Możesz je później zmienić w ustawieniach."
     },
     "privacy": {
         "title": "Polityka prywatności",
-        "updated": "Ostatnia aktualizacja: {date}",
         "collect": {
             "title": "Jakie dane zbieramy",
             "intro": "Gdy zakładasz konto w Collectify, zbieramy:",
@@ -976,10 +976,6 @@
             "title": "Pliki cookie",
             "text": "Używamy funkcjonalnego pliku cookie sesji, aby utrzymać zalogowanie, funkcjonalnego pliku cookie zapamiętującego język interfejsu oraz krótkotrwałego pliku cookie bezpieczeństwa (około 10 minut) podczas logowania przez GitHub lub Google. Wybrany motyw jest zapisywany w pamięci lokalnej przeglądarki. Nie używamy analitycznych, śledzących ani marketingowych plików cookie."
         },
-        "storage": {
-            "title": "Gdzie przechowujemy Twoje dane",
-            "text": "Aplikacja jest hostowana w Vercel. Dane kont i treści są przechowywane w naszej bazie danych. Przesłane obrazy (awatary, banery, obrazy elementów) przechowuje nasz dostawca hostingu multimediów, Uploadcare. E-maile dotyczące konta (linki do resetu hasła i potwierdzenia adresu) wysyłamy przez naszego dostawcę poczty, Resend, który otrzymuje w tym celu tylko twój adres e-mail i imię."
-        },
         "moderation": {
             "title": "Zgłoszenia i moderacja",
             "text": "Gdy zgłaszasz treść, zachowujemy kopię zgłoszonego komentarza lub kolekcji, aby moderatorzy mogli ją ocenić, nawet jeśli zostanie później usunięta. Rozpatrując zgłoszenie, moderatorzy i administratorzy mogą przeglądać zgłoszoną treść oraz publiczną aktywność konta. Wiadomości prywatnych nie można zgłaszać, a moderatorzy i administratorzy nie mogą czytać Twoich rozmów. Działania moderacyjne są zapisywane w wewnętrznym dzienniku audytu. Po usunięciu konta usuwana jest też jego zawartość; dziennik audytu zachowuje tylko identyfikator konta i nazwę użytkownika."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Podmioty trzecie",
             "text": "Nie sprzedajemy ani nie udostępniamy Twoich danych podmiotom trzecim w celach reklamowych lub marketingowych. Jeśli rejestrujesz się lub logujesz przez GitHub lub Google, ci dostawcy przekazują nam podstawowe dane profilu (np. e-mail), aby utworzyć Twoje konto."
+        },
+        "updated": "Ostatnia aktualizacja: {date}",
+        "storage": {
+            "title": "Gdzie przechowujemy Twoje dane",
+            "text": "Aplikacja jest hostowana w Vercel. Dane kont i treści są przechowywane w naszej bazie danych. Przesłane obrazy (awatary, banery, obrazy elementów) przechowuje nasz dostawca hostingu multimediów, Uploadcare. E-maile dotyczące konta (linki do resetu hasła i potwierdzenia adresu) wysyłamy przez naszego dostawcę poczty, Resend, który otrzymuje w tym celu tylko twój adres e-mail i imię."
         }
     },
     "errorPage": {

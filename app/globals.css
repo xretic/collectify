@@ -92,6 +92,37 @@ body {
     flex: 1 0 auto;
 }
 
+/* ---------------------------------------------------------------------------
+   Keyboard navigation
+   --------------------------------------------------------------------------- */
+/* One visible focus ring in every theme, only for keyboard focus (not clicks). */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* "Skip to content": the first Tab stop, hidden until focused. */
+.skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 2000;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    color: var(--on-accent);
+    background-color: var(--accent);
+    transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+    transform: none;
+}
+
+/* The skip link moves focus to <main>; a ring around the whole page would only distract. */
+#main:focus {
+    outline: none;
+}
+
 /*
  * Chrome sizes, for sticky and full-height layouts. The navbar keeps
  * `--header-height` up to date (banners change it); the tab bar only

@@ -164,8 +164,6 @@
         "creatingAccount": "Konto wird erstellt…",
         "usernameHint": "Kleinbuchstaben, Ziffern, „_“ und „.“",
         "passwordHint": "Mindestens {min} Zeichen",
-        "languageHint": "Du kannst sie später in den Einstellungen ändern.",
-        "orContinueWith": "oder weiter mit",
         "loginSubtitle": "Gib deine Zugangsdaten ein, um auf dein Konto zuzugreifen.",
         "registerSubtitle": "Erstelle ein Konto und fang an zu sammeln.",
         "noAccount": "Noch kein Konto? <link>Registrieren</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Melde dich an, um einen neuen Link zu erhalten",
             "sent": "Ein neuer Link ist an {email} unterwegs."
         },
-        "continueWith": "Weiter mit {provider}"
+        "continueWith": "Weiter mit {provider}",
+        "languageHint": "Du kannst sie später in den Einstellungen ändern.",
+        "orContinueWith": "oder weiter mit"
     },
     "common": {
         "cancel": "Abbrechen",
@@ -227,7 +227,8 @@
         "add": "Hinzufügen",
         "moreActions": "Weitere Aktionen",
         "loading": "Wird geladen",
-        "sortBy": "Sortieren nach"
+        "sortBy": "Sortieren nach",
+        "skipToContent": "Zum Inhalt springen"
     },
     "settings": {
         "title": "Einstellungen",
@@ -933,14 +934,13 @@
         "back": "Zurück"
     },
     "onboarding": {
-        "title": "Was interessiert dich?",
-        "subtitle": "Wähle ein paar Kategorien und wir stimmen deinen Feed darauf ab. Du kannst sie später in den Einstellungen ändern.",
         "pickMore": "Noch {count} auswählen",
-        "continue": "Weiter"
+        "continue": "Weiter",
+        "title": "Was interessiert dich?",
+        "subtitle": "Wähle ein paar Kategorien und wir stimmen deinen Feed darauf ab. Du kannst sie später in den Einstellungen ändern."
     },
     "privacy": {
         "title": "Datenschutzerklärung",
-        "updated": "Zuletzt aktualisiert: {date}",
         "collect": {
             "title": "Welche Daten wir erheben",
             "intro": "Wenn du ein Konto bei Collectify erstellst, erheben wir:",
@@ -976,10 +976,6 @@
             "title": "Cookies",
             "text": "Wir verwenden ein funktionales Sitzungs-Cookie, damit du angemeldet bleibst, ein funktionales Cookie, das sich deine Oberflächensprache merkt, und ein kurzlebiges Sicherheits-Cookie (etwa 10 Minuten) während der Anmeldung über GitHub oder Google. Dein gewähltes Design wird im lokalen Speicher deines Browsers gespeichert. Wir verwenden keine Analyse-, Tracking- oder Marketing-Cookies."
         },
-        "storage": {
-            "title": "Wo deine Daten gespeichert werden",
-            "text": "Die App wird bei Vercel gehostet. Konto- und Inhaltsdaten werden in unserer Datenbank gespeichert. Hochgeladene Bilder (Avatare, Banner, Elementbilder) speichert unser Medien-Hosting-Anbieter Uploadcare. Konto-E-Mails (Links zum Zurücksetzen des Passworts und zur Bestätigung der E-Mail) versenden wir über unseren E-Mail-Anbieter Resend, der dafür nur deine E-Mail-Adresse und deinen Namen erhält."
-        },
         "moderation": {
             "title": "Meldungen und Moderation",
             "text": "Wenn du Inhalte meldest, bewahren wir eine Kopie des gemeldeten Kommentars oder der Sammlung auf, damit die Moderation sie auch dann prüfen kann, wenn sie später gelöscht wird. Bei der Bearbeitung einer Meldung können Moderatoren und Administratoren gemeldete Inhalte und die öffentliche Aktivität eines Kontos einsehen. Direktnachrichten können nicht gemeldet werden, und Moderatoren und Administratoren können deine Unterhaltungen nicht lesen. Moderationsmaßnahmen werden in einem internen Audit-Log protokolliert. Wird ein Konto gelöscht, werden auch seine Inhalte gelöscht; das Audit-Log behält nur die Konto-ID und den Nutzernamen."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Dritte",
             "text": "Wir verkaufen deine Daten nicht und geben sie nicht zu Werbe- oder Marketingzwecken an Dritte weiter. Wenn du dich über GitHub oder Google registrierst oder anmeldest, übermitteln uns diese Anbieter grundlegende Profildaten (etwa deine E-Mail-Adresse), um dein Konto zu erstellen."
+        },
+        "updated": "Zuletzt aktualisiert: {date}",
+        "storage": {
+            "title": "Wo deine Daten gespeichert werden",
+            "text": "Die App wird bei Vercel gehostet. Konto- und Inhaltsdaten werden in unserer Datenbank gespeichert. Hochgeladene Bilder (Avatare, Banner, Elementbilder) speichert unser Medien-Hosting-Anbieter Uploadcare. Konto-E-Mails (Links zum Zurücksetzen des Passworts und zur Bestätigung der E-Mail) versenden wir über unseren E-Mail-Anbieter Resend, der dafür nur deine E-Mail-Adresse und deinen Namen erhält."
         }
     },
     "errorPage": {

@@ -71,10 +71,11 @@
 }
 
 .favorite {
-    background-color: #f5a524;
+    background-color: #b86e00;
 }
 
 .accent {
+    color: var(--on-accent);
     background-color: var(--accent);
 }
 

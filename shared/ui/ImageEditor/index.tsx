@@ -141,12 +141,20 @@ function ImageEditor({ file, src, options, onDone }: ImageEditorProps) {
 
                     <div className={styles.rotate}>
                         <Tooltip title={t('rotateLeft')}>
-                            <IconButton size="small" onClick={() => rotate(-90)}>
+                            <IconButton
+                                size="small"
+                                onClick={() => rotate(-90)}
+                                aria-label={t('rotateLeft')}
+                            >
                                 <RotateLeftIcon fontSize="small" />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title={t('rotateRight')}>
-                            <IconButton size="small" onClick={() => rotate(90)}>
+                            <IconButton
+                                size="small"
+                                onClick={() => rotate(90)}
+                                aria-label={t('rotateRight')}
+                            >
                                 <RotateRightIcon fontSize="small" />
                             </IconButton>
                         </Tooltip>

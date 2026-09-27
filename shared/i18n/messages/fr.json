@@ -164,8 +164,6 @@
         "creatingAccount": "Création du compte…",
         "usernameHint": "Minuscules, chiffres, « _ » et « . »",
         "passwordHint": "Au moins {min} caractères",
-        "languageHint": "Vous pourrez la changer plus tard dans les paramètres.",
-        "orContinueWith": "ou continuer avec",
         "loginSubtitle": "Saisissez vos identifiants pour accéder à votre compte.",
         "registerSubtitle": "Créez un compte pour commencer à collectionner.",
         "noAccount": "Pas encore de compte ? <link>S’inscrire</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Connectez-vous pour recevoir un nouveau lien",
             "sent": "Un nouveau lien est en route vers {email}."
         },
-        "continueWith": "Continuer avec {provider}"
+        "continueWith": "Continuer avec {provider}",
+        "languageHint": "Vous pourrez la changer plus tard dans les paramètres.",
+        "orContinueWith": "ou continuer avec"
     },
     "common": {
         "cancel": "Annuler",
@@ -227,7 +227,8 @@
         "add": "Ajouter",
         "moreActions": "Plus d’actions",
         "loading": "Chargement",
-        "sortBy": "Trier par"
+        "sortBy": "Trier par",
+        "skipToContent": "Aller au contenu"
     },
     "settings": {
         "title": "Paramètres",
@@ -933,14 +934,13 @@
         "back": "Retour"
     },
     "onboarding": {
-        "title": "Qu’est-ce qui vous intéresse ?",
-        "subtitle": "Choisissez quelques catégories et nous adapterons votre fil. Vous pourrez les modifier plus tard dans les paramètres.",
         "pickMore": "Encore {count} à choisir",
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "title": "Qu’est-ce qui vous intéresse ?",
+        "subtitle": "Choisissez quelques catégories et nous adapterons votre fil. Vous pourrez les modifier plus tard dans les paramètres."
     },
     "privacy": {
         "title": "Politique de confidentialité",
-        "updated": "Dernière mise à jour : {date}",
         "collect": {
             "title": "Les données que nous collectons",
             "intro": "Lorsque vous créez un compte sur Collectify, nous collectons :",
@@ -976,10 +976,6 @@
             "title": "Cookies",
             "text": "Nous utilisons un cookie de session fonctionnel pour vous garder connecté, un cookie fonctionnel qui mémorise la langue de l’interface et un cookie de sécurité de courte durée (environ 10 minutes) lors de la connexion via GitHub ou Google. Le thème choisi est enregistré dans le stockage local de votre navigateur. Nous n’utilisons aucun cookie d’analyse, de suivi ou de marketing."
         },
-        "storage": {
-            "title": "Où vos données sont stockées",
-            "text": "L’application est hébergée chez Vercel. Les données des comptes et du contenu sont stockées dans notre base de données. Les images envoyées (avatars, bannières, images d’éléments) sont stockées chez notre hébergeur de médias, Uploadcare. Les e-mails liés au compte (liens de réinitialisation du mot de passe et de confirmation de l’e-mail) sont envoyés via notre prestataire d’e-mails, Resend, qui reçoit votre adresse et votre nom uniquement à cette fin."
-        },
         "moderation": {
             "title": "Signalements et modération",
             "text": "Lorsque vous signalez un contenu, nous conservons une copie du commentaire ou de la collection signalés afin que les modérateurs puissent l’examiner même s’il est supprimé ensuite. En traitant un signalement, les modérateurs et administrateurs peuvent consulter le contenu signalé et l’activité publique d’un compte. Les messages privés ne peuvent pas être signalés, et les modérateurs et administrateurs ne peuvent pas lire vos conversations. Les actions de modération sont consignées dans un journal d’audit interne. Lorsqu’un compte est supprimé, son contenu l’est aussi ; le journal d’audit ne conserve que l’identifiant du compte et le nom d’utilisateur."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Tiers",
             "text": "Nous ne vendons ni ne partageons vos données avec des tiers à des fins publicitaires ou marketing. Si vous vous inscrivez ou vous connectez avec GitHub ou Google, ces fournisseurs nous transmettent des informations de profil de base (comme votre e-mail) pour créer votre compte."
+        },
+        "updated": "Dernière mise à jour : {date}",
+        "storage": {
+            "title": "Où vos données sont stockées",
+            "text": "L’application est hébergée chez Vercel. Les données des comptes et du contenu sont stockées dans notre base de données. Les images envoyées (avatars, bannières, images d’éléments) sont stockées chez notre hébergeur de médias, Uploadcare. Les e-mails liés au compte (liens de réinitialisation du mot de passe et de confirmation de l’e-mail) sont envoyés via notre prestataire d’e-mails, Resend, qui reçoit votre adresse et votre nom uniquement à cette fin."
         }
     },
     "errorPage": {

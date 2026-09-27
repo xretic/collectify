@@ -29,8 +29,14 @@ const themeOptions: ThemeOptions = {
     cssVariables: { nativeColor: true },
     palette: {
         primary: { main: 'var(--accent)', contrastText: 'var(--on-accent)' },
-        error: { main: 'var(--danger)', contrastText: '#ffffff' },
-        text: { primary: 'var(--text-color)', secondary: 'var(--soft-text)' },
+        error: { main: 'var(--danger)', contrastText: 'var(--on-danger)' },
+        // `disabled` defaults to translucent black, which vanishes on dark themes.
+        text: {
+            primary: 'var(--text-color)',
+            secondary: 'var(--soft-text)',
+            disabled: 'var(--soft-text)',
+        },
+        action: { disabled: 'color-mix(in srgb, var(--muted-icon) 55%, transparent)' },
         background: { default: 'var(--bg-color)', paper: 'var(--container-color)' },
         divider: 'var(--border-color)',
     },
@@ -115,6 +121,16 @@ const themeOptions: ThemeOptions = {
         },
         MuiCheckbox: {
             styleOverrides: { root: { color: 'var(--soft-text)' } },
+        },
+        // MUI paints the track black and a disabled "on" thumb near-white (its light palette).
+        MuiSwitch: {
+            styleOverrides: {
+                switchBase: {
+                    '&.Mui-checked.Mui-disabled': { color: 'var(--accent)', opacity: 0.6 },
+                    '&.Mui-disabled + .MuiSwitch-track': { opacity: 0.25 },
+                },
+                track: { backgroundColor: 'var(--soft-text)', opacity: 0.45 },
+            },
         },
         MuiAutocomplete: {
             styleOverrides: {

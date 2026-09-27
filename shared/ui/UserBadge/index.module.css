@@ -10,12 +10,13 @@
     padding: 2px;
 }
 
+/* Icon badges need 3:1 against their white glyph (WCAG 1.4.11). */
 .Moderator {
-    background-color: #14b8a6;
+    background-color: #0d9488;
     padding: 3px;
 }
 
 .Admin {
-    background-color: #f59e0b;
+    background-color: #d97706;
     padding: 1px;
 }

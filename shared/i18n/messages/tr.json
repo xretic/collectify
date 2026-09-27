@@ -164,8 +164,6 @@
         "creatingAccount": "Hesap oluşturuluyor…",
         "usernameHint": "Küçük harfler, rakamlar, \"_\" ve \".\"",
         "passwordHint": "En az {min} karakter",
-        "languageHint": "Daha sonra ayarlardan değiştirebilirsiniz.",
-        "orContinueWith": "veya şununla devam et",
         "loginSubtitle": "Hesabınıza erişmek için bilgilerinizi girin.",
         "registerSubtitle": "Koleksiyon yapmaya başlamak için bir hesap oluşturun.",
         "noAccount": "Hesabınız yok mu? <link>Kayıt olun</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Yeni bağlantı almak için giriş yapın",
             "sent": "{email} adresine yeni bir bağlantı gönderildi."
         },
-        "continueWith": "{provider} ile devam et"
+        "continueWith": "{provider} ile devam et",
+        "languageHint": "Daha sonra ayarlardan değiştirebilirsiniz.",
+        "orContinueWith": "veya şununla devam et"
     },
     "common": {
         "cancel": "İptal",
@@ -227,7 +227,8 @@
         "add": "Ekle",
         "moreActions": "Diğer işlemler",
         "loading": "Yükleniyor",
-        "sortBy": "Sırala"
+        "sortBy": "Sırala",
+        "skipToContent": "İçeriğe geç"
     },
     "settings": {
         "title": "Ayarlar",
@@ -933,14 +934,13 @@
         "back": "Geri dön"
     },
     "onboarding": {
-        "title": "Nelerle ilgileniyorsun?",
-        "subtitle": "Birkaç kategori seç, akışını sana göre ayarlayalım. Daha sonra ayarlardan değiştirebilirsin.",
         "pickMore": "{count} tane daha seç",
-        "continue": "Devam"
+        "continue": "Devam",
+        "title": "Nelerle ilgileniyorsun?",
+        "subtitle": "Birkaç kategori seç, akışını sana göre ayarlayalım. Daha sonra ayarlardan değiştirebilirsin."
     },
     "privacy": {
         "title": "Gizlilik Politikası",
-        "updated": "Son güncelleme: {date}",
         "collect": {
             "title": "Hangi verileri topluyoruz",
             "intro": "Collectify’da hesap oluşturduğunuzda şunları topluyoruz:",
@@ -976,10 +976,6 @@
             "title": "Çerezler",
             "text": "Oturumunuzu açık tutmak için işlevsel bir oturum çerezi, arayüz dilinizi hatırlayan işlevsel bir çerez ve GitHub veya Google ile giriş yaparken kısa ömürlü bir güvenlik çerezi (yaklaşık 10 dakika) kullanırız. Seçtiğiniz tema tarayıcınızın yerel depolamasına kaydedilir. Analiz, izleme veya pazarlama çerezleri kullanmayız."
         },
-        "storage": {
-            "title": "Verileriniz nerede saklanıyor",
-            "text": "Uygulama Vercel üzerinde barındırılır. Hesap ve içerik verileri veritabanımızda saklanır. Yüklenen görseller (avatarlar, afişler, öğe görselleri) medya barındırma sağlayıcımız Uploadcare’de saklanır. Hesap e-postaları (şifre sıfırlama ve e-posta doğrulama bağlantıları) e-posta sağlayıcımız Resend üzerinden gönderilir; Resend yalnızca bu amaçla e-posta adresinizi ve adınızı alır."
-        },
         "moderation": {
             "title": "Şikâyetler ve moderasyon",
             "text": "Bir içeriği şikâyet ettiğinizde, sonradan silinse bile moderatörlerin inceleyebilmesi için şikâyet edilen yorumun veya koleksiyonun bir kopyasını saklarız. Bir şikâyeti ele alırken moderatörler ve yöneticiler şikâyet edilen içeriği ve bir hesabın herkese açık etkinliğini inceleyebilir. Özel mesajlar şikâyet edilemez ve moderatörler ile yöneticiler konuşmalarınızı okuyamaz. Moderasyon işlemleri dahili bir denetim kaydına işlenir. Bir hesap silindiğinde içeriği de silinir; denetim kaydında yalnızca hesap kimliği ve kullanıcı adı kalır."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Üçüncü taraflar",
             "text": "Verilerinizi reklam veya pazarlama amacıyla üçüncü taraflara satmayız ya da onlarla paylaşmayız. GitHub veya Google ile kaydolur ya da giriş yaparsanız bu sağlayıcılar hesabınızı oluşturmamız için temel profil bilgilerinizi (örneğin e-postanızı) bizimle paylaşır."
+        },
+        "updated": "Son güncelleme: {date}",
+        "storage": {
+            "title": "Verileriniz nerede saklanıyor",
+            "text": "Uygulama Vercel üzerinde barındırılır. Hesap ve içerik verileri veritabanımızda saklanır. Yüklenen görseller (avatarlar, afişler, öğe görselleri) medya barındırma sağlayıcımız Uploadcare’de saklanır. Hesap e-postaları (şifre sıfırlama ve e-posta doğrulama bağlantıları) e-posta sağlayıcımız Resend üzerinden gönderilir; Resend yalnızca bu amaçla e-posta adresinizi ve adınızı alır."
         }
     },
     "errorPage": {

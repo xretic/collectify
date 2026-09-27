@@ -164,8 +164,6 @@
         "creatingAccount": "Creating account…",
         "usernameHint": "Lowercase letters, digits, \"_\" and \".\"",
         "passwordHint": "At least {min} characters",
-        "languageHint": "You can change it later in settings.",
-        "orContinueWith": "or continue with",
         "loginSubtitle": "Enter your credentials to access your account.",
         "registerSubtitle": "Create an account to start collecting.",
         "noAccount": "No account yet? <link>Register</link>",
@@ -207,7 +205,9 @@
             "signInToResend": "Sign in to get a new link",
             "sent": "A new link is on its way to {email}."
         },
-        "continueWith": "Continue with {provider}"
+        "continueWith": "Continue with {provider}",
+        "languageHint": "You can change it later in settings.",
+        "orContinueWith": "or continue with"
     },
     "common": {
         "cancel": "Cancel",
@@ -227,7 +227,8 @@
         "add": "Add",
         "moreActions": "More actions",
         "loading": "Loading",
-        "sortBy": "Sort by"
+        "sortBy": "Sort by",
+        "skipToContent": "Skip to content"
     },
     "settings": {
         "title": "Settings",
@@ -933,14 +934,13 @@
         "back": "Go Back"
     },
     "onboarding": {
-        "title": "What are you into?",
-        "subtitle": "Pick a few categories and we’ll tailor your feed. You can change them later in settings.",
         "pickMore": "Pick {count} more",
-        "continue": "Continue"
+        "continue": "Continue",
+        "title": "What are you into?",
+        "subtitle": "Pick a few categories and we’ll tailor your feed. You can change them later in settings."
     },
     "privacy": {
         "title": "Privacy Policy",
-        "updated": "Last updated: {date}",
         "collect": {
             "title": "What data we collect",
             "intro": "When you create an account on Collectify, we collect:",
@@ -976,10 +976,6 @@
             "title": "Cookies",
             "text": "We use a functional session cookie to keep you signed in, a functional cookie that remembers your interface language, and a short-lived security cookie (about 10 minutes) while you sign in with GitHub or Google. Your theme choice is saved in your browser’s local storage. We do not use analytics, tracking, or marketing cookies."
         },
-        "storage": {
-            "title": "Where your data is stored",
-            "text": "The app is hosted on Vercel. Account and content data is stored in our database. Uploaded images (avatars, banners, item images) are stored with our media hosting provider, Uploadcare. Account emails (password reset and email confirmation links) are sent through our email provider, Resend, which receives your email address and name for that purpose only."
-        },
         "moderation": {
             "title": "Reports and moderation",
             "text": "When you report content, we keep a copy of the reported comment or collection so moderators can review it even if it is later deleted. Moderators and administrators may review reported content and an account’s public activity when handling a report. Direct messages cannot be reported, and moderators and administrators cannot read your conversations. Moderation actions are recorded in an internal audit log. When an account is deleted, its content is deleted too; the audit log keeps only the account ID and username."
@@ -987,6 +983,11 @@
         "thirdParties": {
             "title": "Third parties",
             "text": "We do not sell or share your data with third parties for advertising or marketing purposes. If you choose to sign up or log in with GitHub or Google, those providers share basic profile information (such as your email) with us to create your account."
+        },
+        "updated": "Last updated: {date}",
+        "storage": {
+            "title": "Where your data is stored",
+            "text": "The app is hosted on Vercel. Account and content data is stored in our database. Uploaded images (avatars, banners, item images) are stored with our media hosting provider, Uploadcare. Account emails (password reset and email confirmation links) are sent through our email provider, Resend, which receives your email address and name for that purpose only."
         }
     },
     "errorPage": {
