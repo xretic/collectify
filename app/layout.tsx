@@ -19,6 +19,7 @@ import { ConsentBanner } from '@/features/consent/ui/ConsentBanner';
 import { NotificationToasts } from '@/features/notification/ui/NotificationToasts';
 import { serverEnv, siteUrl } from '@/shared/server/env';
 import { ogLocale, SITE_NAME } from '@/shared/i18n/metadata';
+import { ThemeAccountSync } from '@/features/theme/ui/ThemeAccountSync';
 
 // Google Sans from Google Fonts (SIL Open Font License), self-hosted by next/font at build time.
 const googleSans = Google_Sans({
@@ -118,6 +119,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                         <AuthPromptDialog />
                         <ConsentBanner />
                         <NotificationToasts />
+                        <ThemeAccountSync />
                     </AppProviders>
                 </NextIntlClientProvider>
             </body>

@@ -20,6 +20,10 @@ type ThemeState = {
     /** Adds or replaces the theme and switches to it. */
     saveCustomTheme: (theme: CustomTheme) => void;
     deleteCustomTheme: (id: CustomTheme['id']) => void;
+    /** Replaces the device's themes with the ones kept on the account. */
+    loadAccount: (theme: ActiveThemeId, customThemes: CustomTheme[]) => void;
+    /** Back to the default theme with no custom themes (signed out). */
+    reset: () => void;
 };
 
 function readCustomThemes(): CustomTheme[] {
@@ -33,9 +37,10 @@ function readCustomThemes(): CustomTheme[] {
     }
 }
 
-function writeStorage(key: string, value: string) {
+function writeStorage(key: string, value: string | null) {
     try {
-        localStorage.setItem(key, value);
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
     } catch {
         // Storage can be unavailable (private mode); the theme still applies.
     }
@@ -96,6 +101,17 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
         set({ customThemes });
         // Deleting the theme in use falls back to the plain preset of the same brightness.
         if (removed && get().theme === id) get().setTheme(removed.scheme);
+    },
+    loadAccount: (theme, customThemes) => {
+        writeStorage(CUSTOM_THEMES_STORAGE_KEY, JSON.stringify(customThemes));
+        set({ customThemes });
+        get().setTheme(theme);
+    },
+    reset: () => {
+        writeStorage(CUSTOM_THEMES_STORAGE_KEY, null);
+        writeStorage(THEME_STORAGE_KEY, null);
+        applyTheme(DEFAULT_THEME, []);
+        set({ theme: DEFAULT_THEME, customThemes: [] });
     },
 }));
 

@@ -17,6 +17,7 @@ import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
+import { flushThemeSave } from '@/features/theme/ui/ThemeAccountSync';
 
 export function UserMenu({ user }: { user: SessionUser }) {
     const t = useTranslations('nav');
@@ -30,6 +31,8 @@ export function UserMenu({ user }: { user: SessionUser }) {
         close();
 
         try {
+            // A theme change still waiting to be saved belongs to this account.
+            await flushThemeSave();
             await authApi.logout();
             queryClient.clear();
             queryClient.setQueryData(sessionUserQueryKey, null);

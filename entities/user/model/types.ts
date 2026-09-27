@@ -1,4 +1,5 @@
 import type { Locale } from '@/shared/config/i18n';
+import type { ActiveThemeId, CustomTheme } from '@/shared/config/themes';
 
 export type UserRole = 'Admin' | 'Moderator' | 'Verified';
 
@@ -30,6 +31,11 @@ export type SessionUser = {
     feedTabOrder: string[];
     /** UI language kept on the account. */
     locale: Locale;
+    /** Color theme kept on the account; `theme` is null until the user picks one. */
+    appearance: {
+        theme: ActiveThemeId | null;
+        customThemes: CustomTheme[];
+    };
     followers: number;
     subscriptions: number;
     notifications: number;

@@ -35,6 +35,8 @@ export async function exportUserData(userId: number) {
                 city: true,
                 birthDate: true,
                 locale: true,
+                theme: true,
+                customThemes: true,
                 createdAt: true,
                 termsAcceptedAt: true,
                 githubId: true,

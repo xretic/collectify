@@ -31,6 +31,10 @@ model User {
     feedTabOrder         String[]            @default([])
     /// UI language (one of LOCALES in shared/config/i18n.ts).
     locale               String              @default("en")
+    /// Color theme id: a preset from shared/config/themes.ts or one of `customThemes`. Null = default.
+    theme                String?
+    /// Themes made in the theme editor (CustomTheme[]), validated on write.
+    customThemes         Json                @default("[]")
     githubId             String?             @unique
     googleId             String?             @unique
     createdAt            DateTime            @default(now())

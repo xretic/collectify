@@ -1,6 +1,8 @@
 import 'server-only';
 import { db } from '@/shared/server/db';
 import { DEFAULT_LOCALE, isLocale } from '@/shared/config/i18n';
+import { isThemeId } from '@/shared/config/themes';
+import { parseCustomThemes } from '@/shared/lib/validation/theme';
 import { getActiveSanctions } from '@/entities/sanction/server/sanctions';
 import type { PublicUser, SessionUser, UserRestriction } from '../model/types';
 import { roleSelect, toRoles } from './roles';
@@ -30,6 +32,8 @@ export async function getSessionUser(
             birthDate: true,
             feedTabOrder: true,
             locale: true,
+            theme: true,
+            customThemes: true,
             email: true,
             emailVerifiedAt: true,
             passwordHash: true,
@@ -47,6 +51,12 @@ export async function getSessionUser(
 
     if (!user) return null;
 
+    const customThemes = parseCustomThemes(user.customThemes);
+    const theme =
+        isThemeId(user.theme) || customThemes.some((item) => item.id === user.theme)
+            ? (user.theme as SessionUser['appearance']['theme'])
+            : null;
+
     const sanctions = await getActiveSanctions([userId]);
     const muteExpiry = (scope: 'COMMENTS' | 'MESSENGER') =>
         sanctions.find((sanction) => sanction.scope === scope)?.expiresAt;
@@ -63,6 +73,7 @@ export async function getSessionUser(
         birthDate: user.birthDate?.toISOString().slice(0, 10) ?? null,
         feedTabOrder: user.feedTabOrder,
         locale: isLocale(user.locale) ? user.locale : DEFAULT_LOCALE,
+        appearance: { theme, customThemes },
         followers: user._count.followers,
         subscriptions: user._count.subscriptions,
         notifications: user._count.notifications,

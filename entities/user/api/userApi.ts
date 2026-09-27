@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/api';
+import type { Appearance } from '@/shared/lib/validation/theme';
 import type {
     FollowListKind,
     FollowListPage,
@@ -30,6 +31,10 @@ export const userApi = {
         return api
             .get('users/suggestions', { searchParams: { skip, take } })
             .json<SuggestionsPage>();
+    },
+
+    async saveAppearance(appearance: Appearance) {
+        await api.put('users/me/appearance', { json: appearance });
     },
 
     /** The account's data export as a file (POST: must not be triggerable by a link). */
