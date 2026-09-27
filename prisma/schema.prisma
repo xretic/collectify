@@ -10,6 +10,8 @@ datasource db {
 model User {
     id                   Int                 @id
     email                String              @unique
+    /// Set once the user opened a confirmation link (or signed up with a provider-verified address).
+    emailVerifiedAt      DateTime?
     passwordHash         String?
     avatarUrl            String              @default("")
     bannerUrl            String              @default("")
@@ -60,6 +62,7 @@ model User {
     engagedCollections   EngagedCollection[]
     interests            UserInterest[]
     chatMutes            ChatMute[]
+    emailTokens          EmailToken[]
 
     @@index([createdAt])
     @@index([country, cityKey])
@@ -252,6 +255,19 @@ model Follow {
     /// index serves "who follows X" (keyset by followerId).
     @@id([followerId, followingId])
     @@index([followingId, followerId])
+}
+
+/// One-time link sent by email. Only the SHA-256 of the token is stored.
+model EmailToken {
+    id        String         @id
+    userId    Int
+    kind      EmailTokenKind
+    expiresAt DateTime
+    createdAt DateTime       @default(now())
+    user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, kind])
+    @@index([expiresAt])
 }
 
 model Session {
@@ -485,6 +501,11 @@ enum ItemSize {
     M
     L
     XL
+}
+
+enum EmailTokenKind {
+    PASSWORD_RESET
+    EMAIL_VERIFICATION
 }
 
 enum NotificationType {

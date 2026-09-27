@@ -13,7 +13,7 @@
 
 - Node.js **≥ 20.9**
 - A [Neon](https://neon.tech) Postgres database (pooled and direct connection strings)
-- Optional: Redis (Upstash or any `redis://` server), Pusher, Uploadcare, GitHub / Google OAuth apps
+- Optional: Redis (Upstash or any `redis://` server), Pusher, Uploadcare, Resend, GitHub / Google OAuth apps
 
 ## Environment variables
 
@@ -23,7 +23,9 @@ Copy [`.env.example`](../.env.example) to `.env` and fill it in.
 | ----------------------------------- | :------: | ---------------------------------------------------------------------------- |
 | `DATABASE_URL`                      |    ✅    | Neon **pooled** connection string, used by the app                           |
 | `DIRECT_URL`                        |    ✅    | Neon **direct** (non-pooler) connection string, used by `prisma migrate`     |
-| `APP_URL`                           |          | Public origin, e.g. `https://collectify.app`. OAuth redirects and the WebSocket origin check; falls back to the request origin |
+| `APP_URL`                           |          | Public origin, e.g. `https://collectify.app`. OAuth redirects, links in emails and the WebSocket origin check; falls back to the request origin (emails are refused in production without it) |
+| `RESEND_API_KEY`                    |          | [Resend](https://resend.com) key for password reset and email confirmation. Without it, development prints emails to the server log |
+| `EMAIL_FROM`                        |          | Sender, e.g. `Collectify <hello@collectify.app>`, on a domain verified in Resend. Defaults to `onboarding@resend.dev`, which only delivers to the Resend account owner |
 | `GOOGLE_CLIENT_ID` / `_SECRET`      |          | Google sign-in                                                               |
 | `GITHUB_CLIENT_ID` / `_SECRET`      |          | GitHub sign-in                                                               |
 | `PUSHER_APP_ID` / `PUSHER_SECRET`   |          | Pusher server credentials (Vercel realtime)                                  |
@@ -97,6 +99,7 @@ Admins then manage moderators, verified badges, categories and tags from `/manag
 - [ ] `DATABASE_URL` points at the **pooled** endpoint, `DIRECT_URL` at the direct one
 - [ ] `npm run db:migrate` runs before the new version starts
 - [ ] `APP_URL` is set to the public `https://` origin
+- [ ] Emails work: `RESEND_API_KEY` is set and `EMAIL_FROM` uses a domain verified in Resend
 - [ ] Redis is configured (shared rate limits across instances)
 - [ ] Realtime works: Socket.IO behind a WebSocket-aware proxy, or Pusher on Vercel
 - [ ] At least one admin exists

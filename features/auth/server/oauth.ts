@@ -11,7 +11,7 @@ import { usernameSchema } from '@/shared/lib/validation/schemas';
 import { isLocale } from '@/shared/config/i18n';
 import { resolveLocale } from '@/shared/i18n/request';
 import { setLocaleCookie } from '@/shared/server/locale';
-import { USERNAME_MAX_LENGTH } from '@/shared/lib/constants';
+import { PLACEHOLDER_EMAIL_DOMAIN, USERNAME_MAX_LENGTH } from '@/shared/lib/constants';
 
 export type OAuthProvider = 'google' | 'github';
 
@@ -205,7 +205,7 @@ async function findOrCreateUser(
     if (profile.verifiedEmail) {
         const byEmail = await db.user.findFirst({
             where: { email: { equals: profile.verifiedEmail, mode: 'insensitive' } },
-            select: { id: true, avatarUrl: true, locale: true },
+            select: { id: true, avatarUrl: true, locale: true, emailVerifiedAt: true },
         });
 
         if (byEmail) {
@@ -214,6 +214,8 @@ async function findOrCreateUser(
                 data: {
                     [providerField]: profile.providerId,
                     avatarUrl: byEmail.avatarUrl || profile.avatarUrl,
+                    // The provider vouched for the address.
+                    emailVerifiedAt: byEmail.emailVerifiedAt ?? new Date(),
                 },
             });
             return { id: byEmail.id, created: false, locale: byEmail.locale };
@@ -226,7 +228,9 @@ async function findOrCreateUser(
     const data = {
         id,
         email:
-            profile.verifiedEmail ?? `${provider}_${profile.providerId}@users.noreply.collectify`,
+            profile.verifiedEmail ??
+            `${provider}_${profile.providerId}@${PLACEHOLDER_EMAIL_DOMAIN}`,
+        emailVerifiedAt: profile.verifiedEmail ? new Date() : null,
         fullName: (profile.fullName || profile.login || 'User').slice(0, 30),
         avatarUrl: profile.avatarUrl,
         [providerField]: profile.providerId,

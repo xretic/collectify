@@ -26,7 +26,7 @@ function withFallback(base: Messages, override: Messages): Messages {
     return result;
 }
 
-async function loadMessages(locale: Locale): Promise<Messages> {
+export async function loadMessages(locale: Locale): Promise<Messages> {
     if (locale === DEFAULT_LOCALE) return en;
 
     const translated = (await import(`./messages/${locale}.json`)).default as Messages;

@@ -7,6 +7,7 @@ import { getActiveSanction, sanctionError } from '@/entities/sanction/server/san
 import { generateUserId } from '@/entities/user/server/generateUserId';
 import { writeAudit } from '@/entities/moderation/server/audit';
 import type { AuthSession } from '@/entities/session/server/session';
+import { consumeToken } from './emailLinks';
 
 const BCRYPT_COST = 12;
 // Compared against when the email is unknown, so response time does not reveal
@@ -98,6 +99,29 @@ export async function changePassword(
         where: { id: userId },
         data: { passwordHash: await bcrypt.hash(input.newPassword, BCRYPT_COST) },
     });
+}
+
+/**
+ * Sets a new password from a reset link and signs the account out everywhere.
+ * Opening the link also proves the address belongs to the user.
+ */
+export async function resetPassword(token: string, password: string) {
+    const userId = await consumeToken(token, 'PASSWORD_RESET');
+    await assertNotBanned(userId);
+
+    const passwordHash = await bcrypt.hash(password, BCRYPT_COST);
+
+    await db.$transaction([
+        db.user.update({ where: { id: userId }, data: { passwordHash } }),
+        db.user.updateMany({
+            where: { id: userId, emailVerifiedAt: null },
+            data: { emailVerifiedAt: new Date() },
+        }),
+        db.session.deleteMany({ where: { userId } }),
+        db.emailToken.deleteMany({ where: { userId, kind: 'PASSWORD_RESET' } }),
+    ]);
+
+    return userId;
 }
 
 export async function deleteOwnAccount(userId: number, confirmation: string) {

@@ -35,6 +35,9 @@ export type SessionUser = {
     notifications: number;
     unreadMessages: number;
     hasPassword: boolean;
+    /** `null` when the account has no address it can receive mail at. */
+    email: string | null;
+    emailVerified: boolean;
     roles: UserRole[];
     impersonatorUserId: number | null;
     restrictions: {

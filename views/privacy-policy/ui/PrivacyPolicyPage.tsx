@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useFormatter, useTranslations } from 'next-intl';
 import styles from './PrivacyPolicyPage.module.css';
 
-const UPDATED_AT = new Date(Date.UTC(2026, 8, 25));
+const UPDATED_AT = new Date(Date.UTC(2026, 8, 27));
 
 const COLLECTED = ['email', 'names', 'password', 'profile', 'content'] as const;
 const LOCATION = ['location', 'birthDate'] as const;

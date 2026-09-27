@@ -24,6 +24,27 @@ export const registerSchema = z.object({
     locale: localeSchema.optional(),
 });
 
+export const forgotPasswordSchema = z.object({ email: emailSchema });
+
+const newPasswordFields = { password: passwordSchema, confirmPassword: z.string() };
+const passwordsMatch = {
+    message: 'validation.passwordsMismatch',
+    path: ['confirmPassword'],
+};
+
+/** The form on the reset page (the token comes from the link). */
+export const newPasswordSchema = z
+    .object(newPasswordFields)
+    .refine((value) => value.password === value.confirmPassword, passwordsMatch);
+
+const emailTokenSchema = z.string().min(1, 'validation.required').max(200, 'validation.tooLong');
+
+export const resetPasswordSchema = z
+    .object({ ...newPasswordFields, token: emailTokenSchema })
+    .refine((value) => value.password === value.confirmPassword, passwordsMatch);
+
+export const verifyEmailSchema = z.object({ token: emailTokenSchema });
+
 export const updateProfileSchema = z
     .object({
         username: usernameSchema,

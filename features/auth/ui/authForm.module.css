@@ -3,3 +3,15 @@
     flex-direction: column;
     gap: 16px;
 }
+
+/* Small link under a field, e.g. "Forgot password?". */
+.aside {
+    align-self: flex-end;
+    margin-top: -8px;
+    font-size: 14px;
+    color: var(--accent);
+}
+
+.aside:hover {
+    text-decoration: underline;
+}

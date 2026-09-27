@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
 import { readBody, route } from '@/shared/server/http';
 import { enforceRateLimit } from '@/shared/server/rateLimit';
 import { setLocaleCookie } from '@/shared/server/locale';
@@ -7,6 +7,11 @@ import { createSession, setSessionCookie } from '@/entities/session/server/sessi
 import { getSessionUser } from '@/entities/user/server/profile';
 import { registerUser } from '@/features/auth/server/accounts';
 import { registerSchema } from '@/features/auth/model/schemas';
+import {
+    emailLinkOrigin,
+    logEmailFailure,
+    requestEmailConfirmation,
+} from '@/features/auth/server/emailLinks';
 
 export const POST = route(async (req) => {
     await enforceRateLimit(req, 'auth');
@@ -16,6 +21,14 @@ export const POST = route(async (req) => {
     const userId = await registerUser({ ...input, locale: locale ?? (await resolveLocale()) });
     const session = await createSession(userId);
     const user = await getSessionUser(userId, null);
+
+    // Best effort: without email sending the account still works (a banner asks to confirm later).
+    const origin = emailLinkOrigin(req);
+    if (origin) {
+        after(() =>
+            requestEmailConfirmation(userId, origin).catch(logEmailFailure('confirmation')),
+        );
+    }
 
     const res = NextResponse.json({ user }, { status: 201 });
     setSessionCookie(res, session);

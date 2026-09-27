@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -55,6 +56,10 @@ export function LoginForm() {
                 helperText={validationMessage(formState.errors.password?.message)}
                 fullWidth
             />
+
+            <Link href="/auth/forgot-password" className={styles.aside}>
+                {t('forgotPassword')}
+            </Link>
 
             <Button
                 type="submit"

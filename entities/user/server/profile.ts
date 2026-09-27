@@ -4,6 +4,7 @@ import { DEFAULT_LOCALE, isLocale } from '@/shared/config/i18n';
 import { getActiveSanctions } from '@/entities/sanction/server/sanctions';
 import type { PublicUser, SessionUser, UserRestriction } from '../model/types';
 import { roleSelect, toRoles } from './roles';
+import { isPlaceholderEmail } from '../lib/email';
 
 function toRestriction(expiresAt: Date | null | undefined): UserRestriction {
     return expiresAt === undefined
@@ -29,6 +30,8 @@ export async function getSessionUser(
             birthDate: true,
             feedTabOrder: true,
             locale: true,
+            email: true,
+            emailVerifiedAt: true,
             passwordHash: true,
             ...roleSelect,
             _count: {
@@ -65,6 +68,8 @@ export async function getSessionUser(
         notifications: user._count.notifications,
         unreadMessages: user._count.receivedMessages,
         hasPassword: user.passwordHash !== null,
+        email: isPlaceholderEmail(user.email) ? null : user.email,
+        emailVerified: user.emailVerifiedAt !== null,
         roles: toRoles(user),
         impersonatorUserId,
         restrictions: {

@@ -5,25 +5,31 @@ import { useTranslations } from 'next-intl';
 
 type AuthLayoutProps = {
     title: string;
-    subtitle: string;
+    subtitle?: ReactNode;
     children: ReactNode;
-    footer: ReactNode;
+    footer?: ReactNode;
+    /** "Continue with Google / GitHub" under the form. */
+    oauth?: boolean;
 };
 
-export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProps) {
+export function AuthLayout({ title, subtitle, children, footer, oauth = true }: AuthLayoutProps) {
     const t = useTranslations('auth');
 
     return (
         <section className={styles.page}>
             <h1 className={styles.title}>{title}</h1>
-            <p className={styles.subtitle}>{subtitle}</p>
+            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
 
             <div className={styles.form}>{children}</div>
 
-            <div className={styles.divider}>{t('orContinueWith')}</div>
-            <OAuthButtons />
+            {oauth && (
+                <>
+                    <div className={styles.divider}>{t('orContinueWith')}</div>
+                    <OAuthButtons />
+                </>
+            )}
 
-            <p className={styles.footer}>{footer}</p>
+            {footer && <p className={styles.footer}>{footer}</p>}
         </section>
     );
 }

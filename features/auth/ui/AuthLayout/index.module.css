@@ -12,6 +12,7 @@
 }
 
 .subtitle {
+    max-width: 400px;
     color: var(--soft-text);
     text-align: center;
 }

@@ -44,6 +44,11 @@ export const DIRECT_MESSAGE_MAX_LENGTH = 2000;
 
 export const SESSION_AGE_IN_DAYS = 14;
 
+/** OAuth accounts whose provider gave no verified email get `<provider>_<id>@` this domain. */
+export const PLACEHOLDER_EMAIL_DOMAIN = 'users.noreply.collectify';
+export const PASSWORD_RESET_TTL_HOURS = 1;
+export const EMAIL_VERIFICATION_TTL_DAYS = 3;
+
 export const REPORT_DETAILS_MAX_LENGTH = 1000;
 export const MODERATION_NOTE_MAX_LENGTH = 1000;
 

@@ -12,7 +12,8 @@ export type RateLimitPreset =
     | 'message'
     | 'realtime'
     | 'comment'
-    | 'create';
+    | 'create'
+    | 'email';
 
 const PRESETS: Record<RateLimitPreset, { limit: number; windowSeconds: number }> = {
     auth: { limit: 8, windowSeconds: 60 },
@@ -25,6 +26,8 @@ const PRESETS: Record<RateLimitPreset, { limit: number; windowSeconds: number }>
     realtime: { limit: 120, windowSeconds: 60 },
     comment: { limit: 10, windowSeconds: 60 },
     create: { limit: 10, windowSeconds: 60 },
+    /** Emails to one address (reset / confirmation links). */
+    email: { limit: 3, windowSeconds: 60 * 60 },
 };
 
 const memoryBuckets = new Map<string, { count: number; resetAt: number }>();
@@ -74,8 +77,12 @@ export async function enforceRateLimit(
     preset: RateLimitPreset,
     userId?: number,
 ): Promise<void> {
+    await enforceRateLimitFor(userId ? `u:${userId}` : `ip:${getClientIp(req)}`, preset);
+}
+
+/** Same limit keyed by an arbitrary subject (e.g. the recipient of an email). */
+export async function enforceRateLimitFor(subject: string, preset: RateLimitPreset) {
     const { limit, windowSeconds } = PRESETS[preset];
-    const subject = userId ? `u:${userId}` : `ip:${getClientIp(req)}`;
     const window = Math.floor(Date.now() / (windowSeconds * 1000));
     const key = `ratelimit:${preset}:${subject}:${window}`;
 

@@ -19,6 +19,11 @@ const schema = z.object({
     NEXT_PUBLIC_PUSHER_KEY: optional,
     NEXT_PUBLIC_PUSHER_CLUSTER: optional,
 
+    /** Resend key; without it emails are printed to the server log (development only). */
+    RESEND_API_KEY: optional,
+    /** Sender, e.g. `Collectify <hello@collectify.app>` (the domain must be verified in Resend). */
+    EMAIL_FROM: optional,
+
     REDIS_URL: optional,
     UPSTASH_REDIS_REST_URL: optional,
     UPSTASH_REDIS_REST_TOKEN: optional,
