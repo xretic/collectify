@@ -13,6 +13,7 @@ import { ImageEditorHost } from '@/shared/ui/ImageEditor';
 import NavBar from '@/widgets/layout/ui/NavBar';
 import Footer from '@/widgets/layout/ui/Footer';
 import { ReportDialog } from '@/features/report/create/ui/ReportDialog';
+import { AuthPromptDialog } from '@/features/auth/ui/AuthPromptDialog';
 import { NotificationToasts } from '@/features/notification/ui/NotificationToasts';
 import { siteUrl } from '@/shared/server/env';
 
@@ -61,6 +62,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                         <Toaster />
                         <ImageEditorHost />
                         <ReportDialog />
+                        <AuthPromptDialog />
                         <NotificationToasts />
                     </AppProviders>
                 </NextIntlClientProvider>

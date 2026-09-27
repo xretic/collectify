@@ -628,7 +628,6 @@
         "all": "すべて",
         "new": "新しいボード",
         "actions": "ボードの操作",
-        "signInToSave": "保存するにはログイン",
         "saved": "保存済み",
         "save": "保存",
         "saveTo": "保存先",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "いいね",
         "unlike": "いいねを取り消す",
-        "signInToLike": "いいねするにはログイン",
         "delete": {
             "deleted": "コレクションを削除しました。",
             "title": "「{name}」を削除しますか？",

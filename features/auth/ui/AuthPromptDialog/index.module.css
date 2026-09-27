@@ -1,0 +1,55 @@
+.paper {
+    position: relative;
+    border-radius: 20px !important;
+}
+
+.close {
+    position: absolute !important;
+    top: 8px;
+    right: 8px;
+    color: var(--soft-text) !important;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 36px 28px 28px;
+    text-align: center;
+}
+
+.title {
+    margin-top: 4px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 24px;
+    line-height: 1.25;
+}
+
+.subtitle {
+    color: var(--soft-text);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.footer {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--soft-text);
+}
+
+.footer a {
+    color: var(--accent);
+}
+
+@media (max-width: 600px) {
+    .body {
+        padding: 32px 20px 24px;
+    }
+}

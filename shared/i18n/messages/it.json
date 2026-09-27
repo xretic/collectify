@@ -628,7 +628,6 @@
         "all": "Tutto",
         "new": "Nuova bacheca",
         "actions": "Azioni della bacheca",
-        "signInToSave": "Accedi per salvare",
         "saved": "Salvata",
         "save": "Salva",
         "saveTo": "Salva in",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Mi piace",
         "unlike": "Non mi piace più",
-        "signInToLike": "Accedi per mettere mi piace",
         "delete": {
             "deleted": "Collezione eliminata.",
             "title": "Eliminare «{name}»?",

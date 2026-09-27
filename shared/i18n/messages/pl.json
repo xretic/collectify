@@ -628,7 +628,6 @@
         "all": "Wszystkie",
         "new": "Nowa tablica",
         "actions": "Akcje tablicy",
-        "signInToSave": "Zaloguj się, aby zapisać",
         "saved": "Zapisano",
         "save": "Zapisz",
         "saveTo": "Zapisz w",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Polub",
         "unlike": "Cofnij polubienie",
-        "signInToLike": "Zaloguj się, aby polubić",
         "delete": {
             "deleted": "Kolekcja usunięta.",
             "title": "Usunąć „{name}”?",

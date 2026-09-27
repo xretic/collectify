@@ -628,7 +628,6 @@
         "all": "Alles",
         "new": "Nieuw bord",
         "actions": "Bordacties",
-        "signInToSave": "Log in om te bewaren",
         "saved": "Bewaard",
         "save": "Bewaren",
         "saveTo": "Bewaren in",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Leuk vinden",
         "unlike": "Niet meer leuk vinden",
-        "signInToLike": "Log in om te liken",
         "delete": {
             "deleted": "Collectie verwijderd.",
             "title": "‘{name}’ verwijderen?",

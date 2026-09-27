@@ -9,13 +9,16 @@ import type { CollectionDetails } from '@/entities/collection/model/types';
 import { useCollectionCache } from '@/entities/collection/model/useCollectionDetails';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { promptSignIn } from '@/features/auth/model/authPromptStore';
+import { useResumeIntent } from '@/features/auth/model/useResumeIntent';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
 import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type EngagementButtonsProps = {
     collection: CollectionDetails;
-    disabled: boolean;
+    /** Guests are asked to sign in; the like happens once they are back. */
+    guest: boolean;
     className?: string;
     /** More actions in the same row (e.g. the "Save" menu). */
     children?: ReactNode;
@@ -24,7 +27,7 @@ type EngagementButtonsProps = {
 /** Like with an optimistic counter, plus any extra actions next to it. */
 export function EngagementButtons({
     collection,
-    disabled,
+    guest,
     className,
     children,
 }: EngagementButtonsProps) {
@@ -52,16 +55,23 @@ export function EngagementButtons({
         },
     });
 
+    const intent = { kind: 'like', id: collection.id } as const;
+    useResumeIntent(intent, !guest && !collection.liked, () => toggle.mutate(true));
+
+    const onClick = () => {
+        if (guest) promptSignIn('like', intent);
+        else toggle.mutate(!collection.liked);
+    };
+
     return (
         <div className={`${styles.actions} ${className ?? ''}`}>
             <button
                 type="button"
                 className={`${styles.toggle} ${collection.liked ? styles.active : ''}`}
-                disabled={disabled || toggle.isPending}
-                onClick={() => toggle.mutate(!collection.liked)}
+                disabled={toggle.isPending}
+                onClick={onClick}
                 aria-pressed={collection.liked}
                 aria-label={collection.liked ? t('unlike') : t('like')}
-                title={disabled ? t('signInToLike') : undefined}
             >
                 {collection.liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                 <span className={styles.count}>{format.compact(collection.likes)}</span>

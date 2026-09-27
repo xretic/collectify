@@ -628,7 +628,6 @@
         "all": "Todo",
         "new": "Nuevo tablero",
         "actions": "Acciones del tablero",
-        "signInToSave": "Inicia sesión para guardar",
         "saved": "Guardado",
         "save": "Guardar",
         "saveTo": "Guardar en",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Me gusta",
         "unlike": "Ya no me gusta",
-        "signInToLike": "Inicia sesión para dar me gusta",
         "delete": {
             "deleted": "Colección eliminada.",
             "title": "¿Eliminar «{name}»?",

@@ -14,6 +14,7 @@ import { commentQueryKeys } from '@/entities/comment/model/queryKeys';
 import type { CollectionComment } from '@/entities/comment/model/types';
 import { CommentCard } from '@/entities/comment/ui/CommentCard';
 import { isStaff, type SessionUser } from '@/entities/user/model/types';
+import { GuestComposer } from '@/features/comment/create/ui/GuestComposer';
 import { CommentComposer } from '@/features/comment/create/ui/CommentComposer';
 import { CommentEditor } from '@/features/comment/manage/ui/CommentEditor';
 import { CommentMenu } from '@/features/comment/manage/ui/CommentMenu';
@@ -85,7 +86,11 @@ export function CommentsSection({ collectionId, owner, total, viewer }: Comments
                 {t('count', { count: query.data?.pages[0]?.total ?? total })}
             </h2>
 
-            {viewer && <CommentComposer collectionId={collectionId} viewer={viewer} />}
+            {viewer ? (
+                <CommentComposer collectionId={collectionId} viewer={viewer} />
+            ) : (
+                <GuestComposer />
+            )}
 
             {query.isPending && <Spinner />}
 

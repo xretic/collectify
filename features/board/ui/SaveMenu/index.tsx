@@ -17,6 +17,8 @@ import { useCollectionCache } from '@/entities/collection/model/useCollectionDet
 import { BOARD_NAME_MAX_LENGTH } from '@/shared/lib/constants';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { promptSignIn } from '@/features/auth/model/authPromptStore';
+import { useResumeIntent } from '@/features/auth/model/useResumeIntent';
 import { useBoardMutations } from '../../model/useBoardMutations';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
@@ -24,14 +26,15 @@ import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 type SaveMenuProps = {
     collection: CollectionDetails;
-    disabled: boolean;
+    /** Guests are asked to sign in; the collection is saved once they are back. */
+    guest: boolean;
 };
 
 /**
  * "Save" button: saves to favorites ("All saved") and lets the user put the
  * collection on any of their boards, or create a board on the spot.
  */
-export function SaveMenu({ collection, disabled }: SaveMenuProps) {
+export function SaveMenu({ collection, guest }: SaveMenuProps) {
     const t = useTranslations('boards');
     const format = useFormatters();
     const queryClient = useQueryClient();
@@ -82,7 +85,18 @@ export function SaveMenu({ collection, disabled }: SaveMenuProps) {
         onError: showError,
     });
 
+    const intent = { kind: 'save', id: collection.id } as const;
+    useResumeIntent(intent, !guest && !collection.favorited, () => {
+        setFavorited.mutate(true);
+        toast.success(t('savedToAll'));
+    });
+
     const open = (event: MouseEvent<HTMLElement>) => {
+        if (guest) {
+            promptSignIn('save', intent);
+            return;
+        }
+
         setAnchorEl(event.currentTarget);
         // First click saves right away, like Pinterest; the menu refines where.
         if (!collection.favorited) setFavorited.mutate(true);
@@ -107,10 +121,8 @@ export function SaveMenu({ collection, disabled }: SaveMenuProps) {
             <button
                 type="button"
                 className={`${styles.trigger} ${collection.favorited ? styles.active : ''}`}
-                disabled={disabled}
                 onClick={open}
                 aria-haspopup="dialog"
-                title={disabled ? t('signInToSave') : undefined}
             >
                 {collection.favorited ? <BookmarkIcon /> : <BookmarkBorderIcon />}
                 <span>{collection.favorited ? t('saved') : t('save')}</span>

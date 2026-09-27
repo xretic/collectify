@@ -628,7 +628,6 @@
         "all": "전체",
         "new": "새 보드",
         "actions": "보드 작업",
-        "signInToSave": "저장하려면 로그인하세요",
         "saved": "저장됨",
         "save": "저장",
         "saveTo": "저장할 위치",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "좋아요",
         "unlike": "좋아요 취소",
-        "signInToLike": "좋아요를 누르려면 로그인하세요",
         "delete": {
             "deleted": "컬렉션을 삭제했습니다.",
             "title": "“{name}”을(를) 삭제할까요?",

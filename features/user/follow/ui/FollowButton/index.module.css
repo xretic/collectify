@@ -1,0 +1,12 @@
+.button {
+    border-radius: var(--radius-pill) !important;
+    white-space: nowrap;
+}
+
+/* Over a photo: a frosted pill instead of the outlined look, which would disappear. */
+.onImage:global(.MuiButton-outlined) {
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    background: rgba(32, 32, 32, 0.45) !important;
+    backdrop-filter: blur(12px);
+}

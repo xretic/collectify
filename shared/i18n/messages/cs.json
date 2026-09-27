@@ -628,7 +628,6 @@
         "all": "Vše",
         "new": "Nová nástěnka",
         "actions": "Akce nástěnky",
-        "signInToSave": "Pro uložení se přihlaste",
         "saved": "Uloženo",
         "save": "Uložit",
         "saveTo": "Uložit do",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Líbí se mi",
         "unlike": "Zrušit lajk",
-        "signInToLike": "Pro lajk se přihlaste",
         "delete": {
             "deleted": "Kolekce smazána.",
             "title": "Smazat „{name}“?",

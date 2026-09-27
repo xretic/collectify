@@ -73,8 +73,12 @@ export default function UserProfilePage() {
                 }
                 actions={
                     <>
-                        <FollowButton user={profile} disabled={!signedIn} />
-                        <MessageButton recipient={profile} disabled={!signedIn} />
+                        <FollowButton
+                            userId={profile.id}
+                            isFollowed={profile.isFollowed}
+                            guest={!signedIn}
+                        />
+                        <MessageButton recipient={profile} guest={!signedIn} />
                         <ShareButton
                             variant="icon"
                             path={`/users/${profile.id}`}
@@ -83,7 +87,7 @@ export default function UserProfilePage() {
                         <ReportButton
                             target={{ type: 'USER', userId: profile.id }}
                             username={profile.username}
-                            disabled={!signedIn}
+                            guest={!signedIn}
                         />
                         {canManage(viewer, profile) && (
                             <Tooltip title={t('manage')}>

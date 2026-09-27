@@ -81,8 +81,8 @@ export function CollectionDetailsPage() {
 
                     <footer className={styles.footer}>
                         {!collection.isPrivate && (
-                            <EngagementButtons collection={collection} disabled={!user}>
-                                <SaveMenu collection={collection} disabled={!user} />
+                            <EngagementButtons collection={collection} guest={!user}>
+                                <SaveMenu collection={collection} guest={!user} />
                                 <ShareButton
                                     path={`/collections/${collection.id}`}
                                     text={ts('collectionText', { name: collection.name })}

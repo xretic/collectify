@@ -12,12 +12,15 @@ import { isLocale } from '@/shared/config/i18n';
 import { resolveLocale } from '@/shared/i18n/request';
 import { setLocaleCookie } from '@/shared/server/locale';
 import { PLACEHOLDER_EMAIL_DOMAIN, USERNAME_MAX_LENGTH } from '@/shared/lib/constants';
+import { safeNextPath, withNext } from '@/shared/lib/safeNextPath';
 
 export type OAuthProvider = 'google' | 'github';
 
 export const OAUTH_PROVIDERS: readonly OAuthProvider[] = ['google', 'github'];
 
 const STATE_COOKIE = 'oauth_state';
+/** Where to go after signing in (the page a guest was on). */
+const NEXT_COOKIE = 'oauth_next';
 const STATE_MAX_AGE_SECONDS = 10 * 60;
 
 type OAuthProfile = {
@@ -70,14 +73,19 @@ export function startOAuth(req: NextRequest, provider: OAuthProvider) {
     }
 
     const res = NextResponse.redirect(url);
-    res.cookies.set({
-        name: STATE_COOKIE,
-        value: state,
+    const cookie = {
         httpOnly: true,
         sameSite: 'lax',
         secure: isProduction,
         path: '/api/auth/callback',
         maxAge: STATE_MAX_AGE_SECONDS,
+    } as const;
+
+    res.cookies.set({ name: STATE_COOKIE, value: state, ...cookie });
+    res.cookies.set({
+        name: NEXT_COOKIE,
+        value: safeNextPath(req.nextUrl.searchParams.get('next')),
+        ...cookie,
     });
 
     return res;
@@ -249,14 +257,17 @@ async function findOrCreateUser(
     return { id, created: true, locale };
 }
 
-/** Handles the provider redirect: verifies state, signs the user in, redirects home. */
+/** Handles the provider redirect: verifies state, signs the user in, returns to the page they came from. */
 export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
-    const home = new URL('/', appOrigin(req));
-    const fail = (error: string) => {
-        const res = NextResponse.redirect(new URL(`/auth/login?error=${error}`, appOrigin(req)));
+    const origin = appOrigin(req);
+    const next = safeNextPath(req.cookies.get(NEXT_COOKIE)?.value);
+    const clearCookies = (res: NextResponse) => {
         res.cookies.delete({ name: STATE_COOKIE, path: '/api/auth/callback' });
+        res.cookies.delete({ name: NEXT_COOKIE, path: '/api/auth/callback' });
         return res;
     };
+    const fail = (error: string) =>
+        clearCookies(NextResponse.redirect(new URL(`/auth/login?error=${error}`, origin)));
 
     const code = req.nextUrl.searchParams.get('code');
     if (!code || !stateMatches(req)) return fail('oauth-state');
@@ -280,8 +291,10 @@ export async function finishOAuth(req: NextRequest, provider: OAuthProvider) {
     if (await getActiveSanction(userId, 'ACCOUNT')) return fail('account-banned');
 
     const session = await createSession(userId);
-    const res = NextResponse.redirect(created ? new URL('/onboarding', home) : home);
-    res.cookies.delete({ name: STATE_COOKIE, path: '/api/auth/callback' });
+    // New accounts pick their interests first, then continue where they were.
+    const res = clearCookies(
+        NextResponse.redirect(new URL(created ? withNext('/onboarding', next) : next, origin)),
+    );
     setSessionCookie(res, session);
     if (isLocale(locale)) setLocaleCookie(res, locale);
 

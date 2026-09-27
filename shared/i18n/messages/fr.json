@@ -628,7 +628,6 @@
         "all": "Tout",
         "new": "Nouveau tableau",
         "actions": "Actions du tableau",
-        "signInToSave": "Connectez-vous pour enregistrer",
         "saved": "Enregistré",
         "save": "Enregistrer",
         "saveTo": "Enregistrer dans",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "J’aime",
         "unlike": "Je n’aime plus",
-        "signInToLike": "Connectez-vous pour aimer",
         "delete": {
             "deleted": "Collection supprimée.",
             "title": "Supprimer « {name} » ?",

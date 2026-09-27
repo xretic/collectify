@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Alert } from '@mui/material';
-import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import { AuthLayout } from '@/features/auth/ui/AuthLayout';
+import { useLeaveIfSignedIn } from '@/features/auth/model/useLeaveIfSignedIn';
 import { LoginForm } from '@/features/auth/ui/LoginForm';
 import { useTranslations } from 'next-intl';
+import { safeNextPath, withNext } from '@/shared/lib/safeNextPath';
 
 const OAUTH_ERRORS = {
     'oauth-state': 'oauthState',
@@ -20,20 +20,18 @@ const isOAuthError = (value: string | null): value is keyof typeof OAUTH_ERRORS 
 
 export default function LoginPage() {
     const t = useTranslations('auth');
-    const router = useRouter();
-    const { user } = useSessionUser();
-    const error = useSearchParams().get('error');
+    const searchParams = useSearchParams();
+    const error = searchParams.get('error');
+    const next = safeNextPath(searchParams.get('next'));
 
-    useEffect(() => {
-        if (user) router.replace('/');
-    }, [user, router]);
+    useLeaveIfSignedIn(next);
 
     return (
         <AuthLayout
             title={t('login')}
             subtitle={t('loginSubtitle')}
             footer={t.rich('noAccount', {
-                link: (chunks) => <Link href="/auth/register">{chunks}</Link>,
+                link: (chunks) => <Link href={withNext('/auth/register', next)}>{chunks}</Link>,
             })}
         >
             {isOAuthError(error) && (

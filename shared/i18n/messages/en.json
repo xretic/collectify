@@ -628,7 +628,6 @@
         "all": "All",
         "new": "New board",
         "actions": "Board actions",
-        "signInToSave": "Sign in to save",
         "saved": "Saved",
         "save": "Save",
         "saveTo": "Save to",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Like",
         "unlike": "Unlike",
-        "signInToLike": "Sign in to like",
         "delete": {
             "deleted": "Collection deleted.",
             "title": "Delete “{name}”?",

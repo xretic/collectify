@@ -17,3 +17,10 @@
     background-color: #ffffff !important;
     border: 1px solid var(--border-color) !important;
 }
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}

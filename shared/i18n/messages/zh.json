@@ -628,7 +628,6 @@
         "all": "全部",
         "new": "新建画板",
         "actions": "画板操作",
-        "signInToSave": "登录后收藏",
         "saved": "已收藏",
         "save": "收藏",
         "saveTo": "收藏到",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "点赞",
         "unlike": "取消点赞",
-        "signInToLike": "登录后点赞",
         "delete": {
             "deleted": "收藏集已删除。",
             "title": "删除“{name}”？",

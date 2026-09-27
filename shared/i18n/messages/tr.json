@@ -628,7 +628,6 @@
         "all": "Tümü",
         "new": "Yeni pano",
         "actions": "Pano işlemleri",
-        "signInToSave": "Kaydetmek için giriş yapın",
         "saved": "Kaydedildi",
         "save": "Kaydet",
         "saveTo": "Şuraya kaydet",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Beğen",
         "unlike": "Beğeniyi geri al",
-        "signInToLike": "Beğenmek için giriş yapın",
         "delete": {
             "deleted": "Koleksiyon silindi.",
             "title": "“{name}” silinsin mi?",

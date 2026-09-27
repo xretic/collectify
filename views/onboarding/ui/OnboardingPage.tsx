@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@mui/material';
 import { userApi } from '@/entities/user/api/userApi';
@@ -10,6 +10,7 @@ import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { InterestPicker } from '@/features/interest/ui/InterestPicker';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { safeNextPath } from '@/shared/lib/safeNextPath';
 import styles from './OnboardingPage.module.css';
 import { useTranslations } from 'next-intl';
 
@@ -22,13 +23,15 @@ export default function OnboardingPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
     const [selected, setSelected] = useState<number[]>([]);
+    // The page a guest was on when they decided to sign up.
+    const next = safeNextPath(useSearchParams().get('next'));
 
     const save = useMutation({
         mutationFn: () => userApi.setInterests(selected),
         onSuccess: (categoryIds) => {
             queryClient.setQueryData(userQueryKeys.interests(), categoryIds);
             queryClient.invalidateQueries({ queryKey: collectionQueryKeys.lists() });
-            router.replace('/');
+            router.replace(next);
         },
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
     });
@@ -45,7 +48,7 @@ export default function OnboardingPage() {
             <InterestPicker value={selected} onChange={setSelected} />
 
             <footer className={styles.footer}>
-                <Button onClick={() => router.replace('/')} disabled={save.isPending}>
+                <Button onClick={() => router.replace(next)} disabled={save.isPending}>
                     {tc('skip')}
                 </Button>
                 <Button

@@ -14,6 +14,7 @@ import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import { registerSchema } from '../../model/schemas';
 import { useAuthSuccess } from '../../model/useAuthSuccess';
+import { withNext } from '@/shared/lib/safeNextPath';
 import styles from '../authForm.module.css';
 import { useLocale, useTranslations } from 'next-intl';
 import { useValidationMessage } from '@/shared/i18n/useValidationMessage';
@@ -25,7 +26,7 @@ export function RegisterForm() {
     const t = useTranslations('auth');
     const locale = useLocale();
     const validationMessage = useValidationMessage();
-    const onSuccess = useAuthSuccess('/onboarding');
+    const onSuccess = useAuthSuccess((next) => withNext('/onboarding', next));
     const { register, handleSubmit, formState } = useForm<RegisterValues>({
         resolver: zodResolver(registerSchema),
         defaultValues: { email: '', username: '', password: '' },

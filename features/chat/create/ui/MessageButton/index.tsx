@@ -8,21 +8,28 @@ import { chatApi } from '@/entities/chat/api/chatApi';
 import type { UserPreview } from '@/entities/user/model/types';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
+import { promptSignIn } from '@/features/auth/model/authPromptStore';
 import { useTranslations } from 'next-intl';
 
 /** Opens the existing chat with `recipient`, or an empty draft one that the first message creates. */
 export function MessageButton({
     recipient,
-    disabled,
+    guest = false,
 }: {
     recipient: UserPreview;
-    disabled?: boolean;
+    /** Guests are asked to sign in instead. */
+    guest?: boolean;
 }) {
     const t = useTranslations('chats');
     const router = useRouter();
     const [pending, setPending] = useState(false);
 
     const handleClick = async () => {
+        if (guest) {
+            promptSignIn('message');
+            return;
+        }
+
         setPending(true);
 
         try {
@@ -40,7 +47,7 @@ export function MessageButton({
                 <IconButton
                     color="inherit"
                     onClick={handleClick}
-                    disabled={disabled || pending}
+                    disabled={pending}
                     aria-label={t('message')}
                 >
                     <EmailIcon />

@@ -628,7 +628,6 @@
         "all": "Alle",
         "new": "Neue Pinnwand",
         "actions": "Pinnwand-Aktionen",
-        "signInToSave": "Zum Speichern anmelden",
         "saved": "Gespeichert",
         "save": "Speichern",
         "saveTo": "Speichern in",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Gefällt mir",
         "unlike": "Gefällt mir nicht mehr",
-        "signInToLike": "Zum Liken anmelden",
         "delete": {
             "deleted": "Sammlung gelöscht.",
             "title": "„{name}“ löschen?",

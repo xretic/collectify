@@ -628,7 +628,6 @@
         "all": "Tudo",
         "new": "Novo quadro",
         "actions": "Ações do quadro",
-        "signInToSave": "Inicie sessão para guardar",
         "saved": "Guardado",
         "save": "Guardar",
         "saveTo": "Guardar em",
@@ -831,7 +830,6 @@
     "collection": {
         "like": "Gosto",
         "unlike": "Retirar gosto",
-        "signInToLike": "Inicie sessão para gostar",
         "delete": {
             "deleted": "Coleção eliminada.",
             "title": "Eliminar «{name}»?",

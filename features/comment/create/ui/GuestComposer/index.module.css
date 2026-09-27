@@ -1,0 +1,26 @@
+.composer {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+}
+
+.avatar {
+    width: 40px !important;
+    height: 40px !important;
+}
+
+.field {
+    padding: 14px 16px;
+    color: var(--soft-text);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--container-color);
+    transition: border-color 0.15s ease;
+}
+
+.composer:hover .field {
+    border-color: var(--accent);
+}

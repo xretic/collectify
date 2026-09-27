@@ -1,4 +1,7 @@
+'use client';
+
 import type { ReactNode } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { OAuthButtons } from '../OAuthButtons';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
@@ -14,6 +17,7 @@ type AuthLayoutProps = {
 
 export function AuthLayout({ title, subtitle, children, footer, oauth = true }: AuthLayoutProps) {
     const t = useTranslations('auth');
+    const next = useSearchParams().get('next') ?? undefined;
 
     return (
         <section className={styles.page}>
@@ -25,7 +29,7 @@ export function AuthLayout({ title, subtitle, children, footer, oauth = true }: 
             {oauth && (
                 <>
                     <div className={styles.divider}>{t('orContinueWith')}</div>
-                    <OAuthButtons />
+                    <OAuthButtons next={next} />
                 </>
             )}
 
