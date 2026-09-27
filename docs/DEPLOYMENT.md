@@ -31,6 +31,7 @@ Copy [`.env.example`](../.env.example) to `.env` and fill it in.
 | `PUSHER_APP_ID` / `PUSHER_SECRET`   |          | Pusher server credentials (Vercel realtime)                                  |
 | `NEXT_PUBLIC_PUSHER_KEY` / `_CLUSTER` |        | Pusher client credentials; when set, the client uses Pusher instead of Socket.IO |
 | `NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY` |          | Image uploads (avatars, banners, covers, items)                              |
+| `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` / `YANDEX_VERIFICATION` | | Search console ownership tokens, rendered as verification meta tags |
 | `REDIS_URL`                         |          | `redis://` server for cache and rate limits                                  |
 | `UPSTASH_REDIS_REST_URL` / `_TOKEN` |          | Upstash REST — takes precedence over `REDIS_URL`                             |
 
@@ -99,6 +100,8 @@ Admins then manage moderators, verified badges, categories and tags from `/manag
 - [ ] `DATABASE_URL` points at the **pooled** endpoint, `DIRECT_URL` at the direct one
 - [ ] `npm run db:migrate` runs before the new version starts
 - [ ] `APP_URL` is set to the public `https://` origin
+- [ ] `APP_URL` is the final domain: canonical links, sitemap, `robots.txt` and share images use it
+- [ ] Site verified in Google Search Console, `https://<domain>/sitemap.xml` submitted
 - [ ] Emails work: `RESEND_API_KEY` is set and `EMAIL_FROM` uses a domain verified in Resend
 - [ ] Redis is configured (shared rate limits across instances)
 - [ ] Realtime works: Socket.IO behind a WebSocket-aware proxy, or Pusher on Vercel

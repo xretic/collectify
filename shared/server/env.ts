@@ -24,6 +24,11 @@ const schema = z.object({
     /** Sender, e.g. `Collectify <hello@collectify.app>` (the domain must be verified in Resend). */
     EMAIL_FROM: optional,
 
+    /** Search console ownership tokens (the `content` of their meta tags). */
+    GOOGLE_SITE_VERIFICATION: optional,
+    BING_SITE_VERIFICATION: optional,
+    YANDEX_VERIFICATION: optional,
+
     REDIS_URL: optional,
     UPSTASH_REDIS_REST_URL: optional,
     UPSTASH_REDIS_REST_TOKEN: optional,

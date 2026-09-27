@@ -3,20 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce';
-import { FEED_TAGS_LIMIT } from '@/shared/lib/constants';
-import { COLLECTION_SORTS, type CollectionSort } from '@/entities/collection/model/types';
-
-const isSort = (value: string | null): value is CollectionSort =>
-    COLLECTION_SORTS.includes(value as CollectionSort);
-
-/** `?tag=3,7` → [3, 7]: valid, unique ids, at most `FEED_TAGS_LIMIT`. */
-function parseTagIds(value: string) {
-    const ids = value
-        .split(',')
-        .map(Number)
-        .filter((id) => Number.isInteger(id) && id > 0);
-    return [...new Set(ids)].slice(0, FEED_TAGS_LIMIT);
-}
+import type { CollectionSort } from '@/entities/collection/model/types';
+import { parseFeedParams, parseTagIds } from '../lib/feedParams';
 
 /**
  * Sort / page / category / search of a collection list, kept in the URL so
@@ -27,12 +15,7 @@ export function useCollectionListParams() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const sortParam = searchParams.get('sort');
-    const categoryParam = searchParams.get('category');
-    const urlQuery = searchParams.get('q') ?? '';
-
-    const sort: CollectionSort = isSort(sortParam) ? sortParam : 'popular';
-    const category = categoryParam?.trim() || undefined;
+    const { sort, category, query: urlQuery } = parseFeedParams((key) => searchParams.get(key));
     const tagParam = searchParams.get('tag') ?? '';
     const tags = useMemo(() => parseTagIds(tagParam), [tagParam]);
     const page = Math.max(0, Number(searchParams.get('page')) || 0);

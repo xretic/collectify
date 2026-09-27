@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
@@ -15,7 +15,8 @@ import Footer from '@/widgets/layout/ui/Footer';
 import { ReportDialog } from '@/features/report/create/ui/ReportDialog';
 import { AuthPromptDialog } from '@/features/auth/ui/AuthPromptDialog';
 import { NotificationToasts } from '@/features/notification/ui/NotificationToasts';
-import { siteUrl } from '@/shared/server/env';
+import { serverEnv, siteUrl } from '@/shared/server/env';
+import { ogLocale, SITE_NAME } from '@/shared/i18n/metadata';
 
 const googleSans = localFont({
     src: [{ path: '../public/fonts/GoogleSans-SemiBold.ttf', weight: '400', style: 'normal' }],
@@ -28,16 +29,56 @@ const rubikMedium = localFont({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-    const t = await getTranslations('meta');
+    const [t, locale] = await Promise.all([getTranslations('meta'), getLocale()]);
+    const bing = serverEnv.BING_SITE_VERIFICATION;
 
     return {
         metadataBase: siteUrl(),
-        title: { default: 'Collectify', template: '%s - Collectify' },
+        title: { default: t('title'), template: `%s - ${SITE_NAME}` },
         description: t('description'),
-        openGraph: { siteName: 'Collectify', type: 'website' },
-        twitter: { card: 'summary_large_image' },
+        applicationName: SITE_NAME,
+        keywords: t('keywords')
+            .split(',')
+            .map((keyword) => keyword.trim()),
+        authors: [{ name: SITE_NAME, url: '/' }],
+        creator: SITE_NAME,
+        publisher: SITE_NAME,
+        category: 'social',
+        openGraph: {
+            siteName: SITE_NAME,
+            type: 'website',
+            locale: ogLocale(locale),
+            title: t('title'),
+            description: t('description'),
+        },
+        twitter: { card: 'summary_large_image', title: t('title'), description: t('description') },
+        robots: {
+            index: true,
+            follow: true,
+            googleBot: {
+                index: true,
+                follow: true,
+                'max-image-preview': 'large',
+                'max-snippet': -1,
+                'max-video-preview': -1,
+            },
+        },
+        appleWebApp: { title: SITE_NAME, capable: true, statusBarStyle: 'default' },
+        formatDetection: { telephone: false, email: false, address: false },
+        verification: {
+            google: serverEnv.GOOGLE_SITE_VERIFICATION,
+            yandex: serverEnv.YANDEX_VERIFICATION,
+            other: bing ? { 'msvalidate.01': bing } : undefined,
+        },
     };
 }
+
+export const viewport: Viewport = {
+    themeColor: [
+        { media: '(prefers-color-scheme: light)', color: '#f3f4f6' },
+        { media: '(prefers-color-scheme: dark)', color: '#111318' },
+    ],
+};
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
     const locale = await getLocale();

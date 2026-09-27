@@ -6,7 +6,7 @@ import { isStaff } from '@/entities/user/model/types';
 import ManagementPage from '@/views/management/ui/ManagementPage';
 import { pageMetadata } from '@/shared/i18n/metadata';
 
-export const generateMetadata = pageMetadata('management', { robots: { index: false } });
+export const generateMetadata = pageMetadata('management');
 
 /** Server-side guard: non-staff get a 404 instead of an empty client page. */
 export default async function ManagementRoute() {
