@@ -849,7 +849,6 @@
             "unavailable": "İstatistikler şu anda kullanılamıyor.",
             "empty": "Henüz etkinlik yok."
         },
-        "description": "Açıklama",
         "meta": "{count, plural, one {# öğe} other {# öğe}} · Oluşturulma: {date}",
         "private": "Gizli",
         "deleteAsModerator": "Moderatör olarak sil",

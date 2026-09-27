@@ -849,7 +849,6 @@
             "unavailable": "Statistiky nejsou momentálně k dispozici.",
             "empty": "Zatím žádná aktivita."
         },
-        "description": "Popis",
         "meta": "{count, plural, one {# položka} few {# položky} many {# položky} other {# položek}} · Vytvořeno {date}",
         "private": "Soukromá",
         "deleteAsModerator": "Smazat jako moderátor",

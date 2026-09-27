@@ -41,6 +41,8 @@ export type CollectionDetails = {
     isPrivate: boolean;
     createdAt: string;
     author: CollectionAuthor;
+    /** The viewer follows the author. */
+    authorFollowed: boolean;
     tags: TagRef[];
     items: CollectionItem[];
     likes: number;

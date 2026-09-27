@@ -849,7 +849,6 @@
             "unavailable": "Statistieken zijn nu niet beschikbaar.",
             "empty": "Nog geen activiteit."
         },
-        "description": "Beschrijving",
         "meta": "{count, plural, one {# item} other {# items}} · Gemaakt op {date}",
         "private": "Privé",
         "deleteAsModerator": "Verwijderen als moderator",

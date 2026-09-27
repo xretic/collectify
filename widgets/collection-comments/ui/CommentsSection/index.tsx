@@ -34,6 +34,9 @@ type CommentsSectionProps = {
     viewer: SessionUser | null;
 };
 
+/** Threads shown before "Show all comments". */
+const COLLAPSED_THREADS = 3;
+
 /** `#comment-123` from a notification link: highlight that comment once it is rendered. */
 function useLinkedComment(ready: boolean) {
     const [linkedId, setLinkedId] = useState<number | null>(null);
@@ -44,16 +47,20 @@ function useLinkedComment(ready: boolean) {
         const match = /^#comment-(\d+)$/.exec(window.location.hash);
         if (!match) return;
 
-        const id = Number(match[1]);
-        const element = document.getElementById(`comment-${id}`);
-
-        (element ?? document.getElementById('comments'))?.scrollIntoView({ block: 'center' });
         // eslint-disable-next-line react-hooks/set-state-in-effect -- reacting to the URL hash once the list exists
-        setLinkedId(id);
+        setLinkedId(Number(match[1]));
+    }, [ready]);
+
+    // Scrolls once the (expanded) list rendered the comment, then fades the highlight.
+    useEffect(() => {
+        if (linkedId === null) return;
+
+        const element = document.getElementById(`comment-${linkedId}`);
+        (element ?? document.getElementById('comments'))?.scrollIntoView({ block: 'center' });
 
         const timer = setTimeout(() => setLinkedId(null), 2500);
         return () => clearTimeout(timer);
-    }, [ready]);
+    }, [linkedId]);
 
     return linkedId;
 }
@@ -69,16 +76,21 @@ export function CommentsSection({ collectionId, owner, total, viewer }: Comments
     });
 
     const { hasNextPage, isFetchingNextPage, fetchNextPage } = query;
+    const linkedId = useLinkedComment(query.isSuccess);
+    // A few threads first, so what comes after the comments stays within reach.
+    const [expanded, setExpanded] = useState(false);
+    const open = expanded || linkedId !== null;
 
     const loadMoreRef = useInfiniteScroll({
-        hasMore: hasNextPage,
+        hasMore: open && hasNextPage,
         loading: isFetchingNextPage,
         onLoadMore: fetchNextPage,
         rootMargin: '300px 0px',
     });
 
-    const linkedId = useLinkedComment(query.isSuccess);
     const comments = query.data?.pages.flatMap((page) => page.data) ?? [];
+    const visible = open ? comments : comments.slice(0, COLLAPSED_THREADS);
+    const collapsed = !open && (comments.length > COLLAPSED_THREADS || hasNextPage);
 
     return (
         <section id="comments" className={styles.section}>
@@ -99,7 +111,7 @@ export function CommentsSection({ collectionId, owner, total, viewer }: Comments
             )}
 
             <div className={styles.list}>
-                {comments.map((comment) => (
+                {visible.map((comment) => (
                     <CommentThread
                         key={comment.id}
                         collectionId={collectionId}
@@ -111,7 +123,15 @@ export function CommentsSection({ collectionId, owner, total, viewer }: Comments
                 ))}
             </div>
 
-            {hasNextPage && (
+            {collapsed && (
+                <div className={styles.more}>
+                    <Button variant="outlined" onClick={() => setExpanded(true)}>
+                        {t('showAll', { count: query.data?.pages[0]?.total ?? total })}
+                    </Button>
+                </div>
+            )}
+
+            {open && hasNextPage && (
                 <div ref={loadMoreRef} className={styles.more}>
                     {isFetchingNextPage ? (
                         <Spinner />

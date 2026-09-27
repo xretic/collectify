@@ -849,7 +849,6 @@
             "unavailable": "Statistiken sind gerade nicht verfügbar.",
             "empty": "Noch keine Aktivität."
         },
-        "description": "Beschreibung",
         "meta": "{count, plural, one {# Element} other {# Elemente}} · Erstellt am {date}",
         "private": "Privat",
         "deleteAsModerator": "Als Moderator löschen",

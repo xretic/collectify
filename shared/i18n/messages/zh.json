@@ -849,7 +849,6 @@
             "unavailable": "统计数据暂时不可用。",
             "empty": "还没有动态。"
         },
-        "description": "描述",
         "meta": "{count, plural, other {# 个条目}} · 创建于 {date}",
         "private": "私密",
         "deleteAsModerator": "以版主身份删除",

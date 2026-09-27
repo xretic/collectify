@@ -849,7 +849,6 @@
             "unavailable": "Статистика зараз недоступна.",
             "empty": "Активності поки немає."
         },
-        "description": "Опис",
         "meta": "{count, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}} · Створено {date}",
         "private": "Приватна",
         "deleteAsModerator": "Видалити як модератор",

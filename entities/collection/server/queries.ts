@@ -210,7 +210,14 @@ export async function getCollectionDetails(
             private: true,
             createdAt: true,
             userId: true,
-            user: { select: authorSelect },
+            user: {
+                select: {
+                    ...authorSelect,
+                    followers: viewerId
+                        ? { where: { followerId: viewerId }, select: { followerId: true } }
+                        : false,
+                },
+            },
             tags: {
                 select: { tag: { select: tagRefSelect } },
                 orderBy: { tag: { usageCount: 'desc' } },
@@ -236,7 +243,13 @@ export async function getCollectionDetails(
         category: row.category,
         isPrivate: row.private,
         createdAt: row.createdAt.toISOString(),
-        author: row.user,
+        author: {
+            id: row.user.id,
+            username: row.user.username,
+            fullName: row.user.fullName,
+            avatarUrl: row.user.avatarUrl,
+        },
+        authorFollowed: Array.isArray(row.user.followers) && row.user.followers.length > 0,
         tags: row.tags.map(({ tag }) => tag),
         items: row.items.map(({ id, title, description, sourceUrl, imageUrl, size, order }) => ({
             id,

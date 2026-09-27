@@ -1,0 +1,20 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+}
+
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 16px;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 24px;
+}

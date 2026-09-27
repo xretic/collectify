@@ -849,7 +849,6 @@
             "unavailable": "現在、統計は利用できません。",
             "empty": "まだアクティビティはありません。"
         },
-        "description": "説明",
         "meta": "{count, plural, other {# 件のアイテム}}・{date} に作成",
         "private": "非公開",
         "deleteAsModerator": "モデレーターとして削除",

@@ -7,4 +7,5 @@ export const collectionQueryKeys = {
     detail: (id: number) => [...collectionQueryKeys.all, 'detail', id] as const,
     comments: (id: number) => [...collectionQueryKeys.all, 'comments', id] as const,
     stats: (id: number) => [...collectionQueryKeys.all, 'stats', id] as const,
+    related: (id: number) => [...collectionQueryKeys.all, 'related', id] as const,
 };

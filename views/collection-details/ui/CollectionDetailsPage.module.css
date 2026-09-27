@@ -17,22 +17,16 @@
 
 .header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 6px;
-}
-
-.heading {
-    font-family: var(--font-google-sans), sans-serif;
-    font-size: 20px;
-    font-weight: 500;
+    gap: 12px;
 }
 
 .description {
     max-width: 900px;
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--soft-text);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-color);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }

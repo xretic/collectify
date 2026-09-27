@@ -1,12 +1,19 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Avatar, Skeleton } from '@mui/material';
 import type { CollectionDetails } from '../../model/types';
 import styles from './index.module.css';
 import { useCategoryName } from '@/entities/category/model/useCategoryName';
 
-export function CollectionHero({ collection }: { collection: CollectionDetails }) {
+type CollectionHeroProps = {
+    collection: CollectionDetails;
+    /** Next to the author (e.g. a Follow button). */
+    authorAction?: ReactNode;
+};
+
+export function CollectionHero({ collection, authorAction }: CollectionHeroProps) {
     const categoryName = useCategoryName();
 
     return (
@@ -18,14 +25,17 @@ export function CollectionHero({ collection }: { collection: CollectionDetails }
                 <span className={styles.category}>{categoryName(collection.category)}</span>
                 <h1 className={styles.title}>{collection.name}</h1>
 
-                <Link href={`/users/${collection.author.id}`} className={styles.author}>
-                    <Avatar
-                        src={collection.author.avatarUrl}
-                        alt={collection.author.fullName}
-                        className={styles.avatar}
-                    />
-                    <span>{collection.author.fullName}</span>
-                </Link>
+                <div className={styles.byline}>
+                    <Link href={`/users/${collection.author.id}`} className={styles.author}>
+                        <Avatar
+                            src={collection.author.avatarUrl}
+                            alt={collection.author.fullName}
+                            className={styles.avatar}
+                        />
+                        <span>{collection.author.fullName}</span>
+                    </Link>
+                    {authorAction}
+                </div>
             </div>
         </div>
     );

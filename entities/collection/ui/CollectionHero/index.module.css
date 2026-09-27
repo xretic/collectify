@@ -43,14 +43,23 @@
 }
 
 .title {
+    display: -webkit-box;
     max-width: 100%;
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
     font-family: var(--font-google-sans), sans-serif;
     font-size: clamp(32px, 4vw, 56px);
     line-height: 1.1;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
 }
 
 .author {
@@ -73,6 +82,12 @@
 
 @media (max-width: 700px) {
     .overlay {
+        right: 20px;
+        bottom: 20px;
         left: 20px;
+    }
+
+    .title {
+        font-size: 30px;
     }
 }

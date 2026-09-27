@@ -16,6 +16,9 @@ import { CollectionStatsDialog } from '@/features/collection/stats/ui/Collection
 import { EngagementButtons } from '@/features/collection/engage/ui/EngagementButtons';
 import { SaveMenu } from '@/features/board/ui/SaveMenu';
 import { ShareButton } from '@/features/share/ui/ShareButton';
+import { FollowButton } from '@/features/user/follow/ui/FollowButton';
+import { RelatedCollections } from '@/widgets/related-collections/ui/RelatedCollections';
+import { useCollectionCache } from '@/entities/collection/model/useCollectionDetails';
 import { useReportAction } from '@/features/report/create/model/useReportAction';
 import { CollectionItemsGrid } from '@/widgets/collection-items/ui/CollectionItemsGrid';
 import { CommentsSection } from '@/widgets/collection-comments/ui/CommentsSection';
@@ -34,6 +37,7 @@ export function CollectionDetailsPage() {
     const collectionId = Number(useParams<{ id: string }>().id);
     const { user } = useSessionUser();
     const { data: collection, error, isPending } = useCollectionDetails(collectionId);
+    const cache = useCollectionCache(collectionId);
 
     const [editing, setEditing] = useState(false);
     const [statsOpen, setStatsOpen] = useState(false);
@@ -56,12 +60,31 @@ export function CollectionDetailsPage() {
 
     return (
         <>
-            <CollectionHero collection={collection} />
+            <CollectionHero
+                collection={collection}
+                authorAction={
+                    !isOwner && (
+                        <FollowButton
+                            userId={collection.author.id}
+                            isFollowed={collection.authorFollowed}
+                            guest={!user}
+                            size="small"
+                            tone="onImage"
+                            onChange={(followed) =>
+                                cache.update((current) => ({
+                                    ...current,
+                                    authorFollowed: followed,
+                                }))
+                            }
+                        />
+                    )
+                }
+            />
 
             <div className={styles.page}>
                 <section className={styles.panel}>
-                    <header className={styles.header}>
-                        <h2 className={styles.heading}>{t('description')}</h2>
+                    <div className={styles.header}>
+                        <p className={styles.description}>{collection.description}</p>
 
                         {user && (
                             <CollectionActions
@@ -73,9 +96,7 @@ export function CollectionDetailsPage() {
                                 onDelete={() => setDeleting(true)}
                             />
                         )}
-                    </header>
-
-                    <p className={styles.description}>{collection.description}</p>
+                    </div>
 
                     <TagChips tags={collection.tags} className={styles.tags} />
 
@@ -90,7 +111,8 @@ export function CollectionDetailsPage() {
                             </EngagementButtons>
                         )}
 
-                        <span className={styles.meta}>
+                        {/* The date is local time, which may differ between server and browser. */}
+                        <span className={styles.meta} suppressHydrationWarning>
                             {t('meta', {
                                 count: collection.items.length,
                                 date: format.date(collection.createdAt),
@@ -110,6 +132,8 @@ export function CollectionDetailsPage() {
                         viewer={user}
                     />
                 )}
+
+                <RelatedCollections collectionId={collection.id} category={collection.category} />
             </div>
 
             {editing && (

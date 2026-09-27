@@ -1,6 +1,7 @@
 import { api } from '@/shared/api/api';
 import type { CommentsPage, CollectionComment } from '@/entities/comment/model/types';
 import type {
+    CollectionCard,
     CollectionDetails,
     CollectionItem,
     CollectionItemPayload,
@@ -32,6 +33,13 @@ export const collectionApi = {
         return api
             .get('collections', { searchParams: toSearchParams(params) })
             .json<CollectionListPage>();
+    },
+
+    /** "More like this": public collections similar to this one. */
+    async related(collectionId: number) {
+        return (
+            await api.get(`${url(collectionId)}/related`).json<{ collections: CollectionCard[] }>()
+        ).collections;
     },
 
     /** Personal feed, or collections similar to one of the viewer's boards. */
