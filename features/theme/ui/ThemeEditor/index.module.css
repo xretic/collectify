@@ -1,0 +1,301 @@
+.paper {
+    border-radius: var(--radius-lg) !important;
+}
+
+/* A phone gets the whole screen. */
+@media (max-width: 700px) {
+    .paper {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100%;
+        max-height: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px !important;
+    font-family: var(--font-google-sans), sans-serif !important;
+}
+
+.close {
+    margin-right: -8px !important;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 24px;
+    min-height: 0;
+    padding: 4px 24px 16px;
+    overflow-y: auto;
+}
+
+/* The preview stays in sight while the controls scroll. */
+.previewColumn {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.previewHint {
+    color: var(--soft-text);
+    font-size: 13px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    padding-top: 8px;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 4px 16px 16px;
+    }
+
+    .previewColumn {
+        position: static;
+    }
+}
+
+.notice {
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+    font-size: 14px;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.groupTitle {
+    display: block;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 16px;
+}
+
+.groupHint {
+    display: block;
+    margin-top: -6px;
+    color: var(--soft-text);
+    font-size: 13px;
+}
+
+.presets {
+    gap: 8px;
+    padding: 2px;
+}
+
+/* Painted by the theme it loads (data-theme or inline tokens). */
+.preset {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 14px;
+    white-space: nowrap;
+    transition: transform 0.15s ease;
+}
+
+.preset:hover {
+    transform: translateY(-2px);
+}
+
+.presetDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--accent);
+}
+
+.random {
+    border-style: dashed;
+    font-weight: 600;
+}
+
+.mainColors {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.mainColor {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    text-align: left;
+    transition:
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.mainColor:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.mainSwatch {
+    height: 56px;
+    margin-bottom: 6px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    border-radius: var(--radius-sm);
+}
+
+.mainLabel {
+    font-weight: 600;
+}
+
+.hex {
+    color: var(--soft-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+}
+
+.expand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+}
+
+.expand .groupHint {
+    margin-top: 2px;
+}
+
+.expandIcon,
+.expandIconOpen {
+    flex-shrink: 0;
+    color: var(--muted-icon);
+    transition: transform 0.2s ease;
+}
+
+.expandIconOpen {
+    transform: rotate(180deg);
+}
+
+.rows {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 6px;
+}
+
+.rows[hidden] {
+    display: none;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    text-align: left;
+    transition: border-color 0.15s ease;
+}
+
+.row:hover {
+    border-color: var(--accent);
+}
+
+.rowSwatch {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    border-radius: 50%;
+}
+
+.rowText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.rowHint {
+    overflow: hidden;
+    color: var(--soft-text);
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.badgeAuto,
+.badgeManual {
+    flex-shrink: 0;
+    padding: 1px 8px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badgeAuto {
+    color: var(--soft-text);
+    background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
+}
+
+.badgeManual {
+    color: var(--on-accent);
+    background-color: var(--accent);
+}
+
+.actions {
+    gap: 8px;
+    padding: 12px 24px 16px !important;
+    border-top: 1px solid var(--border-color);
+}
+
+.secondaryActions {
+    display: flex;
+    gap: 4px;
+    margin-right: auto;
+}
+
+.save {
+    white-space: nowrap;
+}
+
+/* On a phone the close button in the header does the same. */
+@media (max-width: 480px) {
+    .actions {
+        padding: 10px 16px 12px !important;
+    }
+
+    .cancel {
+        display: none !important;
+    }
+}
+
+.delete:hover {
+    color: var(--danger) !important;
+}

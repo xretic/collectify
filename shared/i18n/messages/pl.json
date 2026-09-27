@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Wygląd",
-            "description": "Wybierz motyw. Działa od razu i jest zapamiętywany na tym urządzeniu.",
+            "description": "Wybierz motyw lub utwórz własny. Działa od razu i jest zapamiętywany na tym urządzeniu.",
             "search": "Znajdź motyw",
             "filter": "Filtruj motywy",
             "theme": "Motyw",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Twoje ostatnie wyszukiwania, tylko na tym urządzeniu.",
             "consent": "Zapamiętuje twój wybór dotyczący plików cookie.",
             "pendingIntent": "Kończy polubienie, zapisanie lub obserwowanie rozpoczęte przed zalogowaniem.",
-            "emailBanner": "Ukrywa przypomnienie o potwierdzeniu e-maila do zamknięcia przeglądarki."
+            "emailBanner": "Ukrywa przypomnienie o potwierdzeniu e-maila do zamknięcia przeglądarki.",
+            "customThemes": "Przechowuje motywy utworzone w edytorze motywów."
         },
         "durations": {
             "days14": "14 dni",
@@ -1324,5 +1325,118 @@
         "details": "Szczegóły znajdziesz w <policy>Polityce plików cookie</policy>.",
         "cancel": "Anuluj",
         "save": "Zapisz wybór"
+    },
+    "themeEditor": {
+        "create": "Utwórz motyw",
+        "createTitle": "Nowy motyw",
+        "editTitle": "Edytuj motyw",
+        "editNamed": "Edytuj {name}",
+        "name": "Nazwa",
+        "untitled": "Mój motyw",
+        "imported": "Ktoś udostępnił ci ten motyw. Zapisz go, aby go zachować.",
+        "invalidLink": "Ten link do motywu jest nieprawidłowy.",
+        "startFrom": "Zacznij od",
+        "random": "Zaskocz mnie",
+        "mainColors": "Główne kolory",
+        "mainColorsHint": "Wybierz te trzy - reszta dopasuje się sama.",
+        "allColors": "Dopracuj każdy kolor",
+        "allColorsHint": "Kolory oznaczone jako Auto podążają za głównymi.",
+        "auto": "Auto",
+        "manual": "Własny",
+        "resetToAuto": "Znów podążaj za głównymi kolorami",
+        "hex": "Kod hex",
+        "eyedropper": "Pobierz kolor z ekranu",
+        "fromTheme": "Kolory w tym motywie",
+        "previewHint": "Podgląd na żywo. Kliknij dowolny element, aby zmienić jego kolor.",
+        "readability": "Czytelność",
+        "readabilityHint": "Tekst potrzebuje kontrastu co najmniej 4,5:1, a ikony 3:1, aby były dobrze widoczne.",
+        "allGood": "Wszystko jest czytelne",
+        "problems": "{count, plural, one {# kolor jest mało czytelny} few {# kolory są mało czytelne} many {# kolorów jest mało czytelnych} other {# koloru jest mało czytelne}}",
+        "fix": "Popraw",
+        "fixAll": "Popraw wszystko",
+        "passes": "Czytelne",
+        "fails": "Mało czytelne",
+        "ratioTitle": "Współczynnik kontrastu. Wymagane co najmniej {min}:1.",
+        "undo": "Cofnij",
+        "share": "Kopiuj link do motywu",
+        "linkCopied": "Link skopiowany. Każdy, kto go otworzy, może zapisać ten motyw.",
+        "copyFailed": "Nie udało się skopiować linku.",
+        "delete": "Usuń motyw",
+        "deleteTitle": "Usunąć „{name}”?",
+        "deleteDescription": "Motyw zostanie usunięty z tego urządzenia. Tej operacji nie można cofnąć.",
+        "save": "Zapisz i zastosuj",
+        "saved": "Motyw zapisany i zastosowany",
+        "limit": "Możesz mieć maksymalnie {max} motywów. Usuń jeden, aby zrobić miejsce.",
+        "checks": {
+            "text": "Tekst",
+            "softText": "Tekst drugorzędny",
+            "icons": "Ikony",
+            "accent": "Linki i wyróżnienia",
+            "onAccent": "Tekst na przyciskach",
+            "danger": "Tekst błędów",
+            "onDanger": "Tekst na przyciskach usuwania"
+        },
+        "tokens": {
+            "background": {
+                "label": "Tło",
+                "hint": "Strona pod wszystkim"
+            },
+            "cards": {
+                "label": "Karty",
+                "hint": "Karty, panele i menu"
+            },
+            "lines": {
+                "label": "Linie",
+                "hint": "Obramowania i separatory"
+            },
+            "text": {
+                "label": "Tekst",
+                "hint": "Tytuły i główny tekst"
+            },
+            "softText": {
+                "label": "Tekst drugorzędny",
+                "hint": "Opisy, daty i podpowiedzi"
+            },
+            "icons": {
+                "label": "Ikony",
+                "hint": "Ikony i nieaktywne kontrolki"
+            },
+            "accent": {
+                "label": "Akcent",
+                "hint": "Przyciski, linki i zaznaczenie"
+            },
+            "onAccent": {
+                "label": "Tekst na akcencie",
+                "hint": "Etykiety przycisków akcentu"
+            },
+            "danger": {
+                "label": "Ostrzeżenie",
+                "hint": "Błędy, polubienia i usuwanie"
+            },
+            "onDanger": {
+                "label": "Tekst na ostrzeżeniu",
+                "hint": "Etykiety czerwonych przycisków"
+            },
+            "favorite": {
+                "label": "Zapisane",
+                "hint": "Zapisywanie na tablicach"
+            }
+        },
+        "sample": {
+            "search": "Szukaj",
+            "title": "Półka sci-fi",
+            "meta": "24 elementy · od @alex",
+            "itemTitle": "Diuna",
+            "description": "Pustynna planeta i przyprawa, której chcą wszyscy.",
+            "tag1": "klasyka",
+            "tag2": "kosmos",
+            "fieldLabel": "Tytuł",
+            "fieldValue": "Fundacja",
+            "error": "To pole jest wymagane",
+            "follow": "Obserwuj",
+            "share": "Udostępnij",
+            "delete": "Usuń",
+            "link": "Zobacz wszystko"
+        }
     }
 }

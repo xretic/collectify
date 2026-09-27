@@ -1,0 +1,81 @@
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.fixAll {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 16px;
+}
+
+.hint {
+    color: var(--soft-text);
+    font-size: 13px;
+}
+
+.summaryGood,
+.summaryBad {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.summaryGood {
+    color: var(--text-color);
+}
+
+.summaryGood svg,
+.ok {
+    color: #1f9d55;
+}
+
+.summaryBad,
+.summaryBad svg,
+.bad {
+    color: var(--danger);
+}
+
+.list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 4px 16px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    font-size: 14px;
+}
+
+.item svg {
+    font-size: 18px;
+}
+
+.name {
+    flex: 1;
+}
+
+.ratio {
+    color: var(--soft-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+}

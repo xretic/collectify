@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "外观",
-            "description": "选择主题，立即生效并在此设备上记住。",
+            "description": "选择一个主题或创建你自己的主题，立即生效并在此设备上记住。",
             "search": "查找主题",
             "filter": "筛选主题",
             "theme": "主题",
@@ -1272,7 +1272,8 @@
             "recentSearches": "你最近的搜索，仅保存在此设备上。",
             "consent": "记住你的 Cookie 选择。",
             "pendingIntent": "完成你在登录前开始的点赞、保存或关注。",
-            "emailBanner": "在关闭浏览器前隐藏邮箱确认提醒。"
+            "emailBanner": "在关闭浏览器前隐藏邮箱确认提醒。",
+            "customThemes": "保存你在主题编辑器中创建的主题。"
         },
         "durations": {
             "days14": "14 天",
@@ -1324,5 +1325,118 @@
         "details": "详情请见<policy>Cookie 政策</policy>。",
         "cancel": "取消",
         "save": "保存选择"
+    },
+    "themeEditor": {
+        "create": "创建主题",
+        "createTitle": "新主题",
+        "editTitle": "编辑主题",
+        "editNamed": "编辑 {name}",
+        "name": "名称",
+        "untitled": "我的主题",
+        "imported": "有人与你分享了这个主题。保存后即可保留。",
+        "invalidLink": "这个主题链接无效。",
+        "startFrom": "基于",
+        "random": "随机生成",
+        "mainColors": "主要颜色",
+        "mainColorsHint": "选好这三种颜色 - 其余颜色会自动搭配。",
+        "allColors": "微调每种颜色",
+        "allColorsHint": "标记为“自动”的颜色会跟随主要颜色变化。",
+        "auto": "自动",
+        "manual": "自定义",
+        "resetToAuto": "重新跟随主要颜色",
+        "hex": "十六进制代码",
+        "eyedropper": "从屏幕取色",
+        "fromTheme": "此主题中的颜色",
+        "previewHint": "实时预览。点击任意部分即可更改其颜色。",
+        "readability": "可读性",
+        "readabilityHint": "文字对比度至少需要 4.5:1，图标至少 3:1，才能清晰可见。",
+        "allGood": "一切都清晰易读",
+        "problems": "{count, plural, other {# 种颜色不易阅读}}",
+        "fix": "修复",
+        "fixAll": "全部修复",
+        "passes": "清晰易读",
+        "fails": "不易阅读",
+        "ratioTitle": "对比度。至少需要 {min}:1。",
+        "undo": "撤销",
+        "share": "复制此主题的链接",
+        "linkCopied": "链接已复制。任何打开它的人都可以保存这个主题。",
+        "copyFailed": "无法复制链接。",
+        "delete": "删除主题",
+        "deleteTitle": "删除“{name}”？",
+        "deleteDescription": "该主题将从此设备中移除，且无法撤销。",
+        "save": "保存并应用",
+        "saved": "主题已保存并应用",
+        "limit": "最多可保存 {max} 个主题。请先删除一个。",
+        "checks": {
+            "text": "文字",
+            "softText": "次要文字",
+            "icons": "图标",
+            "accent": "链接和高亮",
+            "onAccent": "按钮文字",
+            "danger": "错误文字",
+            "onDanger": "删除按钮文字"
+        },
+        "tokens": {
+            "background": {
+                "label": "背景",
+                "hint": "所有内容后面的页面"
+            },
+            "cards": {
+                "label": "卡片",
+                "hint": "卡片、面板和菜单"
+            },
+            "lines": {
+                "label": "线条",
+                "hint": "边框和分隔线"
+            },
+            "text": {
+                "label": "文字",
+                "hint": "标题和正文"
+            },
+            "softText": {
+                "label": "次要文字",
+                "hint": "描述、日期和提示"
+            },
+            "icons": {
+                "label": "图标",
+                "hint": "图标和未激活的控件"
+            },
+            "accent": {
+                "label": "强调色",
+                "hint": "按钮、链接和选中项"
+            },
+            "onAccent": {
+                "label": "强调色上的文字",
+                "hint": "强调按钮上的标签"
+            },
+            "danger": {
+                "label": "警示色",
+                "hint": "错误、点赞和删除"
+            },
+            "onDanger": {
+                "label": "警示色上的文字",
+                "hint": "红色按钮上的标签"
+            },
+            "favorite": {
+                "label": "收藏",
+                "hint": "保存到画板"
+            }
+        },
+        "sample": {
+            "search": "搜索",
+            "title": "科幻书架",
+            "meta": "24 项 · @alex",
+            "itemTitle": "沙丘",
+            "description": "一颗沙漠星球，以及人人都想要的香料。",
+            "tag1": "经典",
+            "tag2": "太空",
+            "fieldLabel": "标题",
+            "fieldValue": "基地",
+            "error": "此字段为必填项",
+            "follow": "关注",
+            "share": "分享",
+            "delete": "删除",
+            "link": "查看全部"
+        }
     }
 }

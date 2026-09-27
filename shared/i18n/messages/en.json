@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Appearance",
-            "description": "Pick a theme. It applies instantly and is remembered on this device.",
+            "description": "Pick a theme or create your own. It applies instantly and is remembered on this device.",
             "search": "Find a theme",
             "filter": "Filter themes",
             "theme": "Theme",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Your recent searches, on this device only.",
             "consent": "Remembers your cookie choice.",
             "pendingIntent": "Finishes a like, save or follow you started before signing in.",
-            "emailBanner": "Hides the email confirmation reminder until you close the browser."
+            "emailBanner": "Hides the email confirmation reminder until you close the browser.",
+            "customThemes": "Keeps the themes you create in the theme editor."
         },
         "durations": {
             "days14": "14 days",
@@ -1324,5 +1325,118 @@
         "details": "Details are in the <policy>Cookie Policy</policy>.",
         "cancel": "Cancel",
         "save": "Save choices"
+    },
+    "themeEditor": {
+        "create": "Create theme",
+        "createTitle": "Create a theme",
+        "editTitle": "Edit theme",
+        "editNamed": "Edit {name}",
+        "name": "Name",
+        "untitled": "My theme",
+        "imported": "Someone shared this theme with you. Save it to keep it.",
+        "invalidLink": "This theme link is broken.",
+        "startFrom": "Start from",
+        "random": "Surprise me",
+        "mainColors": "Main colors",
+        "mainColorsHint": "Pick these three - everything else follows them.",
+        "allColors": "Fine-tune every color",
+        "allColorsHint": "Colors marked Auto follow the main ones.",
+        "auto": "Auto",
+        "manual": "Custom",
+        "resetToAuto": "Follow the main colors again",
+        "hex": "Hex code",
+        "eyedropper": "Pick a color from the screen",
+        "fromTheme": "Colors in this theme",
+        "previewHint": "Live preview. Click any part to change its color.",
+        "readability": "Readability",
+        "readabilityHint": "Text needs a contrast of at least 4.5:1 and icons 3:1 to be easy to see.",
+        "allGood": "Everything is easy to read",
+        "problems": "{count, plural, one {# color is hard to read} other {# colors are hard to read}}",
+        "fix": "Fix",
+        "fixAll": "Fix all",
+        "passes": "Easy to read",
+        "fails": "Hard to read",
+        "ratioTitle": "Contrast ratio. Needs at least {min}:1.",
+        "undo": "Undo",
+        "share": "Copy a link to this theme",
+        "linkCopied": "Link copied. Anyone who opens it can save this theme.",
+        "copyFailed": "Couldn’t copy the link.",
+        "delete": "Delete theme",
+        "deleteTitle": "Delete “{name}”?",
+        "deleteDescription": "The theme will be removed from this device. This can’t be undone.",
+        "save": "Save and apply",
+        "saved": "Theme saved and applied",
+        "limit": "You can keep up to {max} themes. Delete one to make room.",
+        "checks": {
+            "text": "Text",
+            "softText": "Secondary text",
+            "icons": "Icons",
+            "accent": "Links and highlights",
+            "onAccent": "Text on buttons",
+            "danger": "Error text",
+            "onDanger": "Text on delete buttons"
+        },
+        "tokens": {
+            "background": {
+                "label": "Background",
+                "hint": "The page behind everything"
+            },
+            "cards": {
+                "label": "Cards",
+                "hint": "Cards, panels and menus"
+            },
+            "lines": {
+                "label": "Lines",
+                "hint": "Borders and dividers"
+            },
+            "text": {
+                "label": "Text",
+                "hint": "Titles and main text"
+            },
+            "softText": {
+                "label": "Secondary text",
+                "hint": "Descriptions, dates and hints"
+            },
+            "icons": {
+                "label": "Icons",
+                "hint": "Icons and inactive controls"
+            },
+            "accent": {
+                "label": "Accent",
+                "hint": "Buttons, links and selection"
+            },
+            "onAccent": {
+                "label": "Text on accent",
+                "hint": "Labels on accent buttons"
+            },
+            "danger": {
+                "label": "Danger",
+                "hint": "Errors, likes and delete"
+            },
+            "onDanger": {
+                "label": "Text on danger",
+                "hint": "Labels on red buttons"
+            },
+            "favorite": {
+                "label": "Saved",
+                "hint": "Saving to boards"
+            }
+        },
+        "sample": {
+            "search": "Search",
+            "title": "Sci-fi shelf",
+            "meta": "24 items · by @alex",
+            "itemTitle": "Dune",
+            "description": "A desert planet and the spice everyone wants.",
+            "tag1": "classic",
+            "tag2": "space",
+            "fieldLabel": "Title",
+            "fieldValue": "Foundation",
+            "error": "This field is required",
+            "follow": "Follow",
+            "share": "Share",
+            "delete": "Delete",
+            "link": "See all"
+        }
     }
 }

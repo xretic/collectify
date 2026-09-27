@@ -11,6 +11,12 @@ const ENTRIES = [
     { name: 'oauth_state, oauth_next', type: 'cookie', purpose: 'oauth', duration: 'minutes10' },
     { name: 'theme', type: 'localStorage', purpose: 'theme', duration: 'untilCleared' },
     {
+        name: 'collectify:custom-themes',
+        type: 'localStorage',
+        purpose: 'customThemes',
+        duration: 'untilCleared',
+    },
+    {
         name: 'people-you-may-know',
         type: 'localStorage',
         purpose: 'peopleWidget',

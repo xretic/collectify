@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Weergave",
-            "description": "Kies een thema. Het wordt direct toegepast en op dit apparaat onthouden.",
+            "description": "Kies een thema of maak je eigen. Het wordt direct toegepast en op dit apparaat onthouden.",
             "search": "Thema zoeken",
             "filter": "Thema’s filteren",
             "theme": "Thema",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Je recente zoekopdrachten, alleen op dit apparaat.",
             "consent": "Onthoudt je cookiekeuze.",
             "pendingIntent": "Rondt een like, bewaaractie of volgactie af die je voor het inloggen begon.",
-            "emailBanner": "Verbergt de herinnering om je e-mail te bevestigen tot je de browser sluit."
+            "emailBanner": "Verbergt de herinnering om je e-mail te bevestigen tot je de browser sluit.",
+            "customThemes": "Bewaart de thema’s die je maakt in de thema-editor."
         },
         "durations": {
             "days14": "14 dagen",
@@ -1324,5 +1325,118 @@
         "details": "Details staan in het <policy>cookiebeleid</policy>.",
         "cancel": "Annuleren",
         "save": "Keuzes opslaan"
+    },
+    "themeEditor": {
+        "create": "Thema maken",
+        "createTitle": "Nieuw thema",
+        "editTitle": "Thema bewerken",
+        "editNamed": "{name} bewerken",
+        "name": "Naam",
+        "untitled": "Mijn thema",
+        "imported": "Iemand heeft dit thema met je gedeeld. Sla het op om het te houden.",
+        "invalidLink": "Deze themalink is ongeldig.",
+        "startFrom": "Beginnen vanaf",
+        "random": "Verras me",
+        "mainColors": "Hoofdkleuren",
+        "mainColorsHint": "Kies deze drie - de rest past zich aan.",
+        "allColors": "Elke kleur verfijnen",
+        "allColorsHint": "Kleuren met Auto volgen de hoofdkleuren.",
+        "auto": "Auto",
+        "manual": "Eigen",
+        "resetToAuto": "Weer de hoofdkleuren volgen",
+        "hex": "Hexcode",
+        "eyedropper": "Kleur van het scherm kiezen",
+        "fromTheme": "Kleuren in dit thema",
+        "previewHint": "Live voorbeeld. Klik op een onderdeel om de kleur te wijzigen.",
+        "readability": "Leesbaarheid",
+        "readabilityHint": "Tekst heeft minstens 4,5:1 contrast nodig en pictogrammen 3:1 om goed zichtbaar te zijn.",
+        "allGood": "Alles is goed leesbaar",
+        "problems": "{count, plural, one {# kleur is slecht leesbaar} other {# kleuren zijn slecht leesbaar}}",
+        "fix": "Oplossen",
+        "fixAll": "Alles oplossen",
+        "passes": "Goed leesbaar",
+        "fails": "Slecht leesbaar",
+        "ratioTitle": "Contrastverhouding. Minstens {min}:1 nodig.",
+        "undo": "Ongedaan maken",
+        "share": "Link naar dit thema kopiëren",
+        "linkCopied": "Link gekopieerd. Iedereen die hem opent, kan dit thema opslaan.",
+        "copyFailed": "Kan de link niet kopiëren.",
+        "delete": "Thema verwijderen",
+        "deleteTitle": "“{name}” verwijderen?",
+        "deleteDescription": "Het thema wordt van dit apparaat verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "save": "Opslaan en toepassen",
+        "saved": "Thema opgeslagen en toegepast",
+        "limit": "Je kunt tot {max} thema’s bewaren. Verwijder er een om ruimte te maken.",
+        "checks": {
+            "text": "Tekst",
+            "softText": "Secundaire tekst",
+            "icons": "Pictogrammen",
+            "accent": "Links en accenten",
+            "onAccent": "Tekst op knoppen",
+            "danger": "Fouttekst",
+            "onDanger": "Tekst op verwijderknoppen"
+        },
+        "tokens": {
+            "background": {
+                "label": "Achtergrond",
+                "hint": "De pagina achter alles"
+            },
+            "cards": {
+                "label": "Kaarten",
+                "hint": "Kaarten, panelen en menu’s"
+            },
+            "lines": {
+                "label": "Lijnen",
+                "hint": "Randen en scheidingslijnen"
+            },
+            "text": {
+                "label": "Tekst",
+                "hint": "Titels en hoofdtekst"
+            },
+            "softText": {
+                "label": "Secundaire tekst",
+                "hint": "Beschrijvingen, datums en hints"
+            },
+            "icons": {
+                "label": "Pictogrammen",
+                "hint": "Pictogrammen en inactieve bediening"
+            },
+            "accent": {
+                "label": "Accent",
+                "hint": "Knoppen, links en selectie"
+            },
+            "onAccent": {
+                "label": "Tekst op accent",
+                "hint": "Labels op accentknoppen"
+            },
+            "danger": {
+                "label": "Gevaar",
+                "hint": "Fouten, likes en verwijderen"
+            },
+            "onDanger": {
+                "label": "Tekst op gevaar",
+                "hint": "Labels op rode knoppen"
+            },
+            "favorite": {
+                "label": "Opgeslagen",
+                "hint": "Opslaan op borden"
+            }
+        },
+        "sample": {
+            "search": "Zoeken",
+            "title": "Sciencefictionplank",
+            "meta": "24 items · door @alex",
+            "itemTitle": "Duin",
+            "description": "Een woestijnplaneet en de specerij die iedereen wil.",
+            "tag1": "klassieker",
+            "tag2": "ruimte",
+            "fieldLabel": "Titel",
+            "fieldValue": "Foundation",
+            "error": "Dit veld is verplicht",
+            "follow": "Volgen",
+            "share": "Delen",
+            "delete": "Verwijderen",
+            "link": "Alles bekijken"
+        }
     }
 }

@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Görünüm",
-            "description": "Bir tema seçin. Hemen uygulanır ve bu cihazda hatırlanır.",
+            "description": "Bir tema seçin veya kendinizinkini oluşturun. Hemen uygulanır ve bu cihazda hatırlanır.",
             "search": "Tema bul",
             "filter": "Temaları filtrele",
             "theme": "Tema",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Son aramalarınız, yalnızca bu cihazda.",
             "consent": "Çerez tercihinizi hatırlar.",
             "pendingIntent": "Giriş yapmadan önce başlattığınız beğeni, kaydetme veya takibi tamamlar.",
-            "emailBanner": "Tarayıcıyı kapatana kadar e-posta doğrulama hatırlatmasını gizler."
+            "emailBanner": "Tarayıcıyı kapatana kadar e-posta doğrulama hatırlatmasını gizler.",
+            "customThemes": "Tema düzenleyicide oluşturduğunuz temaları saklar."
         },
         "durations": {
             "days14": "14 gün",
@@ -1324,5 +1325,118 @@
         "details": "Ayrıntılar <policy>Çerez Politikası</policy>’nda.",
         "cancel": "İptal",
         "save": "Seçimleri kaydet"
+    },
+    "themeEditor": {
+        "create": "Tema oluştur",
+        "createTitle": "Yeni tema",
+        "editTitle": "Temayı düzenle",
+        "editNamed": "{name} temasını düzenle",
+        "name": "Ad",
+        "untitled": "Temam",
+        "imported": "Biri bu temayı sizinle paylaştı. Saklamak için kaydedin.",
+        "invalidLink": "Bu tema bağlantısı geçersiz.",
+        "startFrom": "Başlangıç teması",
+        "random": "Beni şaşırt",
+        "mainColors": "Ana renkler",
+        "mainColorsHint": "Bu üçünü seçin - geri kalanı otomatik uyum sağlar.",
+        "allColors": "Her rengi ince ayarla",
+        "allColorsHint": "“Otomatik” işaretli renkler ana renkleri izler.",
+        "auto": "Otomatik",
+        "manual": "Özel",
+        "resetToAuto": "Yeniden ana renkleri izle",
+        "hex": "Hex kodu",
+        "eyedropper": "Ekrandan renk seç",
+        "fromTheme": "Bu temadaki renkler",
+        "previewHint": "Canlı önizleme. Rengini değiştirmek için herhangi bir parçaya tıklayın.",
+        "readability": "Okunabilirlik",
+        "readabilityHint": "Kolay görünmesi için metnin en az 4,5:1, simgelerin 3:1 kontrastı olmalıdır.",
+        "allGood": "Her şey kolay okunuyor",
+        "problems": "{count, plural, one {# renk zor okunuyor} other {# renk zor okunuyor}}",
+        "fix": "Düzelt",
+        "fixAll": "Tümünü düzelt",
+        "passes": "Kolay okunur",
+        "fails": "Zor okunur",
+        "ratioTitle": "Kontrast oranı. En az {min}:1 gerekir.",
+        "undo": "Geri al",
+        "share": "Bu temanın bağlantısını kopyala",
+        "linkCopied": "Bağlantı kopyalandı. Açan herkes bu temayı kaydedebilir.",
+        "copyFailed": "Bağlantı kopyalanamadı.",
+        "delete": "Temayı sil",
+        "deleteTitle": "“{name}” silinsin mi?",
+        "deleteDescription": "Tema bu cihazdan kaldırılacak. Bu işlem geri alınamaz.",
+        "save": "Kaydet ve uygula",
+        "saved": "Tema kaydedildi ve uygulandı",
+        "limit": "En fazla {max} tema saklayabilirsiniz. Yer açmak için birini silin.",
+        "checks": {
+            "text": "Metin",
+            "softText": "İkincil metin",
+            "icons": "Simgeler",
+            "accent": "Bağlantılar ve vurgular",
+            "onAccent": "Düğme metni",
+            "danger": "Hata metni",
+            "onDanger": "Silme düğmesi metni"
+        },
+        "tokens": {
+            "background": {
+                "label": "Arka plan",
+                "hint": "Her şeyin arkasındaki sayfa"
+            },
+            "cards": {
+                "label": "Kartlar",
+                "hint": "Kartlar, paneller ve menüler"
+            },
+            "lines": {
+                "label": "Çizgiler",
+                "hint": "Kenarlıklar ve ayırıcılar"
+            },
+            "text": {
+                "label": "Metin",
+                "hint": "Başlıklar ve ana metin"
+            },
+            "softText": {
+                "label": "İkincil metin",
+                "hint": "Açıklamalar, tarihler ve ipuçları"
+            },
+            "icons": {
+                "label": "Simgeler",
+                "hint": "Simgeler ve etkin olmayan öğeler"
+            },
+            "accent": {
+                "label": "Vurgu",
+                "hint": "Düğmeler, bağlantılar ve seçim"
+            },
+            "onAccent": {
+                "label": "Vurgu üzerindeki metin",
+                "hint": "Vurgu düğmelerinin etiketleri"
+            },
+            "danger": {
+                "label": "Tehlike",
+                "hint": "Hatalar, beğeniler ve silme"
+            },
+            "onDanger": {
+                "label": "Tehlike üzerindeki metin",
+                "hint": "Kırmızı düğmelerin etiketleri"
+            },
+            "favorite": {
+                "label": "Kaydedilenler",
+                "hint": "Panolara kaydetme"
+            }
+        },
+        "sample": {
+            "search": "Ara",
+            "title": "Bilimkurgu rafı",
+            "meta": "24 öğe · @alex",
+            "itemTitle": "Dune",
+            "description": "Bir çöl gezegeni ve herkesin istediği baharat.",
+            "tag1": "klasik",
+            "tag2": "uzay",
+            "fieldLabel": "Başlık",
+            "fieldValue": "Vakıf",
+            "error": "Bu alan zorunludur",
+            "follow": "Takip et",
+            "share": "Paylaş",
+            "delete": "Sil",
+            "link": "Tümünü gör"
+        }
     }
 }

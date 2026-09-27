@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "外観",
-            "description": "テーマを選びます。すぐに適用され、このデバイスに保存されます。",
+            "description": "テーマを選ぶか、自分で作成します。すぐに適用され、このデバイスに保存されます。",
             "search": "テーマを検索",
             "filter": "テーマを絞り込む",
             "theme": "テーマ",
@@ -1272,7 +1272,8 @@
             "recentSearches": "最近の検索（この端末のみ）。",
             "consent": "Cookie の選択を記憶します。",
             "pendingIntent": "ログイン前に始めたいいね・保存・フォローを完了させます。",
-            "emailBanner": "ブラウザを閉じるまでメール確認のリマインダーを非表示にします。"
+            "emailBanner": "ブラウザを閉じるまでメール確認のリマインダーを非表示にします。",
+            "customThemes": "テーマエディターで作成したテーマを保存します。"
         },
         "durations": {
             "days14": "14日",
@@ -1324,5 +1325,118 @@
         "details": "詳細は<policy>Cookie ポリシー</policy>をご覧ください。",
         "cancel": "キャンセル",
         "save": "選択を保存"
+    },
+    "themeEditor": {
+        "create": "テーマを作成",
+        "createTitle": "新しいテーマ",
+        "editTitle": "テーマを編集",
+        "editNamed": "{name}を編集",
+        "name": "名前",
+        "untitled": "マイテーマ",
+        "imported": "このテーマが共有されました。保存すると残せます。",
+        "invalidLink": "このテーマのリンクは無効です。",
+        "startFrom": "ベースにする",
+        "random": "おまかせ",
+        "mainColors": "メインカラー",
+        "mainColorsHint": "この3色を選ぶだけ - 残りは自動で合わせます。",
+        "allColors": "すべての色を細かく調整",
+        "allColorsHint": "「自動」の色はメインカラーに合わせて変わります。",
+        "auto": "自動",
+        "manual": "カスタム",
+        "resetToAuto": "再びメインカラーに合わせる",
+        "hex": "カラーコード",
+        "eyedropper": "画面から色を取る",
+        "fromTheme": "このテーマの色",
+        "previewHint": "ライブプレビュー。どこかをクリックすると、その色を変更できます。",
+        "readability": "読みやすさ",
+        "readabilityHint": "見やすくするには、テキストは4.5:1以上、アイコンは3:1以上のコントラストが必要です。",
+        "allGood": "すべて読みやすい",
+        "problems": "{count, plural, other {読みにくい色が#つあります}}",
+        "fix": "修正",
+        "fixAll": "すべて修正",
+        "passes": "読みやすい",
+        "fails": "読みにくい",
+        "ratioTitle": "コントラスト比。{min}:1以上が必要です。",
+        "undo": "元に戻す",
+        "share": "このテーマのリンクをコピー",
+        "linkCopied": "リンクをコピーしました。開いた人は誰でもこのテーマを保存できます。",
+        "copyFailed": "リンクをコピーできませんでした。",
+        "delete": "テーマを削除",
+        "deleteTitle": "「{name}」を削除しますか？",
+        "deleteDescription": "このデバイスからテーマが削除されます。元に戻せません。",
+        "save": "保存して適用",
+        "saved": "テーマを保存して適用しました",
+        "limit": "テーマは{max}個まで保存できます。1つ削除してください。",
+        "checks": {
+            "text": "テキスト",
+            "softText": "サブテキスト",
+            "icons": "アイコン",
+            "accent": "リンクと強調",
+            "onAccent": "ボタンの文字",
+            "danger": "エラーテキスト",
+            "onDanger": "削除ボタンの文字"
+        },
+        "tokens": {
+            "background": {
+                "label": "背景",
+                "hint": "すべての後ろにあるページ"
+            },
+            "cards": {
+                "label": "カード",
+                "hint": "カード、パネル、メニュー"
+            },
+            "lines": {
+                "label": "線",
+                "hint": "枠線と区切り線"
+            },
+            "text": {
+                "label": "テキスト",
+                "hint": "タイトルと本文"
+            },
+            "softText": {
+                "label": "サブテキスト",
+                "hint": "説明、日付、ヒント"
+            },
+            "icons": {
+                "label": "アイコン",
+                "hint": "アイコンと非アクティブな操作"
+            },
+            "accent": {
+                "label": "アクセント",
+                "hint": "ボタン、リンク、選択"
+            },
+            "onAccent": {
+                "label": "アクセント上の文字",
+                "hint": "アクセントボタンのラベル"
+            },
+            "danger": {
+                "label": "警告",
+                "hint": "エラー、いいね、削除"
+            },
+            "onDanger": {
+                "label": "警告上の文字",
+                "hint": "赤いボタンのラベル"
+            },
+            "favorite": {
+                "label": "保存",
+                "hint": "ボードへの保存"
+            }
+        },
+        "sample": {
+            "search": "検索",
+            "title": "SFの本棚",
+            "meta": "24件 · @alex",
+            "itemTitle": "デューン",
+            "description": "砂の惑星と、誰もが欲しがるスパイス。",
+            "tag1": "名作",
+            "tag2": "宇宙",
+            "fieldLabel": "タイトル",
+            "fieldValue": "ファウンデーション",
+            "error": "この項目は必須です",
+            "follow": "フォロー",
+            "share": "共有",
+            "delete": "削除",
+            "link": "すべて見る"
+        }
     }
 }

@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Darstellung",
-            "description": "Wähle ein Design. Es wird sofort angewendet und auf diesem Gerät gespeichert.",
+            "description": "Wähle ein Design oder erstelle dein eigenes. Es wird sofort angewendet und auf diesem Gerät gespeichert.",
             "search": "Design suchen",
             "filter": "Designs filtern",
             "theme": "Design",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Deine letzten Suchen, nur auf diesem Gerät.",
             "consent": "Merkt sich deine Cookie-Auswahl.",
             "pendingIntent": "Schließt ein Like, Speichern oder Folgen ab, das du vor der Anmeldung begonnen hast.",
-            "emailBanner": "Blendet die Erinnerung zur E-Mail-Bestätigung aus, bis du den Browser schließt."
+            "emailBanner": "Blendet die Erinnerung zur E-Mail-Bestätigung aus, bis du den Browser schließt.",
+            "customThemes": "Speichert die Designs, die du im Design-Editor erstellst."
         },
         "durations": {
             "days14": "14 Tage",
@@ -1324,5 +1325,118 @@
         "details": "Details findest du in der <policy>Cookie-Richtlinie</policy>.",
         "cancel": "Abbrechen",
         "save": "Auswahl speichern"
+    },
+    "themeEditor": {
+        "create": "Design erstellen",
+        "createTitle": "Neues Design",
+        "editTitle": "Design bearbeiten",
+        "editNamed": "{name} bearbeiten",
+        "name": "Name",
+        "untitled": "Mein Design",
+        "imported": "Jemand hat dieses Design mit dir geteilt. Speichere es, um es zu behalten.",
+        "invalidLink": "Dieser Design-Link ist ungültig.",
+        "startFrom": "Ausgehend von",
+        "random": "Überrasch mich",
+        "mainColors": "Hauptfarben",
+        "mainColorsHint": "Wähle diese drei - alles andere passt sich an.",
+        "allColors": "Jede Farbe feinjustieren",
+        "allColorsHint": "Mit Auto markierte Farben folgen den Hauptfarben.",
+        "auto": "Auto",
+        "manual": "Eigene",
+        "resetToAuto": "Wieder den Hauptfarben folgen",
+        "hex": "Hex-Code",
+        "eyedropper": "Farbe vom Bildschirm wählen",
+        "fromTheme": "Farben in diesem Design",
+        "previewHint": "Live-Vorschau. Klicke auf einen Bereich, um seine Farbe zu ändern.",
+        "readability": "Lesbarkeit",
+        "readabilityHint": "Text braucht mindestens 4,5:1 Kontrast und Symbole 3:1, damit sie gut sichtbar sind.",
+        "allGood": "Alles ist gut lesbar",
+        "problems": "{count, plural, one {# Farbe ist schwer lesbar} other {# Farben sind schwer lesbar}}",
+        "fix": "Beheben",
+        "fixAll": "Alle beheben",
+        "passes": "Gut lesbar",
+        "fails": "Schwer lesbar",
+        "ratioTitle": "Kontrastverhältnis. Mindestens {min}:1 nötig.",
+        "undo": "Rückgängig",
+        "share": "Link zu diesem Design kopieren",
+        "linkCopied": "Link kopiert. Wer ihn öffnet, kann das Design speichern.",
+        "copyFailed": "Link konnte nicht kopiert werden.",
+        "delete": "Design löschen",
+        "deleteTitle": "„{name}“ löschen?",
+        "deleteDescription": "Das Design wird von diesem Gerät entfernt. Das lässt sich nicht rückgängig machen.",
+        "save": "Speichern und anwenden",
+        "saved": "Design gespeichert und angewendet",
+        "limit": "Du kannst bis zu {max} Designs behalten. Lösche eines, um Platz zu schaffen.",
+        "checks": {
+            "text": "Text",
+            "softText": "Nebentext",
+            "icons": "Symbole",
+            "accent": "Links und Hervorhebungen",
+            "onAccent": "Text auf Buttons",
+            "danger": "Fehlertext",
+            "onDanger": "Text auf Lösch-Buttons"
+        },
+        "tokens": {
+            "background": {
+                "label": "Hintergrund",
+                "hint": "Die Seite hinter allem"
+            },
+            "cards": {
+                "label": "Karten",
+                "hint": "Karten, Panels und Menüs"
+            },
+            "lines": {
+                "label": "Linien",
+                "hint": "Rahmen und Trennlinien"
+            },
+            "text": {
+                "label": "Text",
+                "hint": "Titel und Haupttext"
+            },
+            "softText": {
+                "label": "Nebentext",
+                "hint": "Beschreibungen, Daten und Hinweise"
+            },
+            "icons": {
+                "label": "Symbole",
+                "hint": "Symbole und inaktive Elemente"
+            },
+            "accent": {
+                "label": "Akzent",
+                "hint": "Buttons, Links und Auswahl"
+            },
+            "onAccent": {
+                "label": "Text auf Akzent",
+                "hint": "Beschriftung von Akzent-Buttons"
+            },
+            "danger": {
+                "label": "Warnung",
+                "hint": "Fehler, Likes und Löschen"
+            },
+            "onDanger": {
+                "label": "Text auf Warnung",
+                "hint": "Beschriftung roter Buttons"
+            },
+            "favorite": {
+                "label": "Gespeichert",
+                "hint": "Auf Pinnwände speichern"
+            }
+        },
+        "sample": {
+            "search": "Suchen",
+            "title": "Sci-Fi-Regal",
+            "meta": "24 Einträge · von @alex",
+            "itemTitle": "Dune",
+            "description": "Ein Wüstenplanet und das Gewürz, das alle wollen.",
+            "tag1": "klassiker",
+            "tag2": "weltraum",
+            "fieldLabel": "Titel",
+            "fieldValue": "Foundation",
+            "error": "Dieses Feld ist erforderlich",
+            "follow": "Folgen",
+            "share": "Teilen",
+            "delete": "Löschen",
+            "link": "Alle ansehen"
+        }
     }
 }

@@ -16,6 +16,10 @@
     gap: 4px;
 }
 
+.create {
+    margin-left: auto !important;
+}
+
 .filter {
     height: 34px;
     padding: 0 14px;
@@ -40,9 +44,15 @@
     gap: 10px;
 }
 
-/* Painted by its own data-theme tokens. */
+/* Holds a custom theme's edit button next to its swatch. */
+.tile {
+    position: relative;
+}
+
+/* Painted by its own data-theme (or inline) tokens. */
 .swatch {
     position: relative;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -59,12 +69,45 @@
         border-color 0.15s ease;
 }
 
-.swatch:hover {
+.tile:hover .swatch {
     transform: translateY(-2px);
 }
 
 .selected {
     border-color: var(--accent);
+}
+
+.customSwatch {
+    padding-right: 46px;
+}
+
+/* The edit button takes the dots' place and shows the accent itself. */
+.customSwatch .dots {
+    display: none;
+}
+
+/* Painted by the custom theme's own tokens, like the swatch under it. */
+.edit {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--accent);
+    transform: translateY(-50%);
+    transition: background-color 0.15s ease;
+}
+
+.edit:hover,
+.edit:focus-visible {
+    background-color: color-mix(in srgb, var(--text-color) 12%, transparent);
+}
+
+.tile:hover .edit {
+    transform: translateY(calc(-50% - 2px));
 }
 
 .name {

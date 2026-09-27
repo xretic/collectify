@@ -1,0 +1,93 @@
+.paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 248px;
+    padding: 14px;
+    border-radius: var(--radius-lg) !important;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+}
+
+.picker:global(.react-colorful) {
+    width: 100%;
+    height: 180px;
+}
+
+.picker :global(.react-colorful__saturation) {
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.picker :global(.react-colorful__hue) {
+    height: 18px;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.picker :global(.react-colorful__pointer) {
+    width: 22px;
+    height: 22px;
+}
+
+.inputRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.current {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+}
+
+.input {
+    flex: 1;
+    min-width: 0;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-color);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    text-transform: lowercase;
+}
+
+.input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+.caption {
+    margin-bottom: 6px;
+    color: var(--soft-text);
+    font-size: 12px;
+}
+
+.swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.swatch {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    transition: transform 0.15s ease;
+}
+
+.swatch:hover {
+    transform: scale(1.15);
+}
+
+.swatchActive {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}

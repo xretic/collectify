@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Vzhled",
-            "description": "Vyberte si motiv. Použije se hned a toto zařízení si ho zapamatuje.",
+            "description": "Vyberte si motiv nebo si vytvořte vlastní. Použije se hned a toto zařízení si ho zapamatuje.",
             "search": "Najít motiv",
             "filter": "Filtrovat motivy",
             "theme": "Motiv",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Vaše nedávná hledání, jen na tomto zařízení.",
             "consent": "Pamatuje si vaši volbu cookies.",
             "pendingIntent": "Dokončí lajk, uložení nebo sledování, které jste začali před přihlášením.",
-            "emailBanner": "Skryje připomínku potvrzení e-mailu do zavření prohlížeče."
+            "emailBanner": "Skryje připomínku potvrzení e-mailu do zavření prohlížeče.",
+            "customThemes": "Uchovává motivy, které vytvoříte v editoru motivů."
         },
         "durations": {
             "days14": "14 dní",
@@ -1324,5 +1325,118 @@
         "details": "Podrobnosti najdete v <policy>zásadách cookies</policy>.",
         "cancel": "Zrušit",
         "save": "Uložit volby"
+    },
+    "themeEditor": {
+        "create": "Vytvořit motiv",
+        "createTitle": "Nový motiv",
+        "editTitle": "Upravit motiv",
+        "editNamed": "Upravit {name}",
+        "name": "Název",
+        "untitled": "Můj motiv",
+        "imported": "Někdo s vámi sdílel tento motiv. Uložte si ho, abyste o něj nepřišli.",
+        "invalidLink": "Odkaz na motiv je poškozený.",
+        "startFrom": "Začít od",
+        "random": "Překvapte mě",
+        "mainColors": "Hlavní barvy",
+        "mainColorsHint": "Vyberte tyto tři - vše ostatní se jim přizpůsobí.",
+        "allColors": "Doladit každou barvu",
+        "allColorsHint": "Barvy označené Auto se řídí hlavními barvami.",
+        "auto": "Auto",
+        "manual": "Vlastní",
+        "resetToAuto": "Znovu řídit hlavními barvami",
+        "hex": "Hex kód",
+        "eyedropper": "Vybrat barvu z obrazovky",
+        "fromTheme": "Barvy v tomto motivu",
+        "previewHint": "Živý náhled. Klikněte na libovolnou část a změňte její barvu.",
+        "readability": "Čitelnost",
+        "readabilityHint": "Text potřebuje kontrast aspoň 4,5:1 a ikony 3:1, aby byly dobře vidět.",
+        "allGood": "Vše je dobře čitelné",
+        "problems": "{count, plural, one {# barva je špatně čitelná} few {# barvy jsou špatně čitelné} many {# barvy je špatně čitelné} other {# barev je špatně čitelných}}",
+        "fix": "Opravit",
+        "fixAll": "Opravit vše",
+        "passes": "Dobře čitelné",
+        "fails": "Špatně čitelné",
+        "ratioTitle": "Kontrastní poměr. Potřeba aspoň {min}:1.",
+        "undo": "Zpět",
+        "share": "Kopírovat odkaz na motiv",
+        "linkCopied": "Odkaz zkopírován. Kdokoli ho otevře, si motiv může uložit.",
+        "copyFailed": "Odkaz se nepodařilo zkopírovat.",
+        "delete": "Smazat motiv",
+        "deleteTitle": "Smazat „{name}“?",
+        "deleteDescription": "Motiv bude z tohoto zařízení odstraněn. Nelze to vrátit.",
+        "save": "Uložit a použít",
+        "saved": "Motiv uložen a použit",
+        "limit": "Můžete mít nejvýše {max} motivů. Pro nový jeden smažte.",
+        "checks": {
+            "text": "Text",
+            "softText": "Vedlejší text",
+            "icons": "Ikony",
+            "accent": "Odkazy a zvýraznění",
+            "onAccent": "Text na tlačítkách",
+            "danger": "Chybové hlášky",
+            "onDanger": "Text na tlačítkách smazání"
+        },
+        "tokens": {
+            "background": {
+                "label": "Pozadí",
+                "hint": "Stránka za vším"
+            },
+            "cards": {
+                "label": "Karty",
+                "hint": "Karty, panely a nabídky"
+            },
+            "lines": {
+                "label": "Čáry",
+                "hint": "Okraje a oddělovače"
+            },
+            "text": {
+                "label": "Text",
+                "hint": "Nadpisy a hlavní text"
+            },
+            "softText": {
+                "label": "Vedlejší text",
+                "hint": "Popisy, data a nápovědy"
+            },
+            "icons": {
+                "label": "Ikony",
+                "hint": "Ikony a neaktivní prvky"
+            },
+            "accent": {
+                "label": "Akcent",
+                "hint": "Tlačítka, odkazy a výběr"
+            },
+            "onAccent": {
+                "label": "Text na akcentu",
+                "hint": "Popisky akcentových tlačítek"
+            },
+            "danger": {
+                "label": "Varování",
+                "hint": "Chyby, lajky a mazání"
+            },
+            "onDanger": {
+                "label": "Text na varování",
+                "hint": "Popisky červených tlačítek"
+            },
+            "favorite": {
+                "label": "Uložené",
+                "hint": "Ukládání na nástěnky"
+            }
+        },
+        "sample": {
+            "search": "Hledat",
+            "title": "Sci-fi police",
+            "meta": "24 položek · od @alex",
+            "itemTitle": "Duna",
+            "description": "Pouštní planeta a koření, které chce každý.",
+            "tag1": "klasika",
+            "tag2": "vesmír",
+            "fieldLabel": "Název",
+            "fieldValue": "Nadace",
+            "error": "Toto pole je povinné",
+            "follow": "Sledovat",
+            "share": "Sdílet",
+            "delete": "Smazat",
+            "link": "Zobrazit vše"
+        }
     }
 }

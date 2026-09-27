@@ -53,3 +53,40 @@ export const DEFAULT_THEME: ThemeId = 'light';
 
 export const isThemeId = (value: unknown): value is ThemeId =>
     THEMES.some((theme) => theme.id === value);
+
+/** CSS variables every theme defines, without the leading `--`. */
+export const THEME_TOKENS = [
+    'bg-color',
+    'container-color',
+    'border-color',
+    'text-color',
+    'soft-text',
+    'muted-icon',
+    'accent',
+    'on-accent',
+    'danger',
+    'on-danger',
+    'favorite',
+] as const;
+
+export type ThemeToken = (typeof THEME_TOKENS)[number];
+export type ThemeColors = Record<ThemeToken, string>;
+export type ColorScheme = 'light' | 'dark';
+
+/** A theme made in the editor. Kept in localStorage, like the choice of theme. */
+export type CustomTheme = {
+    /** Always starts with `CUSTOM_THEME_PREFIX`. */
+    id: `custom-${string}`;
+    name: string;
+    scheme: ColorScheme;
+    colors: ThemeColors;
+    /** Secondary colors the user set by hand, so the editor stops deriving them. */
+    manual?: ThemeToken[];
+};
+
+export const CUSTOM_THEME_PREFIX = 'custom-';
+export const MAX_CUSTOM_THEMES = 24;
+export const CUSTOM_THEME_NAME_MAX_LENGTH = 24;
+
+/** A preset id or a custom theme id. */
+export type ActiveThemeId = ThemeId | CustomTheme['id'];

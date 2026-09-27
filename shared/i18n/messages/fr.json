@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Apparence",
-            "description": "Choisissez un thème. Il s’applique immédiatement et est mémorisé sur cet appareil.",
+            "description": "Choisissez un thème ou créez le vôtre. Il s’applique immédiatement et est mémorisé sur cet appareil.",
             "search": "Rechercher un thème",
             "filter": "Filtrer les thèmes",
             "theme": "Thème",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Vos recherches récentes, sur cet appareil uniquement.",
             "consent": "Mémorise votre choix concernant les cookies.",
             "pendingIntent": "Termine un j’aime, un enregistrement ou un abonnement commencé avant la connexion.",
-            "emailBanner": "Masque le rappel de confirmation d’e-mail jusqu’à la fermeture du navigateur."
+            "emailBanner": "Masque le rappel de confirmation d’e-mail jusqu’à la fermeture du navigateur.",
+            "customThemes": "Conserve les thèmes que vous créez dans l’éditeur de thèmes."
         },
         "durations": {
             "days14": "14 jours",
@@ -1324,5 +1325,118 @@
         "details": "Les détails sont dans la <policy>Politique relative aux cookies</policy>.",
         "cancel": "Annuler",
         "save": "Enregistrer mes choix"
+    },
+    "themeEditor": {
+        "create": "Créer un thème",
+        "createTitle": "Nouveau thème",
+        "editTitle": "Modifier le thème",
+        "editNamed": "Modifier {name}",
+        "name": "Nom",
+        "untitled": "Mon thème",
+        "imported": "Quelqu’un vous a partagé ce thème. Enregistrez-le pour le garder.",
+        "invalidLink": "Ce lien de thème est invalide.",
+        "startFrom": "Partir de",
+        "random": "Surprenez-moi",
+        "mainColors": "Couleurs principales",
+        "mainColorsHint": "Choisissez ces trois - tout le reste s’y adapte.",
+        "allColors": "Ajuster chaque couleur",
+        "allColorsHint": "Les couleurs marquées Auto suivent les couleurs principales.",
+        "auto": "Auto",
+        "manual": "Perso",
+        "resetToAuto": "Suivre à nouveau les couleurs principales",
+        "hex": "Code hex",
+        "eyedropper": "Prendre une couleur à l’écran",
+        "fromTheme": "Couleurs de ce thème",
+        "previewHint": "Aperçu en direct. Cliquez sur une partie pour changer sa couleur.",
+        "readability": "Lisibilité",
+        "readabilityHint": "Le texte doit avoir un contraste d’au moins 4,5:1 et les icônes 3:1 pour bien se voir.",
+        "allGood": "Tout est facile à lire",
+        "problems": "{count, plural, one {# couleur est difficile à lire} other {# couleurs sont difficiles à lire}}",
+        "fix": "Corriger",
+        "fixAll": "Tout corriger",
+        "passes": "Facile à lire",
+        "fails": "Difficile à lire",
+        "ratioTitle": "Rapport de contraste. Au moins {min}:1 requis.",
+        "undo": "Annuler",
+        "share": "Copier le lien de ce thème",
+        "linkCopied": "Lien copié. Toute personne qui l’ouvre peut enregistrer ce thème.",
+        "copyFailed": "Impossible de copier le lien.",
+        "delete": "Supprimer le thème",
+        "deleteTitle": "Supprimer « {name} » ?",
+        "deleteDescription": "Le thème sera retiré de cet appareil. Cette action est irréversible.",
+        "save": "Enregistrer et appliquer",
+        "saved": "Thème enregistré et appliqué",
+        "limit": "Vous pouvez garder jusqu’à {max} thèmes. Supprimez-en un pour faire de la place.",
+        "checks": {
+            "text": "Texte",
+            "softText": "Texte secondaire",
+            "icons": "Icônes",
+            "accent": "Liens et mises en avant",
+            "onAccent": "Texte des boutons",
+            "danger": "Texte d’erreur",
+            "onDanger": "Texte des boutons de suppression"
+        },
+        "tokens": {
+            "background": {
+                "label": "Arrière-plan",
+                "hint": "La page derrière tout"
+            },
+            "cards": {
+                "label": "Cartes",
+                "hint": "Cartes, panneaux et menus"
+            },
+            "lines": {
+                "label": "Lignes",
+                "hint": "Bordures et séparateurs"
+            },
+            "text": {
+                "label": "Texte",
+                "hint": "Titres et texte principal"
+            },
+            "softText": {
+                "label": "Texte secondaire",
+                "hint": "Descriptions, dates et indications"
+            },
+            "icons": {
+                "label": "Icônes",
+                "hint": "Icônes et contrôles inactifs"
+            },
+            "accent": {
+                "label": "Accent",
+                "hint": "Boutons, liens et sélection"
+            },
+            "onAccent": {
+                "label": "Texte sur l’accent",
+                "hint": "Libellés des boutons d’accent"
+            },
+            "danger": {
+                "label": "Danger",
+                "hint": "Erreurs, j’aime et suppression"
+            },
+            "onDanger": {
+                "label": "Texte sur le danger",
+                "hint": "Libellés des boutons rouges"
+            },
+            "favorite": {
+                "label": "Enregistré",
+                "hint": "Enregistrer dans les tableaux"
+            }
+        },
+        "sample": {
+            "search": "Rechercher",
+            "title": "Étagère SF",
+            "meta": "24 éléments · par @alex",
+            "itemTitle": "Dune",
+            "description": "Une planète désertique et l’épice que tout le monde veut.",
+            "tag1": "classique",
+            "tag2": "espace",
+            "fieldLabel": "Titre",
+            "fieldValue": "Fondation",
+            "error": "Ce champ est obligatoire",
+            "follow": "Suivre",
+            "share": "Partager",
+            "delete": "Supprimer",
+            "link": "Tout voir"
+        }
     }
 }

@@ -278,7 +278,7 @@
         },
         "appearance": {
             "title": "Aspetto",
-            "description": "Scegli un tema. Si applica subito e viene ricordato su questo dispositivo.",
+            "description": "Scegli un tema o creane uno tuo. Si applica subito e viene ricordato su questo dispositivo.",
             "search": "Cerca un tema",
             "filter": "Filtra i temi",
             "theme": "Tema",
@@ -1272,7 +1272,8 @@
             "recentSearches": "Le tue ricerche recenti, solo su questo dispositivo.",
             "consent": "Ricorda la tua scelta sui cookie.",
             "pendingIntent": "Completa un mi piace, un salvataggio o un follow iniziato prima dell’accesso.",
-            "emailBanner": "Nasconde il promemoria di conferma email finché non chiudi il browser."
+            "emailBanner": "Nasconde il promemoria di conferma email finché non chiudi il browser.",
+            "customThemes": "Conserva i temi che crei nell’editor dei temi."
         },
         "durations": {
             "days14": "14 giorni",
@@ -1324,5 +1325,118 @@
         "details": "I dettagli sono nella <policy>Cookie policy</policy>.",
         "cancel": "Annulla",
         "save": "Salva le scelte"
+    },
+    "themeEditor": {
+        "create": "Crea tema",
+        "createTitle": "Nuovo tema",
+        "editTitle": "Modifica tema",
+        "editNamed": "Modifica {name}",
+        "name": "Nome",
+        "untitled": "Il mio tema",
+        "imported": "Qualcuno ha condiviso questo tema con te. Salvalo per tenerlo.",
+        "invalidLink": "Questo link al tema non è valido.",
+        "startFrom": "Parti da",
+        "random": "Sorprendimi",
+        "mainColors": "Colori principali",
+        "mainColorsHint": "Scegli questi tre - tutto il resto si adatta.",
+        "allColors": "Regola ogni colore",
+        "allColorsHint": "I colori segnati Auto seguono quelli principali.",
+        "auto": "Auto",
+        "manual": "Personale",
+        "resetToAuto": "Segui di nuovo i colori principali",
+        "hex": "Codice hex",
+        "eyedropper": "Preleva un colore dallo schermo",
+        "fromTheme": "Colori di questo tema",
+        "previewHint": "Anteprima dal vivo. Clicca su una parte per cambiarne il colore.",
+        "readability": "Leggibilità",
+        "readabilityHint": "Il testo richiede un contrasto di almeno 4,5:1 e le icone 3:1 per vedersi bene.",
+        "allGood": "Tutto si legge bene",
+        "problems": "{count, plural, one {# colore si legge male} other {# colori si leggono male}}",
+        "fix": "Correggi",
+        "fixAll": "Correggi tutto",
+        "passes": "Si legge bene",
+        "fails": "Si legge male",
+        "ratioTitle": "Rapporto di contrasto. Serve almeno {min}:1.",
+        "undo": "Annulla",
+        "share": "Copia il link a questo tema",
+        "linkCopied": "Link copiato. Chiunque lo apra può salvare questo tema.",
+        "copyFailed": "Impossibile copiare il link.",
+        "delete": "Elimina tema",
+        "deleteTitle": "Eliminare «{name}»?",
+        "deleteDescription": "Il tema verrà rimosso da questo dispositivo. L’operazione non si può annullare.",
+        "save": "Salva e applica",
+        "saved": "Tema salvato e applicato",
+        "limit": "Puoi tenere fino a {max} temi. Eliminane uno per fare spazio.",
+        "checks": {
+            "text": "Testo",
+            "softText": "Testo secondario",
+            "icons": "Icone",
+            "accent": "Link ed evidenziazioni",
+            "onAccent": "Testo sui pulsanti",
+            "danger": "Testo di errore",
+            "onDanger": "Testo sui pulsanti di eliminazione"
+        },
+        "tokens": {
+            "background": {
+                "label": "Sfondo",
+                "hint": "La pagina dietro a tutto"
+            },
+            "cards": {
+                "label": "Schede",
+                "hint": "Schede, pannelli e menu"
+            },
+            "lines": {
+                "label": "Linee",
+                "hint": "Bordi e separatori"
+            },
+            "text": {
+                "label": "Testo",
+                "hint": "Titoli e testo principale"
+            },
+            "softText": {
+                "label": "Testo secondario",
+                "hint": "Descrizioni, date e suggerimenti"
+            },
+            "icons": {
+                "label": "Icone",
+                "hint": "Icone e controlli inattivi"
+            },
+            "accent": {
+                "label": "Accento",
+                "hint": "Pulsanti, link e selezione"
+            },
+            "onAccent": {
+                "label": "Testo sull’accento",
+                "hint": "Etichette dei pulsanti d’accento"
+            },
+            "danger": {
+                "label": "Pericolo",
+                "hint": "Errori, mi piace ed eliminazione"
+            },
+            "onDanger": {
+                "label": "Testo sul pericolo",
+                "hint": "Etichette dei pulsanti rossi"
+            },
+            "favorite": {
+                "label": "Salvati",
+                "hint": "Salvataggio nelle bacheche"
+            }
+        },
+        "sample": {
+            "search": "Cerca",
+            "title": "Scaffale sci-fi",
+            "meta": "24 elementi · di @alex",
+            "itemTitle": "Dune",
+            "description": "Un pianeta deserto e la spezia che tutti vogliono.",
+            "tag1": "classico",
+            "tag2": "spazio",
+            "fieldLabel": "Titolo",
+            "fieldValue": "Fondazione",
+            "error": "Questo campo è obbligatorio",
+            "follow": "Segui",
+            "share": "Condividi",
+            "delete": "Elimina",
+            "link": "Vedi tutto"
+        }
     }
 }
