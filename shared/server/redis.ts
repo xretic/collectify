@@ -8,6 +8,8 @@ export type KeyValueStore = {
     get(key: string): Promise<string | null>;
     set(key: string, value: string, ttlSeconds?: number): Promise<void>;
     incr(key: string, ttlSeconds?: number): Promise<number>;
+    /** Decrements an existing counter; a missing (expired) key is left alone. */
+    decr(key: string): Promise<void>;
 };
 
 function createUpstashStore(url: string, token: string): KeyValueStore {
@@ -24,6 +26,10 @@ function createUpstashStore(url: string, token: string): KeyValueStore {
             const value = await client.incr(key);
             if (ttlSeconds && value === 1) await client.expire(key, ttlSeconds);
             return value;
+        },
+        async decr(key) {
+            // DECR on a missing key would create -1 with no expiry.
+            if (await client.exists(key)) await client.decr(key);
         },
     };
 }
@@ -71,6 +77,10 @@ function createIORedisStore(url: string): KeyValueStore {
             if (ttlSeconds && value === 1) await client.expire(key, ttlSeconds);
             return value;
         },
+        async decr(key) {
+            await ensureOpen();
+            if (await client.exists(key)) await client.decr(key);
+        },
     };
 }
 
@@ -102,7 +112,12 @@ function withCircuitBreaker(store: KeyValueStore): KeyValueStore {
             }
         };
 
-    return { get: guard(store.get), set: guard(store.set), incr: guard(store.incr) };
+    return {
+        get: guard(store.get),
+        set: guard(store.set),
+        incr: guard(store.incr),
+        decr: guard(store.decr),
+    };
 }
 
 const rawStore = createStore();

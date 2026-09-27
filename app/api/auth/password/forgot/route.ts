@@ -13,11 +13,23 @@ export const POST = route(async (req) => {
 
     const { email } = await readBody(req, forgotPasswordSchema);
     // Keyed by the address whether or not it has an account, so the limit reveals nothing.
-    await enforceRateLimitFor(`email:${email}`, 'email');
-    const origin = requireEmailLinkOrigin(req);
+    const release = await enforceRateLimitFor(`email:${email}`, 'email');
+    let origin: string;
+    try {
+        origin = requireEmailLinkOrigin(req);
+    } catch (error) {
+        await release();
+        throw error;
+    }
 
     // After the response: it looks and takes the same whether or not the account exists.
-    after(() => requestPasswordReset(email, origin).catch(logEmailFailure('password reset')));
+    // A failed send gives the attempt back, so the user can try again once email works.
+    after(() =>
+        requestPasswordReset(email, origin).catch(async (error) => {
+            logEmailFailure('password reset')(error);
+            await release();
+        }),
+    );
 
     return noContent();
 });

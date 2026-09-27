@@ -83,20 +83,29 @@ export async function enforceRateLimit(
     await enforceRateLimitFor(userId ? `u:${userId}` : `ip:${getClientIp(req)}`, preset);
 }
 
-/** Same limit keyed by an arbitrary subject (e.g. the recipient of an email). */
-export async function enforceRateLimitFor(subject: string, preset: RateLimitPreset) {
+/**
+ * Same limit keyed by an arbitrary subject (e.g. the recipient of an email).
+ * Returns `release`, which gives the attempt back (for work that failed on our
+ * side, so it does not count against the user).
+ */
+export async function enforceRateLimitFor(
+    subject: string,
+    preset: RateLimitPreset,
+): Promise<() => Promise<void>> {
     const { limit, windowSeconds } = PRESETS[preset];
     const window = Math.floor(Date.now() / (windowSeconds * 1000));
     const key = `ratelimit:${preset}:${subject}:${window}`;
 
     const redis = getRedis();
     let count: number;
+    let counted: 'redis' | 'memory' = redis ? 'redis' : 'memory';
 
     try {
         count = redis ? await redis.incr(key, windowSeconds) : memoryIncr(key, windowSeconds);
     } catch (error) {
         console.error('[rateLimit] backend failed, using memory counter:', error);
         count = memoryIncr(key, windowSeconds);
+        counted = 'memory';
     }
 
     if (count > limit) {
@@ -104,4 +113,16 @@ export async function enforceRateLimitFor(subject: string, preset: RateLimitPres
             'Retry-After': String(windowSeconds),
         });
     }
+
+    return async () => {
+        try {
+            if (counted === 'redis') await redis?.decr(key);
+            else {
+                const bucket = memoryBuckets.get(key);
+                if (bucket && bucket.count > 0) bucket.count -= 1;
+            }
+        } catch (error) {
+            console.error('[rateLimit] release failed:', error);
+        }
+    };
 }

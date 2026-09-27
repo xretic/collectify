@@ -10,9 +10,16 @@ import {
 export const POST = route(async (req) => {
     const viewer = await requireViewer(req);
     await enforceRateLimit(req, 'auth', viewer.userId);
-    await enforceRateLimitFor(`verification:${viewer.userId}`, 'email');
+    const release = await enforceRateLimitFor(`verification:${viewer.userId}`, 'email');
 
-    const sent = await requestEmailConfirmation(viewer.userId, requireEmailLinkOrigin(req));
-
-    return json({ sent });
+    try {
+        const sent = await requestEmailConfirmation(viewer.userId, requireEmailLinkOrigin(req));
+        // Nothing to confirm: no email went out.
+        if (!sent) await release();
+        return json({ sent });
+    } catch (error) {
+        // Our sending failed (e.g. email not configured): the attempt does not count.
+        await release();
+        throw error;
+    }
 });

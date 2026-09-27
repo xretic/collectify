@@ -1,5 +1,6 @@
 import 'server-only';
-import { isProduction, serverEnv } from './env';
+import { serverEnv } from './env';
+import { apiError } from './http';
 
 const RESEND_URL = 'https://api.resend.com/emails';
 // Resend's shared test sender: delivers only to the address that owns the API key.
@@ -58,12 +59,12 @@ function renderHtml(content: EmailContent) {
 <tr><td style="background:#ffffff;border-radius:20px;padding:32px">
 <h1 style="margin:0 0 20px;font-size:22px;line-height:30px;color:#111827">${text(content.heading)}</h1>
 ${paragraphs}
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 24px"><tr><td style="border-radius:999px;background:#208fff">
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 24px"><tr><td style="border-radius:999px;background:#006bd8">
 <a href="${url}" style="display:inline-block;padding:12px 28px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:999px">${text(content.button.label)}</a>
 </td></tr></table>
 ${notes}
 <p style="margin:16px 0 4px;font-size:13px;line-height:20px;color:#6b7280">${text(content.linkCaption)}</p>
-<p style="margin:0;font-size:13px;line-height:20px;word-break:break-all"><a href="${url}" style="color:#208fff">${url}</a></p>
+<p style="margin:0;font-size:13px;line-height:20px;word-break:break-all"><a href="${url}" style="color:#006bd8">${url}</a></p>
 </td></tr>
 <tr><td style="padding:20px 8px 0;font-size:12px;line-height:18px;color:#9ca3af">${text(content.footer)}</td></tr>
 </table>
@@ -90,17 +91,16 @@ function renderText(content: EmailContent) {
 export const isEmailConfigured = () => Boolean(serverEnv.RESEND_API_KEY);
 
 /**
- * Sends a transactional email through Resend. Without an API key the email is
- * printed to the server log in development (so links can be followed locally)
- * and fails in production.
+ * Sends a transactional email through Resend. A missing key, a bad key or an
+ * unverified sending domain (the test sender only reaches the key owner) is
+ * setup, not the visitor's fault: it answers 503 "email is not available".
  */
 export async function sendEmail(to: string, content: EmailContent): Promise<void> {
     const key = serverEnv.RESEND_API_KEY;
 
     if (!key) {
-        if (isProduction) throw new Error('RESEND_API_KEY is not set; cannot send email.');
-        console.info(`[email] to ${to}: ${content.subject}\n${renderText(content)}`);
-        return;
+        console.error('[email] RESEND_API_KEY is not set; cannot send email.');
+        throw apiError(503, 'emailNotConfigured');
     }
 
     const res = await fetch(RESEND_URL, {
@@ -115,7 +115,12 @@ export async function sendEmail(to: string, content: EmailContent): Promise<void
         }),
     });
 
-    if (!res.ok) {
-        throw new Error(`Resend responded ${res.status}: ${await res.text()}`);
+    if (res.ok) return;
+
+    const detail = `Resend responded ${res.status}: ${await res.text()}`;
+    if (res.status === 401 || res.status === 403) {
+        console.error(`[email] ${detail}`);
+        throw apiError(503, 'emailNotConfigured');
     }
+    throw new Error(detail);
 }
