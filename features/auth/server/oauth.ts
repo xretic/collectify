@@ -239,6 +239,8 @@ async function findOrCreateUser(
             profile.verifiedEmail ??
             `${provider}_${profile.providerId}@${PLACEHOLDER_EMAIL_DOMAIN}`,
         emailVerifiedAt: profile.verifiedEmail ? new Date() : null,
+        // Continuing with a provider accepts the Terms and confirms 18+ (said next to the buttons).
+        termsAcceptedAt: new Date(),
         fullName: (profile.fullName || profile.login || 'User').slice(0, 30),
         avatarUrl: profile.avatarUrl,
         [providerField]: profile.providerId,

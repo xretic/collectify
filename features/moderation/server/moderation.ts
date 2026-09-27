@@ -13,6 +13,7 @@ import { writeAudit } from '@/entities/moderation/server/audit';
 import { deliverNotifications, notifySystem } from '@/entities/notification/server/notifications';
 import { getUserRoles } from '@/entities/user/server/roles';
 import { COLLECTIONS_CACHE_NAMESPACE } from '@/entities/collection/server/queries';
+import { prepareUploadCleanup } from '@/entities/user/server/uploads';
 
 async function assertUserExists(userId: number) {
     const user = await db.user.findUnique({ where: { id: userId }, select: { id: true } });
@@ -167,6 +168,7 @@ export async function deleteUserAccount(ctx: StaffContext, targetUserId: number)
     if (!target) throw notFound('userNotFound');
 
     await assertCanModerate(ctx, targetUserId);
+    const cleanupUploads = await prepareUploadCleanup(targetUserId);
 
     await db.$transaction(async (tx) => {
         await writeAudit(
@@ -183,6 +185,7 @@ export async function deleteUserAccount(ctx: StaffContext, targetUserId: number)
     });
 
     await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
+    return cleanupUploads;
 }
 
 export async function startImpersonation(ctx: StaffContext, targetUserId: number) {

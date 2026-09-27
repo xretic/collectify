@@ -1,0 +1,11 @@
+.consent {
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
+    color: var(--soft-text);
+}
+
+.consent a {
+    color: var(--accent);
+    text-decoration: underline;
+}

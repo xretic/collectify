@@ -119,7 +119,8 @@
         "tagNameMin": "Alespoň {tagNameMin} znaky.",
         "tagNameChars": "Písmena, číslice, mezery a - & + . ' #",
         "verdictRequiresGuilty": "Trest a odstranění obsahu vyžadují verdikt „vinen“.",
-        "duplicateRequiresOriginal": "U verdiktu „duplikát“ vyberte původní nahlášení."
+        "duplicateRequiresOriginal": "U verdiktu „duplikát“ vyberte původní nahlášení.",
+        "ageConfirm": "Collectify mohou používat jen lidé starší 18 let."
     },
     "meta": {
         "description": "Objevujte, ukládejte a sdílejte sbírky knih, her, filmů, míst a vybavení. Sledujte lidi s dobrým vkusem a tvořte vlastní sbírky na Collectify - zdarma.",
@@ -141,15 +142,21 @@
             "userNotFound": "Uživatel nenalezen",
             "forgotPassword": "Obnovení hesla",
             "resetPassword": "Nové heslo",
-            "verifyEmail": "Potvrzení e-mailu"
+            "verifyEmail": "Potvrzení e-mailu",
+            "terms": "Podmínky užívání",
+            "cookies": "Zásady používání cookies",
+            "legalNotice": "Právní informace"
         },
         "title": "Collectify - sbírky čehokoli od lidí s dobrým vkusem",
         "keywords": "sbírky, seznamy, žebříčky, seznam knih, sbírka her, seznam filmů, tipy na cesty, wishlist, moodboard, alternativa Pinterestu",
         "categoryTitle": "Nejlepší sbírky: {category}",
-        "categoryDescription": "Objevte nejlepší sbírky v kategorii {category} od skutečných lidí. Ukládejte oblíbené, sledujte sběratele a sdílejte vlastní na Collectify.",
+        "categoryDescription": "Objevte nejlepší sbírky v kategorii {category} na Collectify. Ukládejte oblíbené, sledujte sběratele a sdílejte vlastní.",
         "tagTitle": "Sbírky #{tag}",
         "tagDescription": "Sbírky se štítkem #{tag} od lidí na Collectify. Ukládejte, sledujte a sdílejte, co máte rádi.",
-        "collectionLead": "{count, plural, one {# položka} few {# položky} many {# položky} other {# položek}} v kategorii {category} od {name}."
+        "collectionLead": "{count, plural, one {# položka} few {# položky} many {# položky} other {# položek}} v kategorii {category} od {name}.",
+        "termsDescription": "Pravidla používání Collectify: váš účet, váš obsah a co není dovoleno.",
+        "cookiesDescription": "Jaké cookies a úložiště prohlížeče Collectify používá a proč.",
+        "legalNoticeDescription": "Kdo provozuje Collectify a jak nás kontaktovat."
     },
     "languages": {
         "label": "Jazyk"
@@ -211,7 +218,12 @@
         "hidePassword": "Skrýt heslo",
         "createAccount": "Vytvořit účet",
         "loginTitle": "Vítejte zpět",
-        "registerTitle": "Přidejte se ke Collectify"
+        "registerTitle": "Přidejte se ke Collectify",
+        "ageConfirm": "Je mi 18 let nebo více",
+        "consent": {
+            "form": "Vytvořením účtu souhlasíte s <terms>Podmínkami užívání</terms> a <privacy>Zásadami ochrany soukromí</privacy>.",
+            "providers": "Pokračováním přes Google nebo GitHub potvrzujete, že je vám 18 let nebo více, a souhlasíte s <terms>Podmínkami užívání</terms> a <privacy>Zásadami ochrany soukromí</privacy>."
+        }
     },
     "common": {
         "cancel": "Zrušit",
@@ -289,6 +301,11 @@
             "yourPassword": "Vaše heslo",
             "typeUsername": "Pro potvrzení napište „{username}“",
             "deleteForever": "Smazat navždy"
+        },
+        "data": {
+            "title": "Vaše data",
+            "description": "Stáhněte si kopii všeho, co o vás Collectify ukládá, nebo zkontrolujte volby cookies.",
+            "download": "Stáhnout moje data"
         }
     },
     "dateField": {
@@ -885,7 +902,11 @@
         "search": "Hledat"
     },
     "footer": {
-        "privacyPolicy": "Ochrana osobních údajů"
+        "privacyPolicy": "Ochrana osobních údajů",
+        "terms": "Podmínky",
+        "cookies": "Cookies",
+        "legalNotice": "Právní informace",
+        "legal": "Právní"
     },
     "people": {
         "mutual": "{count, plural, one {# společný} few {# společní} many {# společného} other {# společných}}",
@@ -1007,11 +1028,11 @@
         },
         "age": {
             "title": "Minimální věk",
-            "text": "Collectify je určeno lidem starším 18 let. Datum narození, podle kterého by vám bylo méně než 18, nelze uložit. Pokud zjistíme, že účet patří osobě mladší 18 let, můžeme ho pozastavit a smazat jeho data."
+            "text": "Collectify je určen lidem starším 18 let a svůj věk potvrzujete při registraci. Datum narození, podle kterého je vám méně než 18 let, nelze uložit. Pokud zjistíme, že účet patří někomu mladšímu 18 let, můžeme ho pozastavit a smazat jeho data."
         },
         "cookies": {
             "title": "Cookies",
-            "text": "Používáme funkční cookie relace k udržení přihlášení, funkční cookie, které si pamatuje jazyk rozhraní, a krátkodobé bezpečnostní cookie (asi 10 minut) při přihlašování přes GitHub nebo Google. Zvolený motiv se ukládá do místního úložiště prohlížeče. Nepoužíváme analytické, sledovací ani marketingové cookies."
+            "text": "Používáme jen cookies a úložiště prohlížeče potřebné k tomu, abyste zůstali přihlášeni a vaše nastavení zůstalo uložené - žádné analytické, sledovací ani reklamní cookies. Úplný seznam najdete v <cookies>zásadách cookies</cookies>."
         },
         "moderation": {
             "title": "Nahlášení a moderace",
@@ -1021,10 +1042,46 @@
             "title": "Třetí strany",
             "text": "Vaše údaje neprodáváme ani nesdílíme se třetími stranami pro reklamní či marketingové účely. Pokud se zaregistrujete nebo přihlásíte přes GitHub nebo Google, tito poskytovatelé nám předají základní údaje profilu (například e-mail) potřebné k vytvoření účtu."
         },
-        "updated": "Poslední aktualizace: {date}",
-        "storage": {
-            "title": "Kde jsou vaše data uložena",
-            "text": "Aplikace běží na Vercelu. Údaje o účtech a obsahu jsou uloženy v naší databázi. Nahrané obrázky (avatary, bannery, obrázky položek) ukládá náš poskytovatel hostingu médií Uploadcare. Účetní e-maily (odkazy pro obnovení hesla a potvrzení e-mailu) odesíláme přes našeho poskytovatele e-mailů Resend, který k tomu dostává pouze vaši e-mailovou adresu a jméno."
+        "controller": {
+            "title": "Kdo odpovídá",
+            "text": "{operator} provozuje Collectify a odpovídá za vaše osobní údaje („správce“).",
+            "email": "Kontaktovat nás můžete na <mail>{email}</mail>.",
+            "noEmail": "Naše kontaktní údaje najdete v <legal>Právních informacích</legal>."
+        },
+        "legalBases": {
+            "title": "Právní základy",
+            "text": "Vaše údaje zpracováváme, abychom poskytli službu, ke které jste se zaregistrovali (plnění smlouvy, čl. 6 odst. 1 písm. b) GDPR): váš účet, obsah, zprávy a účetní e-maily. Zabezpečení, prevence zneužití, moderace, limity požadavků a doporučení vycházejí z našeho oprávněného zájmu provozovat bezpečnou a relevantní službu (čl. 6 odst. 1 písm. f) GDPR). Volitelné údaje v profilu používáme, protože jste se je rozhodli přidat, a můžete je kdykoli odstranit."
+        },
+        "processors": {
+            "title": "Poskytovatelé služeb",
+            "intro": "K provozu Collectify využíváme tyto poskytovatele. Údaje zpracovávají jen naším jménem:",
+            "items": {
+                "hosting": "<strong>Vercel</strong> - hosting webu a API",
+                "database": "<strong>Neon</strong> - databáze hostovaná v EU (Frankfurt)",
+                "images": "<strong>Uploadcare</strong> - ukládání a doručování nahraných obrázků",
+                "email": "<strong>Resend</strong> - účetní e-maily (obnovení hesla, potvrzení e-mailu)",
+                "realtime": "<strong>Pusher</strong> - doručování zpráv a oznámení v reálném čase",
+                "cache": "<strong>Redis</strong> - krátkodobá mezipaměť a počítadla limitů",
+                "signIn": "<strong>Google</strong> a <strong>GitHub</strong> - přihlášení, jen pokud je zvolíte"
+            },
+            "transfers": "Někteří z těchto poskytovatelů zpracovávají údaje mimo Evropský hospodářský prostor, například ve Spojených státech."
+        },
+        "externalImages": {
+            "title": "Obrázky z jiných webů",
+            "text": "Sbírky mohou zobrazovat obrázky hostované na jiných webech, například obaly. Když je váš prohlížeč načte, tyto weby získají vaši IP adresu a údaje o prohlížeči, stejně jako u každé jiné stránky."
+        },
+        "retention": {
+            "title": "Jak dlouho údaje uchováváme",
+            "text": "Vaše údaje uchováváme, dokud existuje váš účet. Relace vyprší po 14 dnech, odkazy pro obnovení hesla po 1 hodině a potvrzovací odkazy po 3 dnech. IP adresy pro omezování požadavků uchováváme nejvýše hodinu. Když účet smažete, okamžitě se smaže váš profil, sbírky, komentáře, lajky, sledování, nástěnky a chaty i nahrané obrázky; moderátorský záznam uchová jen ID účtu a uživatelské jméno.",
+            "textKeepsUploads": "Vaše údaje uchováváme, dokud existuje váš účet. Relace vyprší po 14 dnech, odkazy pro obnovení hesla po 1 hodině a potvrzovací odkazy po 3 dnech. IP adresy pro omezování požadavků uchováváme nejvýše hodinu. Když účet smažete, okamžitě se smaže váš profil, sbírky, komentáře, lajky, sledování, nástěnky a chaty; moderátorský záznam uchová jen ID účtu a uživatelské jméno. Nahrané obrázky mohou zůstat u našeho poskytovatele obrázků, dokud je neodstraníme; pokud to chcete dříve, kontaktujte nás."
+        },
+        "rights": {
+            "title": "Vaše práva",
+            "text": "Kopii svých údajů si můžete stáhnout a účet smazat v <settings>Nastavení</settings>, údaje opravíte ve svém profilu. Můžete také vznést námitku proti zpracování na základě oprávněného zájmu a podat stížnost u dozorového úřadu. S čímkoli dalším nás kontaktujte pomocí údajů výše."
+        },
+        "changes": {
+            "title": "Změny těchto zásad",
+            "text": "Pokud tyto zásady změníme, aktualizujeme datum nahoře. O podstatných změnách vás budeme informovat předem."
         }
     },
     "errorPage": {
@@ -1119,5 +1176,153 @@
         },
         "browse": "Procházet podle kategorií",
         "categoriesLabel": "kategorie"
+    },
+    "legal": {
+        "updated": "Verze {version} · poslední aktualizace {date}"
+    },
+    "terms": {
+        "title": "Podmínky užívání",
+        "intro": "Tyto podmínky jsou dohodou mezi vámi a {operator} („my“) o používání Collectify. Vytvořením účtu nebo používáním webu je přijímáte. Přečtěte si také naše <privacy>zásady ochrany soukromí</privacy>, které popisují, jak zacházíme s vašimi údaji.",
+        "sections": {
+            "eligibility": {
+                "title": "Kdo může Collectify používat",
+                "text": "Musí vám být alespoň 18 let a při registraci to potvrdíte. Collectify nesmíte používat, pokud jsme vás zablokovali, a nesmíte vytvářet účty automaticky."
+            },
+            "account": {
+                "title": "Váš účet",
+                "text": "Chraňte své heslo a udržujte e-mailovou adresu aktuální. Odpovídáte za to, co se na vašem účtu děje; pokud si myslíte, že k němu má přístup někdo jiný, dejte nám hned vědět."
+            },
+            "content": {
+                "title": "Váš obsah",
+                "text": "Sbírky, položky, komentáře, obrázky a zprávy, které přidáte, zůstávají vaše. Abychom mohli službu provozovat, udělujete nám celosvětovou, nevýhradní a bezúplatnou licenci k hostování, ukládání, rozmnožování a zobrazování vašeho obsahu na Collectify a v náhledech odkazů na něj, dokud je obsah ve službě. Licence končí smazáním obsahu, s výjimkou kopií, které musíme uchovat kvůli moderaci, ze zákonných důvodů nebo po omezenou dobu v zálohách."
+            },
+            "rights": {
+                "title": "Co smíte zveřejňovat",
+                "text": "Zveřejňujte jen obsah, ke kterému máte práva. Když přidáváte obrázky nebo odkazy z jiných webů, ujistěte se, že je to dovoleno, a nezveřejňujte osobní údaje jiných lidí bez jejich svolení."
+            },
+            "conduct": {
+                "title": "Co není dovoleno",
+                "text": "Nezveřejňujte ani neposílejte nic nezákonného; obtěžování, výhrůžky nebo nenávistné projevy; sexuální obsah s nezletilými; spam, podvody nebo záměrně zavádějící obsah; malware; ani obsah porušující práva jiných. Nepokoušejte se Collectify rozbít, přetížit, hromadně stahovat ani obcházet jeho zabezpečení."
+            },
+            "moderation": {
+                "title": "Moderace",
+                "text": "Můžeme kontrolovat nahlášený obsah, odstraňovat obsah porušující tyto podmínky nebo zákon a omezit nebo zablokovat účty, dočasně i trvale. Když váš účet omezíme, dáme vám vědět v aplikaci. Pokud si myslíte, že jsme udělali chybu, kontaktujte nás."
+            },
+            "copyright": {
+                "title": "Porušení autorských práv",
+                "text": "Pokud se domníváte, že obsah na Collectify porušuje vaše práva, nahlaste ho v aplikaci nebo nás kontaktujte s odkazem na obsah a informacemi o vašich právech. Zjevně porušující obsah odstraníme."
+            },
+            "price": {
+                "title": "Cena",
+                "text": "Collectify je zdarma. Nejsou tu žádné placené tarify, nákupy ani skryté poplatky, takže není co vracet. Pokud někdy přidáme placené funkce, cenu a podmínky vrácení peněz uvidíte předem."
+            },
+            "service": {
+                "title": "Změny služby",
+                "text": "Collectify stále vylepšujeme, takže se funkce mohou měnit nebo mizet. Službu můžeme pozastavit kvůli údržbě nebo když je to nutné."
+            },
+            "termination": {
+                "title": "Zrušení účtu",
+                "text": "Svůj účet můžete kdykoli smazat v <settings>Nastavení</settings>; vaše údaje se pak smažou podle <privacy>zásad ochrany soukromí</privacy>. Účty, které podmínky závažně nebo opakovaně porušují, můžeme pozastavit nebo zrušit."
+            },
+            "disclaimer": {
+                "title": "Bez záruky",
+                "text": "Collectify poskytujeme „tak, jak je“. Snažíme se, aby byl dostupný a bezpečný, ale nemůžeme slíbit, že bude vždy dostupný a bez chyb. Obsah vytvářejí uživatelé a my se s ním neztotožňujeme."
+            },
+            "liability": {
+                "title": "Odpovědnost",
+                "text": "V rozsahu, který zákon dovoluje, neodpovídáme za nepřímé nebo následné škody ani za škody způsobené obsahem či jednáním jiných uživatelů. Nic v těchto podmínkách neomezuje odpovědnost, kterou zákon omezit nedovoluje, ani vaše práva spotřebitele."
+            },
+            "changes": {
+                "title": "Změny podmínek",
+                "text": "Pokud tyto podmínky změníme, aktualizujeme datum výše. O podstatných změnách vás budeme informovat předem; pokud budete Collectify používat i poté, platí nové podmínky."
+            },
+            "law": {
+                "title": "Rozhodné právo",
+                "text": "Tyto podmínky se řídí právem země, kde má provozovatel Collectify sídlo. Pokud jste spotřebitel, zůstává vám i ochrana kogentních předpisů země, kde žijete.",
+                "country": "Tyto podmínky se řídí právem státu {country}. Pokud jste spotřebitel, zůstává vám i ochrana kogentních předpisů země, kde žijete."
+            },
+            "contact": {
+                "title": "Kontakt",
+                "text": "S dotazy k těmto podmínkám se obraťte na kontakty v <legal>Právních informacích</legal>.",
+                "email": "S dotazy k těmto podmínkám pište na <mail>{email}</mail>."
+            }
+        }
+    },
+    "cookiePolicy": {
+        "title": "Zásady používání cookies",
+        "intro": "Collectify používá jen cookies a úložiště prohlížeče, které potřebuje ke svému fungování a k zapamatování vašich voleb. Nepoužíváme reklamní ani sledovací cookies a nic nesdílíme s inzerenty.",
+        "listTitle": "Co ukládáme ve vašem prohlížeči",
+        "columns": {
+            "name": "Název",
+            "type": "Typ",
+            "purpose": "Účel",
+            "duration": "Doba uložení"
+        },
+        "types": {
+            "cookie": "Cookie",
+            "localStorage": "Místní úložiště",
+            "sessionStorage": "Úložiště relace"
+        },
+        "purposes": {
+            "session": "Udržuje vás přihlášené. Skripty ho nemohou číst.",
+            "locale": "Pamatuje si jazyk rozhraní.",
+            "oauth": "Chrání přihlášení přes Google nebo GitHub a vrátí vás na stránku, kde jste byli.",
+            "theme": "Pamatuje si barevný motiv.",
+            "peopleWidget": "Pamatuje si, zda jste skryli „Lidé, které možná znáte“.",
+            "recentSearches": "Vaše nedávná hledání, jen na tomto zařízení.",
+            "consent": "Pamatuje si vaši volbu cookies.",
+            "pendingIntent": "Dokončí lajk, uložení nebo sledování, které jste začali před přihlášením.",
+            "emailBanner": "Skryje připomínku potvrzení e-mailu do zavření prohlížeče."
+        },
+        "durations": {
+            "days14": "14 dní",
+            "year": "1 rok",
+            "minutes10": "10 minut",
+            "minutes30": "30 minut",
+            "untilCleared": "Dokud ho nesmažete",
+            "session": "Do zavření prohlížeče"
+        },
+        "consentTitle": "Proč nežádáme o souhlas",
+        "consentText": "Všechny tyto položky jsou nezbytně nutné pro poskytnutí služby, o kterou jste požádali, nebo pro zapamatování vaší volby, takže k nim zákon souhlas nevyžaduje. Pokud někdy přidáme volitelné cookies, například analytické, nejdřív se zeptáme a bez vašeho souhlasu zůstanou vypnuté.",
+        "manageTitle": "Správa cookies",
+        "manageText": "Cookies a data webu můžete kdykoli smazat v nastavení prohlížeče; budete odhlášeni a vaše předvolby se obnoví. Své volby můžete zkontrolovat také v nastavení cookies."
+    },
+    "legalNotice": {
+        "title": "Právní informace",
+        "subtitle": "Kdo provozuje Collectify a jak nás kontaktovat.",
+        "operatorTitle": "Provozovatel",
+        "email": "E-mail",
+        "country": "Země",
+        "documentsTitle": "Zásady",
+        "documents": {
+            "terms": "Podmínky užívání",
+            "privacy": "Zásady ochrany soukromí",
+            "cookies": "Zásady používání cookies"
+        },
+        "reportTitle": "Nahlašování obsahu",
+        "reportText": "Sbírku, komentář nebo účet nahlásíte tlačítkem pro nahlášení vedle něj. Moderátoři nahlášení kontrolují co nejdříve."
+    },
+    "consent": {
+        "label": "Oznámení o cookies",
+        "infoText": "Používáme jen nezbytné cookies, abychom vás udrželi přihlášené a pamatovali si vaše nastavení. Žádné reklamy ani sledování. <policy>Zásady cookies</policy>",
+        "askText": "Používáme nezbytné cookies k provozu Collectify a s vaším souhlasem analytické cookies, abychom pochopili, jak se používá. Názor můžete kdykoli změnit. <policy>Zásady cookies</policy>",
+        "ok": "Rozumím",
+        "acceptAll": "Přijmout vše",
+        "rejectAll": "Odmítnout vše",
+        "customize": "Přizpůsobit",
+        "settingsTitle": "Nastavení cookies",
+        "categories": {
+            "necessary": {
+                "title": "Nezbytné (vždy zapnuté)",
+                "description": "Potřebné k přihlášení, zabezpečení a zapamatování nastavení."
+            },
+            "analytics": {
+                "title": "Analytické",
+                "description": "Pomáhají nám pochopit, které funkce se používají, bez reklamy."
+            }
+        },
+        "details": "Podrobnosti najdete v <policy>zásadách cookies</policy>.",
+        "cancel": "Zrušit",
+        "save": "Uložit volby"
     }
 }

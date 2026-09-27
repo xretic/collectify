@@ -1,0 +1,9 @@
+.link {
+    color: var(--soft-text);
+    font-family: var(--font-rubik-medium), sans-serif;
+    font-size: 13px;
+}
+
+.link:hover {
+    color: var(--text-color);
+}

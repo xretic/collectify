@@ -8,6 +8,7 @@ import { generateUserId } from '@/entities/user/server/generateUserId';
 import { writeAudit } from '@/entities/moderation/server/audit';
 import type { AuthSession } from '@/entities/session/server/session';
 import { consumeToken } from './emailLinks';
+import { prepareUploadCleanup } from '@/entities/user/server/uploads';
 
 const BCRYPT_COST = 12;
 // Compared against when the email is unknown, so response time does not reveal
@@ -64,6 +65,7 @@ export async function registerUser(input: {
                 fullName: input.username,
                 passwordHash: await bcrypt.hash(input.password, BCRYPT_COST),
                 locale: input.locale,
+                termsAcceptedAt: new Date(),
             },
             select: { id: true },
         });
@@ -124,6 +126,11 @@ export async function resetPassword(token: string, password: string) {
     return userId;
 }
 
+/**
+ * Deletes the account and everything it owns. Returns a cleanup that erases
+ * its uploaded images from the media host (run after the response; without
+ * the Uploadcare secret key it does nothing).
+ */
 export async function deleteOwnAccount(userId: number, confirmation: string) {
     const user = await db.user.findUniqueOrThrow({
         where: { id: userId },
@@ -138,10 +145,14 @@ export async function deleteOwnAccount(userId: number, confirmation: string) {
         throw unauthorized(user.passwordHash ? 'passwordIncorrect' : 'typeUsernameToConfirm');
     }
 
+    const cleanupUploads = await prepareUploadCleanup(userId);
+
     await db.$transaction([
         db.chat.deleteMany({ where: { users: { some: { id: userId } } } }),
         db.user.delete({ where: { id: userId } }),
     ]);
+
+    return cleanupUploads;
 }
 
 export async function stopImpersonation(session: AuthSession) {

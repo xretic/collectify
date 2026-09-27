@@ -13,7 +13,8 @@ export type RateLimitPreset =
     | 'realtime'
     | 'comment'
     | 'create'
-    | 'email';
+    | 'email'
+    | 'export';
 
 const PRESETS: Record<RateLimitPreset, { limit: number; windowSeconds: number }> = {
     auth: { limit: 8, windowSeconds: 60 },
@@ -28,6 +29,8 @@ const PRESETS: Record<RateLimitPreset, { limit: number; windowSeconds: number }>
     create: { limit: 10, windowSeconds: 60 },
     /** Emails to one address (reset / confirmation links). */
     email: { limit: 3, windowSeconds: 60 * 60 },
+    /** Full data exports (heavy queries). */
+    export: { limit: 5, windowSeconds: 60 * 60 },
 };
 
 const memoryBuckets = new Map<string, { count: number; resetAt: number }>();

@@ -10,6 +10,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { withNext } from '@/shared/lib/safeNextPath';
 import { useAuthPromptStore } from '../../model/authPromptStore';
 import { OAuthButtons } from '../OAuthButtons';
+import { LegalConsent } from '../LegalConsent';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
 
@@ -60,6 +61,8 @@ export function AuthPromptDialog() {
                         {t('email')}
                     </Button>
                 </div>
+
+                <LegalConsent variant="providers" />
 
                 <p className={styles.footer}>
                     {t.rich('haveAccount', {

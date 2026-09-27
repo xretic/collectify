@@ -12,6 +12,8 @@ model User {
     email                String              @unique
     /// Set once the user opened a confirmation link (or signed up with a provider-verified address).
     emailVerifiedAt      DateTime?
+    /// When the user accepted the Terms and Privacy Policy and confirmed being 18+ (at sign-up).
+    termsAcceptedAt      DateTime?
     passwordHash         String?
     avatarUrl            String              @default("")
     bannerUrl            String              @default("")
@@ -552,4 +554,21 @@ enum ReportTargetType {
     USER
     COMMENT
     COLLECTION
+}
+
+/// Every published version of a legal text (/terms, /privacy-policy, /cookies).
+/// A change adds a row; the page shows the newest version already in effect.
+model LegalDocumentVersion {
+    id          Int      @id @default(autoincrement())
+    /// "terms", "privacy" or "cookies" (see LEGAL_DOCUMENTS in shared/server/legal.ts).
+    slug        String
+    version     Int
+    /// When this version takes effect: the "Last updated" date on the page and in the sitemap.
+    effectiveAt DateTime @db.Date
+    /// Internal note on what changed; not shown to users.
+    changes     String   @default("")
+    createdAt   DateTime @default(now())
+
+    @@unique([slug, version])
+    @@index([slug, effectiveAt])
 }

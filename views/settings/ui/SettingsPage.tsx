@@ -8,10 +8,13 @@ import ColorLensIcon from '@mui/icons-material/ColorLens';
 import InterestsIcon from '@mui/icons-material/Interests';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
+import FolderZipOutlinedIcon from '@mui/icons-material/FolderZipOutlined';
 import { useSessionUser } from '@/entities/user/model/useSessionUser';
 import { EditProfileDialog } from '@/features/user/edit-profile/ui/EditProfileDialog';
 import { ChangePasswordForm } from '@/features/user/change-password/ui/ChangePasswordForm';
 import { DeleteAccountButton } from '@/features/user/delete-account/ui/DeleteAccountButton';
+import { DownloadDataButton } from '@/features/user/export-data/ui/DownloadDataButton';
+import { CookieSettingsButton } from '@/features/consent/ui/CookieSettingsButton';
 import { ThemePicker } from '@/features/theme/ui/ThemePicker';
 import { InterestsEditor } from '@/features/interest/ui/InterestsEditor';
 import { PeopleWidgetToggle } from '@/widgets/people-you-may-know/ui/PeopleWidgetToggle';
@@ -106,6 +109,17 @@ export default function SettingsPage() {
                 description={t('home.description')}
             >
                 <PeopleWidgetToggle />
+            </Section>
+
+            <Section
+                icon={<FolderZipOutlinedIcon className={styles.icon} />}
+                title={t('data.title')}
+                description={t('data.description')}
+            >
+                <div className={styles.row}>
+                    <DownloadDataButton />
+                    <CookieSettingsButton variant="button" />
+                </div>
             </Section>
 
             <Section

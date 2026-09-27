@@ -1,6 +1,11 @@
 import type { MetadataRoute } from 'next';
 import { db } from '@/shared/server/db';
 import { siteUrl } from '@/shared/server/env';
+import {
+    currentLegalVersions,
+    LEGAL_DOCUMENTS,
+    type LegalDocumentSlug,
+} from '@/shared/server/legal';
 
 /** Regenerated hourly; one sitemap holds up to 50,000 URLs. */
 export const revalidate = 3600;
@@ -35,6 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const base = siteUrl();
     const url = (path: string) => new URL(path, base).toString();
     const [collections, profiles] = await publicPages();
+    const legalVersions = await currentLegalVersions().catch(() => ({}) as Record<string, never>);
 
     return [
         { url: url('/'), changeFrequency: 'hourly', priority: 1 },
@@ -49,6 +55,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'weekly' as const,
             priority: 0.5,
         })),
-        { url: url('/privacy-policy'), changeFrequency: 'yearly', priority: 0.1 },
+        ...(Object.entries(LEGAL_DOCUMENTS) as [LegalDocumentSlug, string][]).map(
+            ([slug, path]) => ({
+                url: url(path),
+                lastModified: legalVersions[slug]?.effectiveAt,
+                changeFrequency: 'yearly' as const,
+                priority: 0.1,
+            }),
+        ),
+        { url: url('/legal'), changeFrequency: 'yearly' as const, priority: 0.1 },
     ];
 }

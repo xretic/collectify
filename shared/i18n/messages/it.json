@@ -119,7 +119,8 @@
         "tagNameMin": "Almeno {tagNameMin} caratteri.",
         "tagNameChars": "Lettere, cifre, spazi e - & + . ' #",
         "verdictRequiresGuilty": "Sanzione e rimozione del contenuto richiedono un verdetto di colpevolezza.",
-        "duplicateRequiresOriginal": "Per un verdetto di duplicato seleziona la segnalazione originale."
+        "duplicateRequiresOriginal": "Per un verdetto di duplicato seleziona la segnalazione originale.",
+        "ageConfirm": "Devi avere almeno 18 anni per usare Collectify."
     },
     "meta": {
         "description": "Scopri, salva e condividi collezioni di libri, giochi, film, luoghi e attrezzatura. Segui persone con buon gusto e crea le tue collezioni su Collectify, gratis.",
@@ -141,15 +142,21 @@
             "userNotFound": "Utente non trovato",
             "forgotPassword": "Reimposta password",
             "resetPassword": "Nuova password",
-            "verifyEmail": "Conferma email"
+            "verifyEmail": "Conferma email",
+            "terms": "Termini di servizio",
+            "cookies": "Cookie policy",
+            "legalNotice": "Note legali"
         },
         "title": "Collectify - Collezioni di tutto, curate da persone con buon gusto",
         "keywords": "collezioni, liste, classifiche, liste di libri, collezioni di giochi, liste di film, idee di viaggio, lista dei desideri, moodboard, alternativa a Pinterest",
         "categoryTitle": "Le migliori collezioni di {category}",
-        "categoryDescription": "Scopri le migliori collezioni di {category} curate da persone reali. Salva le tue preferite, segui i collezionisti e condividi le tue su Collectify.",
+        "categoryDescription": "Scopri le migliori collezioni di {category} su Collectify. Salva le tue preferite, segui i collezionisti e condividi le tue.",
         "tagTitle": "Collezioni #{tag}",
         "tagDescription": "Collezioni con il tag #{tag}, curate dalle persone su Collectify. Salva, segui e condividi ciò che ami.",
-        "collectionLead": "{count, plural, one {# elemento} other {# elementi}} in {category} di {name}."
+        "collectionLead": "{count, plural, one {# elemento} other {# elementi}} in {category} di {name}.",
+        "termsDescription": "Le regole per usare Collectify: il tuo account, i tuoi contenuti e cosa non è consentito.",
+        "cookiesDescription": "Quali cookie e quale archiviazione del browser usa Collectify, e perché.",
+        "legalNoticeDescription": "Chi gestisce Collectify e come contattarci."
     },
     "languages": {
         "label": "Lingua"
@@ -211,7 +218,12 @@
         "hidePassword": "Nascondi password",
         "createAccount": "Crea account",
         "loginTitle": "Bentornato",
-        "registerTitle": "Unisciti a Collectify"
+        "registerTitle": "Unisciti a Collectify",
+        "ageConfirm": "Ho 18 anni o più",
+        "consent": {
+            "form": "Creando un account accetti i <terms>Termini di servizio</terms> e l’<privacy>Informativa sulla privacy</privacy>.",
+            "providers": "Continuando con Google o GitHub confermi di avere 18 anni o più e accetti i <terms>Termini di servizio</terms> e l’<privacy>Informativa sulla privacy</privacy>."
+        }
     },
     "common": {
         "cancel": "Annulla",
@@ -289,6 +301,11 @@
             "yourPassword": "La tua password",
             "typeUsername": "Digita «{username}» per confermare",
             "deleteForever": "Elimina per sempre"
+        },
+        "data": {
+            "title": "I tuoi dati",
+            "description": "Scarica una copia di tutto ciò che Collectify conserva su di te o rivedi le tue scelte sui cookie.",
+            "download": "Scarica i miei dati"
         }
     },
     "dateField": {
@@ -885,7 +902,11 @@
         "search": "Cerca"
     },
     "footer": {
-        "privacyPolicy": "Informativa sulla privacy"
+        "privacyPolicy": "Informativa sulla privacy",
+        "terms": "Termini",
+        "cookies": "Cookie",
+        "legalNotice": "Note legali",
+        "legal": "Informazioni legali"
     },
     "people": {
         "mutual": "{count, plural, one {# in comune} other {# in comune}}",
@@ -1007,11 +1028,11 @@
         },
         "age": {
             "title": "Età minima",
-            "text": "Collectify è destinato a persone di almeno 18 anni. Non è possibile salvare una data di nascita da cui risulti un’età inferiore ai 18 anni. Se veniamo a sapere che un account appartiene a una persona minore di 18 anni, possiamo sospenderlo ed eliminarne i dati."
+            "text": "Collectify è pensato per persone dai 18 anni in su, e confermi la tua età alla registrazione. Non è possibile salvare una data di nascita secondo cui hai meno di 18 anni. Se scopriamo che un account appartiene a una persona minore di 18 anni, possiamo sospenderlo ed eliminarne i dati."
         },
         "cookies": {
             "title": "Cookie",
-            "text": "Usiamo un cookie di sessione funzionale per mantenerti connesso, un cookie funzionale che ricorda la lingua dell’interfaccia e un cookie di sicurezza di breve durata (circa 10 minuti) durante l’accesso con GitHub o Google. Il tema scelto viene salvato nella memoria locale del browser. Non usiamo cookie di analisi, tracciamento o marketing."
+            "text": "Usiamo solo i cookie e lo spazio del browser necessari per mantenerti connesso e ricordare le tue impostazioni: nessun cookie di analisi, tracciamento o pubblicità. L’elenco completo è nella <cookies>Cookie policy</cookies>."
         },
         "moderation": {
             "title": "Segnalazioni e moderazione",
@@ -1021,10 +1042,46 @@
             "title": "Terze parti",
             "text": "Non vendiamo né condividiamo i tuoi dati con terze parti per scopi pubblicitari o di marketing. Se ti registri o accedi con GitHub o Google, questi fornitori ci trasmettono le informazioni di base del profilo (come la tua email) per creare il tuo account."
         },
-        "updated": "Ultimo aggiornamento: {date}",
-        "storage": {
-            "title": "Dove vengono conservati i tuoi dati",
-            "text": "L’app è ospitata su Vercel. I dati degli account e dei contenuti sono conservati nel nostro database. Le immagini caricate (avatar, banner, immagini degli elementi) sono conservate dal nostro fornitore di hosting multimediale, Uploadcare. Le email dell’account (link per reimpostare la password e confermare l’email) vengono inviate tramite il nostro fornitore di email, Resend, che riceve il tuo indirizzo e il tuo nome solo a questo scopo."
+        "controller": {
+            "title": "Chi è responsabile",
+            "text": "{operator} gestisce Collectify ed è responsabile dei tuoi dati personali (il «titolare del trattamento»).",
+            "email": "Puoi contattarci all’indirizzo <mail>{email}</mail>.",
+            "noEmail": "I nostri contatti sono nelle <legal>Note legali</legal>."
+        },
+        "legalBases": {
+            "title": "Basi giuridiche",
+            "text": "Trattiamo i tuoi dati per fornire il servizio a cui ti sei registrato (esecuzione di un contratto, art. 6, par. 1, lett. b GDPR): il tuo account, i tuoi contenuti, i messaggi e le email dell’account. Sicurezza, prevenzione degli abusi, moderazione, limiti di richieste e consigli si basano sul nostro legittimo interesse a offrire un servizio sicuro e pertinente (art. 6, par. 1, lett. f GDPR). I dati facoltativi del profilo vengono usati perché hai scelto di aggiungerli, e puoi rimuoverli in qualsiasi momento."
+        },
+        "processors": {
+            "title": "Fornitori di servizi",
+            "intro": "Per far funzionare Collectify usiamo questi fornitori. Trattano i dati solo per nostro conto:",
+            "items": {
+                "hosting": "<strong>Vercel</strong> - hosting del sito e dell’API",
+                "database": "<strong>Neon</strong> - database ospitato nell’UE (Francoforte)",
+                "images": "<strong>Uploadcare</strong> - archiviazione e distribuzione delle immagini caricate",
+                "email": "<strong>Resend</strong> - email dell’account (reimpostazione password, conferma email)",
+                "realtime": "<strong>Pusher</strong> - consegna in tempo reale di messaggi e notifiche",
+                "cache": "<strong>Redis</strong> - cache temporanea e contatori dei limiti",
+                "signIn": "<strong>Google</strong> e <strong>GitHub</strong> - accesso, solo se scegli di usarli"
+            },
+            "transfers": "Alcuni di questi fornitori trattano dati al di fuori dello Spazio economico europeo, per esempio negli Stati Uniti."
+        },
+        "externalImages": {
+            "title": "Immagini da altri siti",
+            "text": "Le collezioni possono mostrare immagini ospitate su altri siti, come copertine. Quando il browser le carica, questi siti ricevono il tuo indirizzo IP e i dati del browser, come per qualsiasi pagina web."
+        },
+        "retention": {
+            "title": "Per quanto tempo conserviamo i dati",
+            "text": "Conserviamo i tuoi dati finché esiste il tuo account. Le sessioni scadono dopo 14 giorni, i link per reimpostare la password dopo 1 ora e quelli di conferma dopo 3 giorni. Gli indirizzi IP usati per i limiti di richieste vengono conservati al massimo un’ora. Quando elimini l’account, profilo, collezioni, commenti, mi piace, follow, bacheche e chat vengono eliminati subito, così come le immagini che hai caricato; il registro di moderazione conserva solo l’ID dell’account e il nome utente.",
+            "textKeepsUploads": "Conserviamo i tuoi dati finché esiste il tuo account. Le sessioni scadono dopo 14 giorni, i link per reimpostare la password dopo 1 ora e quelli di conferma dopo 3 giorni. Gli indirizzi IP usati per i limiti di richieste vengono conservati al massimo un’ora. Quando elimini l’account, profilo, collezioni, commenti, mi piace, follow, bacheche e chat vengono eliminati subito; il registro di moderazione conserva solo l’ID dell’account e il nome utente. Le immagini caricate possono restare presso il nostro servizio di immagini finché non le rimuoviamo; contattaci se vuoi che avvenga prima."
+        },
+        "rights": {
+            "title": "I tuoi diritti",
+            "text": "Puoi scaricare una copia dei tuoi dati ed eliminare l’account nelle <settings>Impostazioni</settings>, e correggere i tuoi dati nel profilo. Puoi anche opporti al trattamento basato sul nostro legittimo interesse e presentare reclamo alla tua autorità per la protezione dei dati. Per tutto il resto, contattaci con i riferimenti qui sopra."
+        },
+        "changes": {
+            "title": "Modifiche a questa informativa",
+            "text": "Se modifichiamo questa informativa, aggiorniamo la data in alto. Ti informeremo delle modifiche importanti prima che entrino in vigore."
         }
     },
     "errorPage": {
@@ -1119,5 +1176,153 @@
         },
         "browse": "Sfoglia per categoria",
         "categoriesLabel": "categorie"
+    },
+    "legal": {
+        "updated": "Versione {version} · ultimo aggiornamento: {date}"
+    },
+    "terms": {
+        "title": "Termini di servizio",
+        "intro": "Questi termini sono un accordo tra te e {operator} («noi») sull’uso di Collectify. Creando un account o usando il sito, li accetti. Leggi anche la nostra <privacy>Informativa sulla privacy</privacy>, che spiega come trattiamo i tuoi dati.",
+        "sections": {
+            "eligibility": {
+                "title": "Chi può usare Collectify",
+                "text": "Devi avere almeno 18 anni e confermarlo alla registrazione. Non puoi usare Collectify se ti abbiamo bannato, né creare account in modo automatico."
+            },
+            "account": {
+                "title": "Il tuo account",
+                "text": "Proteggi la password e tieni aggiornato il tuo indirizzo email. Sei responsabile di ciò che accade nel tuo account; avvisaci subito se pensi che qualcun altro vi abbia accesso."
+            },
+            "content": {
+                "title": "I tuoi contenuti",
+                "text": "Le collezioni, gli elementi, i commenti, le immagini e i messaggi che aggiungi restano tuoi. Per far funzionare il servizio, ci concedi una licenza mondiale, non esclusiva e gratuita per ospitare, conservare, riprodurre e mostrare i tuoi contenuti su Collectify e nelle anteprime dei link, finché restano sul servizio. La licenza termina quando elimini i contenuti, salvo le copie che dobbiamo conservare per la moderazione, per motivi legali o per un periodo limitato nei backup."
+            },
+            "rights": {
+                "title": "Cosa puoi pubblicare",
+                "text": "Pubblica solo contenuti che hai il diritto di condividere. Se aggiungi immagini o link di altri siti, assicurati che sia consentito, e non pubblicare dati personali di altre persone senza il loro permesso."
+            },
+            "conduct": {
+                "title": "Cosa non è consentito",
+                "text": "Non pubblicare né inviare nulla di illegale; molestie, minacce o incitamento all’odio; contenuti sessuali che coinvolgono minori; spam, truffe o contenuti volutamente ingannevoli; malware; né contenuti che violano i diritti altrui. Non tentare di danneggiare, sovraccaricare, estrarre dati in massa o aggirare la sicurezza di Collectify."
+            },
+            "moderation": {
+                "title": "Moderazione",
+                "text": "Possiamo esaminare i contenuti segnalati, rimuovere contenuti che violano questi termini o la legge e limitare o bannare account, temporaneamente o in modo permanente. Se limitiamo il tuo account, te lo diciamo nell’app. Se pensi che abbiamo sbagliato, contattaci."
+            },
+            "copyright": {
+                "title": "Segnalazioni di violazione del copyright",
+                "text": "Se ritieni che un contenuto su Collectify violi i tuoi diritti, segnalalo nell’app o contattaci con il link al contenuto e i dettagli sui tuoi diritti. Rimuoviamo i contenuti chiaramente in violazione."
+            },
+            "price": {
+                "title": "Prezzo",
+                "text": "Collectify è gratuito. Non ci sono piani a pagamento, acquisti o costi nascosti, quindi non c’è nulla da rimborsare. Se un giorno aggiungeremo funzioni a pagamento, vedrai il prezzo e le condizioni di rimborso prima di pagare."
+            },
+            "service": {
+                "title": "Modifiche al servizio",
+                "text": "Continuiamo a migliorare Collectify, quindi alcune funzioni possono cambiare o essere rimosse. Possiamo sospendere il servizio per manutenzione o quando è necessario."
+            },
+            "termination": {
+                "title": "Chiudere l’account",
+                "text": "Puoi eliminare il tuo account in qualsiasi momento nelle <settings>Impostazioni</settings>; i tuoi dati vengono poi eliminati come descritto nell’<privacy>Informativa sulla privacy</privacy>. Possiamo sospendere o chiudere gli account che violano questi termini in modo grave o ripetuto."
+            },
+            "disclaimer": {
+                "title": "Nessuna garanzia",
+                "text": "Collectify è fornito «così com’è». Ci impegniamo perché sia disponibile e sicuro, ma non possiamo promettere che lo sia sempre o che sia privo di errori. I contenuti sono creati dagli utenti e non li approviamo."
+            },
+            "liability": {
+                "title": "Responsabilità",
+                "text": "Nei limiti consentiti dalla legge, non siamo responsabili per danni indiretti o consequenziali, né per danni causati da contenuti o azioni di altri utenti. Nulla in questi termini limita la responsabilità che la legge non consente di limitare, né i tuoi diritti di consumatore."
+            },
+            "changes": {
+                "title": "Modifiche a questi termini",
+                "text": "Se modifichiamo questi termini, aggiorniamo la data in alto. Ti informeremo delle modifiche importanti prima che entrino in vigore; se continui a usare Collectify dopo, si applicano i nuovi termini."
+            },
+            "law": {
+                "title": "Legge applicabile",
+                "text": "Questi termini sono regolati dalla legge del paese in cui ha sede il gestore di Collectify. Se sei un consumatore, conservi anche la tutela delle norme imperative del paese in cui vivi.",
+                "country": "Questi termini sono regolati dalla legge di {country}. Se sei un consumatore, conservi anche la tutela delle norme imperative del paese in cui vivi."
+            },
+            "contact": {
+                "title": "Contatti",
+                "text": "Per domande su questi termini, consulta le <legal>Note legali</legal>.",
+                "email": "Per domande su questi termini, scrivi a <mail>{email}</mail>."
+            }
+        }
+    },
+    "cookiePolicy": {
+        "title": "Cookie policy",
+        "intro": "Collectify usa solo i cookie e lo spazio di archiviazione del browser necessari per funzionare e ricordare le tue scelte. Non ci sono cookie pubblicitari o di tracciamento e nulla viene condiviso con inserzionisti.",
+        "listTitle": "Cosa salviamo nel tuo browser",
+        "columns": {
+            "name": "Nome",
+            "type": "Tipo",
+            "purpose": "Finalità",
+            "duration": "Durata"
+        },
+        "types": {
+            "cookie": "Cookie",
+            "localStorage": "Archiviazione locale",
+            "sessionStorage": "Archiviazione di sessione"
+        },
+        "purposes": {
+            "session": "Ti mantiene connesso. Non leggibile dagli script.",
+            "locale": "Ricorda la lingua dell’interfaccia.",
+            "oauth": "Protegge l’accesso con Google o GitHub e ti riporta alla pagina in cui eri.",
+            "theme": "Ricorda il tema di colori.",
+            "peopleWidget": "Ricorda se hai nascosto «Persone che potresti conoscere».",
+            "recentSearches": "Le tue ricerche recenti, solo su questo dispositivo.",
+            "consent": "Ricorda la tua scelta sui cookie.",
+            "pendingIntent": "Completa un mi piace, un salvataggio o un follow iniziato prima dell’accesso.",
+            "emailBanner": "Nasconde il promemoria di conferma email finché non chiudi il browser."
+        },
+        "durations": {
+            "days14": "14 giorni",
+            "year": "1 anno",
+            "minutes10": "10 minuti",
+            "minutes30": "30 minuti",
+            "untilCleared": "Finché non lo cancelli",
+            "session": "Fino alla chiusura del browser"
+        },
+        "consentTitle": "Perché non chiediamo il consenso",
+        "consentText": "Sono tutti strettamente necessari per fornire il servizio che hai richiesto o ricordare una tua scelta, quindi la legge non richiede il tuo consenso. Se un giorno aggiungeremo cookie facoltativi, come quelli di analisi, te lo chiederemo prima e resteranno disattivati senza il tuo sì.",
+        "manageTitle": "Gestire i cookie",
+        "manageText": "Puoi eliminare cookie e dati del sito in qualsiasi momento dalle impostazioni del browser; verrai disconnesso e le preferenze verranno ripristinate. Puoi anche rivedere le tue scelte nelle impostazioni dei cookie."
+    },
+    "legalNotice": {
+        "title": "Note legali",
+        "subtitle": "Chi gestisce Collectify e come contattarci.",
+        "operatorTitle": "Gestore",
+        "email": "Email",
+        "country": "Paese",
+        "documentsTitle": "Informative",
+        "documents": {
+            "terms": "Termini di servizio",
+            "privacy": "Informativa sulla privacy",
+            "cookies": "Cookie policy"
+        },
+        "reportTitle": "Segnalare contenuti",
+        "reportText": "Per segnalare una collezione, un commento o un account, usa il pulsante di segnalazione accanto. I moderatori esaminano le segnalazioni il prima possibile."
+    },
+    "consent": {
+        "label": "Avviso sui cookie",
+        "infoText": "Usiamo solo cookie essenziali per mantenerti connesso e ricordare le tue impostazioni. Niente pubblicità, niente tracciamento. <policy>Cookie policy</policy>",
+        "askText": "Usiamo cookie essenziali per far funzionare Collectify e, se sei d’accordo, cookie di analisi per capire come viene usato. Puoi cambiare idea in qualsiasi momento. <policy>Cookie policy</policy>",
+        "ok": "Ho capito",
+        "acceptAll": "Accetta tutti",
+        "rejectAll": "Rifiuta tutti",
+        "customize": "Personalizza",
+        "settingsTitle": "Impostazioni cookie",
+        "categories": {
+            "necessary": {
+                "title": "Essenziali (sempre attivi)",
+                "description": "Servono per l’accesso, la sicurezza e le tue impostazioni."
+            },
+            "analytics": {
+                "title": "Analisi",
+                "description": "Ci aiutano a capire quali funzioni vengono usate, senza pubblicità."
+            }
+        },
+        "details": "I dettagli sono nella <policy>Cookie policy</policy>.",
+        "cancel": "Annulla",
+        "save": "Salva le scelte"
     }
 }

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
 import { json, readBody, route, unauthorized } from '@/shared/server/http';
 import { enforceRateLimit } from '@/shared/server/rateLimit';
 import { clearSessionCookie } from '@/entities/session/server/session';
@@ -28,8 +28,12 @@ export const DELETE = route(async (req) => {
     await enforceRateLimit(req, 'auth', viewer.userId);
 
     const { confirmation } = await readBody(req, deleteAccountSchema);
-    await deleteOwnAccount(viewer.userId, confirmation);
+    const deleteUploads = await deleteOwnAccount(viewer.userId, confirmation);
     await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
+
+    after(() =>
+        deleteUploads().catch((error) => console.error('[account] uploads not deleted:', error)),
+    );
 
     const res = new NextResponse(null, { status: 204 });
     clearSessionCookie(res);

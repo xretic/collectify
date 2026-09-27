@@ -65,3 +65,9 @@
         padding: 18px 14px;
     }
 }
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}

@@ -119,7 +119,8 @@
         "tagNameMin": "至少 {tagNameMin} 个字符。",
         "tagNameChars": "字母、数字、空格和 - & + . ' #",
         "verdictRequiresGuilty": "处罚和删除内容需要“违规”判定。",
-        "duplicateRequiresOriginal": "“重复”判定需要选择原始举报。"
+        "duplicateRequiresOriginal": "“重复”判定需要选择原始举报。",
+        "ageConfirm": "你必须年满 18 岁才能使用 Collectify。"
     },
     "meta": {
         "description": "发现、保存和分享书籍、游戏、电影、地点和装备的收藏集。关注品味出众的人，在 Collectify 免费创建你自己的收藏集。",
@@ -141,15 +142,21 @@
             "userNotFound": "未找到用户",
             "forgotPassword": "重置密码",
             "resetPassword": "新密码",
-            "verifyEmail": "确认邮箱"
+            "verifyEmail": "确认邮箱",
+            "terms": "服务条款",
+            "cookies": "Cookie 政策",
+            "legalNotice": "法律信息"
         },
         "title": "Collectify - 由品味出众的人整理的各类收藏集",
         "keywords": "收藏集, 清单, 排行榜, 书单, 游戏收藏, 片单, 旅行灵感, 心愿单, 灵感板, Pinterest 替代",
         "categoryTitle": "最佳{category}收藏集",
-        "categoryDescription": "发现由真实用户整理的最佳{category}收藏集。保存你喜欢的内容，关注收藏家，并在 Collectify 分享你自己的收藏集。",
+        "categoryDescription": "在 Collectify 发现最佳{category}收藏集。保存喜欢的内容，关注收藏家，并分享你自己的收藏集。",
         "tagTitle": "#{tag} 收藏集",
         "tagDescription": "由 Collectify 用户整理的 #{tag} 标签收藏集。保存、关注并分享你喜爱的内容。",
-        "collectionLead": "{name} 整理的{category}收藏集，共 {count} 个条目。"
+        "collectionLead": "{name} 整理的{category}收藏集，共 {count} 个条目。",
+        "termsDescription": "Collectify 使用规则：你的账号、你的内容以及禁止事项。",
+        "cookiesDescription": "Collectify 使用哪些 Cookie 和浏览器存储，以及原因。",
+        "legalNoticeDescription": "Collectify 的运营者及联系方式。"
     },
     "languages": {
         "label": "语言"
@@ -211,7 +218,12 @@
         "hidePassword": "隐藏密码",
         "createAccount": "创建账号",
         "loginTitle": "欢迎回来",
-        "registerTitle": "加入 Collectify"
+        "registerTitle": "加入 Collectify",
+        "ageConfirm": "我已年满 18 岁",
+        "consent": {
+            "form": "创建账号即表示你同意<terms>服务条款</terms>和<privacy>隐私政策</privacy>。",
+            "providers": "使用 Google 或 GitHub 继续，即表示你确认已年满 18 岁，并同意<terms>服务条款</terms>和<privacy>隐私政策</privacy>。"
+        }
     },
     "common": {
         "cancel": "取消",
@@ -289,6 +301,11 @@
             "yourPassword": "你的密码",
             "typeUsername": "输入“{username}”以确认",
             "deleteForever": "永久删除"
+        },
+        "data": {
+            "title": "你的数据",
+            "description": "下载 Collectify 保存的关于你的全部数据副本，或查看你的 Cookie 选择。",
+            "download": "下载我的数据"
         }
     },
     "dateField": {
@@ -885,7 +902,11 @@
         "search": "搜索"
     },
     "footer": {
-        "privacyPolicy": "隐私政策"
+        "privacyPolicy": "隐私政策",
+        "terms": "条款",
+        "cookies": "Cookie",
+        "legalNotice": "法律信息",
+        "legal": "法律信息"
     },
     "people": {
         "mutual": "{count} 位共同好友",
@@ -1007,11 +1028,11 @@
         },
         "age": {
             "title": "最低年龄",
-            "text": "Collectify 面向 18 岁及以上的用户。无法保存显示你未满 18 岁的出生日期。如果我们得知某个账号属于未满 18 岁的人，可能会暂停该账号并删除其数据。"
+            "text": "Collectify 面向 18 岁及以上的用户，你在注册时确认年龄。无法保存显示你未满 18 岁的出生日期。如果我们得知某个账号属于未满 18 岁的人，可能会暂停该账号并删除其数据。"
         },
         "cookies": {
             "title": "Cookie",
-            "text": "我们使用一个功能性会话 Cookie 保持你的登录状态，一个功能性 Cookie 记住你的界面语言，以及在你通过 GitHub 或 Google 登录时使用的短期安全 Cookie（约 10 分钟）。你选择的主题保存在浏览器的本地存储中。我们不使用分析、跟踪或营销类 Cookie。"
+            "text": "我们只使用保持登录和记住设置所需的 Cookie 和浏览器存储，不使用分析、跟踪或广告 Cookie。完整列表见<cookies>Cookie 政策</cookies>。"
         },
         "moderation": {
             "title": "举报与管理",
@@ -1021,10 +1042,46 @@
             "title": "第三方",
             "text": "我们不会出于广告或营销目的向第三方出售或分享你的数据。如果你选择通过 GitHub 或 Google 注册或登录，这些服务商会与我们共享基本的个人资料信息（例如你的邮箱），以便创建你的账号。"
         },
-        "updated": "最后更新：{date}",
-        "storage": {
-            "title": "你的数据存储在哪里",
-            "text": "应用托管在 Vercel 上。账号和内容数据存储在我们的数据库中。上传的图片（头像、横幅、条目图片）存储在我们的媒体托管服务商 Uploadcare 处。账号相关邮件（重置密码和确认邮箱的链接）通过我们的邮件服务商 Resend 发送，Resend 仅为此目的获取你的邮箱地址和名字。"
+        "controller": {
+            "title": "谁负责",
+            "text": "{operator} 运营 Collectify，并对你的个人数据负责（“数据控制者”）。",
+            "email": "你可以通过 <mail>{email}</mail> 联系我们。",
+            "noEmail": "我们的联系方式见<legal>法律信息</legal>页面。"
+        },
+        "legalBases": {
+            "title": "法律依据",
+            "text": "我们处理你的数据是为了提供你注册的服务（履行合同，GDPR 第 6(1)(b) 条）：你的账号、内容、消息和账号邮件。安全、防止滥用、内容审核、请求限制和推荐基于我们运营安全且相关服务的正当利益（GDPR 第 6(1)(f) 条）。可选的个人资料信息是因为你选择添加才使用，你可以随时删除。"
+        },
+        "processors": {
+            "title": "服务提供商",
+            "intro": "我们使用以下服务商来运营 Collectify。它们仅代表我们处理数据：",
+            "items": {
+                "hosting": "<strong>Vercel</strong> - 网站和 API 托管",
+                "database": "<strong>Neon</strong> - 托管在欧盟（法兰克福）的数据库",
+                "images": "<strong>Uploadcare</strong> - 上传图片的存储和分发",
+                "email": "<strong>Resend</strong> - 账号邮件（重置密码、确认邮箱）",
+                "realtime": "<strong>Pusher</strong> - 消息和通知的实时推送",
+                "cache": "<strong>Redis</strong> - 短期缓存和限流计数",
+                "signIn": "<strong>Google</strong> 和 <strong>GitHub</strong> - 登录，仅在你选择使用时"
+            },
+            "transfers": "其中部分服务商在欧洲经济区以外处理数据，例如在美国。"
+        },
+        "externalImages": {
+            "title": "来自其他网站的图片",
+            "text": "收藏集可能会显示托管在其他网站上的图片，例如封面。当浏览器加载这些图片时，这些网站会像访问任何网页一样获得你的 IP 地址和浏览器信息。"
+        },
+        "retention": {
+            "title": "数据保存多久",
+            "text": "只要你的账号存在，我们就会保存你的数据。会话 14 天后过期，重置密码链接 1 小时后过期，确认链接 3 天后过期。用于限流的 IP 地址最多保存一小时。删除账号后，你的个人资料、收藏集、评论、点赞、关注、看板和聊天会立即删除，你上传的图片也会被删除；审核日志只保留你的账号 ID 和用户名。",
+            "textKeepsUploads": "只要你的账号存在，我们就会保存你的数据。会话 14 天后过期，重置密码链接 1 小时后过期，确认链接 3 天后过期。用于限流的 IP 地址最多保存一小时。删除账号后，你的个人资料、收藏集、评论、点赞、关注、看板和聊天会立即删除；审核日志只保留你的账号 ID 和用户名。你上传的图片可能会保留在我们的图片服务商处，直到我们将其删除；如果你希望尽快删除，请联系我们。"
+        },
+        "rights": {
+            "title": "你的权利",
+            "text": "你可以在<settings>设置</settings>中下载数据副本、删除账号，并在个人资料中更正你的数据。你也可以反对基于我们正当利益的处理，并向数据保护机构投诉。其他事项请通过上方的联系方式联系我们。"
+        },
+        "changes": {
+            "title": "政策变更",
+            "text": "如果我们修改本政策，会更新顶部的日期。重大变更会在生效前通知你。"
         }
     },
     "errorPage": {
@@ -1119,5 +1176,153 @@
         },
         "browse": "按分类浏览",
         "categoriesLabel": "分类"
+    },
+    "legal": {
+        "updated": "第 {version} 版 · 最后更新：{date}"
+    },
+    "terms": {
+        "title": "服务条款",
+        "intro": "本条款是你与 {operator}（“我们”）之间关于使用 Collectify 的协议。创建账号或使用本网站即表示你接受本条款。另请阅读我们的<privacy>隐私政策</privacy>，了解我们如何处理你的数据。",
+        "sections": {
+            "eligibility": {
+                "title": "谁可以使用 Collectify",
+                "text": "你必须年满 18 岁，并在注册时确认。如果我们封禁了你，你不得使用 Collectify，也不得自动创建账号。"
+            },
+            "account": {
+                "title": "你的账号",
+                "text": "请妥善保管密码并保持邮箱地址最新。你需要对账号下发生的一切负责；如果你认为他人能访问你的账号，请立即告诉我们。"
+            },
+            "content": {
+                "title": "你的内容",
+                "text": "你添加的收藏集、条目、评论、图片和消息仍归你所有。为了提供服务，在内容保留在服务中期间，你授予我们在全球范围内非独占、免费的许可，以在 Collectify 及其链接预览中托管、存储、复制和展示你的内容。当你删除内容时，许可随之终止，但因审核、法律原因需要保留的副本，以及在备份中保留有限时间的副本除外。"
+            },
+            "rights": {
+                "title": "你可以发布什么",
+                "text": "只发布你有权分享的内容。添加来自其他网站的图片或链接时，请确认这是被允许的，未经他人同意不要发布其个人信息。"
+            },
+            "conduct": {
+                "title": "禁止的行为",
+                "text": "不得发布或发送任何违法内容；骚扰、威胁或仇恨言论；涉及未成年人的色情内容；垃圾信息、诈骗或故意误导的内容；恶意软件；或侵犯他人权利的内容。不得试图破坏、过载、批量抓取 Collectify 或绕过其安全措施。"
+            },
+            "moderation": {
+                "title": "内容审核",
+                "text": "我们可能会审查被举报的内容，删除违反本条款或法律的内容，并临时或永久限制或封禁账号。如果我们限制了你的账号，会在应用内通知你。如果你认为我们弄错了，请联系我们。"
+            },
+            "copyright": {
+                "title": "版权投诉",
+                "text": "如果你认为 Collectify 上的内容侵犯了你的权利，请在应用内举报，或附上内容链接及你的权利说明联系我们。明显侵权的内容我们会删除。"
+            },
+            "price": {
+                "title": "价格",
+                "text": "Collectify 免费使用。没有付费套餐、购买项目或隐藏费用，因此也不存在退款。如果将来我们添加付费功能，会在你付款前展示价格和退款条款。"
+            },
+            "service": {
+                "title": "服务变更",
+                "text": "我们会持续改进 Collectify，因此功能可能会变化或下线。我们可能会因维护或必要时暂停服务。"
+            },
+            "termination": {
+                "title": "注销账号",
+                "text": "你可以随时在<settings>设置</settings>中删除账号；你的数据随后会按照<privacy>隐私政策</privacy>所述删除。对于严重或多次违反本条款的账号，我们可能会暂停或关闭。"
+            },
+            "disclaimer": {
+                "title": "免责声明",
+                "text": "Collectify 按“现状”提供。我们努力保持其可用和安全，但无法保证始终可用或没有错误。内容由用户创建，我们不为其背书。"
+            },
+            "liability": {
+                "title": "责任",
+                "text": "在法律允许的范围内，我们不对间接或后果性损失负责，也不对其他用户的内容或行为造成的损失负责。本条款中的任何内容都不限制法律不允许限制的责任，也不限制你作为消费者的权利。"
+            },
+            "changes": {
+                "title": "条款变更",
+                "text": "如果我们修改本条款，会更新上方的日期。重大变更会在生效前通知你；此后如继续使用 Collectify，即适用新条款。"
+            },
+            "law": {
+                "title": "适用法律",
+                "text": "本条款受 Collectify 运营者所在国家的法律管辖。如果你是消费者，你仍享有你居住国强制性法律的保护。",
+                "country": "本条款受 {country} 法律管辖。如果你是消费者，你仍享有你居住国强制性法律的保护。"
+            },
+            "contact": {
+                "title": "联系我们",
+                "text": "如对本条款有疑问，请查看<legal>法律信息</legal>页面。",
+                "email": "如对本条款有疑问，请发送邮件至 <mail>{email}</mail>。"
+            }
+        }
+    },
+    "cookiePolicy": {
+        "title": "Cookie 政策",
+        "intro": "Collectify 只使用运行所需以及记住你的选择所需的 Cookie 和浏览器存储。没有广告或跟踪 Cookie，也不会与广告商共享任何信息。",
+        "listTitle": "我们在你的浏览器中存储的内容",
+        "columns": {
+            "name": "名称",
+            "type": "类型",
+            "purpose": "用途",
+            "duration": "保存时长"
+        },
+        "types": {
+            "cookie": "Cookie",
+            "localStorage": "本地存储",
+            "sessionStorage": "会话存储"
+        },
+        "purposes": {
+            "session": "保持你的登录状态。脚本无法读取。",
+            "locale": "记住界面语言。",
+            "oauth": "保护通过 Google 或 GitHub 登录，并带你回到原来的页面。",
+            "theme": "记住你的配色主题。",
+            "peopleWidget": "记住你是否隐藏了“你可能认识的人”。",
+            "recentSearches": "你最近的搜索，仅保存在此设备上。",
+            "consent": "记住你的 Cookie 选择。",
+            "pendingIntent": "完成你在登录前开始的点赞、保存或关注。",
+            "emailBanner": "在关闭浏览器前隐藏邮箱确认提醒。"
+        },
+        "durations": {
+            "days14": "14 天",
+            "year": "1 年",
+            "minutes10": "10 分钟",
+            "minutes30": "30 分钟",
+            "untilCleared": "直到你清除",
+            "session": "直到关闭浏览器"
+        },
+        "consentTitle": "为什么不征求同意",
+        "consentText": "以上所有内容都是提供你所请求的服务或记住你的选择所严格必需的，因此法律不要求征得你的同意。如果将来我们添加分析类等可选 Cookie，会先征求你的意见，在你同意之前保持关闭。",
+        "manageTitle": "管理 Cookie",
+        "manageText": "你可以随时在浏览器设置中删除 Cookie 和网站数据；你将被登出，偏好设置也会重置。你也可以在 Cookie 设置中查看你的选择。"
+    },
+    "legalNotice": {
+        "title": "法律信息",
+        "subtitle": "Collectify 的运营者及联系方式。",
+        "operatorTitle": "运营者",
+        "email": "邮箱",
+        "country": "国家",
+        "documentsTitle": "政策",
+        "documents": {
+            "terms": "服务条款",
+            "privacy": "隐私政策",
+            "cookies": "Cookie 政策"
+        },
+        "reportTitle": "举报内容",
+        "reportText": "要举报收藏集、评论或账号，请使用旁边的举报按钮。审核员会尽快处理举报。"
+    },
+    "consent": {
+        "label": "Cookie 提示",
+        "infoText": "我们只使用必要的 Cookie 来保持你的登录状态并记住你的设置。无广告，无跟踪。<policy>Cookie 政策</policy>",
+        "askText": "我们使用必要的 Cookie 来运行 Collectify，并在你同意后使用分析 Cookie 了解使用情况。你可以随时改变主意。<policy>Cookie 政策</policy>",
+        "ok": "知道了",
+        "acceptAll": "全部接受",
+        "rejectAll": "全部拒绝",
+        "customize": "自定义",
+        "settingsTitle": "Cookie 设置",
+        "categories": {
+            "necessary": {
+                "title": "必要（始终开启）",
+                "description": "用于登录、安全和记住你的设置。"
+            },
+            "analytics": {
+                "title": "分析",
+                "description": "帮助我们了解哪些功能被使用，不涉及广告。"
+            }
+        },
+        "details": "详情请见<policy>Cookie 政策</policy>。",
+        "cancel": "取消",
+        "save": "保存选择"
     }
 }

@@ -22,6 +22,8 @@ export const registerSchema = z.object({
     username: usernameSchema,
     password: passwordSchema,
     locale: localeSchema.optional(),
+    /** The "I am 18 or older" box; signing up also accepts the Terms and Privacy Policy. */
+    ageConfirmed: z.boolean().refine((value) => value, 'validation.ageConfirm'),
 });
 
 export const forgotPasswordSchema = z.object({ email: emailSchema });

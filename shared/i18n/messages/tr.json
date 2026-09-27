@@ -119,7 +119,8 @@
         "tagNameMin": "En az {tagNameMin} karakter.",
         "tagNameChars": "Harf, rakam, boşluk ve - & + . ' #",
         "verdictRequiresGuilty": "Ceza ve içerik kaldırma için “suçlu” kararı gerekir.",
-        "duplicateRequiresOriginal": "“Tekrar” kararı için asıl şikâyeti seçin."
+        "duplicateRequiresOriginal": "“Tekrar” kararı için asıl şikâyeti seçin.",
+        "ageConfirm": "Collectify’ı kullanmak için 18 yaşında veya daha büyük olmalısınız."
     },
     "meta": {
         "description": "Kitap, oyun, film, mekân ve ekipman koleksiyonlarını keşfedin, kaydedin ve paylaşın. Zevk sahibi insanları takip edin ve Collectify’da ücretsiz olarak kendi koleksiyonlarınızı oluşturun.",
@@ -141,15 +142,21 @@
             "userNotFound": "Kullanıcı bulunamadı",
             "forgotPassword": "Şifre sıfırlama",
             "resetPassword": "Yeni şifre",
-            "verifyEmail": "E-posta doğrulama"
+            "verifyEmail": "E-posta doğrulama",
+            "terms": "Hizmet Şartları",
+            "cookies": "Çerez Politikası",
+            "legalNotice": "Yasal bilgiler"
         },
         "title": "Collectify - Zevk sahibi insanlardan her şeyin koleksiyonu",
         "keywords": "koleksiyonlar, listeler, en iyiler, kitap listeleri, oyun koleksiyonları, film listeleri, seyahat fikirleri, istek listesi, moodboard, Pinterest alternatifi",
         "categoryTitle": "En iyi {category} koleksiyonları",
-        "categoryDescription": "Gerçek insanların hazırladığı en iyi {category} koleksiyonlarını keşfedin. Favorilerinizi kaydedin, koleksiyoncuları takip edin ve kendinizinkini Collectify’da paylaşın.",
+        "categoryDescription": "Collectify’daki en iyi {category} koleksiyonlarını keşfedin. Favorilerinizi kaydedin, koleksiyoncuları takip edin ve kendinizinkini paylaşın.",
         "tagTitle": "#{tag} koleksiyonları",
         "tagDescription": "Collectify’daki insanların hazırladığı #{tag} etiketli koleksiyonlar. Sevdiklerinizi kaydedin, takip edin ve paylaşın.",
-        "collectionLead": "{name} tarafından {category} kategorisinde {count} öğe."
+        "collectionLead": "{name} tarafından {category} kategorisinde {count} öğe.",
+        "termsDescription": "Collectify kullanım kuralları: hesabınız, içeriğiniz ve yasak olanlar.",
+        "cookiesDescription": "Collectify’ın hangi çerezleri ve tarayıcı depolamasını neden kullandığı.",
+        "legalNoticeDescription": "Collectify’ı kimin işlettiği ve bize nasıl ulaşabileceğiniz."
     },
     "languages": {
         "label": "Dil"
@@ -211,7 +218,12 @@
         "hidePassword": "Şifreyi gizle",
         "createAccount": "Hesap oluştur",
         "loginTitle": "Tekrar hoş geldiniz",
-        "registerTitle": "Collectify’a katılın"
+        "registerTitle": "Collectify’a katılın",
+        "ageConfirm": "18 yaşında veya daha büyüğüm",
+        "consent": {
+            "form": "Hesap oluşturarak <terms>Hizmet Şartları</terms>’nı ve <privacy>Gizlilik Politikası</privacy>’nı kabul etmiş olursunuz.",
+            "providers": "Google veya GitHub ile devam ederek 18 yaşında veya daha büyük olduğunuzu onaylar, <terms>Hizmet Şartları</terms>’nı ve <privacy>Gizlilik Politikası</privacy>’nı kabul edersiniz."
+        }
     },
     "common": {
         "cancel": "İptal",
@@ -289,6 +301,11 @@
             "yourPassword": "Şifreniz",
             "typeUsername": "Onaylamak için “{username}” yazın",
             "deleteForever": "Kalıcı olarak sil"
+        },
+        "data": {
+            "title": "Verileriniz",
+            "description": "Collectify’ın sizin hakkınızda sakladığı her şeyin bir kopyasını indirin veya çerez tercihlerinizi gözden geçirin.",
+            "download": "Verilerimi indir"
         }
     },
     "dateField": {
@@ -885,7 +902,11 @@
         "search": "Ara"
     },
     "footer": {
-        "privacyPolicy": "Gizlilik Politikası"
+        "privacyPolicy": "Gizlilik Politikası",
+        "terms": "Şartlar",
+        "cookies": "Çerezler",
+        "legalNotice": "Yasal bilgiler",
+        "legal": "Yasal"
     },
     "people": {
         "mutual": "{count} ortak",
@@ -1007,11 +1028,11 @@
         },
         "age": {
             "title": "Asgari yaş",
-            "text": "Collectify 18 yaş ve üzeri kişiler içindir. 18 yaşından küçük olduğunuzu gösteren bir doğum tarihi kaydedilemez. Bir hesabın 18 yaşından küçük birine ait olduğunu öğrenirsek hesabı askıya alıp verilerini silebiliriz."
+            "text": "Collectify 18 yaş ve üzerindeki kişiler içindir ve yaşınızı kayıt sırasında onaylarsınız. 18 yaşından küçük olduğunuzu gösteren bir doğum tarihi kaydedilemez. Bir hesabın 18 yaşından küçük birine ait olduğunu öğrenirsek hesabı askıya alabilir ve verilerini silebiliriz."
         },
         "cookies": {
             "title": "Çerezler",
-            "text": "Oturumunuzu açık tutmak için işlevsel bir oturum çerezi, arayüz dilinizi hatırlayan işlevsel bir çerez ve GitHub veya Google ile giriş yaparken kısa ömürlü bir güvenlik çerezi (yaklaşık 10 dakika) kullanırız. Seçtiğiniz tema tarayıcınızın yerel depolamasına kaydedilir. Analiz, izleme veya pazarlama çerezleri kullanmayız."
+            "text": "Yalnızca oturumunuzu açık tutmak ve ayarlarınızı hatırlamak için gereken çerezleri ve tarayıcı depolamasını kullanıyoruz - analiz, izleme veya reklam çerezi yok. Tam liste <cookies>Çerez Politikası</cookies>’ndadır."
         },
         "moderation": {
             "title": "Şikâyetler ve moderasyon",
@@ -1021,10 +1042,46 @@
             "title": "Üçüncü taraflar",
             "text": "Verilerinizi reklam veya pazarlama amacıyla üçüncü taraflara satmayız ya da onlarla paylaşmayız. GitHub veya Google ile kaydolur ya da giriş yaparsanız bu sağlayıcılar hesabınızı oluşturmamız için temel profil bilgilerinizi (örneğin e-postanızı) bizimle paylaşır."
         },
-        "updated": "Son güncelleme: {date}",
-        "storage": {
-            "title": "Verileriniz nerede saklanıyor",
-            "text": "Uygulama Vercel üzerinde barındırılır. Hesap ve içerik verileri veritabanımızda saklanır. Yüklenen görseller (avatarlar, afişler, öğe görselleri) medya barındırma sağlayıcımız Uploadcare’de saklanır. Hesap e-postaları (şifre sıfırlama ve e-posta doğrulama bağlantıları) e-posta sağlayıcımız Resend üzerinden gönderilir; Resend yalnızca bu amaçla e-posta adresinizi ve adınızı alır."
+        "controller": {
+            "title": "Kim sorumlu",
+            "text": "{operator}, Collectify’ı işletir ve kişisel verilerinizden sorumludur («veri sorumlusu»).",
+            "email": "Bize <mail>{email}</mail> adresinden ulaşabilirsiniz.",
+            "noEmail": "İletişim bilgilerimiz <legal>Yasal bilgiler</legal> sayfasındadır."
+        },
+        "legalBases": {
+            "title": "Hukuki dayanaklar",
+            "text": "Verilerinizi kaydolduğunuz hizmeti sunmak için işleriz (sözleşmenin ifası, GDPR md. 6/1-b): hesabınız, içeriğiniz, mesajlar ve hesap e-postaları. Güvenlik, kötüye kullanımın önlenmesi, moderasyon, istek sınırları ve öneriler, güvenli ve ilgili bir hizmet sunma konusundaki meşru menfaatimize dayanır (GDPR md. 6/1-f). İsteğe bağlı profil bilgilerini siz eklemeyi seçtiğiniz için kullanırız ve bunları istediğiniz zaman kaldırabilirsiniz."
+        },
+        "processors": {
+            "title": "Hizmet sağlayıcılar",
+            "intro": "Collectify’ı çalıştırmak için bu sağlayıcıları kullanıyoruz. Verileri yalnızca bizim adımıza işlerler:",
+            "items": {
+                "hosting": "<strong>Vercel</strong> - web sitesi ve API barındırma",
+                "database": "<strong>Neon</strong> - AB’de (Frankfurt) barındırılan veritabanı",
+                "images": "<strong>Uploadcare</strong> - yüklenen görsellerin saklanması ve sunulması",
+                "email": "<strong>Resend</strong> - hesap e-postaları (şifre sıfırlama, e-posta doğrulama)",
+                "realtime": "<strong>Pusher</strong> - mesajların ve bildirimlerin gerçek zamanlı iletimi",
+                "cache": "<strong>Redis</strong> - kısa ömürlü önbellek ve sınır sayaçları",
+                "signIn": "<strong>Google</strong> ve <strong>GitHub</strong> - giriş, yalnızca bunları seçerseniz"
+            },
+            "transfers": "Bu sağlayıcılardan bazıları verileri Avrupa Ekonomik Alanı dışında, örneğin Amerika Birleşik Devletleri’nde işler."
+        },
+        "externalImages": {
+            "title": "Başka sitelerdeki görseller",
+            "text": "Koleksiyonlar, kapak görselleri gibi başka sitelerde barındırılan görselleri gösterebilir. Tarayıcınız bunları yüklediğinde, her web sayfasında olduğu gibi bu siteler IP adresinizi ve tarayıcı bilgilerinizi alır."
+        },
+        "retention": {
+            "title": "Verileri ne kadar süre saklıyoruz",
+            "text": "Verilerinizi hesabınız var olduğu sürece saklarız. Oturumlar 14 gün, şifre sıfırlama bağlantıları 1 saat, doğrulama bağlantıları 3 gün sonra sona erer. İstek sınırlaması için kullanılan IP adresleri en fazla bir saat saklanır. Hesabınızı sildiğinizde profiliniz, koleksiyonlarınız, yorumlarınız, beğenileriniz, takipleriniz, panolarınız ve sohbetleriniz hemen silinir; yüklediğiniz görseller de silinir; moderasyon kaydı yalnızca hesap kimliğinizi ve kullanıcı adınızı tutar.",
+            "textKeepsUploads": "Verilerinizi hesabınız var olduğu sürece saklarız. Oturumlar 14 gün, şifre sıfırlama bağlantıları 1 saat, doğrulama bağlantıları 3 gün sonra sona erer. İstek sınırlaması için kullanılan IP adresleri en fazla bir saat saklanır. Hesabınızı sildiğinizde profiliniz, koleksiyonlarınız, yorumlarınız, beğenileriniz, takipleriniz, panolarınız ve sohbetleriniz hemen silinir; moderasyon kaydı yalnızca hesap kimliğinizi ve kullanıcı adınızı tutar. Yüklediğiniz görseller biz kaldırana kadar görsel sağlayıcımızda kalabilir; daha erken kaldırılmasını istiyorsanız bizimle iletişime geçin."
+        },
+        "rights": {
+            "title": "Haklarınız",
+            "text": "Verilerinizin bir kopyasını indirebilir ve hesabınızı <settings>Ayarlar</settings>’dan silebilir, verilerinizi profilinizden düzeltebilirsiniz. Meşru menfaatimize dayanan işlemeye itiraz edebilir ve veri koruma otoritesine şikâyette bulunabilirsiniz. Diğer her konu için yukarıdaki bilgilerle bize ulaşın."
+        },
+        "changes": {
+            "title": "Bu politikadaki değişiklikler",
+            "text": "Bu politikayı değiştirirsek en üstteki tarihi güncelleriz. Önemli değişiklikleri yürürlüğe girmeden önce size bildiririz."
         }
     },
     "errorPage": {
@@ -1119,5 +1176,153 @@
         },
         "browse": "Kategoriye göre göz at",
         "categoriesLabel": "kategoriler"
+    },
+    "legal": {
+        "updated": "Sürüm {version} · son güncelleme: {date}"
+    },
+    "terms": {
+        "title": "Hizmet Şartları",
+        "intro": "Bu şartlar, Collectify’ın kullanımına ilişkin sizinle {operator} («biz») arasındaki sözleşmedir. Hesap oluşturarak veya siteyi kullanarak bu şartları kabul edersiniz. Verilerinizi nasıl işlediğimizi açıklayan <privacy>Gizlilik Politikamızı</privacy> da okuyun.",
+        "sections": {
+            "eligibility": {
+                "title": "Collectify’ı kimler kullanabilir",
+                "text": "En az 18 yaşında olmalı ve bunu kayıt sırasında onaylamalısınız. Sizi yasakladıysak Collectify’ı kullanamaz, otomatik olarak hesap oluşturamazsınız."
+            },
+            "account": {
+                "title": "Hesabınız",
+                "text": "Şifrenizi güvende tutun ve e-posta adresinizi güncel tutun. Hesabınızda olanlardan siz sorumlusunuz; başka birinin hesabınıza eriştiğini düşünüyorsanız hemen bize bildirin."
+            },
+            "content": {
+                "title": "İçeriğiniz",
+                "text": "Eklediğiniz koleksiyonlar, öğeler, yorumlar, görseller ve mesajlar size ait kalır. Hizmeti sunabilmemiz için içeriğinizi hizmette kaldığı sürece Collectify’da ve bağlantı önizlemelerinde barındırmamız, saklamamız, çoğaltmamız ve göstermemiz için bize dünya çapında, münhasır olmayan, ücretsiz bir lisans verirsiniz. Lisans, içeriği sildiğinizde sona erer; moderasyon, yasal nedenler veya sınırlı bir süre yedeklerde tutmamız gereken kopyalar hariç."
+            },
+            "rights": {
+                "title": "Neler paylaşabilirsiniz",
+                "text": "Yalnızca paylaşma hakkınız olan içerikleri yayınlayın. Başka sitelerden görsel veya bağlantı eklerken buna izin verildiğinden emin olun ve başkalarının kişisel verilerini izinleri olmadan paylaşmayın."
+            },
+            "conduct": {
+                "title": "Neler yasak",
+                "text": "Yasa dışı hiçbir şey; taciz, tehdit veya nefret söylemi; reşit olmayanları içeren cinsel içerik; spam, dolandırıcılık veya kasıtlı yanıltıcı içerik; kötü amaçlı yazılım; ya da başkalarının haklarını ihlal eden içerik paylaşmayın veya göndermeyin. Collectify’ı bozmaya, aşırı yüklemeye, toplu veri çekmeye veya güvenliğini aşmaya çalışmayın."
+            },
+            "moderation": {
+                "title": "Moderasyon",
+                "text": "Bildirilen içerikleri inceleyebilir, bu şartları veya yasayı ihlal eden içerikleri kaldırabilir ve hesapları geçici ya da kalıcı olarak kısıtlayabilir veya yasaklayabiliriz. Hesabınızı kısıtladığımızda bunu uygulamada size bildiririz. Hata yaptığımızı düşünüyorsanız bizimle iletişime geçin."
+            },
+            "copyright": {
+                "title": "Telif hakkı şikâyetleri",
+                "text": "Collectify’daki bir içeriğin haklarınızı ihlal ettiğini düşünüyorsanız uygulamada bildirin veya içeriğin bağlantısı ve haklarınıza dair bilgilerle bizimle iletişime geçin. Açıkça ihlal eden içerikleri kaldırırız."
+            },
+            "price": {
+                "title": "Ücret",
+                "text": "Collectify ücretsizdir. Ücretli plan, satın alma veya gizli ücret yoktur; bu nedenle iade edilecek bir şey de yoktur. Bir gün ücretli özellikler eklersek fiyatı ve iade koşullarını ödeme yapmadan önce gösteririz."
+            },
+            "service": {
+                "title": "Hizmetteki değişiklikler",
+                "text": "Collectify’ı sürekli geliştiriyoruz; bu yüzden özellikler değişebilir veya kaldırılabilir. Bakım için veya gerektiğinde hizmeti duraklatabiliriz."
+            },
+            "termination": {
+                "title": "Hesabınızı kapatma",
+                "text": "Hesabınızı istediğiniz zaman <settings>Ayarlar</settings>’dan silebilirsiniz; verileriniz <privacy>Gizlilik Politikası</privacy>’nda açıklandığı şekilde silinir. Bu şartları ciddi veya tekrarlı şekilde ihlal eden hesapları askıya alabilir veya kapatabiliriz."
+            },
+            "disclaimer": {
+                "title": "Garanti yoktur",
+                "text": "Collectify «olduğu gibi» sunulur. Erişilebilir ve güvenli olması için çalışıyoruz, ancak her zaman erişilebilir veya hatasız olacağını vaat edemeyiz. İçerikler kullanıcılar tarafından oluşturulur ve bunları onaylamayız."
+            },
+            "liability": {
+                "title": "Sorumluluk",
+                "text": "Yasanın izin verdiği ölçüde, dolaylı veya sonuç olarak ortaya çıkan zararlardan ya da diğer kullanıcıların içerik veya eylemlerinden kaynaklanan zararlardan sorumlu değiliz. Bu şartlardaki hiçbir hüküm, yasanın sınırlanmasına izin vermediği sorumluluğu veya tüketici haklarınızı sınırlamaz."
+            },
+            "changes": {
+                "title": "Bu şartlardaki değişiklikler",
+                "text": "Bu şartları değiştirirsek yukarıdaki tarihi güncelleriz. Önemli değişiklikleri yürürlüğe girmeden önce size bildiririz; sonrasında Collectify’ı kullanmaya devam ederseniz yeni şartlar geçerli olur."
+            },
+            "law": {
+                "title": "Uygulanacak hukuk",
+                "text": "Bu şartlar, Collectify işletmecisinin kurulu olduğu ülkenin hukukuna tabidir. Tüketiciyseniz yaşadığınız ülkenin emredici hükümlerinin korumasından da yararlanmaya devam edersiniz.",
+                "country": "Bu şartlar {country} hukukuna tabidir. Tüketiciyseniz yaşadığınız ülkenin emredici hükümlerinin korumasından da yararlanmaya devam edersiniz."
+            },
+            "contact": {
+                "title": "İletişim",
+                "text": "Bu şartlarla ilgili sorularınız için <legal>Yasal bilgiler</legal> sayfasına bakın.",
+                "email": "Bu şartlarla ilgili sorularınız için <mail>{email}</mail> adresine yazın."
+            }
+        }
+    },
+    "cookiePolicy": {
+        "title": "Çerez Politikası",
+        "intro": "Collectify yalnızca çalışması ve seçimlerinizi hatırlaması için gereken çerezleri ve tarayıcı depolamasını kullanır. Reklam veya izleme çerezi yoktur ve reklamverenlerle hiçbir şey paylaşılmaz.",
+        "listTitle": "Tarayıcınızda neler saklıyoruz",
+        "columns": {
+            "name": "Ad",
+            "type": "Tür",
+            "purpose": "Amaç",
+            "duration": "Saklama süresi"
+        },
+        "types": {
+            "cookie": "Çerez",
+            "localStorage": "Yerel depolama",
+            "sessionStorage": "Oturum depolaması"
+        },
+        "purposes": {
+            "session": "Oturumunuzu açık tutar. Betikler tarafından okunamaz.",
+            "locale": "Arayüz dilini hatırlar.",
+            "oauth": "Google veya GitHub ile girişi korur ve sizi bulunduğunuz sayfaya geri getirir.",
+            "theme": "Renk temanızı hatırlar.",
+            "peopleWidget": "«Tanıyor olabileceğiniz kişiler» bölümünü gizleyip gizlemediğinizi hatırlar.",
+            "recentSearches": "Son aramalarınız, yalnızca bu cihazda.",
+            "consent": "Çerez tercihinizi hatırlar.",
+            "pendingIntent": "Giriş yapmadan önce başlattığınız beğeni, kaydetme veya takibi tamamlar.",
+            "emailBanner": "Tarayıcıyı kapatana kadar e-posta doğrulama hatırlatmasını gizler."
+        },
+        "durations": {
+            "days14": "14 gün",
+            "year": "1 yıl",
+            "minutes10": "10 dakika",
+            "minutes30": "30 dakika",
+            "untilCleared": "Siz silene kadar",
+            "session": "Tarayıcıyı kapatana kadar"
+        },
+        "consentTitle": "Neden onay istemiyoruz",
+        "consentText": "Bunların hepsi talep ettiğiniz hizmeti sunmak veya yaptığınız bir seçimi hatırlamak için kesinlikle gereklidir; bu yüzden yasa bunlar için onayınızı gerektirmez. Bir gün analiz çerezleri gibi isteğe bağlı çerezler eklersek önce sorarız ve siz kabul etmedikçe kapalı kalırlar.",
+        "manageTitle": "Çerezleri yönetme",
+        "manageText": "Çerezleri ve site verilerini istediğiniz zaman tarayıcı ayarlarınızdan silebilirsiniz; oturumunuz kapanır ve tercihleriniz sıfırlanır. Seçimlerinizi çerez ayarlarından da gözden geçirebilirsiniz."
+    },
+    "legalNotice": {
+        "title": "Yasal bilgiler",
+        "subtitle": "Collectify’ı kimin işlettiği ve bize nasıl ulaşabileceğiniz.",
+        "operatorTitle": "İşletmeci",
+        "email": "E-posta",
+        "country": "Ülke",
+        "documentsTitle": "Politikalar",
+        "documents": {
+            "terms": "Hizmet Şartları",
+            "privacy": "Gizlilik Politikası",
+            "cookies": "Çerez Politikası"
+        },
+        "reportTitle": "İçerik bildirme",
+        "reportText": "Bir koleksiyonu, yorumu veya hesabı bildirmek için yanındaki bildir düğmesini kullanın. Moderatörler bildirimleri en kısa sürede inceler."
+    },
+    "consent": {
+        "label": "Çerez bildirimi",
+        "infoText": "Oturumunuzu açık tutmak ve ayarlarınızı hatırlamak için yalnızca zorunlu çerezleri kullanıyoruz. Reklam yok, izleme yok. <policy>Çerez Politikası</policy>",
+        "askText": "Collectify’ı çalıştırmak için zorunlu çerezleri ve onay verirseniz nasıl kullanıldığını anlamak için analiz çerezlerini kullanıyoruz. Fikrinizi istediğiniz zaman değiştirebilirsiniz. <policy>Çerez Politikası</policy>",
+        "ok": "Anladım",
+        "acceptAll": "Tümünü kabul et",
+        "rejectAll": "Tümünü reddet",
+        "customize": "Özelleştir",
+        "settingsTitle": "Çerez ayarları",
+        "categories": {
+            "necessary": {
+                "title": "Zorunlu (her zaman açık)",
+                "description": "Giriş, güvenlik ve ayarlarınızın hatırlanması için gereklidir."
+            },
+            "analytics": {
+                "title": "Analiz",
+                "description": "Hangi özelliklerin kullanıldığını reklam olmadan anlamamıza yardımcı olur."
+            }
+        },
+        "details": "Ayrıntılar <policy>Çerez Politikası</policy>’nda.",
+        "cancel": "İptal",
+        "save": "Seçimleri kaydet"
     }
 }

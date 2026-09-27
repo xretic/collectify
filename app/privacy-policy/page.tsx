@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { socialMetadata } from '@/shared/i18n/metadata';
+import { legalDetails, currentLegalVersion } from '@/shared/server/legal';
+import { canDeleteUploads } from '@/shared/server/uploadcare';
 import PrivacyPolicyPage from '@/views/privacy-policy/ui/PrivacyPolicyPage';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,6 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default function PrivacyPolicyRoute() {
-    return <PrivacyPolicyPage />;
+export default async function PrivacyPolicyPageRoute() {
+    return (
+        <PrivacyPolicyPage
+            legal={legalDetails()}
+            deletesUploads={canDeleteUploads()}
+            version={await currentLegalVersion('privacy')}
+        />
+    );
 }

@@ -32,6 +32,14 @@ export const userApi = {
             .json<SuggestionsPage>();
     },
 
+    /** The account's data export as a file (POST: must not be triggerable by a link). */
+    async exportData() {
+        const res = await api.post('users/me/export');
+        const disposition = res.headers.get('Content-Disposition') ?? '';
+        const filename = /filename="([^"]+)"/.exec(disposition)?.[1] ?? 'collectify-data.json';
+        return { blob: await res.blob(), filename };
+    },
+
     async setFeedTabOrder(order: string[]) {
         await api.put('users/me/feed-tabs', { json: { order } });
     },

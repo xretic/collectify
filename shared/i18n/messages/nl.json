@@ -119,7 +119,8 @@
         "tagNameMin": "Minstens {tagNameMin} tekens.",
         "tagNameChars": "Letters, cijfers, spaties en - & + . ' #",
         "verdictRequiresGuilty": "Een straf en het verwijderen van inhoud vereisen het oordeel ‘schuldig’.",
-        "duplicateRequiresOriginal": "Kies bij het oordeel ‘duplicaat’ de oorspronkelijke melding."
+        "duplicateRequiresOriginal": "Kies bij het oordeel ‘duplicaat’ de oorspronkelijke melding.",
+        "ageConfirm": "Je moet 18 jaar of ouder zijn om Collectify te gebruiken."
     },
     "meta": {
         "description": "Ontdek, bewaar en deel collecties van boeken, games, films, plekken en gear. Volg mensen met goede smaak en maak gratis je eigen collecties op Collectify.",
@@ -141,15 +142,21 @@
             "userNotFound": "Gebruiker niet gevonden",
             "forgotPassword": "Wachtwoord herstellen",
             "resetPassword": "Nieuw wachtwoord",
-            "verifyEmail": "E-mail bevestigen"
+            "verifyEmail": "E-mail bevestigen",
+            "terms": "Gebruiksvoorwaarden",
+            "cookies": "Cookiebeleid",
+            "legalNotice": "Juridische informatie"
         },
         "title": "Collectify - Collecties van alles, samengesteld door mensen met smaak",
         "keywords": "collecties, lijstjes, toplijsten, boekenlijsten, gamecollecties, filmlijsten, reisideeën, verlanglijst, moodboard, Pinterest-alternatief",
         "categoryTitle": "De beste {category}-collecties",
-        "categoryDescription": "Ontdek de beste {category}-collecties, samengesteld door echte mensen. Bewaar je favorieten, volg verzamelaars en deel je eigen op Collectify.",
+        "categoryDescription": "Ontdek de beste {category}-collecties op Collectify. Bewaar je favorieten, volg verzamelaars en deel je eigen.",
         "tagTitle": "#{tag}-collecties",
         "tagDescription": "Collecties met de tag #{tag}, samengesteld door mensen op Collectify. Bewaar, volg en deel waar je van houdt.",
-        "collectionLead": "{count, plural, one {# item} other {# items}} in {category} van {name}."
+        "collectionLead": "{count, plural, one {# item} other {# items}} in {category} van {name}.",
+        "termsDescription": "De regels voor Collectify: je account, je inhoud en wat niet mag.",
+        "cookiesDescription": "Welke cookies en browseropslag Collectify gebruikt, en waarom.",
+        "legalNoticeDescription": "Wie Collectify beheert en hoe je contact met ons opneemt."
     },
     "languages": {
         "label": "Taal"
@@ -211,7 +218,12 @@
         "hidePassword": "Wachtwoord verbergen",
         "createAccount": "Account aanmaken",
         "loginTitle": "Welkom terug",
-        "registerTitle": "Word lid van Collectify"
+        "registerTitle": "Word lid van Collectify",
+        "ageConfirm": "Ik ben 18 jaar of ouder",
+        "consent": {
+            "form": "Door een account aan te maken, ga je akkoord met de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
+            "providers": "Door verder te gaan met Google of GitHub bevestig je dat je 18 jaar of ouder bent en ga je akkoord met de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>."
+        }
     },
     "common": {
         "cancel": "Annuleren",
@@ -289,6 +301,11 @@
             "yourPassword": "Je wachtwoord",
             "typeUsername": "Typ ‘{username}’ om te bevestigen",
             "deleteForever": "Definitief verwijderen"
+        },
+        "data": {
+            "title": "Je gegevens",
+            "description": "Download een kopie van alles wat Collectify over je bewaart, of bekijk je cookiekeuzes.",
+            "download": "Mijn gegevens downloaden"
         }
     },
     "dateField": {
@@ -885,7 +902,11 @@
         "search": "Zoeken"
     },
     "footer": {
-        "privacyPolicy": "Privacybeleid"
+        "privacyPolicy": "Privacybeleid",
+        "terms": "Voorwaarden",
+        "cookies": "Cookies",
+        "legalNotice": "Juridische informatie",
+        "legal": "Juridisch"
     },
     "people": {
         "mutual": "{count} gemeenschappelijk",
@@ -1007,11 +1028,11 @@
         },
         "age": {
             "title": "Minimumleeftijd",
-            "text": "Collectify is bedoeld voor mensen van 18 jaar of ouder. Een geboortedatum waaruit blijkt dat je jonger bent dan 18 kan niet worden opgeslagen. Als we ontdekken dat een account van iemand onder de 18 is, kunnen we het opschorten en de gegevens verwijderen."
+            "text": "Collectify is bedoeld voor mensen van 18 jaar of ouder, en je bevestigt je leeftijd bij het aanmelden. Een geboortedatum waaruit blijkt dat je jonger bent dan 18 kan niet worden opgeslagen. Als we ontdekken dat een account van iemand onder de 18 is, kunnen we het schorsen en de gegevens verwijderen."
         },
         "cookies": {
             "title": "Cookies",
-            "text": "We gebruiken een functionele sessiecookie om je ingelogd te houden, een functionele cookie die je interfacetaal onthoudt en een kortlevende beveiligingscookie (ongeveer 10 minuten) terwijl je inlogt met GitHub of Google. Je gekozen thema wordt opgeslagen in de lokale opslag van je browser. We gebruiken geen analyse-, tracking- of marketingcookies."
+            "text": "We gebruiken alleen cookies en browseropslag die nodig zijn om je ingelogd te houden en je instellingen te onthouden - geen analyse-, tracking- of advertentiecookies. De volledige lijst staat in het <cookies>cookiebeleid</cookies>."
         },
         "moderation": {
             "title": "Meldingen en moderatie",
@@ -1021,10 +1042,46 @@
             "title": "Derden",
             "text": "We verkopen je gegevens niet en delen ze niet met derden voor reclame- of marketingdoeleinden. Als je je registreert of inlogt met GitHub of Google, delen die providers basisprofielgegevens (zoals je e-mailadres) met ons om je account aan te maken."
         },
-        "updated": "Laatst bijgewerkt: {date}",
-        "storage": {
-            "title": "Waar je gegevens worden opgeslagen",
-            "text": "De app wordt gehost bij Vercel. Account- en inhoudsgegevens worden opgeslagen in onze database. Geüploade afbeeldingen (avatars, banners, itemafbeeldingen) worden opgeslagen bij onze mediahostingprovider, Uploadcare. Account-e-mails (links om je wachtwoord te herstellen en je e-mail te bevestigen) worden verstuurd via onze e-mailprovider Resend, die daarvoor alleen je e-mailadres en naam ontvangt."
+        "controller": {
+            "title": "Wie verantwoordelijk is",
+            "text": "{operator} beheert Collectify en is verantwoordelijk voor je persoonsgegevens (de „verwerkingsverantwoordelijke”).",
+            "email": "Je kunt ons bereiken via <mail>{email}</mail>.",
+            "noEmail": "Onze contactgegevens staan in de <legal>Juridische informatie</legal>."
+        },
+        "legalBases": {
+            "title": "Rechtsgronden",
+            "text": "We verwerken je gegevens om de dienst te leveren waarvoor je je hebt aangemeld (uitvoering van een overeenkomst, art. 6 lid 1 sub b AVG): je account, je inhoud, berichten en account-e-mails. Beveiliging, misbruikpreventie, moderatie, verzoeklimieten en aanbevelingen berusten op ons gerechtvaardigd belang om een veilige en relevante dienst te bieden (art. 6 lid 1 sub f AVG). Optionele profielgegevens gebruiken we omdat je ervoor koos ze toe te voegen, en je kunt ze altijd verwijderen."
+        },
+        "processors": {
+            "title": "Dienstverleners",
+            "intro": "Voor Collectify gebruiken we deze dienstverleners. Ze verwerken gegevens alleen in onze opdracht:",
+            "items": {
+                "hosting": "<strong>Vercel</strong> - hosting van de website en API",
+                "database": "<strong>Neon</strong> - database, gehost in de EU (Frankfurt)",
+                "images": "<strong>Uploadcare</strong> - opslag en levering van geüploade afbeeldingen",
+                "email": "<strong>Resend</strong> - account-e-mails (wachtwoord herstellen, e-mail bevestigen)",
+                "realtime": "<strong>Pusher</strong> - realtime bezorging van berichten en meldingen",
+                "cache": "<strong>Redis</strong> - kortstondige cache en tellers voor limieten",
+                "signIn": "<strong>Google</strong> en <strong>GitHub</strong> - inloggen, alleen als je dat kiest"
+            },
+            "transfers": "Sommige van deze dienstverleners verwerken gegevens buiten de Europese Economische Ruimte, bijvoorbeeld in de Verenigde Staten."
+        },
+        "externalImages": {
+            "title": "Afbeeldingen van andere websites",
+            "text": "Collecties kunnen afbeeldingen tonen die op andere websites staan, zoals hoezen. Als je browser ze laadt, krijgen die websites je IP-adres en browsergegevens, zoals bij elke webpagina."
+        },
+        "retention": {
+            "title": "Hoe lang we gegevens bewaren",
+            "text": "We bewaren je gegevens zolang je account bestaat. Sessies verlopen na 14 dagen, links om je wachtwoord te herstellen na 1 uur en bevestigingslinks na 3 dagen. IP-adressen voor verzoeklimieten bewaren we hooguit een uur. Als je je account verwijdert, worden je profiel, collecties, reacties, likes, volgrelaties, borden en chats direct verwijderd, net als je geüploade afbeeldingen; het moderatielogboek bewaart alleen je account-ID en gebruikersnaam.",
+            "textKeepsUploads": "We bewaren je gegevens zolang je account bestaat. Sessies verlopen na 14 dagen, links om je wachtwoord te herstellen na 1 uur en bevestigingslinks na 3 dagen. IP-adressen voor verzoeklimieten bewaren we hooguit een uur. Als je je account verwijdert, worden je profiel, collecties, reacties, likes, volgrelaties, borden en chats direct verwijderd; het moderatielogboek bewaart alleen je account-ID en gebruikersnaam. Geüploade afbeeldingen kunnen bij onze afbeeldingendienst blijven staan tot we ze verwijderen; neem contact op als je dat eerder wilt."
+        },
+        "rights": {
+            "title": "Je rechten",
+            "text": "Je kunt een kopie van je gegevens downloaden en je account verwijderen via <settings>Instellingen</settings>, en je gegevens corrigeren in je profiel. Je kunt ook bezwaar maken tegen verwerking op basis van ons gerechtvaardigd belang en een klacht indienen bij je toezichthouder. Voor al het andere neem je contact met ons op via de gegevens hierboven."
+        },
+        "changes": {
+            "title": "Wijzigingen in dit beleid",
+            "text": "Als we dit beleid wijzigen, passen we de datum bovenaan aan. Over belangrijke wijzigingen informeren we je voordat ze ingaan."
         }
     },
     "errorPage": {
@@ -1119,5 +1176,153 @@
         },
         "browse": "Bladeren per categorie",
         "categoriesLabel": "categorieën"
+    },
+    "legal": {
+        "updated": "Versie {version} · laatst bijgewerkt op {date}"
+    },
+    "terms": {
+        "title": "Gebruiksvoorwaarden",
+        "intro": "Deze voorwaarden zijn een overeenkomst tussen jou en {operator} („wij”) over het gebruik van Collectify. Door een account aan te maken of de site te gebruiken, ga je ermee akkoord. Lees ook ons <privacy>privacybeleid</privacy>, waarin staat hoe we met je gegevens omgaan.",
+        "sections": {
+            "eligibility": {
+                "title": "Wie Collectify mag gebruiken",
+                "text": "Je moet minstens 18 jaar zijn en dat bevestigen bij het aanmelden. Je mag Collectify niet gebruiken als we je hebben verbannen, en je mag geen accounts automatisch aanmaken."
+            },
+            "account": {
+                "title": "Je account",
+                "text": "Houd je wachtwoord geheim en je e-mailadres actueel. Je bent verantwoordelijk voor wat er via je account gebeurt; laat het ons meteen weten als je denkt dat iemand anders er toegang toe heeft."
+            },
+            "content": {
+                "title": "Je inhoud",
+                "text": "Collecties, items, reacties, afbeeldingen en berichten die je toevoegt, blijven van jou. Om de dienst te kunnen leveren, geef je ons een wereldwijde, niet-exclusieve, kosteloze licentie om je inhoud te hosten, op te slaan, te verveelvoudigen en te tonen op Collectify en in linkvoorbeelden ervan, zolang die op de dienst staat. De licentie eindigt als je de inhoud verwijdert, behalve voor kopieën die we moeten bewaren voor moderatie, om juridische redenen of tijdelijk in back-ups."
+            },
+            "rights": {
+                "title": "Wat je mag plaatsen",
+                "text": "Plaats alleen inhoud die je mag delen. Als je afbeeldingen of links van andere websites toevoegt, zorg dan dat dat mag, en plaats geen persoonsgegevens van anderen zonder hun toestemming."
+            },
+            "conduct": {
+                "title": "Wat niet mag",
+                "text": "Plaats of verstuur niets illegaals; geen intimidatie, bedreigingen of haatzaaiende uitingen; geen seksuele inhoud met minderjarigen; geen spam, oplichting of bewust misleidende inhoud; geen malware; en geen inhoud die de rechten van anderen schendt. Probeer Collectify niet te breken, te overbelasten, massaal uit te lezen of de beveiliging te omzeilen."
+            },
+            "moderation": {
+                "title": "Moderatie",
+                "text": "We kunnen gemelde inhoud beoordelen, inhoud verwijderen die in strijd is met deze voorwaarden of de wet, en accounts tijdelijk of permanent beperken of verbannen. Als we je account beperken, laten we je dat in de app weten. Denk je dat we een fout hebben gemaakt, neem dan contact met ons op."
+            },
+            "copyright": {
+                "title": "Klachten over auteursrecht",
+                "text": "Denk je dat inhoud op Collectify inbreuk maakt op je rechten, meld die dan in de app of neem contact met ons op met een link naar de inhoud en gegevens over je rechten. Duidelijk inbreukmakende inhoud verwijderen we."
+            },
+            "price": {
+                "title": "Prijs",
+                "text": "Collectify is gratis. Er zijn geen betaalde abonnementen, aankopen of verborgen kosten, dus er valt niets terug te betalen. Voegen we ooit betaalde functies toe, dan zie je de prijs en de terugbetalingsvoorwaarden voordat je betaalt."
+            },
+            "service": {
+                "title": "Wijzigingen in de dienst",
+                "text": "We verbeteren Collectify voortdurend, dus functies kunnen veranderen of verdwijnen. We kunnen de dienst pauzeren voor onderhoud of wanneer dat nodig is."
+            },
+            "termination": {
+                "title": "Je account beëindigen",
+                "text": "Je kunt je account altijd verwijderen via <settings>Instellingen</settings>; je gegevens worden dan verwijderd zoals beschreven in het <privacy>privacybeleid</privacy>. We kunnen accounts die deze voorwaarden ernstig of herhaaldelijk schenden schorsen of sluiten."
+            },
+            "disclaimer": {
+                "title": "Geen garantie",
+                "text": "Collectify wordt geleverd „zoals het is”. We doen ons best om het beschikbaar en veilig te houden, maar kunnen niet beloven dat het altijd beschikbaar of foutloos is. Inhoud wordt door gebruikers gemaakt en we onderschrijven die niet."
+            },
+            "liability": {
+                "title": "Aansprakelijkheid",
+                "text": "Voor zover de wet dat toestaat, zijn we niet aansprakelijk voor indirecte schade of gevolgschade, of voor schade door inhoud of handelingen van andere gebruikers. Niets in deze voorwaarden beperkt aansprakelijkheid die wettelijk niet beperkt mag worden, of je rechten als consument."
+            },
+            "changes": {
+                "title": "Wijzigingen in deze voorwaarden",
+                "text": "Als we deze voorwaarden wijzigen, passen we de datum hierboven aan. Over belangrijke wijzigingen informeren we je voordat ze ingaan; gebruik je Collectify daarna nog, dan gelden de nieuwe voorwaarden."
+            },
+            "law": {
+                "title": "Toepasselijk recht",
+                "text": "Op deze voorwaarden is het recht van toepassing van het land waar de exploitant van Collectify gevestigd is. Ben je consument, dan behoud je ook de bescherming van het dwingend recht van het land waar je woont.",
+                "country": "Op deze voorwaarden is het recht van {country} van toepassing. Ben je consument, dan behoud je ook de bescherming van het dwingend recht van het land waar je woont."
+            },
+            "contact": {
+                "title": "Contact",
+                "text": "Voor vragen over deze voorwaarden, zie de <legal>Juridische informatie</legal>.",
+                "email": "Voor vragen over deze voorwaarden, mail naar <mail>{email}</mail>."
+            }
+        }
+    },
+    "cookiePolicy": {
+        "title": "Cookiebeleid",
+        "intro": "Collectify gebruikt alleen de cookies en browseropslag die nodig zijn om te werken en je keuzes te onthouden. Er zijn geen advertentie- of trackingcookies en er wordt niets gedeeld met adverteerders.",
+        "listTitle": "Wat we in je browser opslaan",
+        "columns": {
+            "name": "Naam",
+            "type": "Soort",
+            "purpose": "Doel",
+            "duration": "Bewaartermijn"
+        },
+        "types": {
+            "cookie": "Cookie",
+            "localStorage": "Lokale opslag",
+            "sessionStorage": "Sessieopslag"
+        },
+        "purposes": {
+            "session": "Houdt je ingelogd. Niet leesbaar voor scripts.",
+            "locale": "Onthoudt de taal van de interface.",
+            "oauth": "Beveiligt inloggen met Google of GitHub en brengt je terug naar de pagina waar je was.",
+            "theme": "Onthoudt je kleurthema.",
+            "peopleWidget": "Onthoudt of je „Mensen die je misschien kent” hebt verborgen.",
+            "recentSearches": "Je recente zoekopdrachten, alleen op dit apparaat.",
+            "consent": "Onthoudt je cookiekeuze.",
+            "pendingIntent": "Rondt een like, bewaaractie of volgactie af die je voor het inloggen begon.",
+            "emailBanner": "Verbergt de herinnering om je e-mail te bevestigen tot je de browser sluit."
+        },
+        "durations": {
+            "days14": "14 dagen",
+            "year": "1 jaar",
+            "minutes10": "10 minuten",
+            "minutes30": "30 minuten",
+            "untilCleared": "Tot je het wist",
+            "session": "Tot je de browser sluit"
+        },
+        "consentTitle": "Waarom we geen toestemming vragen",
+        "consentText": "Al deze gegevens zijn strikt noodzakelijk om de dienst te leveren waar je om vroeg of om een keuze van je te onthouden, dus de wet vereist daar geen toestemming voor. Voegen we ooit optionele cookies toe, zoals analysecookies, dan vragen we het eerst en blijven ze uit tenzij je ja zegt.",
+        "manageTitle": "Cookies beheren",
+        "manageText": "Je kunt cookies en sitegegevens altijd wissen in de instellingen van je browser; je wordt dan uitgelogd en je voorkeuren worden gereset. Je kunt je keuzes ook bekijken in de cookie-instellingen."
+    },
+    "legalNotice": {
+        "title": "Juridische informatie",
+        "subtitle": "Wie Collectify beheert en hoe je ons bereikt.",
+        "operatorTitle": "Exploitant",
+        "email": "E-mail",
+        "country": "Land",
+        "documentsTitle": "Beleid",
+        "documents": {
+            "terms": "Gebruiksvoorwaarden",
+            "privacy": "Privacybeleid",
+            "cookies": "Cookiebeleid"
+        },
+        "reportTitle": "Inhoud melden",
+        "reportText": "Gebruik de meldknop naast een collectie, reactie of account om die te melden. Moderators bekijken meldingen zo snel mogelijk."
+    },
+    "consent": {
+        "label": "Cookiemelding",
+        "infoText": "We gebruiken alleen essentiële cookies om je ingelogd te houden en je instellingen te onthouden. Geen advertenties, geen tracking. <policy>Cookiebeleid</policy>",
+        "askText": "We gebruiken essentiële cookies om Collectify te laten werken en, als je akkoord gaat, analysecookies om te begrijpen hoe het wordt gebruikt. Je kunt je keuze altijd wijzigen. <policy>Cookiebeleid</policy>",
+        "ok": "Begrepen",
+        "acceptAll": "Alles accepteren",
+        "rejectAll": "Alles weigeren",
+        "customize": "Aanpassen",
+        "settingsTitle": "Cookie-instellingen",
+        "categories": {
+            "necessary": {
+                "title": "Essentieel (altijd aan)",
+                "description": "Nodig om in te loggen, je te beveiligen en je instellingen te onthouden."
+            },
+            "analytics": {
+                "title": "Analyse",
+                "description": "Helpt ons te begrijpen welke functies worden gebruikt, zonder advertenties."
+            }
+        },
+        "details": "Details staan in het <policy>cookiebeleid</policy>.",
+        "cancel": "Annuleren",
+        "save": "Keuzes opslaan"
     }
 }

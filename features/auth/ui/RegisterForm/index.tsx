@@ -3,7 +3,7 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Button, TextField } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, FormHelperText, TextField } from '@mui/material';
 import { authApi } from '@/entities/auth/api/authApi';
 import {
     PASSWORD_MAX_LENGTH,
@@ -16,12 +16,18 @@ import { PasswordField } from '@/shared/ui/PasswordField';
 import { registerSchema } from '../../model/schemas';
 import { useAuthSuccess } from '../../model/useAuthSuccess';
 import { suggestUsername } from '../../lib/suggestUsername';
+import { LegalConsent } from '../LegalConsent';
 import { withNext } from '@/shared/lib/safeNextPath';
 import styles from '../authForm.module.css';
 import { useLocale, useTranslations } from 'next-intl';
 import { useValidationMessage } from '@/shared/i18n/useValidationMessage';
 
-type RegisterValues = { email: string; username: string; password: string };
+type RegisterValues = {
+    email: string;
+    username: string;
+    password: string;
+    ageConfirmed: boolean;
+};
 
 export function RegisterForm() {
     const t = useTranslations('auth');
@@ -32,7 +38,8 @@ export function RegisterForm() {
     const { register, handleSubmit, formState, getValues, setValue, control } =
         useForm<RegisterValues>({
             resolver: zodResolver(registerSchema),
-            defaultValues: { email: '', username: '', password: '' },
+            // Never pre-ticked: confirming the age is the user's own action.
+            defaultValues: { email: '', username: '', password: '', ageConfirmed: false },
         });
 
     const signUp = useMutation({
@@ -96,6 +103,18 @@ export function RegisterForm() {
                 fullWidth
             />
 
+            <div>
+                <FormControlLabel
+                    control={<Checkbox {...register('ageConfirmed')} />}
+                    label={t('ageConfirm')}
+                />
+                {formState.errors.ageConfirmed && (
+                    <FormHelperText error>
+                        {validationMessage(formState.errors.ageConfirmed.message)}
+                    </FormHelperText>
+                )}
+            </div>
+
             <Button
                 type="submit"
                 variant="contained"
@@ -105,6 +124,8 @@ export function RegisterForm() {
             >
                 {signUp.isPending ? t('creatingAccount') : t('createAccount')}
             </Button>
+
+            <LegalConsent variant="form" />
         </form>
     );
 }

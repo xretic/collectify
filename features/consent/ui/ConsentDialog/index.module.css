@@ -1,0 +1,22 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.category {
+    display: flex;
+    flex-direction: column;
+}
+
+.description {
+    padding-left: 4px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--soft-text);
+}
+
+.description a {
+    color: var(--accent);
+    text-decoration: underline;
+}

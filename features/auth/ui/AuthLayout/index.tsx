@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { OAuthButtons } from '../OAuthButtons';
+import { LegalConsent } from '../LegalConsent';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
 
@@ -28,6 +29,7 @@ export function AuthLayout({ title, subtitle, children, footer, oauth = true }: 
             {oauth && (
                 <div className={styles.form}>
                     <OAuthButtons next={next} layout="stack" />
+                    <LegalConsent variant="providers" />
                     <div className={styles.divider}>{t('orEmail')}</div>
                 </div>
             )}

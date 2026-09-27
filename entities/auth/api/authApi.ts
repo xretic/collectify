@@ -13,7 +13,13 @@ export const authApi = {
         return (await api.post('auth/login', { json: payload }).json<UserResponse>()).user;
     },
 
-    async register(payload: { email: string; username: string; password: string; locale: Locale }) {
+    async register(payload: {
+        email: string;
+        username: string;
+        password: string;
+        locale: Locale;
+        ageConfirmed: boolean;
+    }) {
         return (await api.post('auth/register', { json: payload }).json<UserResponse>()).user;
     },
 

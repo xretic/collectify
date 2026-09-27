@@ -6,7 +6,7 @@ const optional = z.string().trim().min(1).optional().catch(undefined);
 const schema = z.object({
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     DATABASE_URL: z.string().url(),
-    /** Public origin (e.g. https://collectify.app). Falls back to the request origin. */
+    /** Public origin (e.g. https://colleo.xyz). Falls back to the request origin. */
     APP_URL: z.string().url().optional().catch(undefined),
 
     GOOGLE_CLIENT_ID: optional,
@@ -19,10 +19,20 @@ const schema = z.object({
     NEXT_PUBLIC_PUSHER_KEY: optional,
     NEXT_PUBLIC_PUSHER_CLUSTER: optional,
 
-    /** Resend key; without it emails are printed to the server log (development only). */
+    /** Resend key; without it (or with an unverified sender domain) sending answers 503. */
     RESEND_API_KEY: optional,
-    /** Sender, e.g. `Collectify <hello@collectify.app>` (the domain must be verified in Resend). */
+    /** Sender, e.g. `Collectify <noreply@colleo.xyz>` (the domain must be verified in Resend). */
     EMAIL_FROM: optional,
+
+    /** Uploadcare REST key: deleting an account also deletes the images it uploaded. */
+    UPLOADCARE_SECRET_KEY: optional,
+
+    /** Operator shown on the legal pages (Legal notice, Terms, Privacy Policy). */
+    LEGAL_NAME: optional,
+    LEGAL_ADDRESS: optional,
+    CONTACT_EMAIL: z.string().trim().email().optional().catch(undefined),
+    /** Country whose law governs the Terms, e.g. "Czech Republic". */
+    LEGAL_COUNTRY: optional,
 
     /** Search console ownership tokens (the `content` of their meta tags). */
     GOOGLE_SITE_VERIFICATION: optional,

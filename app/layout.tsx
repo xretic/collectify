@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
+import { Google_Sans } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getTranslations } from 'next-intl/server';
@@ -14,15 +15,21 @@ import NavBar from '@/widgets/layout/ui/NavBar';
 import Footer from '@/widgets/layout/ui/Footer';
 import { ReportDialog } from '@/features/report/create/ui/ReportDialog';
 import { AuthPromptDialog } from '@/features/auth/ui/AuthPromptDialog';
+import { ConsentBanner } from '@/features/consent/ui/ConsentBanner';
 import { NotificationToasts } from '@/features/notification/ui/NotificationToasts';
 import { serverEnv, siteUrl } from '@/shared/server/env';
 import { ogLocale, SITE_NAME } from '@/shared/i18n/metadata';
 
-const googleSans = localFont({
-    src: [{ path: '../public/fonts/GoogleSans-SemiBold.ttf', weight: '400', style: 'normal' }],
+// Google Sans from Google Fonts (SIL Open Font License), self-hosted by next/font at build time.
+const googleSans = Google_Sans({
+    weight: '600',
+    subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek'],
     variable: '--font-google-sans',
+    // next/font has no fallback metrics for this family yet; skip the size-adjusted fallback.
+    adjustFontFallback: false,
 });
 
+// Rubik (SIL Open Font License); also drawn into the share images.
 const rubikMedium = localFont({
     src: [{ path: '../public/fonts/Rubik-Medium.ttf', weight: '500', style: 'normal' }],
     variable: '--font-rubik-medium',
@@ -109,6 +116,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                         <ImageEditorHost />
                         <ReportDialog />
                         <AuthPromptDialog />
+                        <ConsentBanner />
                         <NotificationToasts />
                     </AppProviders>
                 </NextIntlClientProvider>

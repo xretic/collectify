@@ -16,9 +16,15 @@ import {
 export const POST = route(async (req) => {
     await enforceRateLimit(req, 'auth');
 
-    const { locale, ...input } = await readBody(req, registerSchema);
+    // `ageConfirmed` is enforced by the schema; the account records when the terms were accepted.
+    const { email, username, password, locale } = await readBody(req, registerSchema);
     // Defaults to the language the visitor is browsing in.
-    const userId = await registerUser({ ...input, locale: locale ?? (await resolveLocale()) });
+    const userId = await registerUser({
+        email,
+        username,
+        password,
+        locale: locale ?? (await resolveLocale()),
+    });
     const session = await createSession(userId);
     const user = await getSessionUser(userId, null);
 

@@ -1,0 +1,104 @@
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+    color: var(--text-color);
+    font-family: var(--font-rubik-medium), rubik-medium;
+}
+
+.title {
+    margin-bottom: 4px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 34px;
+}
+
+.updated {
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--soft-text);
+}
+
+.intro {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.section {
+    margin-top: 28px;
+}
+
+.sectionTitle {
+    margin-bottom: 8px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 20px;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--soft-text);
+}
+
+.text ul {
+    margin: 0 0 0 20px;
+    list-style: disc;
+}
+
+.text li + li {
+    margin-top: 4px;
+}
+
+.intro a,
+.text a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.text strong {
+    color: var(--text-color);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table th,
+.table td {
+    padding: 10px 8px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+    color: var(--text-color);
+}
+
+.table code {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* The table becomes a list of cards on phones. */
+@media (max-width: 600px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tr {
+        display: block;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .table td {
+        display: block;
+        padding: 2px 0;
+        border: 0;
+    }
+}

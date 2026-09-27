@@ -1,0 +1,41 @@
+/* A card in the corner: the page stays usable while it is shown (no overlay). */
+.banner {
+    position: fixed;
+    bottom: calc(var(--tabbar-height) + 16px);
+    left: 16px;
+    z-index: 1300;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(420px, calc(100vw - 32px));
+    padding: 16px;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.text {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+.text a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.icon {
+    flex-shrink: 0;
+    color: var(--accent);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
