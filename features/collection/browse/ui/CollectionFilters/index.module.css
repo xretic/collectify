@@ -43,3 +43,45 @@
         display: none;
     }
 }
+
+.toggle {
+    display: none !important;
+}
+
+/* Phones: search + "Filters"; categories, tags and sort open below on demand. */
+@media (max-width: 600px) {
+    .collapsible .toggle {
+        display: inline-flex !important;
+        flex-shrink: 0;
+    }
+
+    .collapsible:not(.expanded) .primary,
+    .collapsible:not(.expanded) .sort {
+        display: none;
+    }
+
+    .collapsible .secondary {
+        flex-wrap: wrap;
+    }
+
+    .collapsible .secondary > :first-child {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .collapsible .sort {
+        order: 3;
+        flex-basis: 100%;
+    }
+
+    .collapsible .primary {
+        order: 4;
+    }
+
+    /* Open: search row first, then the controls it revealed. */
+    .collapsible.expanded {
+        grid-template-areas:
+            'secondary'
+            'primary';
+    }
+}

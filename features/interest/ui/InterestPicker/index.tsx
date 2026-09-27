@@ -1,9 +1,7 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { categoryApi } from '@/entities/category/api/categoryApi';
-import { categoryQueryKeys } from '@/entities/category/model/queryKeys';
+import { useCategoryShowcase } from '@/entities/category/model/useCategoryShowcase';
 import { Spinner } from '@/shared/ui/Spinner';
 import styles from './index.module.css';
 import { useCategoryName } from '@/entities/category/model/useCategoryName';
@@ -16,11 +14,7 @@ type InterestPickerProps = {
 /** Category tiles with a cover from a random popular collection of that category. */
 export function InterestPicker({ value, onChange }: InterestPickerProps) {
     const categoryName = useCategoryName();
-    const showcase = useQuery({
-        queryKey: [...categoryQueryKeys.all, 'showcase'],
-        queryFn: categoryApi.showcase,
-        staleTime: Infinity,
-    });
+    const showcase = useCategoryShowcase();
 
     if (showcase.isPending) return <Spinner />;
 

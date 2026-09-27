@@ -1,0 +1,179 @@
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+    padding: 36px 44px;
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+    border-radius: 28px;
+    overflow: hidden;
+}
+
+.copy {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.title {
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: clamp(34px, 4.2vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+}
+
+.subtitle {
+    max-width: 520px;
+    font-size: 18px;
+    color: var(--soft-text);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.points {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.point {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--soft-text);
+}
+
+.point svg {
+    color: var(--accent);
+}
+
+/* Three covers fanned out like cards on a table. */
+.collage {
+    position: relative;
+    height: 340px;
+}
+
+.card0,
+.card1,
+.card2 {
+    position: absolute;
+    width: 52%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border: 6px solid var(--container-color);
+    border-radius: 24px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.card0 {
+    top: 20px;
+    left: 4%;
+    transform: rotate(-7deg);
+}
+
+.card1 {
+    top: 0;
+    left: 26%;
+    z-index: 2;
+    transform: rotate(2deg);
+}
+
+.card2 {
+    top: 34px;
+    left: 46%;
+    z-index: 1;
+    transform: rotate(9deg);
+}
+
+.categories {
+    margin-top: 28px;
+}
+
+.heading {
+    margin-bottom: 12px;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 22px;
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+}
+
+.tile {
+    position: relative;
+    flex: 0 0 180px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    transition: transform 0.15s ease;
+}
+
+.tile:hover {
+    transform: translateY(-2px);
+}
+
+.cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder {
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, #000));
+}
+
+.shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1) 60%);
+}
+
+.name {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    left: 12px;
+    color: #ffffff;
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 17px;
+}
+
+@media (max-width: 900px) {
+    .hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+        padding: 28px 22px;
+    }
+
+    .collage {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero {
+        padding: 22px 18px;
+        border-radius: 22px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .actions > * {
+        flex: 1 1 auto;
+    }
+
+    .tile {
+        flex-basis: 140px;
+    }
+}
