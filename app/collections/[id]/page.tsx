@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { db } from '@/shared/server/db';
+import { socialMetadata } from '@/shared/i18n/metadata';
 import { CollectionDetailsPage } from '@/views/collection-details/ui/CollectionDetailsPage';
 
 type Props = { params: Promise<{ id: string }> };
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         Number.isInteger(collectionId) && collectionId > 0
             ? await db.collection.findFirst({
                   where: { id: collectionId, private: false },
-                  select: { name: true, description: true, bannerUrl: true },
+                  select: { name: true, description: true },
               })
             : null;
 
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
         title: collection.name,
         description: collection.description,
-        openGraph: { images: [collection.bannerUrl] },
+        ...socialMetadata({ title: collection.name, description: collection.description }),
     };
 }
 

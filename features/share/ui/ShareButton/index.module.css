@@ -1,0 +1,31 @@
+/* Same shape as the Like / Save pills it sits next to. */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    background-color: var(--container-color);
+    color: var(--text-color);
+    font-family: var(--font-google-sans), sans-serif;
+    font-size: 15px;
+    transition:
+        border-color 0.15s ease,
+        color 0.15s ease,
+        transform 0.1s ease;
+}
+
+.pill svg {
+    font-size: 20px;
+}
+
+.pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.pill:active {
+    transform: scale(0.96);
+}

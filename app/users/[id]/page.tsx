@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import { getPublicUser } from '@/entities/user/server/profile';
+import { socialMetadata } from '@/shared/i18n/metadata';
 import UserProfilePage from '@/views/user-profile/ui/UserProfilePage';
 
 type Props = { params: Promise<{ id: string }> };
@@ -13,11 +14,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const t = await getTranslations('meta');
     if (!user) return { title: t('pages.userNotFound') };
 
-    return {
-        title: `${user.fullName} (@${user.username})`,
-        description: user.description || t('userDescription', { name: user.fullName }),
-        openGraph: { images: user.avatarUrl ? [user.avatarUrl] : undefined },
-    };
+    const title = `${user.fullName} (@${user.username})`;
+    const description = user.description || t('userDescription', { name: user.fullName });
+
+    return { title, description, ...socialMetadata({ title, description, type: 'profile' }) };
 }
 
 export default function UserProfileRoute() {

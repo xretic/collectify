@@ -34,3 +34,13 @@ export type ServerEnv = z.infer<typeof schema>;
 export const serverEnv: ServerEnv = schema.parse(process.env);
 
 export const isProduction = serverEnv.NODE_ENV === 'production';
+
+/**
+ * Absolute base for metadata URLs (Open Graph images, canonical links):
+ * `APP_URL`, else the Vercel deployment host, else the local dev server.
+ */
+export function siteUrl() {
+    if (serverEnv.APP_URL) return new URL(serverEnv.APP_URL);
+    const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+    return new URL(vercelHost ? `https://${vercelHost}` : 'http://localhost:3000');
+}

@@ -8,6 +8,7 @@ import { SanctionForm } from '@/features/moderation/ui/SanctionForm';
 import { SanctionList } from '@/features/moderation/ui/SanctionList';
 import { UserDangerZone } from '@/features/moderation/ui/UserDangerZone';
 import { toast } from '@/shared/model/toastStore';
+import { copyText } from '@/shared/lib/copyText';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import { ActivityHistory } from '../ActivityHistory';
@@ -33,8 +34,8 @@ export function UserPanel({ userId, isAdmin, onDeleted }: UserPanelProps) {
     if (!user) return <EmptyState title={t('notFound')} description={t('notFoundHint')} />;
 
     const copyUsername = async () => {
-        await navigator.clipboard.writeText(user.username);
-        toast.success(tp('usernameCopied'));
+        if (await copyText(user.username)) toast.success(tp('usernameCopied'));
+        else toast.error(tp('usernameCopyFailed'));
     };
 
     return (

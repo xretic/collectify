@@ -17,6 +17,7 @@ import { FollowButton } from '@/features/user/follow/ui/FollowButton';
 import { FollowListDialog } from '@/features/user/follow/ui/FollowListDialog';
 import { MessageButton } from '@/features/chat/create/ui/MessageButton';
 import { ReportButton } from '@/features/report/create/ui/ReportButton';
+import { ShareButton } from '@/features/share/ui/ShareButton';
 import { ProfileCollections } from '@/widgets/profile-collections/ui/ProfileCollections';
 import { Spinner } from '@/shared/ui/Spinner';
 import { useTranslations } from 'next-intl';
@@ -29,6 +30,7 @@ function canManage(viewer: SessionUser | null, target: PublicUser) {
 
 export default function UserProfilePage() {
     const t = useTranslations('userProfile');
+    const ts = useTranslations('share');
     const router = useRouter();
     const userId = Number(useParams<{ id: string }>().id);
     const { user: viewer } = useSessionUser();
@@ -73,6 +75,11 @@ export default function UserProfilePage() {
                     <>
                         <FollowButton user={profile} disabled={!signedIn} />
                         <MessageButton recipient={profile} disabled={!signedIn} />
+                        <ShareButton
+                            variant="icon"
+                            path={`/users/${profile.id}`}
+                            text={ts('profileText', { name: profile.fullName })}
+                        />
                         <ReportButton
                             target={{ type: 'USER', userId: profile.id }}
                             username={profile.username}

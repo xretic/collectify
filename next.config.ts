@@ -39,6 +39,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
     // Reads its bundled cities.pbf from disk, so it must stay a plain Node require.
     serverExternalPackages: ['all-the-cities'],
+    // Share images read their font from disk; serverless bundles do not include `public/`.
+    outputFileTracingIncludes: {
+        '/opengraph-image': ['./public/fonts/Rubik-Medium.ttf'],
+        '/collections/[id]/opengraph-image': ['./public/fonts/Rubik-Medium.ttf'],
+        '/users/[id]/opengraph-image': ['./public/fonts/Rubik-Medium.ttf'],
+    },
     // User images are rendered with plain <img>, so the image optimizer only
     // serves local assets and cannot be abused as an open proxy.
     images: { remotePatterns: [] },

@@ -14,6 +14,7 @@ import NavBar from '@/widgets/layout/ui/NavBar';
 import Footer from '@/widgets/layout/ui/Footer';
 import { ReportDialog } from '@/features/report/create/ui/ReportDialog';
 import { NotificationToasts } from '@/features/notification/ui/NotificationToasts';
+import { siteUrl } from '@/shared/server/env';
 
 const googleSans = localFont({
     src: [{ path: '../public/fonts/GoogleSans-SemiBold.ttf', weight: '400', style: 'normal' }],
@@ -29,8 +30,11 @@ export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('meta');
 
     return {
-        title: { default: 'Collectify', template: '%s — Collectify' },
+        metadataBase: siteUrl(),
+        title: { default: 'Collectify', template: '%s - Collectify' },
         description: t('description'),
+        openGraph: { siteName: 'Collectify', type: 'website' },
+        twitter: { card: 'summary_large_image' },
     };
 }
 

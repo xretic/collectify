@@ -6,6 +6,7 @@ import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import { countryName } from '@/shared/lib/geo/countries';
 import { UserBadges } from '@/shared/ui/UserBadge';
 import { toast } from '@/shared/model/toastStore';
+import { copyText } from '@/shared/lib/copyText';
 import type { UserRole } from '../../model/types';
 import styles from './index.module.css';
 import { useLocale, useTranslations } from 'next-intl';
@@ -37,12 +38,8 @@ export function ProfileHeader({ user, actions, stats }: ProfileHeaderProps) {
         .join(', ');
 
     const copyUsername = async () => {
-        try {
-            await navigator.clipboard.writeText(user.username);
-            toast.success(t('usernameCopied'));
-        } catch {
-            toast.error(t('usernameCopyFailed'));
-        }
+        if (await copyText(user.username)) toast.success(t('usernameCopied'));
+        else toast.error(t('usernameCopyFailed'));
     };
 
     return (

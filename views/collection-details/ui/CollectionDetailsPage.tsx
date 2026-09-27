@@ -15,6 +15,7 @@ import { DeleteCollectionDialog } from '@/features/collection/delete/ui/DeleteCo
 import { CollectionStatsDialog } from '@/features/collection/stats/ui/CollectionStatsDialog';
 import { EngagementButtons } from '@/features/collection/engage/ui/EngagementButtons';
 import { SaveMenu } from '@/features/board/ui/SaveMenu';
+import { ShareButton } from '@/features/share/ui/ShareButton';
 import { useReportAction } from '@/features/report/create/model/useReportAction';
 import { CollectionItemsGrid } from '@/widgets/collection-items/ui/CollectionItemsGrid';
 import { CommentsSection } from '@/widgets/collection-comments/ui/CommentsSection';
@@ -28,6 +29,7 @@ import { useFormatters } from '@/shared/lib/format/useFormatters';
 
 export function CollectionDetailsPage() {
     const t = useTranslations('collection');
+    const ts = useTranslations('share');
     const format = useFormatters();
     const collectionId = Number(useParams<{ id: string }>().id);
     const { user } = useSessionUser();
@@ -81,6 +83,10 @@ export function CollectionDetailsPage() {
                         {!collection.isPrivate && (
                             <EngagementButtons collection={collection} disabled={!user}>
                                 <SaveMenu collection={collection} disabled={!user} />
+                                <ShareButton
+                                    path={`/collections/${collection.id}`}
+                                    text={ts('collectionText', { name: collection.name })}
+                                />
                             </EngagementButtons>
                         )}
 
