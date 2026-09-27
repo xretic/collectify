@@ -23,14 +23,16 @@ Copy [`.env.example`](../.env.example) to `.env` and fill it in.
 | ----------------------------------- | :------: | ---------------------------------------------------------------------------- |
 | `DATABASE_URL`                      |    ✅    | Neon **pooled** connection string, used by the app                           |
 | `DIRECT_URL`                        |    ✅    | Neon **direct** (non-pooler) connection string, used by `prisma migrate`     |
-| `APP_URL`                           |          | Public origin, e.g. `https://collectify.app`. OAuth redirects, links in emails and the WebSocket origin check; falls back to the request origin (emails are refused in production without it) |
-| `RESEND_API_KEY`                    |          | [Resend](https://resend.com) key for password reset and email confirmation. Without it, development prints emails to the server log |
-| `EMAIL_FROM`                        |          | Sender, e.g. `Collectify <hello@collectify.app>`, on a domain verified in Resend. Defaults to `onboarding@resend.dev`, which only delivers to the Resend account owner |
+| `APP_URL`                           |          | Public origin, e.g. `https://colleo.xyz`. OAuth redirects, links in emails and the WebSocket origin check; falls back to the request origin (emails are refused in production without it) |
+| `RESEND_API_KEY`                    |          | [Resend](https://resend.com) key for password reset and email confirmation. Without it, or while the sender domain is unverified, sending answers 503 ("email is not available"); failed sends do not count against the 3-per-hour limit |
+| `EMAIL_FROM`                        |          | Sender, e.g. `Collectify <noreply@colleo.xyz>`, on a domain verified in Resend. Defaults to `onboarding@resend.dev`, which only delivers to the Resend account owner |
 | `GOOGLE_CLIENT_ID` / `_SECRET`      |          | Google sign-in                                                               |
 | `GITHUB_CLIENT_ID` / `_SECRET`      |          | GitHub sign-in                                                               |
 | `PUSHER_APP_ID` / `PUSHER_SECRET`   |          | Pusher server credentials (Vercel realtime)                                  |
 | `NEXT_PUBLIC_PUSHER_KEY` / `_CLUSTER` |        | Pusher client credentials; when set, the client uses Pusher instead of Socket.IO |
 | `NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY` |          | Image uploads (avatars, banners, covers, items)                              |
+| `LEGAL_NAME` / `LEGAL_ADDRESS` / `CONTACT_EMAIL` / `LEGAL_COUNTRY` | | Operator shown on the Legal notice, Terms and Privacy Policy |
+| `UPLOADCARE_SECRET_KEY`             |          | Uploadcare REST key: deleting an account also deletes the images it uploaded |
 | `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` / `YANDEX_VERIFICATION` | | Search console ownership tokens, rendered as verification meta tags |
 | `REDIS_URL`                         |          | `redis://` server for cache and rate limits                                  |
 | `UPSTASH_REDIS_REST_URL` / `_TOKEN` |          | Upstash REST — takes precedence over `REDIS_URL`                             |
@@ -45,6 +47,15 @@ npm run db:migrate      # prisma migrate deploy — uses DIRECT_URL
 
 Run it on every deploy before starting the new version. Migrations include Postgres triggers and
 `pg_trgm` indexes, so apply them with Prisma rather than `db push`.
+
+Legal texts are versioned in the `LegalDocumentVersion` table (`terms`, `privacy`, `cookies`).
+When a text changes, add a row with the next version number and the date it takes effect; the
+page and the sitemap show the newest version already in effect, earlier rows stay as history:
+
+```sql
+INSERT INTO "LegalDocumentVersion" (slug, version, "effectiveAt", changes)
+VALUES ('privacy', 2, '2026-11-01', 'Added analytics provider.');
+```
 
 ## Option A — Node server
 
@@ -105,4 +116,6 @@ Admins then manage moderators, verified badges, categories and tags from `/manag
 - [ ] Emails work: `RESEND_API_KEY` is set and `EMAIL_FROM` uses a domain verified in Resend
 - [ ] Redis is configured (shared rate limits across instances)
 - [ ] Realtime works: Socket.IO behind a WebSocket-aware proxy, or Pusher on Vercel
+- [ ] Legal details are set (`LEGAL_NAME`, `CONTACT_EMAIL`, ideally `LEGAL_ADDRESS` and `LEGAL_COUNTRY`) and the legal texts were reviewed by a lawyer
+- [ ] `UPLOADCARE_SECRET_KEY` is set, so account deletion also removes uploaded images
 - [ ] At least one admin exists
