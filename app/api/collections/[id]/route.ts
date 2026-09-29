@@ -11,6 +11,7 @@ type Params = { id: string };
 
 export const GET = route<Params>(async (req, params) => {
     const viewer = await getViewer(req);
+    await enforceRateLimit(req, 'read', viewer?.userId);
     const collection = await getCollectionDetails(parseId(params.id), viewer?.userId ?? null);
 
     // Recorded after the response, so the page never waits on this write.

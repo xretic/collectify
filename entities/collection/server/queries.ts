@@ -276,7 +276,10 @@ export async function getOwnedCollection(collectionId: number, viewerId: number)
         select: { id: true, userId: true, private: true },
     });
 
-    if (!collection) throw notFound('collectionNotFound');
+    // Someone else's private collection looks the same as a missing one.
+    if (!collection || (collection.private && collection.userId !== viewerId)) {
+        throw notFound('collectionNotFound');
+    }
     if (collection.userId !== viewerId) throw forbidden('ownerOnly');
 
     return collection;

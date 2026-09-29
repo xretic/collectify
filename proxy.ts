@@ -31,7 +31,10 @@ export function proxy(req: NextRequest) {
     if (pathname.startsWith('/api/')) {
         // Defense in depth on top of SameSite=Lax cookies.
         if (MUTATING_METHODS.has(req.method) && isCrossSite(req)) {
-            return NextResponse.json({ message: 'Cross-site request blocked.' }, { status: 403 });
+            return NextResponse.json(
+                { code: 'crossSite', message: 'Cross-site request blocked.' },
+                { status: 403 },
+            );
         }
 
         return NextResponse.next();

@@ -5,6 +5,7 @@ import { getRedis } from './redis';
 
 export type RateLimitPreset =
     | 'auth'
+    | 'read'
     | 'search'
     | 'autocomplete'
     | 'mutation'
@@ -18,6 +19,8 @@ export type RateLimitPreset =
 
 const PRESETS: Record<RateLimitPreset, { limit: number; windowSeconds: number }> = {
     auth: { limit: 8, windowSeconds: 60 },
+    /** Public reads of a single resource (a collection, a profile, its comments). */
+    read: { limit: 120, windowSeconds: 60 },
     search: { limit: 60, windowSeconds: 60 },
     autocomplete: { limit: 180, windowSeconds: 60 },
     mutation: { limit: 60, windowSeconds: 60 },

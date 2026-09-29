@@ -1,7 +1,7 @@
 import 'server-only';
 import type { Prisma } from '@/generated/prisma/client';
 import { db } from '@/shared/server/db';
-import { forbidden, notFound } from '@/shared/server/http';
+import { notFound } from '@/shared/server/http';
 import type { ChatMessage } from '../model/types';
 
 export const messageSelect = {
@@ -36,8 +36,8 @@ export async function getChatForParticipant(chatId: number, viewerId: number) {
         },
     });
 
-    if (!chat) throw notFound('chatNotFound');
-    if (!chat.users.some((user) => user.id === viewerId)) throw forbidden();
+    // Other people's chats look the same as missing ones.
+    if (!chat || !chat.users.some((user) => user.id === viewerId)) throw notFound('chatNotFound');
 
     return {
         id: chat.id,

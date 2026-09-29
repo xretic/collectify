@@ -49,11 +49,20 @@ async function translate(key: string, values?: TranslationValues) {
     return t.has(key) ? t(key, { ...VALIDATION_VALUES, ...values }) : key;
 }
 
+/** `errors.collectionNotFound` → `collectionNotFound`: a stable code clients can branch on. */
+const errorCode = (key: string) => key.replace(/^(errors|validation)\./, '');
+
 export async function errorResponse(error: ApiError) {
     return NextResponse.json(
-        { message: await translate(error.key, error.values) },
+        { code: errorCode(error.key), message: await translate(error.key, error.values) },
         { status: error.status, headers: error.headers },
     );
+}
+
+/** API responses are per-viewer: never stored by the browser or a proxy unless a route says so. */
+function withCacheDefault(res: Response) {
+    if (!res.headers.has('Cache-Control')) res.headers.set('Cache-Control', 'private, no-store');
+    return res;
 }
 
 type RouteContext<P> = { params: Promise<P> };
@@ -66,14 +75,16 @@ type Handler<P> = (req: NextRequest, params: P) => Promise<Response>;
 export function route<P = Record<string, never>>(handler: Handler<P>) {
     return async (req: NextRequest, context: RouteContext<P>) => {
         try {
-            return await handler(req, await context.params);
+            return withCacheDefault(await handler(req, await context.params));
         } catch (error) {
-            if (error instanceof ApiError) return errorResponse(error);
+            if (error instanceof ApiError) return withCacheDefault(await errorResponse(error));
 
             console.error(`[api] ${req.method} ${req.nextUrl.pathname}`, error);
-            return NextResponse.json(
-                { message: await translate('errors.internal') },
-                { status: 500 },
+            return withCacheDefault(
+                NextResponse.json(
+                    { code: 'internal', message: await translate('errors.internal') },
+                    { status: 500 },
+                ),
             );
         }
     };

@@ -15,6 +15,7 @@ const querySchema = z.object({ cursor: idSchema.optional() });
 export const GET = route<Params>(async (req, params) => {
     const collectionId = parseId(params.id);
     const viewer = await getViewer(req);
+    await enforceRateLimit(req, 'read', viewer?.userId);
 
     // Throws 404 for private collections of other users.
     await getCollectionDetails(collectionId, viewer?.userId ?? null);

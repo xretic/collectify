@@ -37,6 +37,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+    // No `X-Powered-By: Next.js` on every response.
+    poweredByHeader: false,
     // Reads its bundled cities.pbf from disk, so it must stay a plain Node require.
     serverExternalPackages: ['all-the-cities'],
     // Share images read their font from disk; serverless bundles do not include `public/`.
