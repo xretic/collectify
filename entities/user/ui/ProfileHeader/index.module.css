@@ -100,17 +100,33 @@
         border-radius: 0;
     }
 
+    /* Without a banner the card only needs a little air under the header. */
+    .coverEmpty {
+        height: 64px;
+    }
+
     .card {
         display: grid;
         grid-template-columns: auto minmax(0, 1fr) auto;
         grid-template-areas:
             'avatar head actions'
             'bio bio bio'
+            'location location location'
             'stats stats stats';
         align-items: center;
         column-gap: 14px;
         margin: -48px 12px 0;
         padding: 16px;
+    }
+
+    /* Follow + several icons leave the name no room: give them a row of their own. */
+    .cardStacked {
+        grid-template-areas:
+            'avatar head head'
+            'actions actions actions'
+            'bio bio bio'
+            'location location location'
+            'stats stats stats';
     }
 
     /* Flatten so avatar, name block and bio become grid items of the card. */
@@ -141,6 +157,17 @@
         margin-right: -8px;
     }
 
+    .cardStacked .actions {
+        align-items: center;
+        gap: 4px;
+        margin-top: 14px;
+    }
+
+    /* The Follow button takes what the icons leave. */
+    .cardStacked .actions > :first-child {
+        flex: 1;
+    }
+
     .name {
         gap: 6px;
         font-size: 20px;
@@ -151,6 +178,10 @@
         grid-area: bio;
         max-width: none;
         margin-top: 14px;
+    }
+
+    .location {
+        grid-area: location;
     }
 
     .mobileStats {

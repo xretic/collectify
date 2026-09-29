@@ -88,4 +88,15 @@
     .page:not(.chatOpen) .chatColumn {
         display: none;
     }
+
+    /* iOS keyboard open: fill exactly what it leaves visible, over the navbar and tab bar. */
+    .page[data-keyboard] {
+        position: fixed;
+        top: var(--visible-top);
+        right: 0;
+        left: 0;
+        z-index: 1150;
+        height: var(--visible-height);
+        background-color: var(--container-color);
+    }
 }

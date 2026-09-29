@@ -26,11 +26,13 @@ type ProfileHeaderProps = {
     user: ProfileHeaderUser;
     /** Buttons shown in the card's top-right corner. */
     actions?: ReactNode;
+    /** Phones: put the actions on their own row under the name (too many to share it). */
+    stackActions?: boolean;
     /** Follow stats; shown inside the card on phones only (desktop shows them in the filter row). */
     stats?: ReactNode;
 };
 
-export function ProfileHeader({ user, actions, stats }: ProfileHeaderProps) {
+export function ProfileHeader({ user, actions, stackActions = false, stats }: ProfileHeaderProps) {
     const t = useTranslations('profile');
     const locale = useLocale();
     const location = [user.city, user.country && countryName(user.country, locale)]
@@ -50,7 +52,7 @@ export function ProfileHeader({ user, actions, stats }: ProfileHeaderProps) {
                 <div className={`${styles.cover} ${styles.coverEmpty}`} />
             )}
 
-            <div className={styles.card}>
+            <div className={`${styles.card} ${stackActions ? styles.cardStacked : ''}`}>
                 {actions && <div className={styles.actions}>{actions}</div>}
 
                 <div className={styles.identity}>

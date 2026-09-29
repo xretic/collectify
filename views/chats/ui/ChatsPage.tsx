@@ -9,6 +9,7 @@ import { ChatWindow } from '@/widgets/chat-window/ui/ChatWindow';
 import { DraftChatWindow } from '@/widgets/chat-window/ui/ChatWindow/DraftChatWindow';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
+import { trackVisibleViewport } from '@/shared/lib/visibleViewport';
 import styles from './ChatsPage.module.css';
 import { useTranslations } from 'next-intl';
 
@@ -35,7 +36,10 @@ export default function ChatsPage({ chatId = null, draftUserId = null }: ChatsPa
     }
 
     return (
-        <div className={`${styles.page} ${chatId || draftUserId ? styles.chatOpen : ''}`}>
+        <div
+            ref={trackVisibleViewport}
+            className={`${styles.page} ${chatId || draftUserId ? styles.chatOpen : ''}`}
+        >
             <div className={styles.listColumn}>
                 <ChatList activeChatId={chatId} viewer={user} />
             </div>

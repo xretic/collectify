@@ -71,6 +71,7 @@ export default function UserProfilePage() {
                         onSelect={setFollowList}
                     />
                 }
+                stackActions
                 actions={
                     <>
                         <FollowButton
