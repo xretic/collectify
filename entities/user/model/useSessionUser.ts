@@ -4,9 +4,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { useCallback } from 'react';
 import { authApi } from '@/entities/auth/api/authApi';
+import { sessionUserQueryKey } from './queryKeys';
 import type { SessionUser } from './types';
 
-export const sessionUserQueryKey = ['session-user'] as const;
+export { sessionUserQueryKey };
 
 async function fetchSessionUser(): Promise<SessionUser | null> {
     try {

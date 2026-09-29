@@ -7,6 +7,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import './globals.css';
 import './themes.css';
 import { AppProviders } from '@/app/providers/AppProviders';
+import { loadAppState } from '@/app/providers/loadAppState';
 import { themeInitScript } from '@/shared/model/themeStore';
 import { I18nBridge } from '@/shared/i18n/I18nBridge';
 import { Toaster } from '@/shared/ui/Toaster';
@@ -89,7 +90,11 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-    const [locale, tc] = await Promise.all([getLocale(), getTranslations('common')]);
+    const [locale, tc, app] = await Promise.all([
+        getLocale(),
+        getTranslations('common'),
+        loadAppState(),
+    ]);
 
     return (
         <html
@@ -104,7 +109,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <body>
                 <NextIntlClientProvider>
                     <I18nBridge />
-                    <AppProviders>
+                    <AppProviders state={app.state} staleSession={app.staleSession}>
                         <a href="#main" className="skip-link">
                             {tc('skipToContent')}
                         </a>

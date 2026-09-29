@@ -1,5 +1,6 @@
 import 'server-only';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 import type { NextRequest } from 'next/server';
 import {
     findActiveSession,
@@ -45,10 +46,20 @@ export async function getViewer(req: NextRequest): Promise<Viewer | null> {
     return (await resolveViewer(readSessionId(req))).viewer;
 }
 
+/**
+ * The viewer of the session cookie for server components, resolved once per
+ * request. `stale`: a cookie came, but its session no longer exists.
+ */
+export const getCookieViewer = cache(async () => {
+    const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
+    const { viewer, banned } = await resolveViewer(sessionId);
+
+    return { viewer, stale: Boolean(sessionId) && !viewer && banned === undefined };
+});
+
 /** Same as `getViewer` for server components (reads `cookies()`). */
 export async function getViewerFromCookies(): Promise<Viewer | null> {
-    const store = await cookies();
-    return (await resolveViewer(store.get(SESSION_COOKIE)?.value)).viewer;
+    return (await getCookieViewer()).viewer;
 }
 
 /** 401 without a valid session, 403 with a message when the account is banned. */

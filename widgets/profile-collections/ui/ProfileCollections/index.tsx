@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import LockIcon from '@mui/icons-material/Lock';
-import type { CollectionListParams } from '@/entities/collection/model/types';
 import { useCollectionList } from '@/entities/collection/model/useCollectionList';
 import { CollectionsGrid } from '@/entities/collection/ui/CollectionsGrid';
 import { CollectionsGridSkeleton } from '@/entities/collection/ui/CollectionsGridSkeleton';
@@ -16,8 +15,7 @@ import { Pagination } from '@/shared/ui/Pagination';
 import { TabIndicator } from '@/shared/ui/TabIndicator';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
-
-type Tab = 'created' | 'favorites' | 'private';
+import { profileListParams } from '../../lib/listParams';
 
 const TABS = [
     { value: 'created', icon: <AutoAwesomeMosaicIcon fontSize="small" /> },
@@ -37,22 +35,7 @@ export function ProfileCollections({ authorId, stats, own = false }: ProfileColl
     const t = useTranslations('profile.tabs');
     const list = useCollectionListParams();
     const searchParams = useSearchParams();
-    const tabParam = searchParams.get('tab');
-    const boardParam = Number(searchParams.get('board'));
-    const board = Number.isInteger(boardParam) && boardParam > 0 ? boardParam : undefined;
-    const tab: Tab =
-        own && (tabParam === 'favorites' || tabParam === 'private') ? tabParam : 'created';
-
-    const params: CollectionListParams = {
-        sort: list.sort,
-        page: list.page,
-        query: list.query,
-        ...(tab === 'favorites'
-            ? board
-                ? { board }
-                : { favorites: true }
-            : { authorId, visibility: tab === 'private' ? 'private' : 'public' }),
-    };
+    const { tab, board, params } = profileListParams((key) => searchParams.get(key), authorId, own);
 
     const { data, isPending } = useCollectionList(params);
 

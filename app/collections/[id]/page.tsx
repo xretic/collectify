@@ -12,6 +12,9 @@ import { CollectionDetailsPage } from '@/views/collection-details/ui/CollectionD
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { getCollectionDetails } from '@/entities/collection/server/queries';
 import { recordView } from '@/entities/collection/server/recommendations';
+import { listRelatedCollections } from '@/entities/collection/server/related';
+import { commentQueryKeys } from '@/entities/comment/model/queryKeys';
+import { listComments } from '@/entities/comment/server/queries';
 import { getViewerFromCookies } from '@/features/auth/server/guards';
 
 type Props = { params: Promise<{ id: string }> };
@@ -69,6 +72,19 @@ export default async function CollectionRoute({ params }: Props) {
 
         if (collection) {
             queryClient.setQueryData(collectionQueryKeys.detail(collectionId), collection);
+
+            // The rest of the page, so the browser does not fetch it right after load.
+            await Promise.all([
+                queryClient.prefetchInfiniteQuery({
+                    queryKey: commentQueryKeys.byCollection(collectionId),
+                    queryFn: () => listComments(collectionId, null),
+                    initialPageParam: null as number | null,
+                }),
+                queryClient.prefetchQuery({
+                    queryKey: collectionQueryKeys.related(collectionId),
+                    queryFn: () => listRelatedCollections(collectionId),
+                }),
+            ]);
 
             if (!collection.isPrivate) {
                 const categories = (await getTranslations(

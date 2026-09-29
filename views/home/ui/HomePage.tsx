@@ -13,42 +13,23 @@ import { useCollectionListParams } from '@/features/collection/browse/model/useC
 import { CollectionFilters } from '@/features/collection/browse/ui/CollectionFilters';
 import { TagFilter } from '@/features/tag/filter/ui/TagFilter';
 import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll';
-import { useHydrated } from '@/shared/lib/hooks/useHydrated';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { Spinner } from '@/shared/ui/Spinner';
 import { PeopleYouMayKnow } from '@/widgets/people-you-may-know/ui/PeopleYouMayKnow';
 import { GuestHero } from '@/widgets/guest-hero/ui/GuestHero';
+import { resolveFeed } from '../lib/feed';
 import { FeedTabs, type Feed } from './FeedTabs';
 import styles from './HomePage.module.css';
 import { useTranslations } from 'next-intl';
 
-const FILTER_PARAMS = ['category', 'tag', 'q', 'sort'];
-
-/** Feed from the URL: signed-in users land on "For you"; filters and tags imply "Explore". */
-function useFeed(signedIn: boolean): Feed & { filtered: boolean } {
-    const searchParams = useSearchParams();
-    const board = Number(searchParams.get('board'));
-    const filtered = FILTER_PARAMS.some((key) => searchParams.has(key));
-
-    if (!signedIn) return { kind: 'explore', filtered };
-    if (Number.isInteger(board) && board > 0) return { kind: 'board', boardId: board, filtered };
-    if (searchParams.get('feed') === 'explore' || filtered) return { kind: 'explore', filtered };
-
-    return { kind: 'for-you', filtered };
-}
-
-/** `hasSession`: a session cookie came with the request (the user is probably signed in). */
-export default function HomePage({ hasSession }: { hasSession: boolean }) {
+export default function HomePage() {
     const t = useTranslations('home');
     const tc = useTranslations('common');
-    const session = useSessionUser();
-    // Until hydrated, render what the server did (no user yet, session loading): this
-    // boundary may hydrate after the session request already finished.
-    const hydrated = useHydrated();
-    const user = hydrated ? session.user : null;
-    const loading = !hydrated || session.loading;
+    // Loaded on the server (root layout), so the first render already knows the user.
+    const { user, loading } = useSessionUser();
+    const searchParams = useSearchParams();
     const list = useCollectionListParams();
-    const feed = useFeed(Boolean(user));
+    const feed = resolveFeed((key) => searchParams.get(key), Boolean(user));
     const { bySlug } = useCategories();
     const categoryId = list.category ? (bySlug.get(list.category)?.id ?? null) : null;
 
@@ -82,9 +63,7 @@ export default function HomePage({ hasSession }: { hasSession: boolean }) {
         });
 
     // First-time visitors see what Collectify is before the feed; filtering means they got it.
-    // While the session loads, the cookie decides (as it did on the server).
-    const guest = loading ? !hasSession : !user;
-    const landing = guest && !feed.filtered;
+    const landing = !user && !feed.filtered;
     const activeFilters =
         (list.category ? 1 : 0) + list.tags.length + (list.sort === 'popular' ? 0 : 1);
 

@@ -1,12 +1,19 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
-import { cookies } from 'next/headers';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import HomePage from '@/views/home/ui/HomePage';
-import { SESSION_COOKIE } from '@/entities/session/server/session';
+import { resolveFeed } from '@/views/home/lib/feed';
+import { boardQueryKeys } from '@/entities/board/model/queryKeys';
+import { getOwnedBoard, listBoards } from '@/entities/board/server/queries';
+import { categoryQueryKeys } from '@/entities/category/model/queryKeys';
+import { listActiveCategories, listCategoryShowcase } from '@/entities/category/server/queries';
 import { collectionQueryKeys } from '@/entities/collection/model/queryKeys';
 import { COLLECTIONS_CACHE_NAMESPACE, listCollections } from '@/entities/collection/server/queries';
+import { recommendForBoard, recommendForUser } from '@/entities/collection/server/recommendations';
+import { tagQueryKeys } from '@/entities/tag/model/queryKeys';
+import { searchTags } from '@/entities/tag/server/queries';
+import { getCookieViewer } from '@/features/auth/server/guards';
 import { parseFeedParams } from '@/features/collection/browse/lib/feedParams';
 import { withCache } from '@/shared/server/cache';
 import { db } from '@/shared/server/db';
@@ -85,27 +92,97 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     };
 }
 
+/**
+ * Everything the first screen of the feed shows, loaded on the server: the page
+ * arrives filled in and the browser makes no API calls until the user scrolls
+ * or filters. Failed prefetches are left to the client to retry.
+ */
+async function prefetchHome(queryClient: QueryClient, query: Query) {
+    const { viewer } = await getCookieViewer();
+    const userId = viewer?.userId ?? null;
+    const feed = resolveFeed(readParam(query), Boolean(viewer));
+    const jobs: Promise<unknown>[] = [];
+
+    if (userId) {
+        jobs.push(
+            queryClient.prefetchQuery({
+                queryKey: boardQueryKeys.mine(),
+                queryFn: () => listBoards(userId),
+            }),
+        );
+    } else if (!feed.filtered) {
+        jobs.push(
+            queryClient.prefetchQuery({
+                queryKey: [...categoryQueryKeys.all, 'showcase'],
+                queryFn: listCategoryShowcase,
+            }),
+        );
+    }
+
+    if (feed.kind === 'explore') {
+        const params = parseFeedParams(readParam(query));
+
+        jobs.push(
+            queryClient.prefetchInfiniteQuery({
+                queryKey: [...collectionQueryKeys.lists(), 'feed', params],
+                // Only the guest feed is the same for everyone, so only it is cached.
+                queryFn: () =>
+                    userId
+                        ? listCollections({ ...params, page: 0 }, userId)
+                        : withCache(
+                              COLLECTIONS_CACHE_NAMESPACE,
+                              `ssr:${JSON.stringify(params)}`,
+                              30,
+                              () => listCollections({ ...params, page: 0 }, null),
+                          ),
+                initialPageParam: 0,
+            }),
+        );
+
+        // Popular tags for the tag filter. With tags picked, suggestions follow the
+        // first tag's category, which the client resolves itself.
+        if (params.tags.length === 0) {
+            jobs.push(
+                (async () => {
+                    const categories = await listActiveCategories();
+                    const scope = params.category
+                        ? (categories.find((category) => category.slug === params.category)?.id ??
+                          null)
+                        : null;
+
+                    await queryClient.prefetchQuery({
+                        queryKey: tagQueryKeys.search(scope ?? 0, ''),
+                        queryFn: () => searchTags(scope, '', userId),
+                    });
+                })(),
+            );
+        }
+    } else if (userId) {
+        const board = feed.kind === 'board' ? feed.boardId : null;
+
+        jobs.push(
+            queryClient.prefetchInfiniteQuery({
+                queryKey: [...collectionQueryKeys.lists(), 'recommended', board],
+                queryFn: async () => {
+                    if (!board) return recommendForUser(userId, 0);
+
+                    await getOwnedBoard(board, userId);
+                    return recommendForBoard(userId, board, 0);
+                },
+                initialPageParam: 0,
+            }),
+        );
+    }
+
+    await Promise.all(jobs);
+}
+
 export default async function HomeRoute({ searchParams }: Props) {
-    // Guests (no session cookie) get the landing rendered on the server, without waiting for /me.
-    const hasSession = (await cookies()).has(SESSION_COOKIE);
     const queryClient = new QueryClient();
     const query = await searchParams;
     const isHome = Object.keys(query).length === 0;
 
-    // The guest feed is the same for everyone: render its first page on the server
-    // (fast first paint, and crawlers see the collections).
-    if (!hasSession) {
-        const params = parseFeedParams(readParam(query));
-
-        await queryClient.prefetchInfiniteQuery({
-            queryKey: [...collectionQueryKeys.lists(), 'feed', params],
-            queryFn: () =>
-                withCache(COLLECTIONS_CACHE_NAMESPACE, `ssr:${JSON.stringify(params)}`, 30, () =>
-                    listCollections({ ...params, page: 0 }, null),
-                ),
-            initialPageParam: 0,
-        });
-    }
+    await prefetchHome(queryClient, query);
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
@@ -118,7 +195,7 @@ export default async function HomeRoute({ searchParams }: Props) {
                 />
             )}
             <Suspense>
-                <HomePage hasSession={hasSession} />
+                <HomePage />
             </Suspense>
         </HydrationBoundary>
     );

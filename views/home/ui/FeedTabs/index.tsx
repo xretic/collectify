@@ -20,8 +20,9 @@ import { ScrollRow } from '@/shared/ui/ScrollRow';
 import { TabIndicator } from '@/shared/ui/TabIndicator';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
+import type { Feed } from '../../lib/feed';
 
-export type Feed = { kind: 'for-you' } | { kind: 'explore' } | { kind: 'board'; boardId: number };
+export type { Feed };
 
 type FeedTabsProps = {
     value: Feed;

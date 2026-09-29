@@ -1,3 +1,6 @@
+/** The signed-in user (`null` for guests); seeded on the server by the root layout. */
+export const sessionUserQueryKey = ['session-user'] as const;
+
 export const userQueryKeys = {
     detail: (id: number) => ['users', 'detail', id] as const,
     allFollows: () => ['users', 'follows'] as const,
