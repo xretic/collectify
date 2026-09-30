@@ -6,6 +6,21 @@
     margin-top: 25px;
 }
 
+/* Virtualized: the grid only sets the column template; each mounted row is laid over it. */
+.virtual {
+    position: relative;
+}
+
+.row {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: inherit;
+    column-gap: inherit;
+    width: 100%;
+}
+
 @media (max-width: 560px) {
     .grid {
         grid-template-columns: 1fr;
