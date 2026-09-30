@@ -12,7 +12,7 @@ import KeyboardReturnOutlinedIcon from '@mui/icons-material/KeyboardReturnOutlin
 import { LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
 import { authApi } from '@/entities/auth/api/authApi';
 import { isStaff, type SessionUser } from '@/entities/user/model/types';
-import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
+import { switchSessionUser } from '@/entities/user/model/switchSessionUser';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import { toast } from '@/shared/model/toastStore';
 import styles from './index.module.css';
@@ -34,8 +34,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
             // A theme change still waiting to be saved belongs to this account.
             await flushThemeSave();
             await authApi.logout();
-            queryClient.clear();
-            queryClient.setQueryData(sessionUserQueryKey, null);
+            switchSessionUser(queryClient, null);
             router.push('/');
         } catch (error) {
             toast.error(await getApiErrorMessage(error));
@@ -47,8 +46,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
 
         try {
             const admin = await authApi.stopImpersonation();
-            queryClient.clear();
-            queryClient.setQueryData(sessionUserQueryKey, admin);
+            switchSessionUser(queryClient, admin);
             router.push('/management');
         } catch (error) {
             toast.error(await getApiErrorMessage(error));

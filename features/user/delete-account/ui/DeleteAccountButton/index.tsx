@@ -15,7 +15,7 @@ import {
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { userApi } from '@/entities/user/api/userApi';
 import type { SessionUser } from '@/entities/user/model/types';
-import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
+import { switchSessionUser } from '@/entities/user/model/switchSessionUser';
 import { getApiErrorMessage } from '@/shared/api/getApiErrorMessage';
 import styles from './index.module.css';
 import { useTranslations } from 'next-intl';
@@ -32,8 +32,7 @@ export function DeleteAccountButton({ user }: { user: SessionUser }) {
     const remove = useMutation({
         mutationFn: () => userApi.deleteAccount(confirmation),
         onSuccess: () => {
-            queryClient.clear();
-            queryClient.setQueryData(sessionUserQueryKey, null);
+            switchSessionUser(queryClient, null);
             router.replace('/');
         },
         onError: async (err) => setError(await getApiErrorMessage(err)),

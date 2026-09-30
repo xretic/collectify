@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import type { SessionUser } from '@/entities/user/model/types';
-import { sessionUserQueryKey } from '@/entities/user/model/useSessionUser';
+import { switchSessionUser } from '@/entities/user/model/switchSessionUser';
 import { useLocale } from 'next-intl';
 import { safeNextPath } from '@/shared/lib/safeNextPath';
 
@@ -19,8 +19,7 @@ export function useAuthSuccess(redirectTo?: string | ((next: string) => string))
     const next = safeNextPath(useSearchParams().get('next'));
 
     return (user: SessionUser) => {
-        queryClient.clear();
-        queryClient.setQueryData(sessionUserQueryKey, user);
+        switchSessionUser(queryClient, user);
         router.replace(typeof redirectTo === 'function' ? redirectTo(next) : (redirectTo ?? next));
         // The server switched the language cookie to the account's language.
         if (user.locale !== locale) router.refresh();
