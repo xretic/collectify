@@ -81,6 +81,11 @@ export function NotificationToasts() {
         if (mute) dismiss(messageKey(chatId));
     });
 
+    useRealtimeEvent('notification:restored', ({ unread }) => {
+        cache.setUnread(unread);
+        cache.refetchLists();
+    });
+
     useRealtimeEvent('notification:removed', ({ ids, unread }) => {
         cache.setUnread(unread);
         if (ids.length > 0) {

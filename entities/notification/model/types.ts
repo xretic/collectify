@@ -32,6 +32,8 @@ declare module '@/shared/lib/realtime/events' {
         'notification:new': { notification: AppNotification; unread: number };
         /** Notifications withdrawn (unlike, unfollow…) or read on another device. */
         'notification:removed': { ids: number[]; unread: number };
+        /** Retracted notifications brought back (unfollow then follow again). No toast. */
+        'notification:restored': { ids: number[]; unread: number };
     }
 }
 

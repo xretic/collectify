@@ -35,32 +35,34 @@ function socialWhere(input: SocialNotification) {
 /**
  * Follow/like/favorite/comment heart: one notification per (sender, recipient,
  * type, target), ever. Repeating the action, or undoing and redoing it, never
- * notifies again: a retracted row is quietly restored as it was.
+ * notifies again: a retracted row is restored as it was, without a toast, and
+ * the recipient's open lists are told to refresh.
  * Returns the id only for a brand new notification that should be delivered.
  */
-export async function notifySocial(
-    input: SocialNotification,
-    client: Tx = db,
-): Promise<number | null> {
+export async function notifySocial(input: SocialNotification): Promise<number | null> {
     if (input.senderUserId === input.recipientUserId) return null;
 
     const where = socialWhere(input);
-    const existing = await client.notification.findFirst({
+    const existing = await db.notification.findFirst({
         where,
         select: { id: true, retractedAt: true },
     });
 
     if (existing) {
         if (existing.retractedAt) {
-            await client.notification.update({
+            await db.notification.update({
                 where: { id: existing.id },
                 data: { retractedAt: null },
+            });
+            await publishToUsers([input.recipientUserId], 'notification:restored', {
+                ids: [existing.id],
+                unread: await countUnread(input.recipientUserId),
             });
         }
         return null;
     }
 
-    return (await client.notification.create({ data: where, select: { id: true } })).id;
+    return (await db.notification.create({ data: where, select: { id: true } })).id;
 }
 
 /** Undo of follow/like/favorite hides the matching notification (and tells the client). */
