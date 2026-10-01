@@ -3,11 +3,7 @@ import { db, isUniqueViolation } from '@/shared/server/db';
 import type { Locale } from '@/shared/config/i18n';
 import { badRequest, conflict, forbidden, notFound } from '@/shared/server/http';
 import { findCity, normalizeCityName } from '@/shared/server/geo/cities';
-import {
-    deliverNotifications,
-    notifySocial,
-    retractSocial,
-} from '@/entities/notification/server/notifications';
+import { deliverNotifications, notifySocial } from '@/entities/notification/server/notifications';
 
 export async function updateLocale(userId: number, locale: Locale) {
     await db.user.update({ where: { id: userId }, data: { locale }, select: { id: true } });
@@ -102,8 +98,7 @@ export async function follow(followerId: number, followingId: number) {
     await deliverNotifications([notificationId]);
 }
 
+/** The follow notification stays: unfollowing neither removes it nor tells the recipient. */
 export async function unfollow(followerId: number, followingId: number) {
-    const { count } = await db.follow.deleteMany({ where: { followerId, followingId } });
-    if (count === 0) return;
-    await retractSocial({ type: 'FOLLOW', senderUserId: followerId, recipientUserId: followingId });
+    await db.follow.deleteMany({ where: { followerId, followingId } });
 }
