@@ -5,7 +5,7 @@ import { getRedis } from '@/shared/server/redis';
 import { publishToUsers } from '@/shared/server/realtime';
 import { getOnlineUserIds } from '@/shared/server/presence';
 
-const PARTNERS_CACHE_NAMESPACE = 'chat-partners';
+export const PARTNERS_CACHE_NAMESPACE = 'chat-partners';
 /** Partner lists feed every presence poll and announcement, so they are reused briefly. */
 const PARTNERS_TTL_SECONDS = 60;
 

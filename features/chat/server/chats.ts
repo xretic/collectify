@@ -13,6 +13,8 @@ import {
 } from '@/entities/chat/server/queries';
 import { publishToUsers } from '@/shared/server/realtime';
 import { getOnlineUserIds } from '@/shared/server/presence';
+import { bumpCacheNamespace } from '@/shared/server/cache';
+import { PARTNERS_CACHE_NAMESPACE } from './presence';
 import type { ChatMessagesPage, ChatsPage, ChatWith } from '@/entities/chat/model/types';
 
 export async function listChats(userId: number, skip: number): Promise<ChatsPage> {
@@ -187,6 +189,8 @@ export async function startChat(senderId: number, recipientId: number, content: 
                 select: { id: true },
             });
             chatId = chat.id;
+            // Both now see each other's online status, without waiting for the cached lists.
+            await bumpCacheNamespace(PARTNERS_CACHE_NAMESPACE);
         } catch (error) {
             if (!isUniqueViolation(error)) throw error;
             chatId = (
