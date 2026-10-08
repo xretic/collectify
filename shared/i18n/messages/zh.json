@@ -763,7 +763,8 @@
                 "deleteComment": "已删除评论",
                 "deleteCollection": "已删除收藏集",
                 "impersonateUser": "以用户身份登录",
-                "stopImpersonation": "结束代理登录"
+                "stopImpersonation": "结束代理登录",
+                "editProfile": "编辑了资料"
             }
         },
         "activity": {

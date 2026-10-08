@@ -763,7 +763,8 @@
                 "deleteComment": "Smazán komentář",
                 "deleteCollection": "Smazána kolekce",
                 "impersonateUser": "Přihlášení za uživatele",
-                "stopImpersonation": "Ukončeno přihlášení za uživatele"
+                "stopImpersonation": "Ukončeno přihlášení za uživatele",
+                "editProfile": "Upravil profil"
             }
         },
         "activity": {

@@ -10,6 +10,7 @@ const DIRECT_ACTIONS = {
     'delete-collection': 'deleteCollection',
     'impersonate-user': 'impersonateUser',
     'stop-impersonation': 'stopImpersonation',
+    'edit-profile': 'editProfile',
 } as const;
 
 function humanize(value = '') {

@@ -763,7 +763,8 @@
                 "deleteComment": "Reactie verwijderd",
                 "deleteCollection": "Collectie verwijderd",
                 "impersonateUser": "Ingelogd als gebruiker",
-                "stopImpersonation": "Inloggen als gebruiker beëindigd"
+                "stopImpersonation": "Inloggen als gebruiker beëindigd",
+                "editProfile": "Profiel bewerkt"
             }
         },
         "activity": {

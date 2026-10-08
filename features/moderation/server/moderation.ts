@@ -14,6 +14,8 @@ import { deliverNotifications, notifySystem } from '@/entities/notification/serv
 import { getUserRoles } from '@/entities/user/server/roles';
 import { COLLECTIONS_CACHE_NAMESPACE } from '@/entities/collection/server/queries';
 import { prepareUploadCleanup } from '@/entities/user/server/uploads';
+import { dropRevokedConnections } from '@/shared/server/realtime';
+import { refreshCollectionImages, refreshProfileImage } from '@/shared/server/shareImages';
 
 async function assertUserExists(userId: number) {
     const user = await db.user.findUnique({ where: { id: userId }, select: { id: true } });
@@ -64,6 +66,8 @@ export async function issueManualSanction(
     });
 
     await deliverNotifications([notificationId]);
+    // A ban ended the user's sessions: close their open realtime connections too.
+    if (input.scope === 'ACCOUNT' && outcome.applied) await dropRevokedConnections([targetUserId]);
     return outcome;
 }
 
@@ -169,6 +173,10 @@ export async function deleteUserAccount(ctx: StaffContext, targetUserId: number)
 
     await assertCanModerate(ctx, targetUserId);
     const cleanupUploads = await prepareUploadCleanup(targetUserId);
+    const collections = await db.collection.findMany({
+        where: { userId: targetUserId },
+        select: { id: true },
+    });
 
     await db.$transaction(async (tx) => {
         await writeAudit(
@@ -184,6 +192,9 @@ export async function deleteUserAccount(ctx: StaffContext, targetUserId: number)
         await tx.user.delete({ where: { id: targetUserId } });
     });
 
+    await dropRevokedConnections([targetUserId]);
+    refreshCollectionImages(collections.map((collection) => collection.id));
+    refreshProfileImage(targetUserId);
     await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
     return cleanupUploads;
 }

@@ -763,7 +763,8 @@
                 "deleteComment": "Yorum silindi",
                 "deleteCollection": "Koleksiyon silindi",
                 "impersonateUser": "Kullanıcı olarak giriş yapıldı",
-                "stopImpersonation": "Kullanıcı olarak giriş sonlandırıldı"
+                "stopImpersonation": "Kullanıcı olarak giriş sonlandırıldı",
+                "editProfile": "Profili düzenledi"
             }
         },
         "activity": {

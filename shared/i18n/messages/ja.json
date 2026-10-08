@@ -763,7 +763,8 @@
                 "deleteComment": "コメントを削除",
                 "deleteCollection": "コレクションを削除",
                 "impersonateUser": "ユーザーとしてログイン",
-                "stopImpersonation": "代理ログインを終了"
+                "stopImpersonation": "代理ログインを終了",
+                "editProfile": "プロフィールを編集"
             }
         },
         "activity": {

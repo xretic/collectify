@@ -763,7 +763,8 @@
                 "deleteComment": "Deleted comment",
                 "deleteCollection": "Deleted collection",
                 "impersonateUser": "Signed in as user",
-                "stopImpersonation": "Stopped impersonation"
+                "stopImpersonation": "Stopped impersonation",
+                "editProfile": "Edited profile"
             }
         },
         "activity": {

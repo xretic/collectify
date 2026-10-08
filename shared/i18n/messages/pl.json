@@ -763,7 +763,8 @@
                 "deleteComment": "Usunięto komentarz",
                 "deleteCollection": "Usunięto kolekcję",
                 "impersonateUser": "Zalogowano jako użytkownik",
-                "stopImpersonation": "Zakończono logowanie jako użytkownik"
+                "stopImpersonation": "Zakończono logowanie jako użytkownik",
+                "editProfile": "Edytowano profil"
             }
         },
         "activity": {

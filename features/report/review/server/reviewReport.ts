@@ -10,6 +10,8 @@ import { writeAudit } from '@/entities/moderation/server/audit';
 import { deliverNotifications, notifySystem } from '@/entities/notification/server/notifications';
 import { COLLECTIONS_CACHE_NAMESPACE } from '@/entities/collection/server/queries';
 import type { ReviewReportPayload } from '@/entities/report/model/types';
+import { dropRevokedConnections } from '@/shared/server/realtime';
+import { refreshCollectionImages } from '@/shared/server/shareImages';
 
 class ReportAlreadyReviewed extends Error {}
 
@@ -184,8 +186,13 @@ export async function reviewReport(
     }
 
     await deliverNotifications(notificationIds);
+    // A ban ended the user's sessions: close their open realtime connections too.
+    if (sanctionApplied && payload.punishment?.scope === 'ACCOUNT') {
+        await dropRevokedConnections([report.targetUserId]);
+    }
 
     if (payload.removeContent) {
+        if (report.collectionId) refreshCollectionImages([report.collectionId]);
         if (report.collectionId || report.commentId) {
             await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
         }

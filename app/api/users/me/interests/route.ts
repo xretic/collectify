@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { json, readBody, route } from '@/shared/server/http';
+import { forbidden, json, readBody, route } from '@/shared/server/http';
 import { enforceRateLimit } from '@/shared/server/rateLimit';
 import { idSchema } from '@/shared/lib/validation/ids';
 import { requireViewer } from '@/features/auth/server/guards';
@@ -15,6 +15,8 @@ export const GET = route(async (req) => {
 
 export const PUT = route(async (req) => {
     const viewer = await requireViewer(req);
+    // The user's own preferences: staff signed in as them leave them alone.
+    if (viewer.session.impersonatorUserId) throw forbidden();
     await enforceRateLimit(req, 'mutation', viewer.userId);
 
     const { categoryIds } = await readBody(req, bodySchema);

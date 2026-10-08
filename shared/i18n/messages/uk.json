@@ -763,7 +763,8 @@
                 "deleteComment": "Видалено коментар",
                 "deleteCollection": "Видалено колекцію",
                 "impersonateUser": "Вхід від імені користувача",
-                "stopImpersonation": "Завершено вхід від імені користувача"
+                "stopImpersonation": "Завершено вхід від імені користувача",
+                "editProfile": "Змінено профіль"
             }
         },
         "activity": {

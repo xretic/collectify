@@ -763,7 +763,8 @@
                 "deleteComment": "Comentário eliminado",
                 "deleteCollection": "Coleção eliminada",
                 "impersonateUser": "Sessão iniciada como utilizador",
-                "stopImpersonation": "Sessão como utilizador terminada"
+                "stopImpersonation": "Sessão como utilizador terminada",
+                "editProfile": "Perfil editado"
             }
         },
         "activity": {

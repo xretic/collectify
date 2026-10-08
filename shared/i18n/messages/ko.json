@@ -763,7 +763,8 @@
                 "deleteComment": "댓글 삭제",
                 "deleteCollection": "컬렉션 삭제",
                 "impersonateUser": "사용자로 로그인",
-                "stopImpersonation": "대리 로그인 종료"
+                "stopImpersonation": "대리 로그인 종료",
+                "editProfile": "프로필 수정"
             }
         },
         "activity": {
