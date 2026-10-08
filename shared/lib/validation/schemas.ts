@@ -25,11 +25,22 @@ export const usernameSchema = z
     .max(USERNAME_MAX_LENGTH, 'validation.usernameMax')
     .regex(/^[a-z0-9_.]+$/, 'validation.usernameChars');
 
+/** bcrypt ignores everything after the first 72 bytes. */
+const BCRYPT_MAX_BYTES = 72;
+
+/**
+ * Any printable characters (spaces, symbols, non-Latin letters), so
+ * passphrases and password-manager output are accepted.
+ */
 export const passwordSchema = z
     .string()
     .min(PASSWORD_MIN_LENGTH, 'validation.passwordMin')
     .max(PASSWORD_MAX_LENGTH, 'validation.passwordMax')
-    .regex(/^[a-zA-Z0-9!@#$%^&*()]+$/, 'validation.passwordChars');
+    .refine(
+        (value) => new TextEncoder().encode(value).length <= BCRYPT_MAX_BYTES,
+        'validation.passwordMax',
+    )
+    .regex(/^[^\p{C}]+$/u, 'validation.passwordChars');
 
 export const emailSchema = z
     .string()
