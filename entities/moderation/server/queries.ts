@@ -1,6 +1,6 @@
 import 'server-only';
 import type { Prisma } from '@/generated/prisma/client';
-import { db } from '@/shared/server/db';
+import { db, escapeLike } from '@/shared/server/db';
 import { getActiveSanctions } from '@/entities/sanction/server/sanctions';
 import {
     nonAdminUserFilter,
@@ -41,10 +41,11 @@ export async function listManagedUsers(
         ? { id: userId }
         : query
           ? {
+                // Prisma passes `contains` into LIKE as is: `%` and `_` must be escaped.
                 OR: [
-                    { username: { contains: query, mode: 'insensitive' } },
-                    { fullName: { contains: query, mode: 'insensitive' } },
-                    { email: { contains: query, mode: 'insensitive' } },
+                    { username: { contains: escapeLike(query), mode: 'insensitive' } },
+                    { fullName: { contains: escapeLike(query), mode: 'insensitive' } },
+                    { email: { contains: escapeLike(query), mode: 'insensitive' } },
                 ],
             }
           : {};

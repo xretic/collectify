@@ -1,5 +1,5 @@
 import 'server-only';
-import { db, isNotFound, isUniqueViolation } from '@/shared/server/db';
+import { db, isNotFound, isUniqueViolation, lockRow } from '@/shared/server/db';
 import { conflict, forbidden } from '@/shared/server/http';
 import { BOARDS_PER_USER_LIMIT } from '@/shared/lib/constants';
 import { boardSelect, getOwnedBoard, toBoard } from '@/entities/board/server/queries';
@@ -11,13 +11,17 @@ function duplicateName(error: unknown): never {
 }
 
 export async function createBoard(userId: number, name: string) {
-    const count = await db.board.count({ where: { userId } });
-    if (count >= BOARDS_PER_USER_LIMIT) {
-        throw forbidden('boardsLimit', { limit: BOARDS_PER_USER_LIMIT });
-    }
+    const board = await db
+        .$transaction(async (tx) => {
+            // Parallel requests count one after another, so the limit holds.
+            await lockRow(tx, 'User', userId);
+            const count = await tx.board.count({ where: { userId } });
+            if (count >= BOARDS_PER_USER_LIMIT) {
+                throw forbidden('boardsLimit', { limit: BOARDS_PER_USER_LIMIT });
+            }
 
-    const board = await db.board
-        .create({ data: { userId, name }, select: boardSelect })
+            return tx.board.create({ data: { userId, name }, select: boardSelect });
+        })
         .catch(duplicateName);
 
     return toBoard(board);

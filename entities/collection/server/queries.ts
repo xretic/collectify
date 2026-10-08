@@ -1,6 +1,6 @@
 import 'server-only';
 import type { Prisma } from '@/generated/prisma/client';
-import { db, type Tx } from '@/shared/server/db';
+import { db, escapeLike, type Tx } from '@/shared/server/db';
 import { forbidden, notFound } from '@/shared/server/http';
 import { PAGE_SIZE } from '@/shared/lib/constants';
 import { categoryRefSelect } from '@/entities/category/server/queries';
@@ -142,7 +142,10 @@ export async function listCollections(
         ...(params.tags?.length
             ? { AND: params.tags.map((tagId) => ({ tags: { some: { tagId } } })) }
             : {}),
-        ...(params.query ? { lowerCaseName: { contains: params.query.toLowerCase() } } : {}),
+        // Prisma passes `contains` into LIKE as is: `%` and `_` must be escaped.
+        ...(params.query
+            ? { lowerCaseName: { contains: escapeLike(params.query.toLowerCase()) } }
+            : {}),
     };
 
     if (params.board) {
@@ -267,6 +270,18 @@ export async function getCollectionDetails(
         favorited: Array.isArray(row.favorites) && row.favorites.length > 0,
         boardIds: Array.isArray(row.boards) ? row.boards.map((entry) => entry.boardId) : [],
     };
+}
+
+/** 404 unless the collection exists and the viewer may see it (public, or their own). */
+export async function assertCollectionVisible(collectionId: number, viewerId: number | null) {
+    const collection = await db.collection.findUnique({
+        where: { id: collectionId },
+        select: { private: true, userId: true },
+    });
+
+    if (!collection || (collection.private && collection.userId !== viewerId)) {
+        throw notFound('collectionNotFound');
+    }
 }
 
 /** Loads a collection for a mutation and checks the viewer owns it. */

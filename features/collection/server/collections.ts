@@ -1,7 +1,8 @@
 import 'server-only';
-import { db } from '@/shared/server/db';
+import { db, lockRow } from '@/shared/server/db';
 import { forbidden, notFound } from '@/shared/server/http';
 import { bumpCacheNamespace } from '@/shared/server/cache';
+import { refreshCollectionImages } from '@/shared/server/shareImages';
 import { COLLECTIONS_PER_USER_LIMIT } from '@/shared/lib/constants';
 import {
     COLLECTIONS_CACHE_NAMESPACE,
@@ -17,27 +18,31 @@ import type {
 } from '@/entities/collection/model/types';
 
 export async function createCollection(userId: number, input: CreateCollectionPayload) {
-    const owned = await db.collection.count({ where: { userId } });
-    if (owned >= COLLECTIONS_PER_USER_LIMIT) {
-        throw forbidden('collectionsLimit', { limit: COLLECTIONS_PER_USER_LIMIT });
-    }
-
     await assertActiveCategory(input.categoryId);
     const tagIds = await assertTagsInCategory(input.tagIds, input.categoryId);
 
-    const collection = await db.collection.create({
-        data: {
-            userId,
-            name: input.name,
-            lowerCaseName: input.name.toLowerCase(),
-            description: input.description,
-            categoryId: input.categoryId,
-            bannerUrl: input.bannerUrl,
-            private: input.isPrivate,
-            items: { create: { ...input.item, order: 0 } },
-            tags: { create: tagIds.map((tagId) => ({ tagId })) },
-        },
-        select: { id: true },
+    const collection = await db.$transaction(async (tx) => {
+        // Parallel requests count one after another, so the limit holds.
+        await lockRow(tx, 'User', userId);
+        const owned = await tx.collection.count({ where: { userId } });
+        if (owned >= COLLECTIONS_PER_USER_LIMIT) {
+            throw forbidden('collectionsLimit', { limit: COLLECTIONS_PER_USER_LIMIT });
+        }
+
+        return tx.collection.create({
+            data: {
+                userId,
+                name: input.name,
+                lowerCaseName: input.name.toLowerCase(),
+                description: input.description,
+                categoryId: input.categoryId,
+                bannerUrl: input.bannerUrl,
+                private: input.isPrivate,
+                items: { create: { ...input.item, order: 0 } },
+                tags: { create: tagIds.map((tagId) => ({ tagId })) },
+            },
+            select: { id: true },
+        });
     });
 
     await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
@@ -77,6 +82,7 @@ export async function updateCollection(
         await setCollectionTags(tx, collectionId, tagIds);
     });
 
+    refreshCollectionImages([collectionId]);
     await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
 }
 
@@ -109,5 +115,6 @@ export async function deleteCollection(collectionId: number, viewer: Viewer) {
         });
     }
 
+    refreshCollectionImages([collection.id]);
     await bumpCacheNamespace(COLLECTIONS_CACHE_NAMESPACE);
 }

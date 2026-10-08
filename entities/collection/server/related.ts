@@ -55,8 +55,21 @@ function rankRelated(collectionId: number) {
     `;
 }
 
-/** Public collections similar to `collectionId` (its tags and category), with fresh counters. */
-export async function listRelatedCollections(collectionId: number): Promise<CollectionCard[]> {
+/**
+ * Public collections similar to `collectionId` (its tags and category), with
+ * fresh counters. Empty for a missing collection or someone else's private one,
+ * so the list reveals nothing about it (and nothing is cached for it).
+ */
+export async function listRelatedCollections(
+    collectionId: number,
+    viewerId: number | null,
+): Promise<CollectionCard[]> {
+    const source = await db.collection.findUnique({
+        where: { id: collectionId },
+        select: { private: true, userId: true },
+    });
+    if (!source || (source.private && source.userId !== viewerId)) return [];
+
     const ids = await withCache(
         COLLECTIONS_CACHE_NAMESPACE,
         `related:${collectionId}`,

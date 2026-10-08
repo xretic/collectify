@@ -28,5 +28,14 @@ export function isNotFound(error: unknown): boolean {
     return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025';
 }
 
+/**
+ * Locks a row until the transaction ends, so concurrent count-then-write checks
+ * on its children (limits, "at least one item") run one after another.
+ */
+export async function lockRow(tx: Tx, table: 'User' | 'Collection', id: number) {
+    if (table === 'User') await tx.$queryRaw`SELECT 1 FROM "User" WHERE "id" = ${id} FOR UPDATE`;
+    else await tx.$queryRaw`SELECT 1 FROM "Collection" WHERE "id" = ${id} FOR UPDATE`;
+}
+
 /** Escapes `%`, `_` and backslashes, so a LIKE pattern matches them literally. */
 export const escapeLike = (value: string) => value.replace(/[\\%_]/g, (char) => `\\${char}`);

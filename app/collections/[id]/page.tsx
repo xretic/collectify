@@ -82,7 +82,7 @@ export default async function CollectionRoute({ params }: Props) {
                 }),
                 queryClient.prefetchQuery({
                     queryKey: collectionQueryKeys.related(collectionId),
-                    queryFn: () => listRelatedCollections(collectionId),
+                    queryFn: () => listRelatedCollections(collectionId, viewer?.userId ?? null),
                 }),
             ]);
 

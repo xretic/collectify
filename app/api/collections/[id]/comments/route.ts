@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { json, parseId, readBody, readQuery, route } from '@/shared/server/http';
 import { enforceRateLimit } from '@/shared/server/rateLimit';
 import { idSchema } from '@/shared/lib/validation/ids';
-import { getCollectionDetails } from '@/entities/collection/server/queries';
+import { assertCollectionVisible } from '@/entities/collection/server/queries';
 import { listComments } from '@/entities/comment/server/queries';
 import { getViewer, requireViewer } from '@/features/auth/server/guards';
 import { createComment } from '@/features/comment/server/comments';
@@ -18,7 +18,7 @@ export const GET = route<Params>(async (req, params) => {
     await enforceRateLimit(req, 'read', viewer?.userId);
 
     // Throws 404 for private collections of other users.
-    await getCollectionDetails(collectionId, viewer?.userId ?? null);
+    await assertCollectionVisible(collectionId, viewer?.userId ?? null);
 
     const { cursor } = readQuery(req, querySchema);
 

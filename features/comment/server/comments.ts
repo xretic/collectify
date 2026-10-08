@@ -88,9 +88,15 @@ export async function updateComment(viewer: Viewer, commentId: number, text: str
 
     const comment = await db.comment.findUnique({
         where: { id: commentId },
-        select: { userId: true, text: true },
+        select: {
+            userId: true,
+            text: true,
+            collection: { select: { private: true, userId: true } },
+        },
     });
-    if (!comment) throw notFound('commentNotFound');
+    // A collection made private takes its comments out of reach of everyone but the owner.
+    const hidden = comment?.collection.private && comment.collection.userId !== viewer.userId;
+    if (!comment || hidden) throw notFound('commentNotFound');
     if (comment.userId !== viewer.userId) throw forbidden('editOwnCommentsOnly');
 
     const updated = await db.comment.update({
