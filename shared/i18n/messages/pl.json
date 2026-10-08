@@ -26,7 +26,6 @@
         "invalidCredentials": "Nieprawidłowy e-mail lub hasło.",
         "emailTaken": "Konto z tym adresem e-mail już istnieje.",
         "usernameTaken": "Ta nazwa użytkownika jest zajęta.",
-        "emailOrUsernameTaken": "Ten e-mail lub nazwa użytkownika są już zajęte.",
         "currentPasswordRequired": "Podaj obecne hasło.",
         "currentPasswordIncorrect": "Obecne hasło jest nieprawidłowe.",
         "passwordUnchanged": "Nowe hasło musi różnić się od obecnego.",
@@ -88,7 +87,10 @@
         "network": "Błąd sieci. Sprawdź połączenie.",
         "linkInvalid": "Ten link jest nieprawidłowy lub został już użyty.",
         "linkExpired": "Ten link wygasł. Poproś o nowy.",
-        "emailNotConfigured": "Wysyłanie e-maili jest teraz niedostępne."
+        "emailNotConfigured": "Wysyłanie e-maili jest teraz niedostępne.",
+        "emailNotVerified": "Potwierdź e-mail, aby się zalogować. Wysłaliśmy nowy link.",
+        "confirmWithPassword": "Wpisz hasło do konta, aby potwierdzić ten e-mail.",
+        "emailNotVerifiedWait": "Potwierdź e-mail, aby się zalogować. Użyj linku, który wysłaliśmy wcześniej; nowy możemy wysłać później."
     },
     "validation": {
         "required": "To pole jest wymagane.",
@@ -191,6 +193,18 @@
             "notReceived": "Nic nie przyszło? Sprawdź spam lub <link>spróbuj ponownie</link>.",
             "backToLogin": "Wróć do logowania"
         },
+        "registerSent": {
+            "title": "Sprawdź skrzynkę",
+            "body": "Wysłaliśmy link na <strong>{email}</strong>. Otwórz go, aby dokończyć zakładanie konta.",
+            "hint": "Nic nie przyszło po kilku minutach? Sprawdź spam. Masz już konto? <link>Zaloguj się</link>."
+        },
+        "loginUnconfirmed": {
+            "title": "Najpierw potwierdź e-mail",
+            "body": "Adres <strong>{email}</strong> nie jest jeszcze potwierdzony. Wysłaliśmy na niego nowy link - otwórz go, aby się zalogować.",
+            "bodyWait": "Adres <strong>{email}</strong> nie jest jeszcze potwierdzony. Otwórz link z e-maila, który wysłaliśmy wcześniej - nowy możemy wysłać za godzinę.",
+            "hint": "Nic nie przyszło po kilku minutach? Sprawdź spam.",
+            "back": "Użyj innego konta"
+        },
         "reset": {
             "title": "Nowe hasło",
             "subtitle": "Wybierz nowe hasło. Zostaniesz wylogowany na innych urządzeniach.",
@@ -208,9 +222,11 @@
             "success": "Dzięki! Teraz zawsze odzyskasz konto przez e-mail.",
             "failedTitle": "Link nie zadziałał",
             "continue": "Przejdź do Collectify",
-            "resend": "Wyślij nowy link",
             "signInToResend": "Zaloguj się, aby dostać nowy link",
-            "sent": "Nowy link jest w drodze na {email}."
+            "signInToContinue": "Twój e-mail jest potwierdzony. Zaloguj się hasłem wybranym podczas rejestracji.",
+            "passwordTitle": "Potwierdź, że to Ty",
+            "passwordBody": "Ten link otwarto w innej przeglądarce niż ta, w której założono konto. Wpisz hasło do konta, aby potwierdzić e-mail i się zalogować.",
+            "passwordSubmit": "Potwierdź i zaloguj"
         },
         "continueWith": "Kontynuuj przez {provider}",
         "orEmail": "lub przez e-mail",
@@ -894,10 +910,6 @@
         "returnToAdmin": "Wróć do administratora",
         "logout": "Wyloguj się",
         "impersonating": "Jesteś zalogowany jako <strong>@{username}</strong>. Aby wrócić, użyj „Wróć do administratora” w menu konta.",
-        "verifyEmail": "Potwierdź e-mail, aby zawsze móc odzyskać konto. Wysłaliśmy link na <strong>{email}</strong>.",
-        "resendLink": "Wyślij ponownie",
-        "linkSent": "Wysłano! Sprawdź skrzynkę.",
-        "dismiss": "Zamknij",
         "mobileNav": "Nawigacja główna",
         "search": "Szukaj"
     },
@@ -1112,6 +1124,24 @@
             "button": "Potwierdź e-mail",
             "expires": "Link wygasa za {days, plural, one {# dzień} few {# dni} many {# dni} other {# dnia}}.",
             "ignore": "Nie zakładałeś konta? Zignoruj ten e-mail."
+        },
+        "accountExists": {
+            "subject": "Masz już konto w Collectify",
+            "preheader": "Ktoś próbował zarejestrować się tym adresem e-mail.",
+            "heading": "Masz już konto",
+            "intro": "Ktoś (miejmy nadzieję, że Ty) próbował właśnie założyć nowe konto w Collectify z tym adresem e-mail. Należy on już do Twojego konta, więc nic się nie zmieniło.",
+            "button": "Zaloguj się",
+            "forgot": "Nie pamiętasz hasła? Nowe ustawisz na stronie logowania.",
+            "ignore": "To nie Ty próbowałeś się zarejestrować? Zignoruj ten e-mail - Twoje konto jest bezpieczne."
+        },
+        "signupFailed": {
+            "subject": "Rejestracja w Collectify się nie powiodła",
+            "preheader": "Zarejestruj się ponownie z inną nazwą użytkownika.",
+            "heading": "Rejestracja nie została ukończona",
+            "intro": "Nazwa użytkownika @{username} została zajęta przez kogoś innego tuż przed utworzeniem Twojego konta, więc nic nie zostało założone. Zarejestruj się ponownie z inną nazwą użytkownika.",
+            "button": "Zarejestruj się ponownie",
+            "ignore": "To nie Ty próbowałeś się zarejestrować? Zignoruj ten e-mail.",
+            "footer": "Otrzymujesz ten e-mail, ponieważ ktoś próbował zarejestrować się w Collectify z tym adresem."
         }
     },
     "share": {

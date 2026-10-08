@@ -29,19 +29,23 @@ export function readSessionId(req: NextRequest): string | undefined {
     return req.cookies.get(SESSION_COOKIE)?.value || undefined;
 }
 
-/** Returns the session only if it exists and has not expired. */
+/** What the guards need of the session's account (whether its address is confirmed). */
+export type SessionAccount = { email: string; emailVerifiedAt: Date | null };
+
+/** Returns the session (with its account) only if it exists and has not expired. */
 export async function findActiveSession(
     sessionId: string | undefined,
-): Promise<AuthSession | null> {
+): Promise<(AuthSession & { account: SessionAccount }) | null> {
     if (!sessionId) return null;
 
-    const session = await db.session.findUnique({
+    const row = await db.session.findUnique({
         where: { id: sessionId },
-        select: sessionSelect,
+        select: { ...sessionSelect, user: { select: { email: true, emailVerifiedAt: true } } },
     });
-    if (!session || session.expiresAt <= new Date()) return null;
+    if (!row || row.expiresAt <= new Date()) return null;
 
-    return session;
+    const { user, ...session } = row;
+    return { ...session, account: user };
 }
 
 export async function createSession(userId: number): Promise<AuthSession> {

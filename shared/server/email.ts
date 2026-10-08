@@ -1,5 +1,5 @@
 import 'server-only';
-import { serverEnv } from './env';
+import { isProduction, serverEnv } from './env';
 import { apiError } from './http';
 
 const RESEND_URL = 'https://api.resend.com/emails';
@@ -89,6 +89,21 @@ function renderText(content: EmailContent) {
 }
 
 export const isEmailConfigured = () => Boolean(serverEnv.RESEND_API_KEY);
+
+/**
+ * Whether emails with links can go out. Production also requires `APP_URL` (a
+ * link built from the request's Host header could be pointed at another site
+ * by the requester: password reset poisoning) and `EMAIL_FROM` (Resend's test
+ * sender only reaches the owner of the key, nobody else would get the links).
+ *
+ * While it is `true`, an account must confirm its address before it can be
+ * used (sign-up and sign-in end with the emailed link). Without email nothing
+ * could be confirmed, so then a password is enough.
+ */
+export function canSendEmailLinks() {
+    if (!isEmailConfigured()) return false;
+    return !isProduction || Boolean(serverEnv.APP_URL && serverEnv.EMAIL_FROM);
+}
 
 /**
  * Sends a transactional email through Resend. A missing key, a bad key or an

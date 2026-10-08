@@ -1,9 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+import Link from 'next/link';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Button, Checkbox, FormControlLabel, FormHelperText, TextField } from '@mui/material';
+import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
 import { authApi } from '@/entities/auth/api/authApi';
 import {
     PASSWORD_MAX_LENGTH,
@@ -17,6 +20,7 @@ import { registerSchema } from '../../model/schemas';
 import { useAuthSuccess } from '../../model/useAuthSuccess';
 import { suggestUsername } from '../../lib/suggestUsername';
 import { LegalConsent } from '../LegalConsent';
+import { EmailNotice } from '../EmailNotice';
 import { withNext } from '@/shared/lib/safeNextPath';
 import styles from '../authForm.module.css';
 import { useLocale, useTranslations } from 'next-intl';
@@ -34,7 +38,8 @@ export function RegisterForm() {
     // The account keeps the language the visitor is browsing in (changeable in settings).
     const locale = useLocale();
     const validationMessage = useValidationMessage();
-    const onSuccess = useAuthSuccess((next) => withNext('/onboarding', next));
+    const signIn = useAuthSuccess((next) => withNext('/onboarding', next));
+    const [sentTo, setSentTo] = useState<string | null>(null);
     const { register, handleSubmit, formState, getValues, setValue, control } =
         useForm<RegisterValues>({
             resolver: zodResolver(registerSchema),
@@ -44,7 +49,8 @@ export function RegisterForm() {
 
     const signUp = useMutation({
         mutationFn: authApi.register,
-        onSuccess,
+        // No user: the account is finished from the emailed link.
+        onSuccess: (user, { email }) => (user ? signIn(user) : setSentTo(email)),
         onError: async (error) => toast.error(await getApiErrorMessage(error)),
     });
 
@@ -57,6 +63,24 @@ export function RegisterForm() {
             if (suggestion && !getValues('username')) setValue('username', suggestion);
         },
     });
+
+    if (sentTo) {
+        return (
+            <EmailNotice icon={MarkEmailReadOutlinedIcon} title={t('registerSent.title')}>
+                <p>
+                    {t.rich('registerSent.body', {
+                        email: sentTo,
+                        strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                </p>
+                <p>
+                    {t.rich('registerSent.hint', {
+                        link: (chunks) => <Link href="/auth/login">{chunks}</Link>,
+                    })}
+                </p>
+            </EmailNotice>
+        );
+    }
 
     return (
         <form

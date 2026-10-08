@@ -26,7 +26,6 @@
         "invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다.",
         "emailTaken": "이 이메일로 가입된 계정이 이미 있습니다.",
         "usernameTaken": "이미 사용 중인 사용자 이름입니다.",
-        "emailOrUsernameTaken": "이미 사용 중인 이메일 또는 사용자 이름입니다.",
         "currentPasswordRequired": "현재 비밀번호를 입력하세요.",
         "currentPasswordIncorrect": "현재 비밀번호가 올바르지 않습니다.",
         "passwordUnchanged": "새 비밀번호는 현재 비밀번호와 달라야 합니다.",
@@ -88,7 +87,10 @@
         "network": "네트워크 오류입니다. 연결을 확인하세요.",
         "linkInvalid": "이 링크는 유효하지 않거나 이미 사용되었습니다.",
         "linkExpired": "이 링크는 만료되었습니다. 새 링크를 요청하세요.",
-        "emailNotConfigured": "지금은 이메일을 보낼 수 없습니다."
+        "emailNotConfigured": "지금은 이메일을 보낼 수 없습니다.",
+        "emailNotVerified": "로그인하려면 이메일을 인증하세요. 새 링크를 보냈습니다.",
+        "confirmWithPassword": "이 이메일을 인증하려면 계정 비밀번호를 입력하세요.",
+        "emailNotVerifiedWait": "로그인하려면 이메일을 인증하세요. 앞서 보낸 링크를 사용하세요. 새 링크는 나중에 보낼 수 있습니다."
     },
     "validation": {
         "required": "필수 입력 항목입니다.",
@@ -191,6 +193,18 @@
             "notReceived": "몇 분이 지나도 오지 않나요? 스팸함을 확인하거나 <link>다시 시도</link>하세요.",
             "backToLogin": "로그인으로 돌아가기"
         },
+        "registerSent": {
+            "title": "받은편지함을 확인하세요",
+            "body": "<strong>{email}</strong>(으)로 링크를 보냈습니다. 링크를 열어 계정 만들기를 마치세요.",
+            "hint": "몇 분이 지나도 오지 않나요? 스팸함을 확인하세요. 이미 계정이 있나요? <link>로그인</link>"
+        },
+        "loginUnconfirmed": {
+            "title": "먼저 이메일을 인증하세요",
+            "body": "<strong>{email}</strong>은(는) 아직 인증되지 않았습니다. 새 링크를 보냈으니 링크를 열어 로그인하세요.",
+            "bodyWait": "<strong>{email}</strong>은(는) 아직 인증되지 않았습니다. 앞서 보낸 이메일의 링크를 여세요. 새 링크는 1시간 뒤에 보낼 수 있습니다.",
+            "hint": "몇 분이 지나도 오지 않나요? 스팸함을 확인하세요.",
+            "back": "다른 계정 사용"
+        },
         "reset": {
             "title": "새 비밀번호",
             "subtitle": "새 비밀번호를 정하세요. 다른 기기에서는 로그아웃됩니다.",
@@ -208,9 +222,11 @@
             "success": "감사합니다! 이제 언제든 이메일로 계정을 복구할 수 있습니다.",
             "failedTitle": "링크가 작동하지 않았습니다",
             "continue": "Collectify로 이동",
-            "resend": "새 링크 보내기",
             "signInToResend": "새 링크를 받으려면 로그인하세요",
-            "sent": "{email}(으)로 새 링크를 보냈습니다."
+            "signInToContinue": "이메일이 인증되었습니다. 가입할 때 정한 비밀번호로 로그인하세요.",
+            "passwordTitle": "본인 확인",
+            "passwordBody": "이 링크는 가입할 때와 다른 브라우저에서 열렸습니다. 계정 비밀번호를 입력해 이메일을 인증하고 로그인하세요.",
+            "passwordSubmit": "인증하고 로그인"
         },
         "continueWith": "{provider}(으)로 계속",
         "orEmail": "또는 이메일로",
@@ -894,10 +910,6 @@
         "returnToAdmin": "관리자로 돌아가기",
         "logout": "로그아웃",
         "impersonating": "<strong>@{username}</strong>(으)로 로그인되어 있습니다. 돌아가려면 계정 메뉴의 ‘관리자로 돌아가기’를 사용하세요.",
-        "verifyEmail": "언제든 계정을 복구할 수 있도록 이메일을 확인하세요. <strong>{email}</strong>(으)로 링크를 보냈습니다.",
-        "resendLink": "다시 보내기",
-        "linkSent": "보냈습니다! 받은편지함을 확인하세요.",
-        "dismiss": "닫기",
         "mobileNav": "주 메뉴",
         "search": "검색"
     },
@@ -1112,6 +1124,24 @@
             "button": "이메일 확인",
             "expires": "이 링크는 {days}일 후 만료됩니다.",
             "ignore": "가입하지 않으셨다면 이 이메일을 무시하세요."
+        },
+        "accountExists": {
+            "subject": "이미 Collectify 계정이 있습니다",
+            "preheader": "누군가 이 이메일로 가입하려고 했습니다.",
+            "heading": "이미 계정이 있습니다",
+            "intro": "누군가(본인이길 바랍니다) 이 이메일 주소로 새 Collectify 계정을 만들려고 했습니다. 이 주소는 이미 회원님의 계정에 등록되어 있어 아무것도 변경되지 않았습니다.",
+            "button": "로그인",
+            "forgot": "비밀번호를 잊으셨나요? 로그인 페이지에서 새 비밀번호를 설정할 수 있습니다.",
+            "ignore": "가입하려고 하지 않으셨다면 이 이메일을 무시하세요. 계정은 안전합니다."
+        },
+        "signupFailed": {
+            "subject": "Collectify 가입이 완료되지 않았습니다",
+            "preheader": "다른 사용자 이름으로 다시 가입해 주세요.",
+            "heading": "가입이 완료되지 않았습니다",
+            "intro": "계정이 만들어지기 직전에 다른 사람이 사용자 이름 @{username}을(를) 먼저 사용해 아무것도 설정되지 않았습니다. 다른 사용자 이름으로 다시 가입해 주세요.",
+            "button": "다시 가입하기",
+            "ignore": "가입하려고 하지 않으셨다면 이 이메일을 무시하세요.",
+            "footer": "누군가 이 주소로 Collectify 가입을 시도해 이 이메일을 받으셨습니다."
         }
     },
     "share": {

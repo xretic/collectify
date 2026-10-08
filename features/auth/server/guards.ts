@@ -13,6 +13,7 @@ import { getUserRoles } from '@/entities/user/server/roles';
 import type { UserRole } from '@/entities/user/model/types';
 import type { ModerationActor } from '@/entities/moderation/server/audit';
 import { forbidden, unauthorized } from '@/shared/server/http';
+import { needsEmailConfirmation } from './emailLinks';
 
 export type Viewer = {
     session: AuthSession;
@@ -25,11 +26,19 @@ type ViewerResult =
     | { viewer: null; banned: Date | null | undefined };
 
 async function resolveViewer(sessionId: string | undefined): Promise<ViewerResult> {
-    const session = await findActiveSession(sessionId);
-    if (!session) return { viewer: null, banned: undefined };
+    const found = await findActiveSession(sessionId);
+    if (!found) return { viewer: null, banned: undefined };
+    const { account, ...session } = found;
 
     const ban = await getActiveSanction(session.userId, 'ACCOUNT');
     if (ban) return { viewer: null, banned: ban.expiresAt };
+
+    // A session of an account whose address is not confirmed (e.g. made before
+    // confirmation was required) does not count: like a dead one, the cookie is
+    // dropped. Staff impersonating such an account are not its holder: they keep it.
+    if (!session.impersonatorUserId && needsEmailConfirmation(account)) {
+        return { viewer: null, banned: undefined };
+    }
 
     return {
         viewer: {

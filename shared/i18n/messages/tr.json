@@ -26,7 +26,6 @@
         "invalidCredentials": "E-posta veya şifre hatalı.",
         "emailTaken": "Bu e-postayla kayıtlı bir hesap zaten var.",
         "usernameTaken": "Bu kullanıcı adı alınmış.",
-        "emailOrUsernameTaken": "Bu e-posta veya kullanıcı adı zaten alınmış.",
         "currentPasswordRequired": "Mevcut şifre gerekli.",
         "currentPasswordIncorrect": "Mevcut şifre hatalı.",
         "passwordUnchanged": "Yeni şifre mevcut şifreden farklı olmalı.",
@@ -88,7 +87,10 @@
         "network": "Ağ hatası. Bağlantınızı kontrol edin.",
         "linkInvalid": "Bu bağlantı geçersiz veya zaten kullanılmış.",
         "linkExpired": "Bu bağlantının süresi doldu. Yenisini isteyin.",
-        "emailNotConfigured": "Şu anda e-posta gönderilemiyor."
+        "emailNotConfigured": "Şu anda e-posta gönderilemiyor.",
+        "emailNotVerified": "Giriş yapmak için e-postanızı doğrulayın. Size yeni bir bağlantı gönderdik.",
+        "confirmWithPassword": "Bu e-postayı doğrulamak için hesabın şifresini girin.",
+        "emailNotVerifiedWait": "Giriş yapmak için e-postanızı doğrulayın. Daha önce gönderdiğimiz bağlantıyı kullanın; yenisi daha sonra gönderilebilir."
     },
     "validation": {
         "required": "Bu alan zorunludur.",
@@ -191,6 +193,18 @@
             "notReceived": "Birkaç dakika sonra hâlâ gelmedi mi? Spam klasörünü kontrol edin veya <link>tekrar deneyin</link>.",
             "backToLogin": "Girişe dön"
         },
+        "registerSent": {
+            "title": "Gelen kutunuzu kontrol edin",
+            "body": "<strong>{email}</strong> adresine bir bağlantı gönderdik. Hesabınızı oluşturmayı tamamlamak için açın.",
+            "hint": "Birkaç dakika sonra hâlâ gelmedi mi? Spam klasörünü kontrol edin. Zaten hesabınız var mı? <link>Giriş yapın</link>."
+        },
+        "loginUnconfirmed": {
+            "title": "Önce e-postanızı doğrulayın",
+            "body": "<strong>{email}</strong> henüz doğrulanmadı. Bu adrese yeni bir bağlantı gönderdik - giriş yapmak için açın.",
+            "bodyWait": "<strong>{email}</strong> henüz doğrulanmadı. Daha önce gönderdiğimiz e-postadaki bağlantıyı açın - yenisi bir saat sonra gönderilebilir.",
+            "hint": "Birkaç dakika sonra hâlâ gelmedi mi? Spam klasörünü kontrol edin.",
+            "back": "Başka bir hesap kullan"
+        },
         "reset": {
             "title": "Yeni şifre",
             "subtitle": "Yeni bir şifre seçin. Diğer cihazlarda oturumunuz kapatılacak.",
@@ -208,9 +222,11 @@
             "success": "Teşekkürler! Artık hesabınızı her zaman e-postayla kurtarabilirsiniz.",
             "failedTitle": "Bağlantı çalışmadı",
             "continue": "Collectify’a git",
-            "resend": "Yeni bağlantı gönder",
             "signInToResend": "Yeni bağlantı almak için giriş yapın",
-            "sent": "{email} adresine yeni bir bağlantı gönderildi."
+            "signInToContinue": "E-postanız doğrulandı. Kayıt olurken seçtiğiniz şifreyle giriş yapın.",
+            "passwordTitle": "Siz olduğunuzu doğrulayın",
+            "passwordBody": "Bu bağlantı, kayıt olurken kullanılandan farklı bir tarayıcıda açıldı. E-postayı doğrulamak ve giriş yapmak için hesabın şifresini girin.",
+            "passwordSubmit": "Doğrula ve giriş yap"
         },
         "continueWith": "{provider} ile devam et",
         "orEmail": "ya da e-postayla",
@@ -894,10 +910,6 @@
         "returnToAdmin": "Yöneticiye dön",
         "logout": "Çıkış yap",
         "impersonating": "<strong>@{username}</strong> olarak giriş yaptınız. Geri dönmek için hesap menüsündeki “Yöneticiye dön”ü kullanın.",
-        "verifyEmail": "Hesabınızı her zaman kurtarabilmek için e-postanızı doğrulayın. <strong>{email}</strong> adresine bir bağlantı gönderdik.",
-        "resendLink": "Tekrar gönder",
-        "linkSent": "Gönderildi! Gelen kutunuzu kontrol edin.",
-        "dismiss": "Kapat",
         "mobileNav": "Ana gezinme",
         "search": "Ara"
     },
@@ -1112,6 +1124,24 @@
             "button": "E-postayı doğrula",
             "expires": "Bağlantı {days} gün içinde geçersiz olur.",
             "ignore": "Kayıt olmadıysanız bu e-postayı yok sayın."
+        },
+        "accountExists": {
+            "subject": "Zaten bir Collectify hesabınız var",
+            "preheader": "Biri bu e-postayla kayıt olmaya çalıştı.",
+            "heading": "Zaten bir hesabınız var",
+            "intro": "Biri (umarız sizsiniz) az önce bu e-posta adresiyle yeni bir Collectify hesabı oluşturmaya çalıştı. Bu adres zaten hesabınıza ait olduğundan hiçbir şey değiştirilmedi.",
+            "button": "Giriş yap",
+            "forgot": "Şifrenizi mi unuttunuz? Giriş sayfasından yeni bir şifre belirleyebilirsiniz.",
+            "ignore": "Kayıt olmaya çalışmadıysanız bu e-postayı yok sayın - hesabınız güvende."
+        },
+        "signupFailed": {
+            "subject": "Collectify kaydınız tamamlanamadı",
+            "preheader": "Lütfen başka bir kullanıcı adıyla yeniden kayıt olun.",
+            "heading": "Kayıt tamamlanmadı",
+            "intro": "Hesabınız oluşturulmadan hemen önce @{username} kullanıcı adı başka biri tarafından alındı, bu yüzden hiçbir şey oluşturulmadı. Lütfen başka bir kullanıcı adıyla yeniden kayıt olun.",
+            "button": "Yeniden kayıt ol",
+            "ignore": "Kayıt olmaya çalışmadıysanız bu e-postayı yok sayın.",
+            "footer": "Bu e-postayı, biri bu adresle Collectify’a kayıt olmaya çalıştığı için alıyorsunuz."
         }
     },
     "share": {

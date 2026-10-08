@@ -26,7 +26,6 @@
         "invalidCredentials": "邮箱或密码错误。",
         "emailTaken": "该邮箱已注册账号。",
         "usernameTaken": "该用户名已被占用。",
-        "emailOrUsernameTaken": "该邮箱或用户名已被占用。",
         "currentPasswordRequired": "请输入当前密码。",
         "currentPasswordIncorrect": "当前密码不正确。",
         "passwordUnchanged": "新密码必须与当前密码不同。",
@@ -88,7 +87,10 @@
         "network": "网络错误，请检查网络连接。",
         "linkInvalid": "此链接无效或已被使用。",
         "linkExpired": "此链接已过期，请重新申请。",
-        "emailNotConfigured": "目前无法发送邮件。"
+        "emailNotConfigured": "目前无法发送邮件。",
+        "emailNotVerified": "请先验证邮箱再登录。我们已发送新的链接。",
+        "confirmWithPassword": "请输入账号密码以验证此邮箱。",
+        "emailNotVerifiedWait": "请先验证邮箱再登录。请使用我们之前发送的链接，稍后可以再发送新的链接。"
     },
     "validation": {
         "required": "此项为必填项。",
@@ -191,6 +193,18 @@
             "notReceived": "几分钟后还没收到？请检查垃圾邮件或<link>重试</link>。",
             "backToLogin": "返回登录"
         },
+        "registerSent": {
+            "title": "请查收邮件",
+            "body": "我们已向 <strong>{email}</strong> 发送了一个链接。打开链接即可完成账号创建。",
+            "hint": "几分钟后还没收到？请检查垃圾邮件。已有账号？<link>登录</link>"
+        },
+        "loginUnconfirmed": {
+            "title": "请先验证邮箱",
+            "body": "<strong>{email}</strong> 尚未验证。我们已向该邮箱发送新的链接，打开链接即可登录。",
+            "bodyWait": "<strong>{email}</strong> 尚未验证。请打开我们之前发送的邮件中的链接，一小时后可以再发送新的链接。",
+            "hint": "几分钟后还没收到？请检查垃圾邮件。",
+            "back": "使用其他账号"
+        },
         "reset": {
             "title": "新密码",
             "subtitle": "设置一个新密码。其他设备将退出登录。",
@@ -208,9 +222,11 @@
             "success": "谢谢！现在你随时可以通过邮箱找回账号。",
             "failedTitle": "链接无效",
             "continue": "前往 Collectify",
-            "resend": "发送新链接",
             "signInToResend": "登录后即可获取新链接",
-            "sent": "新链接已发送至 {email}。"
+            "signInToContinue": "你的邮箱已验证。请使用注册时设置的密码登录。",
+            "passwordTitle": "确认是你本人",
+            "passwordBody": "此链接是在与注册时不同的浏览器中打开的。请输入账号密码以验证邮箱并登录。",
+            "passwordSubmit": "验证并登录"
         },
         "continueWith": "使用 {provider} 继续",
         "orEmail": "或使用邮箱",
@@ -894,10 +910,6 @@
         "returnToAdmin": "返回管理员",
         "logout": "退出登录",
         "impersonating": "你正以 <strong>@{username}</strong> 的身份登录。可通过账号菜单中的“返回管理员”返回。",
-        "verifyEmail": "确认邮箱，以便随时找回账号。我们已向 <strong>{email}</strong> 发送了链接。",
-        "resendLink": "重新发送",
-        "linkSent": "已发送！请查收邮件。",
-        "dismiss": "关闭",
         "mobileNav": "主导航",
         "search": "搜索"
     },
@@ -1112,6 +1124,24 @@
             "button": "确认邮箱",
             "expires": "该链接 {days} 天后失效。",
             "ignore": "如果你没有注册，请忽略此邮件。"
+        },
+        "accountExists": {
+            "subject": "你已经有 Collectify 账号了",
+            "preheader": "有人尝试用这个邮箱注册。",
+            "heading": "你已经有账号了",
+            "intro": "有人（希望是你）刚刚尝试用这个邮箱地址创建新的 Collectify 账号。该地址已属于你的账号，因此没有做任何更改。",
+            "button": "登录",
+            "forgot": "忘记密码？可以在登录页面设置新密码。",
+            "ignore": "如果你没有尝试注册，请忽略此邮件，你的账号是安全的。"
+        },
+        "signupFailed": {
+            "subject": "你的 Collectify 注册未完成",
+            "preheader": "请使用其他用户名重新注册。",
+            "heading": "注册未完成",
+            "intro": "在你的账号创建前不久，用户名 @{username} 已被他人占用，因此没有创建任何内容。请使用其他用户名重新注册。",
+            "button": "重新注册",
+            "ignore": "如果你没有尝试注册，请忽略此邮件。",
+            "footer": "你收到此邮件是因为有人尝试用这个地址注册 Collectify。"
         }
     },
     "share": {

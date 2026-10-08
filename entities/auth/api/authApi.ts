@@ -13,14 +13,21 @@ export const authApi = {
         return (await api.post('auth/login', { json: payload }).json<UserResponse>()).user;
     },
 
+    /**
+     * The signed-in user, or `null` when a confirmation link was emailed instead
+     * (the usual case: the answer does not reveal whether the address is taken).
+     */
     async register(payload: {
         email: string;
         username: string;
         password: string;
         locale: Locale;
         ageConfirmed: boolean;
-    }) {
-        return (await api.post('auth/register', { json: payload }).json<UserResponse>()).user;
+    }): Promise<SessionUser | null> {
+        const body = await api
+            .post('auth/register', { json: payload })
+            .json<UserResponse | { pending: true }>();
+        return 'user' in body ? body.user : null;
     },
 
     /** Always succeeds for a well-formed address, so it does not reveal who has an account. */
@@ -33,13 +40,13 @@ export const authApi = {
         return (await api.post('auth/password/reset', { json: payload }).json<UserResponse>()).user;
     },
 
-    async verifyEmail(token: string) {
-        await api.post('auth/email/verify', { json: { token } });
-    },
-
-    /** `false` when there is nothing to confirm any more. */
-    async resendVerification() {
-        return (await api.post('auth/email/verification').json<{ sent: boolean }>()).sent;
+    /**
+     * The user the link signed in, or `null` when this browser was already signed
+     * in. Opened in another browser than the sign-up, the password is needed too.
+     */
+    async verifyEmail(payload: { token: string; password?: string }): Promise<SessionUser | null> {
+        const res = await api.post('auth/email/verify', { json: payload });
+        return res.status === 204 ? null : (await res.json<UserResponse>()).user;
     },
 
     /** Sets the language cookie (and the account language when signed in). */

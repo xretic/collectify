@@ -8,7 +8,9 @@ import {
     type RealtimeEventName,
     type RealtimeEvents,
 } from '@/shared/lib/realtime/events';
+import { PLACEHOLDER_EMAIL_DOMAIN } from '@/shared/lib/constants';
 import { db } from './db';
+import { canSendEmailLinks } from './email';
 import { serverEnv } from './env';
 
 declare global {
@@ -47,15 +49,26 @@ function queryLiveSessions(userIds: number[]): Promise<LiveSession[]> {
             userId: { in: userIds },
             impersonatorUserId: null,
             expiresAt: { gt: new Date() },
+            ...(canSendEmailLinks()
+                ? {
+                      user: {
+                          OR: [
+                              { emailVerifiedAt: { not: null } },
+                              { email: { endsWith: `@${PLACEHOLDER_EMAIL_DOMAIN}` } },
+                          ],
+                      },
+                  }
+                : {}),
         },
         select: { id: true, userId: true },
     });
 }
 
 /**
- * Sessions that may receive realtime events: not expired and not impersonated
- * (the channel carries direct messages, which staff must not see). Cached
- * briefly per process; `fresh` reads the database.
+ * Sessions that may receive realtime events: not expired, not impersonated
+ * (the channel carries direct messages, which staff must not see), and of an
+ * account that may be used (address confirmed, while confirmation is required).
+ * Cached briefly per process; `fresh` reads the database.
  */
 export async function liveSessions(
     userIds: number[],

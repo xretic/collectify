@@ -23,3 +23,15 @@ export async function getApiErrorMessage(error: unknown, fallback?: string): Pro
 
     return fallbackMessage;
 }
+
+/** The stable `code` of an API error (e.g. `emailNotVerified`), or `null`. */
+export async function getApiErrorCode(error: unknown): Promise<string | null> {
+    if (!(error instanceof HTTPError)) return null;
+
+    try {
+        const body = (await error.response.clone().json()) as { code?: unknown };
+        return typeof body.code === 'string' ? body.code : null;
+    } catch {
+        return null;
+    }
+}

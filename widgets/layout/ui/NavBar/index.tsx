@@ -14,7 +14,6 @@ import { useActiveChatStore } from '@/features/chat/model/activeChatStore';
 import { GlobalSearch } from '@/widgets/global-search/ui/GlobalSearch';
 import { UserMenu } from '../UserMenu';
 import { ImpersonationBanner } from '../ImpersonationBanner';
-import { VerifyEmailBanner } from '../VerifyEmailBanner';
 import { MobileTabBar } from '../MobileTabBar';
 import { SearchTrigger } from '../SearchTrigger';
 import { getNavItems } from './navItems';
@@ -69,9 +68,6 @@ export default function NavBar() {
         <>
             <header ref={headerRef} className={styles.header}>
                 {user?.impersonatorUserId && <ImpersonationBanner username={user.username} />}
-                {user?.email && !user.emailVerified && !user.impersonatorUserId && (
-                    <VerifyEmailBanner email={user.email} />
-                )}
 
                 <nav className={styles.bar}>
                     <Link href="/" className={styles.logo}>

@@ -14,6 +14,8 @@ const hostname = process.env.HOSTNAME ?? '0.0.0.0';
 const port = Number(process.env.PORT ?? 3000);
 
 const SESSION_COOKIE = 'sessionId';
+// Same as PLACEHOLDER_EMAIL_DOMAIN in shared/lib/constants.ts.
+const PLACEHOLDER_EMAIL_DOMAIN = 'users.noreply.collectify';
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
@@ -34,8 +36,27 @@ function readCookie(header, name) {
     return null;
 }
 
+function isUrl(value) {
+    try {
+        new URL(value ?? '');
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 /**
- * Resolves the user of a valid, non-expired session whose account is not banned.
+ * While email links can be sent, an account whose address is not confirmed
+ * cannot be used. Must match `canSendEmailLinks` in shared/server/email.ts
+ * (where an APP_URL that is not a URL counts as unset).
+ */
+const requireConfirmedEmail =
+    Boolean(process.env.RESEND_API_KEY?.trim()) &&
+    (dev || (isUrl(process.env.APP_URL?.trim()) && Boolean(process.env.EMAIL_FROM?.trim())));
+
+/**
+ * Resolves the user of a valid, non-expired session whose account is not banned
+ * (and has a confirmed address, when that is required).
  * Impersonated sessions are refused: the user room carries direct messages.
  * Prisma stores `TIMESTAMP(3)` in UTC, hence `NOW() AT TIME ZONE 'UTC'`.
  */
@@ -43,9 +64,11 @@ async function authenticate(sessionId) {
     const { rows } = await db.query(
         `SELECT s."userId"
          FROM "Session" s
+         JOIN "User" u ON u.id = s."userId"
          WHERE s.id = $1
            AND s."expiresAt" > (NOW() AT TIME ZONE 'UTC')
            AND s."impersonatorUserId" IS NULL
+           AND (NOT $2 OR u."emailVerifiedAt" IS NOT NULL OR u.email LIKE $3)
            AND NOT EXISTS (
                SELECT 1 FROM "AccountSanction" a
                WHERE a."userId" = s."userId"
@@ -53,7 +76,7 @@ async function authenticate(sessionId) {
                  AND a."revokedAt" IS NULL
                  AND (a."expiresAt" IS NULL OR a."expiresAt" > (NOW() AT TIME ZONE 'UTC'))
            )`,
-        [sessionId],
+        [sessionId, requireConfirmedEmail, `%@${PLACEHOLDER_EMAIL_DOMAIN}`],
     );
 
     return rows[0]?.userId ?? null;

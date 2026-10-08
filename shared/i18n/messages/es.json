@@ -26,7 +26,6 @@
         "invalidCredentials": "Correo o contraseña incorrectos.",
         "emailTaken": "Ya existe una cuenta con este correo.",
         "usernameTaken": "Este nombre de usuario ya está en uso.",
-        "emailOrUsernameTaken": "Este correo o nombre de usuario ya está en uso.",
         "currentPasswordRequired": "Se requiere la contraseña actual.",
         "currentPasswordIncorrect": "La contraseña actual no es correcta.",
         "passwordUnchanged": "La nueva contraseña debe ser distinta de la actual.",
@@ -88,7 +87,10 @@
         "network": "Error de red. Comprueba tu conexión.",
         "linkInvalid": "Este enlace no es válido o ya se ha usado.",
         "linkExpired": "Este enlace ha caducado. Solicita uno nuevo.",
-        "emailNotConfigured": "El envío de correos no está disponible ahora."
+        "emailNotConfigured": "El envío de correos no está disponible ahora.",
+        "emailNotVerified": "Confirma tu correo para iniciar sesión. Te hemos enviado un enlace nuevo.",
+        "confirmWithPassword": "Introduce la contraseña de la cuenta para confirmar este correo.",
+        "emailNotVerifiedWait": "Confirma tu correo para iniciar sesión. Usa el enlace que te enviamos antes; podremos enviar uno nuevo más tarde."
     },
     "validation": {
         "required": "Este campo es obligatorio.",
@@ -191,6 +193,18 @@
             "notReceived": "¿No llega nada? Revisa la carpeta de spam o <link>inténtalo de nuevo</link>.",
             "backToLogin": "Volver a iniciar sesión"
         },
+        "registerSent": {
+            "title": "Revisa tu correo",
+            "body": "Hemos enviado un enlace a <strong>{email}</strong>. Ábrelo para terminar de crear tu cuenta.",
+            "hint": "¿No llega nada en unos minutos? Revisa la carpeta de spam. ¿Ya tienes cuenta? <link>Inicia sesión</link>."
+        },
+        "loginUnconfirmed": {
+            "title": "Primero confirma tu correo",
+            "body": "<strong>{email}</strong> aún no está confirmado. Te hemos enviado un enlace nuevo - ábrelo para iniciar sesión.",
+            "bodyWait": "<strong>{email}</strong> aún no está confirmado. Abre el enlace del correo que te enviamos antes - podremos enviar uno nuevo dentro de una hora.",
+            "hint": "¿No llega nada en unos minutos? Revisa la carpeta de spam.",
+            "back": "Usar otra cuenta"
+        },
         "reset": {
             "title": "Nueva contraseña",
             "subtitle": "Elige una contraseña nueva. Se cerrará la sesión en tus otros dispositivos.",
@@ -208,9 +222,11 @@
             "success": "¡Gracias! Ahora siempre podrás recuperar tu cuenta por correo.",
             "failedTitle": "El enlace no ha funcionado",
             "continue": "Ir a Collectify",
-            "resend": "Enviar un enlace nuevo",
             "signInToResend": "Inicia sesión para recibir un enlace nuevo",
-            "sent": "Hemos enviado un enlace nuevo a {email}."
+            "signInToContinue": "Tu correo está confirmado. Inicia sesión con la contraseña que elegiste al registrarte.",
+            "passwordTitle": "Confirma que eres tú",
+            "passwordBody": "Este enlace se abrió en un navegador distinto al que usaste para registrarte. Introduce la contraseña de la cuenta para confirmar el correo e iniciar sesión.",
+            "passwordSubmit": "Confirmar e iniciar sesión"
         },
         "continueWith": "Continuar con {provider}",
         "orEmail": "o con correo",
@@ -894,10 +910,6 @@
         "returnToAdmin": "Volver al administrador",
         "logout": "Cerrar sesión",
         "impersonating": "Has iniciado sesión como <strong>@{username}</strong>. Usa «Volver al administrador» en el menú de la cuenta para regresar.",
-        "verifyEmail": "Confirma tu correo para poder recuperar siempre tu cuenta. Hemos enviado un enlace a <strong>{email}</strong>.",
-        "resendLink": "Reenviar",
-        "linkSent": "¡Enviado! Revisa tu bandeja de entrada.",
-        "dismiss": "Cerrar",
         "mobileNav": "Navegación principal",
         "search": "Buscar"
     },
@@ -1112,6 +1124,24 @@
             "button": "Confirmar correo",
             "expires": "El enlace caduca en {days, plural, one {# día} other {# días}}.",
             "ignore": "¿No te has registrado? Ignora este correo."
+        },
+        "accountExists": {
+            "subject": "Ya tienes una cuenta en Collectify",
+            "preheader": "Alguien intentó registrarse con este correo.",
+            "heading": "Ya tienes una cuenta",
+            "intro": "Alguien (esperamos que tú) acaba de intentar crear una cuenta nueva en Collectify con esta dirección de correo. Ya pertenece a tu cuenta, así que no se ha cambiado nada.",
+            "button": "Iniciar sesión",
+            "forgot": "¿Olvidaste tu contraseña? Puedes crear una nueva desde la página de inicio de sesión.",
+            "ignore": "¿No intentaste registrarte? Ignora este correo - tu cuenta está a salvo."
+        },
+        "signupFailed": {
+            "subject": "Tu registro en Collectify no se completó",
+            "preheader": "Vuelve a registrarte con otro nombre de usuario.",
+            "heading": "Registro no completado",
+            "intro": "Alguien ocupó el nombre de usuario @{username} justo antes de que se creara tu cuenta, así que no se configuró nada. Vuelve a registrarte con otro nombre de usuario.",
+            "button": "Registrarme de nuevo",
+            "ignore": "¿No intentaste registrarte? Ignora este correo.",
+            "footer": "Recibes este correo porque alguien intentó registrarse en Collectify con esta dirección."
         }
     },
     "share": {

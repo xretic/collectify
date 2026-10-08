@@ -11,6 +11,7 @@ import {
     profileDescriptionSchema,
     usernameSchema,
 } from '@/shared/lib/validation/schemas';
+import { isPlaceholderEmail } from '@/entities/user/lib/email';
 
 export const loginSchema = z.object({
     email: emailSchema,
@@ -18,7 +19,8 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = z.object({
-    email: emailSchema,
+    // The placeholder domain is reserved for OAuth accounts without a shared address.
+    email: emailSchema.refine((email) => !isPlaceholderEmail(email), 'validation.emailInvalid'),
     username: usernameSchema,
     password: passwordSchema,
     locale: localeSchema.optional(),
@@ -45,7 +47,11 @@ export const resetPasswordSchema = z
     .object({ ...newPasswordFields, token: emailTokenSchema })
     .refine((value) => value.password === value.confirmPassword, passwordsMatch);
 
-export const verifyEmailSchema = z.object({ token: emailTokenSchema });
+/** `password`: when the link is opened in another browser than the one that signed up. */
+export const verifyEmailSchema = z.object({
+    token: emailTokenSchema,
+    password: z.string().min(1, 'validation.required').max(200, 'validation.tooLong').optional(),
+});
 
 export const updateProfileSchema = z
     .object({

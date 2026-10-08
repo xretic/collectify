@@ -26,7 +26,6 @@
         "invalidCredentials": "E-mail ou palavra-passe incorretos.",
         "emailTaken": "Já existe uma conta com este e-mail.",
         "usernameTaken": "Este nome de utilizador já está em uso.",
-        "emailOrUsernameTaken": "Este e-mail ou nome de utilizador já está em uso.",
         "currentPasswordRequired": "A palavra-passe atual é obrigatória.",
         "currentPasswordIncorrect": "A palavra-passe atual está incorreta.",
         "passwordUnchanged": "A nova palavra-passe tem de ser diferente da atual.",
@@ -88,7 +87,10 @@
         "network": "Erro de rede. Verifique a sua ligação.",
         "linkInvalid": "Esta ligação é inválida ou já foi usada.",
         "linkExpired": "Esta ligação expirou. Peça uma nova.",
-        "emailNotConfigured": "O envio de e-mails não está disponível de momento."
+        "emailNotConfigured": "O envio de e-mails não está disponível de momento.",
+        "emailNotVerified": "Confirme o seu e-mail para iniciar sessão. Enviámos-lhe uma nova ligação.",
+        "confirmWithPassword": "Introduza a palavra-passe da conta para confirmar este e-mail.",
+        "emailNotVerifiedWait": "Confirme o seu e-mail para iniciar sessão. Use a ligação que enviámos antes; uma nova pode ser enviada mais tarde."
     },
     "validation": {
         "required": "Este campo é obrigatório.",
@@ -191,6 +193,18 @@
             "notReceived": "Não recebeu nada? Verifique o spam ou <link>tente novamente</link>.",
             "backToLogin": "Voltar ao início de sessão"
         },
+        "registerSent": {
+            "title": "Verifique a sua caixa de entrada",
+            "body": "Enviámos uma ligação para <strong>{email}</strong>. Abra-a para terminar de criar a sua conta.",
+            "hint": "Não recebeu nada após alguns minutos? Verifique o spam. Já tem conta? <link>Inicie sessão</link>."
+        },
+        "loginUnconfirmed": {
+            "title": "Confirme primeiro o seu e-mail",
+            "body": "<strong>{email}</strong> ainda não está confirmado. Enviámos uma nova ligação para lá - abra-a para iniciar sessão.",
+            "bodyWait": "<strong>{email}</strong> ainda não está confirmado. Abra a ligação do e-mail que enviámos antes - uma nova pode ser enviada dentro de uma hora.",
+            "hint": "Não recebeu nada após alguns minutos? Verifique o spam.",
+            "back": "Usar outra conta"
+        },
         "reset": {
             "title": "Nova palavra-passe",
             "subtitle": "Escolha uma nova palavra-passe. A sessão será terminada nos outros dispositivos.",
@@ -208,9 +222,11 @@
             "success": "Obrigado! Agora pode sempre recuperar a sua conta por e-mail.",
             "failedTitle": "A ligação não funcionou",
             "continue": "Ir para o Collectify",
-            "resend": "Enviar nova ligação",
             "signInToResend": "Inicie sessão para receber uma nova ligação",
-            "sent": "Uma nova ligação está a caminho de {email}."
+            "signInToContinue": "O seu e-mail está confirmado. Inicie sessão com a palavra-passe que escolheu ao registar-se.",
+            "passwordTitle": "Confirme que é você",
+            "passwordBody": "Esta ligação foi aberta num navegador diferente do usado no registo. Introduza a palavra-passe da conta para confirmar o e-mail e iniciar sessão.",
+            "passwordSubmit": "Confirmar e iniciar sessão"
         },
         "continueWith": "Continuar com {provider}",
         "orEmail": "ou com e-mail",
@@ -894,10 +910,6 @@
         "returnToAdmin": "Voltar ao administrador",
         "logout": "Terminar sessão",
         "impersonating": "Tem sessão iniciada como <strong>@{username}</strong>. Use «Voltar ao administrador» no menu da conta para regressar.",
-        "verifyEmail": "Confirme o seu e-mail para poder recuperar sempre a sua conta. Enviámos uma ligação para <strong>{email}</strong>.",
-        "resendLink": "Enviar novamente",
-        "linkSent": "Enviado! Verifique a sua caixa de entrada.",
-        "dismiss": "Fechar",
         "mobileNav": "Navegação principal",
         "search": "Pesquisar"
     },
@@ -1112,6 +1124,24 @@
             "button": "Confirmar e-mail",
             "expires": "A ligação expira em {days, plural, one {# dia} other {# dias}}.",
             "ignore": "Não se registou? Ignore este e-mail."
+        },
+        "accountExists": {
+            "subject": "Já tem uma conta Collectify",
+            "preheader": "Alguém tentou registar-se com este e-mail.",
+            "heading": "Já tem uma conta",
+            "intro": "Alguém (esperamos que tenha sido você) acabou de tentar criar uma nova conta Collectify com este endereço de e-mail. Ele já pertence à sua conta, por isso nada foi alterado.",
+            "button": "Iniciar sessão",
+            "forgot": "Esqueceu-se da palavra-passe? Pode definir uma nova na página de início de sessão.",
+            "ignore": "Não tentou registar-se? Ignore este e-mail - a sua conta está segura."
+        },
+        "signupFailed": {
+            "subject": "O seu registo no Collectify não foi concluído",
+            "preheader": "Registe-se novamente com outro nome de utilizador.",
+            "heading": "Registo não concluído",
+            "intro": "O nome de utilizador @{username} foi ocupado por outra pessoa pouco antes de a sua conta ser criada, por isso nada foi configurado. Registe-se novamente com outro nome de utilizador.",
+            "button": "Registar novamente",
+            "ignore": "Não tentou registar-se? Ignore este e-mail.",
+            "footer": "Recebe este e-mail porque alguém tentou registar-se no Collectify com este endereço."
         }
     },
     "share": {

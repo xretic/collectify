@@ -26,7 +26,6 @@
         "invalidCredentials": "Neplatný e-mail nebo heslo.",
         "emailTaken": "Účet s tímto e-mailem už existuje.",
         "usernameTaken": "Toto uživatelské jméno je obsazené.",
-        "emailOrUsernameTaken": "Tento e-mail nebo uživatelské jméno už je obsazené.",
         "currentPasswordRequired": "Zadejte současné heslo.",
         "currentPasswordIncorrect": "Současné heslo není správné.",
         "passwordUnchanged": "Nové heslo se musí lišit od současného.",
@@ -88,7 +87,10 @@
         "network": "Chyba sítě. Zkontrolujte připojení.",
         "linkInvalid": "Tento odkaz je neplatný nebo už byl použit.",
         "linkExpired": "Platnost odkazu vypršela. Požádejte o nový.",
-        "emailNotConfigured": "Odesílání e-mailů teď není k dispozici."
+        "emailNotConfigured": "Odesílání e-mailů teď není k dispozici.",
+        "emailNotVerified": "Pro přihlášení potvrďte e-mail. Poslali jsme vám nový odkaz.",
+        "confirmWithPassword": "Pro potvrzení tohoto e-mailu zadejte heslo k účtu.",
+        "emailNotVerifiedWait": "Pro přihlášení potvrďte e-mail. Použijte odkaz, který jsme poslali dříve; nový můžeme poslat později."
     },
     "validation": {
         "required": "Toto pole je povinné.",
@@ -191,6 +193,18 @@
             "notReceived": "Nic nepřišlo? Zkontrolujte spam nebo <link>to zkuste znovu</link>.",
             "backToLogin": "Zpět na přihlášení"
         },
+        "registerSent": {
+            "title": "Zkontrolujte svou schránku",
+            "body": "Poslali jsme odkaz na <strong>{email}</strong>. Otevřete ho a dokončete vytvoření účtu.",
+            "hint": "Nic nepřišlo ani po pár minutách? Zkontrolujte spam. Už máte účet? <link>Přihlaste se</link>."
+        },
+        "loginUnconfirmed": {
+            "title": "Nejdřív potvrďte e-mail",
+            "body": "<strong>{email}</strong> ještě není potvrzený. Poslali jsme na něj nový odkaz - otevřete ho a přihlásíte se.",
+            "bodyWait": "<strong>{email}</strong> ještě není potvrzený. Otevřete odkaz z e-mailu, který jsme poslali dříve - nový můžeme poslat za hodinu.",
+            "hint": "Nic nepřišlo ani po pár minutách? Zkontrolujte spam.",
+            "back": "Použít jiný účet"
+        },
         "reset": {
             "title": "Nové heslo",
             "subtitle": "Zvolte nové heslo. Na ostatních zařízeních budete odhlášeni.",
@@ -208,9 +222,11 @@
             "success": "Děkujeme! Svůj účet teď můžete vždy obnovit přes e-mail.",
             "failedTitle": "Odkaz nefungoval",
             "continue": "Přejít do Collectify",
-            "resend": "Poslat nový odkaz",
             "signInToResend": "Pro nový odkaz se přihlaste",
-            "sent": "Nový odkaz je na cestě na {email}."
+            "signInToContinue": "E-mail je potvrzený. Přihlaste se heslem, které jste si zvolili při registraci.",
+            "passwordTitle": "Potvrďte, že jste to vy",
+            "passwordBody": "Odkaz byl otevřen v jiném prohlížeči, než ve kterém proběhla registrace. Zadejte heslo k účtu, potvrďte e-mail a přihlaste se.",
+            "passwordSubmit": "Potvrdit a přihlásit"
         },
         "continueWith": "Pokračovat přes {provider}",
         "orEmail": "nebo e-mailem",
@@ -894,10 +910,6 @@
         "returnToAdmin": "Zpět k administrátorovi",
         "logout": "Odhlásit se",
         "impersonating": "Jste přihlášeni jako <strong>@{username}</strong>. Pro návrat použijte „Zpět k administrátorovi“ v menu účtu.",
-        "verifyEmail": "Potvrďte svůj e-mail, abyste mohli účet vždy obnovit. Odkaz jsme poslali na <strong>{email}</strong>.",
-        "resendLink": "Poslat znovu",
-        "linkSent": "Odesláno! Zkontrolujte schránku.",
-        "dismiss": "Zavřít",
         "mobileNav": "Hlavní navigace",
         "search": "Hledat"
     },
@@ -1112,6 +1124,24 @@
             "button": "Potvrdit e-mail",
             "expires": "Odkaz platí {days, plural, one {# den} few {# dny} many {# dne} other {# dní}}.",
             "ignore": "Neregistrovali jste se? E-mail ignorujte."
+        },
+        "accountExists": {
+            "subject": "Účet na Collectify už máte",
+            "preheader": "Někdo se pokusil zaregistrovat s tímto e-mailem.",
+            "heading": "Účet už máte",
+            "intro": "Někdo (snad vy) se právě pokusil vytvořit nový účet na Collectify s touto e-mailovou adresou. Ta už patří vašemu účtu, takže se nic nezměnilo.",
+            "button": "Přihlásit se",
+            "forgot": "Zapomněli jste heslo? Nové si nastavíte na přihlašovací stránce.",
+            "ignore": "Neregistrovali jste se? E-mail ignorujte - váš účet je v bezpečí."
+        },
+        "signupFailed": {
+            "subject": "Registrace na Collectify nebyla dokončena",
+            "preheader": "Zaregistrujte se prosím znovu s jiným uživatelským jménem.",
+            "heading": "Registrace nebyla dokončena",
+            "intro": "Uživatelské jméno @{username} si chvíli před vytvořením vašeho účtu zabral někdo jiný, takže se nic nezaložilo. Zaregistrujte se prosím znovu s jiným uživatelským jménem.",
+            "button": "Zaregistrovat se znovu",
+            "ignore": "Neregistrovali jste se? E-mail ignorujte.",
+            "footer": "Tento e-mail dostáváte, protože se někdo s touto adresou pokusil zaregistrovat na Collectify."
         }
     },
     "share": {

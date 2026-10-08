@@ -26,7 +26,6 @@
         "invalidCredentials": "Invalid email or password.",
         "emailTaken": "An account with this email already exists.",
         "usernameTaken": "This username is taken.",
-        "emailOrUsernameTaken": "This email or username is already taken.",
         "currentPasswordRequired": "Current password is required.",
         "currentPasswordIncorrect": "Current password is incorrect.",
         "passwordUnchanged": "New password must be different from the current one.",
@@ -88,7 +87,10 @@
         "network": "Network error. Check your connection.",
         "linkInvalid": "This link is invalid or has already been used.",
         "linkExpired": "This link has expired. Request a new one.",
-        "emailNotConfigured": "Sending emails is not available right now."
+        "emailNotConfigured": "Sending emails is not available right now.",
+        "emailNotVerified": "Confirm your email to sign in. We sent you a new link.",
+        "confirmWithPassword": "Enter the account’s password to confirm this email.",
+        "emailNotVerifiedWait": "Confirm your email to sign in. Use the link we sent earlier; a new one can be sent later."
     },
     "validation": {
         "required": "This field is required.",
@@ -191,6 +193,18 @@
             "notReceived": "Nothing after a few minutes? Check your spam folder or <link>try again</link>.",
             "backToLogin": "Back to login"
         },
+        "registerSent": {
+            "title": "Check your inbox",
+            "body": "We sent a link to <strong>{email}</strong>. Open it to finish creating your account.",
+            "hint": "Nothing after a few minutes? Check your spam folder. Already have an account? <link>Sign in</link>."
+        },
+        "loginUnconfirmed": {
+            "title": "Confirm your email first",
+            "body": "<strong>{email}</strong> isn’t confirmed yet. We sent a new link there - open it to sign in.",
+            "bodyWait": "<strong>{email}</strong> isn’t confirmed yet. Open the link from the email we sent earlier - a new one can be sent in an hour.",
+            "hint": "Nothing after a few minutes? Check your spam folder.",
+            "back": "Use another account"
+        },
         "reset": {
             "title": "New password",
             "subtitle": "Choose a new password. You’ll be signed out on other devices.",
@@ -208,9 +222,11 @@
             "success": "Thanks! You can now always recover your account by email.",
             "failedTitle": "The link didn’t work",
             "continue": "Go to Collectify",
-            "resend": "Send a new link",
             "signInToResend": "Sign in to get a new link",
-            "sent": "A new link is on its way to {email}."
+            "signInToContinue": "Your email is confirmed. Sign in with the password you chose when signing up.",
+            "passwordTitle": "Confirm it’s you",
+            "passwordBody": "This link was opened in a different browser than the one used to sign up. Enter the account’s password to confirm the email and sign in.",
+            "passwordSubmit": "Confirm and sign in"
         },
         "continueWith": "Continue with {provider}",
         "orEmail": "or with email",
@@ -894,10 +910,6 @@
         "returnToAdmin": "Return to admin",
         "logout": "Logout",
         "impersonating": "You are signed in as <strong>@{username}</strong>. Use “Return to admin” in the account menu to go back.",
-        "verifyEmail": "Confirm your email so you can always recover your account. We sent a link to <strong>{email}</strong>.",
-        "resendLink": "Send again",
-        "linkSent": "Sent! Check your inbox.",
-        "dismiss": "Dismiss",
         "mobileNav": "Main navigation",
         "search": "Search"
     },
@@ -1112,6 +1124,24 @@
             "button": "Confirm email",
             "expires": "The link expires in {days, plural, one {# day} other {# days}}.",
             "ignore": "Didn’t sign up? Just ignore this email."
+        },
+        "accountExists": {
+            "subject": "You already have a Collectify account",
+            "preheader": "Someone tried to sign up with this email.",
+            "heading": "You already have an account",
+            "intro": "Someone (hopefully you) just tried to create a new Collectify account with this email address. It already belongs to your account, so nothing was changed.",
+            "button": "Sign in",
+            "forgot": "Forgot your password? You can set a new one from the sign-in page.",
+            "ignore": "Didn’t try to sign up? Just ignore this email - your account is safe."
+        },
+        "signupFailed": {
+            "subject": "Your Collectify sign-up didn’t go through",
+            "preheader": "Please sign up again with another username.",
+            "heading": "Sign-up not finished",
+            "intro": "The username @{username} was taken by someone else a moment before your account could be created, so nothing was set up. Please sign up again with another username.",
+            "button": "Sign up again",
+            "ignore": "Didn’t try to sign up? Just ignore this email.",
+            "footer": "You’re getting this email because someone tried to sign up for Collectify with this address."
         }
     },
     "share": {
