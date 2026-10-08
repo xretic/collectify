@@ -11,21 +11,33 @@ export const notificationSelect = {
     createdAt: true,
     recipientUserId: true,
     senderUser: { select: { id: true, username: true, avatarUrl: true } },
-    collection: { select: { id: true, name: true, bannerUrl: true } },
+    collection: { select: { id: true, name: true, bannerUrl: true, private: true, userId: true } },
     comment: { select: { id: true, text: true } },
 } satisfies Prisma.NotificationSelect;
 
 type NotificationRow = Prisma.NotificationGetPayload<{ select: typeof notificationSelect }>;
 
 export function toAppNotification(row: NotificationRow): AppNotification {
+    // A collection made private since is shown to its owner only: others no
+    // longer see its name, cover or the comments on it.
+    const hidden = row.collection?.private && row.collection.userId !== row.recipientUserId;
+    const collection =
+        row.collection && !hidden
+            ? {
+                  id: row.collection.id,
+                  name: row.collection.name,
+                  bannerUrl: row.collection.bannerUrl,
+              }
+            : null;
+
     return {
         id: row.id,
         type: row.type,
         isRead: row.isRead,
         createdAt: row.createdAt.toISOString(),
         sender: row.senderUser,
-        collection: row.collection,
-        comment: row.comment,
+        collection,
+        comment: hidden ? null : row.comment,
     };
 }
 
