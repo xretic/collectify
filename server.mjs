@@ -103,6 +103,9 @@ io.use(async (socket, nextMiddleware) => {
         }
 
         socket.data.userId = userId;
+        // Lets the app close this connection once the session is revoked
+        // (`dropRevokedConnections` in shared/server/realtime.ts).
+        socket.data.sessionId = sessionId;
         nextMiddleware();
     } catch (error) {
         console.error('[socket] auth failed:', error);

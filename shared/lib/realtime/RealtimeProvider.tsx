@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { io } from 'socket.io-client';
 import Pusher from 'pusher-js';
-import { userChannelName, type RealtimeEventName, type RealtimeEvents } from './events';
+import type { RealtimeEventName, RealtimeEvents } from './events';
 
 type Handler<E extends RealtimeEventName> = (payload: RealtimeEvents[E]) => void;
 
@@ -39,31 +39,53 @@ function createHub() {
     };
 }
 
-function createPusherClient(userId: number): RealtimeClient {
+/** The private channel of this browser's session (it is bound to the session cookie). */
+async function fetchChannelName(): Promise<string | null> {
+    try {
+        const res = await fetch('/api/realtime/pusher/channel');
+        if (!res.ok) return null;
+        return ((await res.json()) as { channel: string }).channel;
+    } catch {
+        return null;
+    }
+}
+
+function createPusherClient(): RealtimeClient {
     const hub = createHub();
-    const pusher = new Pusher(pusherKey!, {
-        cluster: pusherCluster!,
-        channelAuthorization: { endpoint: '/api/realtime/pusher/auth', transport: 'ajax' },
-    });
-    const channelName = userChannelName(userId);
-    const channel = pusher.subscribe(channelName);
+    let disposed = false;
+    let teardown = () => {};
 
-    channel.bind_global((event: string, payload: unknown) => {
-        if (!event.startsWith('pusher:')) hub.emit(event, payload);
-    });
+    void fetchChannelName().then((channelName) => {
+        if (disposed || !channelName) return;
 
-    // Tell chat partners we are online as soon as the channel is ours (also after a
-    // reconnect) instead of waiting for the Pusher webhook. Best effort.
-    channel.bind('pusher:subscription_succeeded', () => {
-        void fetch('/api/realtime/pusher/online', { method: 'POST' }).catch(() => {});
+        const pusher = new Pusher(pusherKey!, {
+            cluster: pusherCluster!,
+            channelAuthorization: { endpoint: '/api/realtime/pusher/auth', transport: 'ajax' },
+        });
+        const channel = pusher.subscribe(channelName);
+
+        channel.bind_global((event: string, payload: unknown) => {
+            if (!event.startsWith('pusher:')) hub.emit(event, payload);
+        });
+
+        // Tell chat partners we are online as soon as the channel is ours (also after a
+        // reconnect) instead of waiting for the Pusher webhook. Best effort.
+        channel.bind('pusher:subscription_succeeded', () => {
+            void fetch('/api/realtime/pusher/online', { method: 'POST' }).catch(() => {});
+        });
+
+        teardown = () => {
+            channel.unbind_all();
+            pusher.unsubscribe(channelName);
+            pusher.disconnect();
+        };
     });
 
     return {
         on: hub.on,
         disconnect() {
-            channel.unbind_all();
-            pusher.unsubscribe(channelName);
-            pusher.disconnect();
+            disposed = true;
+            teardown();
         },
     };
 }
@@ -98,7 +120,7 @@ export function RealtimeProvider({
     useEffect(() => {
         if (!userId) return;
 
-        const next = pusherKey && pusherCluster ? createPusherClient(userId) : createSocketClient();
+        const next = pusherKey && pusherCluster ? createPusherClient() : createSocketClient();
         // eslint-disable-next-line react-hooks/set-state-in-effect -- the client is an external resource created here
         setClient(next);
 

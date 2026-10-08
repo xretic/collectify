@@ -11,6 +11,14 @@ export interface RealtimeEvents {}
 
 export type RealtimeEventName = keyof RealtimeEvents;
 
-/** Pusher private channel / Socket.IO room of one user (see server.mjs). */
-export const userChannelName = (userId: number) => `private-user-${userId}`;
+export const USER_CHANNEL_PREFIX = 'private-user-';
+
+/**
+ * Pusher private channel of one signed-in session. Events go only to channels
+ * of sessions that still exist, so a revoked session stops receiving them.
+ */
+export const sessionChannelName = (userId: number, sessionKey: string) =>
+    `${USER_CHANNEL_PREFIX}${userId}-${sessionKey}`;
+
+/** Socket.IO room of one user (see server.mjs). */
 export const userRoomName = (userId: number) => `user:${userId}`;

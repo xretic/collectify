@@ -4,10 +4,12 @@ import type { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/shared/server/db';
 import { isProduction } from '@/shared/server/env';
 import { SESSION_AGE_IN_DAYS } from '@/shared/lib/constants';
+import { forgetLiveSessions } from '@/shared/server/realtime';
 
 export const SESSION_COOKIE = 'sessionId';
 
 const SESSION_MAX_AGE_SECONDS = SESSION_AGE_IN_DAYS * 24 * 60 * 60;
+const EXPIRED_SWEEP_BATCH = 200;
 
 export type AuthSession = {
     id: string;
@@ -43,10 +45,18 @@ export async function findActiveSession(
 }
 
 export async function createSession(userId: number): Promise<AuthSession> {
-    // Opportunistic cleanup keeps the table from growing forever.
-    await db.session.deleteMany({ where: { expiresAt: { lte: new Date() } } });
+    // Opportunistic cleanup keeps the table from growing forever. A small batch
+    // per sign-in, so a backlog of expired rows never slows a login down.
+    await db.$executeRaw`
+        DELETE FROM "Session" WHERE "id" IN (
+            SELECT "id" FROM "Session"
+            WHERE "expiresAt" <= NOW() AT TIME ZONE 'UTC'
+            LIMIT ${EXPIRED_SWEEP_BATCH}
+            FOR UPDATE SKIP LOCKED
+        )
+    `;
 
-    return db.session.create({
+    const session = await db.session.create({
         data: {
             id: randomBytes(32).toString('base64url'),
             userId,
@@ -54,6 +64,10 @@ export async function createSession(userId: number): Promise<AuthSession> {
         },
         select: sessionSelect,
     });
+    // Its realtime channel gets events right away (not after the cache expires).
+    forgetLiveSessions([userId]);
+
+    return session;
 }
 
 export async function deleteSession(sessionId: string) {

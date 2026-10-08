@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { apiError, forbidden, json, parse, route } from '@/shared/server/http';
-import { pusher } from '@/shared/server/realtime';
-import { userChannelName } from '@/shared/lib/realtime/events';
+import { pusher, sessionKey } from '@/shared/server/realtime';
+import { sessionChannelName } from '@/shared/lib/realtime/events';
 import { requireViewer } from '@/features/auth/server/guards';
 
 const formSchema = z.object({
@@ -17,7 +17,10 @@ export const POST = route(async (req) => {
     if (viewer.session.impersonatorUserId) throw forbidden();
     const form = parse(formSchema, Object.fromEntries(await req.formData()));
 
-    if (form.channel_name !== userChannelName(viewer.userId)) throw forbidden();
+    // Only the channel of this very session (see `sessionChannelName`).
+    if (form.channel_name !== sessionChannelName(viewer.userId, sessionKey(viewer.session.id))) {
+        throw forbidden();
+    }
 
     return json(pusher.authorizeChannel(form.socket_id, form.channel_name));
 });
