@@ -24,8 +24,9 @@ Copy [`.env.example`](../.env.example) to `.env` and fill it in.
 | `DATABASE_URL`                      |    ✅    | Neon **pooled** connection string, used by the app                           |
 | `DIRECT_URL`                        |    ✅    | Neon **direct** (non-pooler) connection string, used by `prisma migrate`     |
 | `APP_URL`                           |          | Public origin, e.g. `https://colleo.xyz`. OAuth redirects, links in emails and the WebSocket origin check; falls back to the request origin (emails are refused in production without it) |
-| `RESEND_API_KEY`                    |          | [Resend](https://resend.com) key for password reset and email confirmation. Without it, or while the sender domain is unverified, sending answers 503 ("email is not available"); failed sends do not count against the 3-per-hour limit |
-| `EMAIL_FROM`                        |          | Sender, e.g. `Collectify <noreply@colleo.xyz>`, on a domain verified in Resend. Defaults to `onboarding@resend.dev`, which only delivers to the Resend account owner |
+| `RESEND_API_KEY`                    |          | [Resend](https://resend.com) key for password reset and email confirmation. Turns on [email confirmation](#email-confirmation) (in production together with `APP_URL` and `EMAIL_FROM`). Failed sends do not count against the 3-per-hour limit |
+| `EMAIL_FROM`                        |          | Sender, e.g. `Collectify <noreply@colleo.xyz>`, on a domain verified in Resend. Defaults to `onboarding@resend.dev`, which only delivers to the Resend account owner, so production does not confirm addresses without it |
+| `TRUST_PROXY`                       |          | `npm start` only: `true` when a reverse proxy in front of the server sets `X-Real-IP` / `X-Forwarded-For`. Otherwise those headers are replaced with the connection's address (a client could forge them to dodge rate limits); behind a proxy, leaving it unset makes every visitor share the proxy's rate limits |
 | `GOOGLE_CLIENT_ID` / `_SECRET`      |          | Google sign-in                                                               |
 | `GITHUB_CLIENT_ID` / `_SECRET`      |          | GitHub sign-in                                                               |
 | `PUSHER_APP_ID` / `PUSHER_SECRET`   |          | Pusher server credentials (Vercel realtime)                                  |
@@ -38,6 +39,24 @@ Copy [`.env.example`](../.env.example) to `.env` and fill it in.
 | `UPSTASH_REDIS_REST_URL` / `_TOKEN` |          | Upstash REST — takes precedence over `REDIS_URL`                             |
 
 Without Redis, rate limits fall back to an in-process counter and the cache is disabled.
+
+### Email confirmation
+
+When links can be emailed (`RESEND_API_KEY` set; in production also `APP_URL` and `EMAIL_FROM`),
+an address must be confirmed before the account can be used:
+
+- Sign-up always answers "check your inbox", whether or not the address already has an account
+  (the owner of a taken address gets a note instead), so the form does not reveal who is
+  registered.
+- The confirmation link confirms and signs in only in the browser that signed up or typed the
+  right password; opened anywhere else it first asks for the account's password. A confirmation
+  mail the reader did not ask for therefore cannot confirm or enter an account someone else made
+  with their address.
+- Signing in with the right password before confirming answers 403 and re-sends the link (at
+  most every 10 minutes, within the 3-per-hour limit). Sessions of unconfirmed accounts are not
+  accepted; OAuth accounts without a shared address are exempt.
+
+Without email, accounts are signed in right after sign-up, as before.
 
 ## Database
 
@@ -113,7 +132,8 @@ Admins then manage moderators, verified badges, categories and tags from `/manag
 - [ ] `APP_URL` is set to the public `https://` origin
 - [ ] `APP_URL` is the final domain: canonical links, sitemap, `robots.txt` and share images use it
 - [ ] Site verified in Google Search Console, `https://<domain>/sitemap.xml` submitted
-- [ ] Emails work: `RESEND_API_KEY` is set and `EMAIL_FROM` uses a domain verified in Resend
+- [ ] Emails work: `RESEND_API_KEY` is set and `EMAIL_FROM` uses a domain verified in Resend (otherwise new accounts are not confirmed by email)
+- [ ] Behind your own reverse proxy (`npm start`): `TRUST_PROXY=true`, and the proxy overwrites `X-Real-IP`
 - [ ] Redis is configured (shared rate limits across instances)
 - [ ] Realtime works: Socket.IO behind a WebSocket-aware proxy, or Pusher on Vercel
 - [ ] Legal details are set (`LEGAL_NAME`, `CONTACT_EMAIL`, ideally `LEGAL_ADDRESS` and `LEGAL_COUNTRY`) and the legal texts were reviewed by a lawyer

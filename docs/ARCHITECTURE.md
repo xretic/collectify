@@ -166,11 +166,15 @@ transports, chosen automatically:
 | Environment               | Transport                                                                    |
 | ------------------------- | ---------------------------------------------------------------------------- |
 | `npm run dev` / `npm start` | **Socket.IO** in `server.mjs` on the same origin (`/socketio`), room `user:<id>` |
-| Vercel                    | **Pusher** private channel `private-user-<id>` (set the `PUSHER_*` variables)  |
+| Vercel                    | **Pusher** private channel per session, `private-user-<id>-<sessionKey>` (set the `PUSHER_*` variables) |
 
 Socket.IO connections authenticate with the session cookie directly against the database; banned
-users and impersonated sessions are refused. Presence (the online dot in chats) is read from
-occupied rooms or channels.
+users, impersonated sessions and accounts with an unconfirmed address are refused. A Pusher client
+first asks `GET /api/realtime/pusher/channel` for its session's channel (`sessionKey` is a hash
+of the session id), and events go only to channels of sessions that still exist, so ending a
+session (sign-out, password change or reset, ban, account deletion) stops its events at once;
+`dropRevokedConnections()` also closes the matching Socket.IO connections. Presence (the online
+dot in chats) is read from occupied rooms or channels of live sessions.
 
 ## Caching and rate limiting
 
@@ -178,15 +182,29 @@ occupied rooms or channels.
   Keys live under a versioned namespace, and `bumpCacheNamespace()` invalidates a whole namespace
   at once. Concurrent fills of the same key in one process are coalesced.
 - **Rate limits** (`shared/server/rateLimit.ts`) — fixed windows keyed by user id (IP for
-  anonymous calls), stored in Redis with an in-process fallback, so limits always apply.
+  anonymous calls) or by a subject such as an email address, stored in Redis with an in-process
+  fallback, so limits always apply. Keys hold only a hash of the subject. The client IP comes from
+  `X-Real-IP`, which `server.mjs` overwrites with the connection's address unless `TRUST_PROXY`
+  is set. Each preset is its own bucket, so e.g. scrolling a feed does not use up search.
 
-| Preset         | Limit / minute | Preset     | Limit / minute |
-| -------------- | -------------- | ---------- | -------------- |
-| `auth`         | 8              | `message`  | 30             |
-| `search`       | 60             | `comment`  | 10             |
-| `autocomplete` | 180            | `create`   | 10             |
-| `mutation`     | 60             | `report`   | 5              |
-| `realtime`     | 120            |            |                |
+| Preset         | Limit         | Used for                                              |
+| -------------- | ------------- | ----------------------------------------------------- |
+| `auth`         | 8 / min       | sign-in, sign-up, reset, confirmation (per IP)        |
+| `login`        | 10 / 15 min   | failed sign-ins per address and IP                    |
+| `loginAccount` | 200 / hour    | failed sign-ins per address                           |
+| `email`        | 3 / hour      | reset and confirmation emails per address             |
+| `notice`       | 1 / day       | "you already have an account" emails per address      |
+| `read`         | 120 / min     | single resources, chats, notifications                |
+| `search`       | 60 / min      | search, lists, presence                               |
+| `feed`         | 240 / min     | feed and recommendation pages                         |
+| `autocomplete` | 180 / min     | tag and city suggestions                              |
+| `mutation`     | 60 / min      | likes, follows, edits                                 |
+| `create`       | 10 / min      | new collections, boards                               |
+| `comment`      | 10 / min      | comments                                              |
+| `message`      | 30 / min      | direct messages                                       |
+| `realtime`     | 120 / min     | typing pings                                          |
+| `report`       | 5 / min       | reports                                               |
+| `export`       | 5 / hour      | data exports                                          |
 
 Redis is optional: Upstash (REST) wins when both it and `REDIS_URL` are set.
 
@@ -195,11 +213,19 @@ Redis is optional: Upstash (REST) wins when both it and `REDIS_URL` are set.
 - **Sessions** — random 256-bit ids in an `HttpOnly` cookie, stored server-side with a 14-day
   expiry; expired sessions are cleaned up opportunistically.
 - **Passwords** — bcrypt (cost 12). Unknown emails are compared against a dummy hash so response
-  time does not reveal whether an account exists.
+  time does not reveal whether an account exists. Changing the password ends every other session.
+- **Email confirmation** — with email set up, sign-up answers the same for new and taken addresses
+  and an account is usable only once its address is confirmed. The link signs in only in the
+  browser that signed up or typed the password, or with the password entered on the page, so a
+  confirmation mail its reader did not ask for cannot confirm or enter someone else's account (see
+  [DEPLOYMENT.md](DEPLOYMENT.md#email-confirmation)).
+- **Server-side fetches** — share images load user image URLs through `fetchPublic()`, which
+  connects only to public addresses (checked when the connection is made, redirects included).
 - **Roles** — admin rights can only be granted from the command line (`npm run admin`), never over
   HTTP. Nobody can moderate themselves or an admin; moderators manage regular users only.
 - **Impersonation** — audit log entries made during impersonation record the impersonating admin;
-  impersonated sessions cannot open a realtime connection.
+  profile edits made as the user are audited too. Impersonated sessions cannot open a realtime
+  connection, change the password, delete the account or export its data.
 - **Headers** — an enforced Content-Security-Policy, `X-Frame-Options: DENY`, `nosniff`, a strict
   referrer policy and a restrictive `Permissions-Policy` (see [`next.config.ts`](../next.config.ts)).
 - **Images** — user images are rendered with plain `<img>`; the Next.js image optimizer serves only
