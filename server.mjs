@@ -72,7 +72,18 @@ function isSameOrigin(req) {
     }
 }
 
-const httpServer = createServer((req, res) => handle(req, res));
+// Client IP for rate limits. A client could send its own X-Real-IP /
+// X-Forwarded-For, so unless a reverse proxy in front of this server sets them
+// (TRUST_PROXY=true), they are replaced with the address of the connection.
+const trustProxy = process.env.TRUST_PROXY === 'true';
+
+const httpServer = createServer((req, res) => {
+    if (!trustProxy) {
+        delete req.headers['x-forwarded-for'];
+        req.headers['x-real-ip'] = req.socket.remoteAddress ?? '';
+    }
+    return handle(req, res);
+});
 
 const io = new Server(httpServer, {
     path: '/socketio',

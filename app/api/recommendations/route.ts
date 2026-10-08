@@ -18,7 +18,7 @@ const querySchema = z.object({
 
 export const GET = route(async (req) => {
     const viewer = await requireViewer(req);
-    await enforceRateLimit(req, 'search', viewer.userId);
+    await enforceRateLimit(req, 'feed', viewer.userId);
 
     const { page, board } = readQuery(req, querySchema);
 

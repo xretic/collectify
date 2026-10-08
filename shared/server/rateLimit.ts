@@ -1,12 +1,17 @@
 import 'server-only';
+import { createHash } from 'node:crypto';
 import { NextRequest } from 'next/server';
-import { apiError } from './http';
+import { ApiError, apiError } from './http';
 import { getRedis } from './redis';
 
 export type RateLimitPreset =
     | 'auth'
+    | 'login'
+    | 'loginAccount'
+    | 'notice'
     | 'read'
     | 'search'
+    | 'feed'
     | 'autocomplete'
     | 'mutation'
     | 'report'
@@ -19,9 +24,23 @@ export type RateLimitPreset =
 
 const PRESETS: Record<RateLimitPreset, { limit: number; windowSeconds: number }> = {
     auth: { limit: 8, windowSeconds: 60 },
+    /** Failed sign-ins into one account from one IP. */
+    login: { limit: 10, windowSeconds: 15 * 60 },
+    /**
+     * Failed sign-ins into one account from anywhere: high enough that locking
+     * the owner out takes many IPs, low enough to stop spread-out guessing.
+     */
+    loginAccount: { limit: 200, windowSeconds: 60 * 60 },
+    /** "You already have an account" mails to one address. */
+    notice: { limit: 1, windowSeconds: 24 * 60 * 60 },
     /** Public reads of a single resource (a collection, a profile, its comments). */
     read: { limit: 120, windowSeconds: 60 },
     search: { limit: 60, windowSeconds: 60 },
+    /**
+     * Feed pages (home feed, recommendations) while scrolling. Its own bucket,
+     * so scrolling does not use up the budget of search and other reads.
+     */
+    feed: { limit: 240, windowSeconds: 60 },
     autocomplete: { limit: 180, windowSeconds: 60 },
     mutation: { limit: 60, windowSeconds: 60 },
     report: { limit: 5, windowSeconds: 60 },
@@ -65,13 +84,21 @@ function memoryIncr(key: string, windowSeconds: number) {
     return bucket.count;
 }
 
+/**
+ * Set by the platform (Vercel) or by server.mjs, which replaces any value the
+ * client sent. Without X-Real-IP, the last X-Forwarded-For hop is the one the
+ * nearest proxy added; earlier entries are client-controlled.
+ */
 export function getClientIp(req: NextRequest): string {
     return (
-        req.headers.get('x-real-ip') ??
-        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+        req.headers.get('x-real-ip') ||
+        req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim() ||
         'unknown'
     );
 }
+
+const subjectKey = (subject: string) =>
+    createHash('sha256').update(subject).digest('base64url').slice(0, 22);
 
 /**
  * Fixed-window rate limit. Authenticated calls are keyed by user id (IP
@@ -97,7 +124,8 @@ export async function enforceRateLimitFor(
 ): Promise<() => Promise<void>> {
     const { limit, windowSeconds } = PRESETS[preset];
     const window = Math.floor(Date.now() / (windowSeconds * 1000));
-    const key = `ratelimit:${preset}:${subject}:${window}`;
+    // Subjects are emails and IPs: only a hash of them is kept in the store.
+    const key = `ratelimit:${preset}:${subjectKey(subject)}:${window}`;
 
     const redis = getRedis();
     let count: number;
@@ -128,4 +156,20 @@ export async function enforceRateLimitFor(
             console.error('[rateLimit] release failed:', error);
         }
     };
+}
+
+/**
+ * Like `enforceRateLimitFor`, but over the limit it answers `null` instead of
+ * throwing: for work that is simply skipped then (e.g. an email not sent now).
+ */
+export async function tryRateLimitFor(
+    subject: string,
+    preset: RateLimitPreset,
+): Promise<(() => Promise<void>) | null> {
+    try {
+        return await enforceRateLimitFor(subject, preset);
+    } catch (error) {
+        if (error instanceof ApiError && error.status === 429) return null;
+        throw error;
+    }
 }

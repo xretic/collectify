@@ -11,6 +11,7 @@ const startSchema = z.object({ userId: idSchema, content: messageContentSchema }
 
 export const GET = route(async (req) => {
     const viewer = await requireChatViewer(req);
+    await enforceRateLimit(req, 'read', viewer.userId);
     const { skip } = readQuery(req, listSchema);
 
     return json(await listChats(viewer.userId, skip));

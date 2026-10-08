@@ -12,6 +12,16 @@ export type KeyValueStore = {
     decr(key: string): Promise<void>;
 };
 
+/**
+ * INCR that sets the TTL on the first increment in the same atomic step, so a
+ * failure in between cannot leave a counter that never expires.
+ */
+const INCR_WITH_TTL = `
+local value = redis.call('INCR', KEYS[1])
+if value == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end
+return value
+`;
+
 function createUpstashStore(url: string, token: string): KeyValueStore {
     const client = new UpstashRedis({ url, token, automaticDeserialization: false });
 
@@ -23,9 +33,8 @@ function createUpstashStore(url: string, token: string): KeyValueStore {
             await client.set(key, value, ttlSeconds ? { ex: ttlSeconds } : undefined);
         },
         async incr(key, ttlSeconds) {
-            const value = await client.incr(key);
-            if (ttlSeconds && value === 1) await client.expire(key, ttlSeconds);
-            return value;
+            if (!ttlSeconds) return client.incr(key);
+            return Number(await client.eval(INCR_WITH_TTL, [key], [String(ttlSeconds)]));
         },
         async decr(key) {
             // DECR on a missing key would create -1 with no expiry.
@@ -73,9 +82,8 @@ function createIORedisStore(url: string): KeyValueStore {
         },
         async incr(key, ttlSeconds) {
             await ensureOpen();
-            const value = await client.incr(key);
-            if (ttlSeconds && value === 1) await client.expire(key, ttlSeconds);
-            return value;
+            if (!ttlSeconds) return client.incr(key);
+            return Number(await client.eval(INCR_WITH_TTL, 1, key, ttlSeconds));
         },
         async decr(key) {
             await ensureOpen();

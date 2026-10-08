@@ -31,10 +31,9 @@ const listSchema = z.object({
 });
 
 export const GET = route(async (req) => {
-    await enforceRateLimit(req, 'search');
-
     const params = readQuery(req, listSchema);
     const viewer = await getViewer(req);
+    await enforceRateLimit(req, 'feed', viewer?.userId);
 
     // Only the anonymous public feed is identical for everyone, so only it is cached.
     const cacheable =
