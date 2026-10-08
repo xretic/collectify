@@ -1,6 +1,8 @@
 import 'server-only';
 import { lookup } from 'node:dns/promises';
-import { isIP } from 'node:net';
+import http, { type IncomingMessage } from 'node:http';
+import https from 'node:https';
+import { isIP, type LookupFunction } from 'node:net';
 
 const MAX_REDIRECTS = 3;
 
@@ -31,46 +33,81 @@ function isPrivateAddress(address: string) {
         ip === '::' ||
         ip === '::1' ||
         ip.startsWith('::ffff:') ||
+        // NAT64 and 6to4 can embed any IPv4 address, internal ones included.
+        ip.startsWith('64:ff9b:') ||
+        ip.startsWith('2002:') ||
         /^f[cd]/.test(ip) ||
         /^fe[89ab]/.test(ip)
     );
 }
 
-/** Only plain http(s) on default ports, to hosts that resolve to public addresses. */
-async function isPublicUrl(url: URL) {
+/**
+ * DNS lookup used for the connection itself: the addresses checked here are the
+ * ones connected to, so a name that re-resolves to an internal address between
+ * a check and the request (DNS rebinding) cannot slip through.
+ */
+const publicLookup: LookupFunction = (hostname, options, callback) => {
+    lookup(hostname, { all: true, verbatim: true }).then(
+        (addresses) => {
+            if (
+                addresses.length === 0 ||
+                addresses.some(({ address }) => isPrivateAddress(address))
+            ) {
+                callback(new Error(`Blocked address for ${hostname}`), '', 0);
+                return;
+            }
+            if (options.all) callback(null, addresses);
+            else callback(null, addresses[0].address, addresses[0].family);
+        },
+        (error: NodeJS.ErrnoException) => callback(error, '', 0),
+    );
+};
+
+/** Only plain http(s) on default ports; IP literals (never looked up) must be public. */
+function isAllowedUrl(url: URL) {
     if (url.protocol !== 'https:' && url.protocol !== 'http:') return false;
     if (url.username || url.password || url.port) return false;
 
     const host = url.hostname.replace(/^\[|\]$/g, '');
-
-    try {
-        const addresses = isIP(host)
-            ? [{ address: host }]
-            : await lookup(host, { all: true, verbatim: true });
-        return addresses.length > 0 && addresses.every(({ address }) => !isPrivateAddress(address));
-    } catch {
-        return false;
-    }
+    return !isIP(host) || !isPrivateAddress(host);
 }
 
-async function readLimited(res: Response, maxBytes: number): Promise<Buffer | null> {
-    if (Number(res.headers.get('content-length') ?? 0) > maxBytes) return null;
-    if (!res.body) return null;
+function get(url: URL, signal: AbortSignal): Promise<IncomingMessage> {
+    const request = url.protocol === 'https:' ? https.request : http.request;
 
-    const reader = res.body.getReader();
-    const chunks: Uint8Array[] = [];
+    return new Promise((resolve, reject) => {
+        const req = request(
+            url,
+            {
+                method: 'GET',
+                signal,
+                agent: false,
+                lookup: publicLookup,
+                headers: { 'User-Agent': 'CollectifyBot/1.0 (+link previews)' },
+            },
+            resolve,
+        );
+        req.on('error', reject);
+        req.end();
+    });
+}
+
+async function readLimited(res: IncomingMessage, maxBytes: number): Promise<Buffer | null> {
+    if (Number(res.headers['content-length'] ?? 0) > maxBytes) {
+        res.destroy();
+        return null;
+    }
+
+    const chunks: Buffer[] = [];
     let size = 0;
 
-    for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        size += value.byteLength;
+    for await (const chunk of res as AsyncIterable<Buffer>) {
+        size += chunk.byteLength;
         if (size > maxBytes) {
-            await reader.cancel();
+            res.destroy();
             return null;
         }
-        chunks.push(value);
+        chunks.push(chunk);
     }
 
     return Buffer.concat(chunks);
@@ -87,8 +124,8 @@ type FetchPublicOptions = {
 
 /**
  * GETs a user-supplied URL from the server without letting it reach the
- * internal network (SSRF): every hop, redirects included, must resolve to a
- * public address. Resolves to `null` on any failure, timeout or oversize body.
+ * internal network (SSRF): every hop, redirects included, connects only to
+ * public addresses. Resolves to `null` on any failure, timeout or oversize body.
  */
 export async function fetchPublic(
     input: string,
@@ -106,27 +143,27 @@ export async function fetchPublic(
 
     try {
         for (let hop = 0; hop <= MAX_REDIRECTS; hop += 1) {
-            if (!(await isPublicUrl(url))) return null;
+            if (!isAllowedUrl(url)) return null;
 
-            const res = await fetch(url, {
-                redirect: 'manual',
-                signal,
-                headers: { 'User-Agent': 'CollectifyBot/1.0 (+link previews)' },
-            });
+            const res = await get(url, signal);
+            const status = res.statusCode ?? 0;
+            const location = res.headers.location;
 
-            const location = res.headers.get('location');
-            if (res.status >= 300 && res.status < 400 && location) {
+            if (status >= 300 && status < 400 && location) {
+                res.destroy();
                 url = new URL(location, url);
                 continue;
             }
 
-            if (!res.ok) return null;
-
-            const contentType = (res.headers.get('content-type') ?? '')
+            const contentType = (res.headers['content-type'] ?? '')
                 .split(';')[0]
                 .trim()
                 .toLowerCase();
-            if (!accept.includes(contentType)) return null;
+
+            if (status < 200 || status >= 300 || !accept.includes(contentType)) {
+                res.destroy();
+                return null;
+            }
 
             const body = await readLimited(res, maxBytes);
             return body ? { body, contentType, url: url.toString() } : null;

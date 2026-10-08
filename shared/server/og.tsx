@@ -53,10 +53,24 @@ export async function loadOgImage(url: string | null | undefined): Promise<strin
     return image ? `data:${image.contentType};base64,${image.body.toString('base64')}` : null;
 }
 
-/** First `limit` images that load, in order. */
+/**
+ * First `limit` images that load, in order. The next candidates are only
+ * fetched to replace ones that failed, so one render sends at most a few
+ * requests to user-chosen hosts.
+ */
 export async function loadOgImages(urls: (string | null | undefined)[], limit: number) {
-    const loaded = await Promise.all(urls.slice(0, limit * 2).map(loadOgImage));
-    return loaded.filter((image): image is string => image !== null).slice(0, limit);
+    const candidates = urls.filter((url): url is string => Boolean(url)).slice(0, limit * 2);
+    const images: string[] = [];
+
+    for (let start = 0; start < candidates.length && images.length < limit; ) {
+        const batch = candidates.slice(start, start + limit - images.length);
+        start += batch.length;
+
+        const loaded = await Promise.all(batch.map(loadOgImage));
+        images.push(...loaded.filter((image): image is string => image !== null));
+    }
+
+    return images;
 }
 
 let fonts: Promise<NonNullable<ImageResponseOptions['fonts']>> | null = null;
