@@ -1112,7 +1112,7 @@
             "subject": "Zresetuj hasło do Collectify",
             "preheader": "Ustaw nowe hasło jednym kliknięciem.",
             "heading": "Zresetuj hasło",
-            "intro": "Ktoś (mamy nadzieję, że ty) poprosił o zresetowanie hasła do twojego konta Collectify. Kliknij przycisk, aby wybrać nowe.",
+            "intro": "Ktoś poprosił o zresetowanie hasła do twojego konta Collectify. Kliknij przycisk, aby wybrać nowe.",
             "button": "Ustaw nowe hasło",
             "expires": "Link działa tylko raz i wygasa za {hours, plural, one {# godzinę} few {# godziny} many {# godzin} other {# godziny}}.",
             "ignore": "To nie ty? Po prostu zignoruj ten e-mail - hasło się nie zmieni."
@@ -1130,7 +1130,7 @@
             "subject": "Masz już konto w Collectify",
             "preheader": "Ktoś próbował zarejestrować się tym adresem e-mail.",
             "heading": "Masz już konto",
-            "intro": "Ktoś (miejmy nadzieję, że Ty) próbował właśnie założyć nowe konto w Collectify z tym adresem e-mail. Należy on już do Twojego konta, więc nic się nie zmieniło.",
+            "intro": "Ktoś próbował właśnie założyć nowe konto w Collectify z tym adresem e-mail. Należy on już do Twojego konta, więc nic się nie zmieniło.",
             "button": "Zaloguj się",
             "forgot": "Nie pamiętasz hasła? Nowe ustawisz na stronie logowania.",
             "ignore": "To nie Ty próbowałeś się zarejestrować? Zignoruj ten e-mail - Twoje konto jest bezpieczne."

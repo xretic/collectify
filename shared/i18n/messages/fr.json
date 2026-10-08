@@ -1112,7 +1112,7 @@
             "subject": "Réinitialisez votre mot de passe Collectify",
             "preheader": "Un nouveau mot de passe en un clic.",
             "heading": "Réinitialisez votre mot de passe",
-            "intro": "Quelqu’un (vous, espérons-le) a demandé à réinitialiser le mot de passe de votre compte Collectify. Cliquez sur le bouton pour en choisir un nouveau.",
+            "intro": "Quelqu’un a demandé à réinitialiser le mot de passe de votre compte Collectify. Cliquez sur le bouton pour en choisir un nouveau.",
             "button": "Choisir un nouveau mot de passe",
             "expires": "Le lien ne fonctionne qu’une fois et expire dans {hours, plural, one {# heure} other {# heures}}.",
             "ignore": "Vous n’êtes pas à l’origine de cette demande ? Ignorez cet e-mail : votre mot de passe reste inchangé."
@@ -1130,7 +1130,7 @@
             "subject": "Vous avez déjà un compte Collectify",
             "preheader": "Quelqu’un a essayé de s’inscrire avec cet e-mail.",
             "heading": "Vous avez déjà un compte",
-            "intro": "Quelqu’un (vous, nous l’espérons) vient d’essayer de créer un nouveau compte Collectify avec cette adresse e-mail. Elle appartient déjà à votre compte, rien n’a donc été modifié.",
+            "intro": "Quelqu’un vient d’essayer de créer un nouveau compte Collectify avec cette adresse e-mail. Elle appartient déjà à votre compte, rien n’a donc été modifié.",
             "button": "Se connecter",
             "forgot": "Mot de passe oublié ? Vous pouvez en choisir un nouveau depuis la page de connexion.",
             "ignore": "Vous n’avez pas essayé de vous inscrire ? Ignorez cet e-mail - votre compte est en sécurité."

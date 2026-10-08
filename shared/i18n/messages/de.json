@@ -1112,7 +1112,7 @@
             "subject": "Setze dein Collectify-Passwort zurück",
             "preheader": "Neues Passwort mit einem Klick.",
             "heading": "Passwort zurücksetzen",
-            "intro": "Jemand (hoffentlich du) möchte das Passwort deines Collectify-Kontos zurücksetzen. Klicke auf den Button, um ein neues zu wählen.",
+            "intro": "Jemand möchte das Passwort deines Collectify-Kontos zurücksetzen. Klicke auf den Button, um ein neues zu wählen.",
             "button": "Neues Passwort festlegen",
             "expires": "Der Link funktioniert einmal und läuft in {hours, plural, one {# Stunde} other {# Stunden}} ab.",
             "ignore": "Nicht angefordert? Ignoriere diese E-Mail einfach - dein Passwort bleibt gleich."
@@ -1130,7 +1130,7 @@
             "subject": "Du hast bereits ein Collectify-Konto",
             "preheader": "Jemand wollte sich mit dieser E-Mail registrieren.",
             "heading": "Du hast bereits ein Konto",
-            "intro": "Jemand (hoffentlich du) wollte gerade ein neues Collectify-Konto mit dieser E-Mail-Adresse anlegen. Sie gehört bereits zu deinem Konto, daher wurde nichts geändert.",
+            "intro": "Jemand wollte gerade ein neues Collectify-Konto mit dieser E-Mail-Adresse anlegen. Sie gehört bereits zu deinem Konto, daher wurde nichts geändert.",
             "button": "Anmelden",
             "forgot": "Passwort vergessen? Auf der Anmeldeseite kannst du ein neues festlegen.",
             "ignore": "Du wolltest dich nicht registrieren? Ignoriere diese E-Mail einfach - dein Konto ist sicher."

@@ -1112,7 +1112,7 @@
             "subject": "Reset your Collectify password",
             "preheader": "Set a new password in one click.",
             "heading": "Reset your password",
-            "intro": "Someone (hopefully you) asked to reset the password of your Collectify account. Click the button to choose a new one.",
+            "intro": "Someone asked to reset the password of your Collectify account. Click the button to choose a new one.",
             "button": "Set a new password",
             "expires": "The link works once and expires in {hours, plural, one {# hour} other {# hours}}.",
             "ignore": "Didn’t ask for this? Just ignore this email - your password stays the same."
@@ -1130,7 +1130,7 @@
             "subject": "You already have a Collectify account",
             "preheader": "Someone tried to sign up with this email.",
             "heading": "You already have an account",
-            "intro": "Someone (hopefully you) just tried to create a new Collectify account with this email address. It already belongs to your account, so nothing was changed.",
+            "intro": "Someone just tried to create a new Collectify account with this email address. It already belongs to your account, so nothing was changed.",
             "button": "Sign in",
             "forgot": "Forgot your password? You can set a new one from the sign-in page.",
             "ignore": "Didn’t try to sign up? Just ignore this email - your account is safe."

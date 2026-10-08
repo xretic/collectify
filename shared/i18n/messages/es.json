@@ -1112,7 +1112,7 @@
             "subject": "Restablece tu contraseña de Collectify",
             "preheader": "Crea una contraseña nueva con un clic.",
             "heading": "Restablece tu contraseña",
-            "intro": "Alguien (esperamos que tú) ha pedido restablecer la contraseña de tu cuenta de Collectify. Pulsa el botón para elegir una nueva.",
+            "intro": "Alguien ha pedido restablecer la contraseña de tu cuenta de Collectify. Pulsa el botón para elegir una nueva.",
             "button": "Crear contraseña nueva",
             "expires": "El enlace funciona una sola vez y caduca en {hours, plural, one {# hora} other {# horas}}.",
             "ignore": "¿No lo has pedido tú? Ignora este correo: tu contraseña no cambiará."
@@ -1130,7 +1130,7 @@
             "subject": "Ya tienes una cuenta en Collectify",
             "preheader": "Alguien intentó registrarse con este correo.",
             "heading": "Ya tienes una cuenta",
-            "intro": "Alguien (esperamos que tú) acaba de intentar crear una cuenta nueva en Collectify con esta dirección de correo. Ya pertenece a tu cuenta, así que no se ha cambiado nada.",
+            "intro": "Alguien acaba de intentar crear una cuenta nueva en Collectify con esta dirección de correo. Ya pertenece a tu cuenta, así que no se ha cambiado nada.",
             "button": "Iniciar sesión",
             "forgot": "¿Olvidaste tu contraseña? Puedes crear una nueva desde la página de inicio de sesión.",
             "ignore": "¿No intentaste registrarte? Ignora este correo - tu cuenta está a salvo."

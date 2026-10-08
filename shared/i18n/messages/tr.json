@@ -1112,7 +1112,7 @@
             "subject": "Collectify şifrenizi sıfırlayın",
             "preheader": "Tek tıkla yeni şifre belirleyin.",
             "heading": "Şifrenizi sıfırlayın",
-            "intro": "Birisi (umarız sizsiniz) Collectify hesabınızın şifresini sıfırlamak istedi. Yeni bir şifre seçmek için düğmeye tıklayın.",
+            "intro": "Birisi Collectify hesabınızın şifresini sıfırlamak istedi. Yeni bir şifre seçmek için düğmeye tıklayın.",
             "button": "Yeni şifre belirle",
             "expires": "Bağlantı yalnızca bir kez çalışır ve {hours} saat içinde geçersiz olur.",
             "ignore": "Bunu siz istemediyseniz bu e-postayı yok sayın - şifreniz değişmez."
@@ -1130,7 +1130,7 @@
             "subject": "Zaten bir Collectify hesabınız var",
             "preheader": "Biri bu e-postayla kayıt olmaya çalıştı.",
             "heading": "Zaten bir hesabınız var",
-            "intro": "Biri (umarız sizsiniz) az önce bu e-posta adresiyle yeni bir Collectify hesabı oluşturmaya çalıştı. Bu adres zaten hesabınıza ait olduğundan hiçbir şey değiştirilmedi.",
+            "intro": "Biri az önce bu e-posta adresiyle yeni bir Collectify hesabı oluşturmaya çalıştı. Bu adres zaten hesabınıza ait olduğundan hiçbir şey değiştirilmedi.",
             "button": "Giriş yap",
             "forgot": "Şifrenizi mi unuttunuz? Giriş sayfasından yeni bir şifre belirleyebilirsiniz.",
             "ignore": "Kayıt olmaya çalışmadıysanız bu e-postayı yok sayın - hesabınız güvende."

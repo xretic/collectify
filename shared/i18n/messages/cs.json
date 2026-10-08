@@ -1112,7 +1112,7 @@
             "subject": "Obnovení hesla do Collectify",
             "preheader": "Nastavte si nové heslo jedním kliknutím.",
             "heading": "Obnovení hesla",
-            "intro": "Někdo (snad vy) požádal o obnovení hesla k vašemu účtu Collectify. Klikněte na tlačítko a zvolte nové.",
+            "intro": "Někdo požádal o obnovení hesla k vašemu účtu Collectify. Klikněte na tlačítko a zvolte nové.",
             "button": "Nastavit nové heslo",
             "expires": "Odkaz funguje jednou a platí {hours, plural, one {# hodinu} few {# hodiny} many {# hodiny} other {# hodin}}.",
             "ignore": "Nežádali jste o to? E-mail ignorujte - heslo zůstane stejné."
@@ -1130,7 +1130,7 @@
             "subject": "Účet na Collectify už máte",
             "preheader": "Někdo se pokusil zaregistrovat s tímto e-mailem.",
             "heading": "Účet už máte",
-            "intro": "Někdo (snad vy) se právě pokusil vytvořit nový účet na Collectify s touto e-mailovou adresou. Ta už patří vašemu účtu, takže se nic nezměnilo.",
+            "intro": "Někdo se právě pokusil vytvořit nový účet na Collectify s touto e-mailovou adresou. Ta už patří vašemu účtu, takže se nic nezměnilo.",
             "button": "Přihlásit se",
             "forgot": "Zapomněli jste heslo? Nové si nastavíte na přihlašovací stránce.",
             "ignore": "Neregistrovali jste se? E-mail ignorujte - váš účet je v bezpečí."

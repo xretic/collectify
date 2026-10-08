@@ -1112,7 +1112,7 @@
             "subject": "Herstel je Collectify-wachtwoord",
             "preheader": "Stel met één klik een nieuw wachtwoord in.",
             "heading": "Herstel je wachtwoord",
-            "intro": "Iemand (hopelijk jij) wil het wachtwoord van je Collectify-account herstellen. Klik op de knop om een nieuw te kiezen.",
+            "intro": "Iemand wil het wachtwoord van je Collectify-account herstellen. Klik op de knop om een nieuw te kiezen.",
             "button": "Nieuw wachtwoord instellen",
             "expires": "De link werkt één keer en verloopt over {hours, plural, one {# uur} other {# uur}}.",
             "ignore": "Niet aangevraagd? Negeer deze e-mail gewoon - je wachtwoord blijft hetzelfde."
@@ -1130,7 +1130,7 @@
             "subject": "Je hebt al een Collectify-account",
             "preheader": "Iemand probeerde zich aan te melden met dit e-mailadres.",
             "heading": "Je hebt al een account",
-            "intro": "Iemand (hopelijk jij) probeerde zojuist een nieuw Collectify-account aan te maken met dit e-mailadres. Het hoort al bij jouw account, dus er is niets veranderd.",
+            "intro": "Iemand probeerde zojuist een nieuw Collectify-account aan te maken met dit e-mailadres. Het hoort al bij jouw account, dus er is niets veranderd.",
             "button": "Inloggen",
             "forgot": "Wachtwoord vergeten? Op de inlogpagina kun je een nieuw instellen.",
             "ignore": "Probeerde je je niet aan te melden? Negeer deze e-mail gewoon - je account is veilig."

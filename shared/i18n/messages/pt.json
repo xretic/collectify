@@ -1112,7 +1112,7 @@
             "subject": "Reponha a sua palavra-passe do Collectify",
             "preheader": "Defina uma nova palavra-passe num clique.",
             "heading": "Repor a palavra-passe",
-            "intro": "Alguém (esperamos que tenha sido você) pediu para repor a palavra-passe da sua conta Collectify. Clique no botão para escolher uma nova.",
+            "intro": "Alguém pediu para repor a palavra-passe da sua conta Collectify. Clique no botão para escolher uma nova.",
             "button": "Definir nova palavra-passe",
             "expires": "A ligação funciona uma vez e expira em {hours, plural, one {# hora} other {# horas}}.",
             "ignore": "Não fez este pedido? Ignore este e-mail - a palavra-passe mantém-se."
@@ -1130,7 +1130,7 @@
             "subject": "Já tem uma conta Collectify",
             "preheader": "Alguém tentou registar-se com este e-mail.",
             "heading": "Já tem uma conta",
-            "intro": "Alguém (esperamos que tenha sido você) acabou de tentar criar uma nova conta Collectify com este endereço de e-mail. Ele já pertence à sua conta, por isso nada foi alterado.",
+            "intro": "Alguém acabou de tentar criar uma nova conta Collectify com este endereço de e-mail. Ele já pertence à sua conta, por isso nada foi alterado.",
             "button": "Iniciar sessão",
             "forgot": "Esqueceu-se da palavra-passe? Pode definir uma nova na página de início de sessão.",
             "ignore": "Não tentou registar-se? Ignore este e-mail - a sua conta está segura."

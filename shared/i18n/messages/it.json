@@ -1112,7 +1112,7 @@
             "subject": "Reimposta la tua password di Collectify",
             "preheader": "Una nuova password con un clic.",
             "heading": "Reimposta la password",
-            "intro": "Qualcuno (speriamo tu) ha chiesto di reimpostare la password del tuo account Collectify. Clicca il pulsante per sceglierne una nuova.",
+            "intro": "Qualcuno ha chiesto di reimpostare la password del tuo account Collectify. Clicca il pulsante per sceglierne una nuova.",
             "button": "Imposta una nuova password",
             "expires": "Il link funziona una sola volta e scade tra {hours, plural, one {# ora} other {# ore}}.",
             "ignore": "Non l’hai richiesto tu? Ignora questa email: la password resta invariata."
@@ -1130,7 +1130,7 @@
             "subject": "Hai già un account Collectify",
             "preheader": "Qualcuno ha provato a registrarsi con questa email.",
             "heading": "Hai già un account",
-            "intro": "Qualcuno (speriamo tu) ha appena provato a creare un nuovo account Collectify con questo indirizzo email. Appartiene già al tuo account, quindi non è stato modificato nulla.",
+            "intro": "Qualcuno ha appena provato a creare un nuovo account Collectify con questo indirizzo email. Appartiene già al tuo account, quindi non è stato modificato nulla.",
             "button": "Accedi",
             "forgot": "Hai dimenticato la password? Puoi impostarne una nuova dalla pagina di accesso.",
             "ignore": "Non hai provato a registrarti? Ignora questa email - il tuo account è al sicuro."
