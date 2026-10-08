@@ -7,6 +7,7 @@ import { isProduction, serverEnv } from '@/shared/server/env';
 import { generateUserId } from '@/entities/user/server/generateUserId';
 import { getActiveSanction } from '@/entities/sanction/server/sanctions';
 import { createSession, setSessionCookie } from '@/entities/session/server/session';
+import { dropRevokedConnections } from '@/shared/server/realtime';
 import { usernameSchema } from '@/shared/lib/validation/schemas';
 import { isLocale } from '@/shared/config/i18n';
 import { resolveLocale } from '@/shared/i18n/request';
@@ -186,14 +187,20 @@ async function fetchGithubProfile(req: NextRequest, code: string): Promise<OAuth
     };
 }
 
-function usernameCandidate(login: string, fallback: number) {
+/**
+ * Usernames to try, in order: the provider login when it is a valid username,
+ * then `user_<id in base 36>` (at most 11 characters, unique like the id), then
+ * a random one in case someone already picked that name.
+ */
+function usernameCandidates(login: string, id: number) {
     const base = login
         .toLowerCase()
         .replace(/[^a-z0-9_.]/g, '')
         .slice(0, USERNAME_MAX_LENGTH);
-    return usernameSchema.safeParse(base).success
-        ? base
-        : `user${fallback}`.slice(0, USERNAME_MAX_LENGTH);
+    const fromId = `user_${id.toString(36)}`;
+    const random = `u_${randomBytes(5).toString('hex')}`;
+
+    return [...(usernameSchema.safeParse(base).success ? [base] : []), fromId, random];
 }
 
 /** Returns the account id and whether it was just created (new accounts get onboarding). */
@@ -217,15 +224,32 @@ async function findOrCreateUser(
         });
 
         if (byEmail) {
-            await db.user.update({
-                where: { id: byEmail.id },
-                data: {
-                    [providerField]: profile.providerId,
-                    avatarUrl: byEmail.avatarUrl || profile.avatarUrl,
-                    // The provider vouched for the address.
-                    emailVerifiedAt: byEmail.emailVerifiedAt ?? new Date(),
-                },
-            });
+            // An unconfirmed account may have been registered by someone else with
+            // this address (pre-account takeover): the provider proves the address
+            // belongs to the person signing in now, so whoever set the password
+            // and any session they hold lose access.
+            const unconfirmed = byEmail.emailVerifiedAt === null;
+
+            await db.$transaction([
+                db.user.update({
+                    where: { id: byEmail.id },
+                    data: {
+                        [providerField]: profile.providerId,
+                        avatarUrl: byEmail.avatarUrl || profile.avatarUrl,
+                        // The provider vouched for the address.
+                        emailVerifiedAt: byEmail.emailVerifiedAt ?? new Date(),
+                        ...(unconfirmed ? { passwordHash: null } : {}),
+                    },
+                }),
+                ...(unconfirmed
+                    ? [
+                          db.session.deleteMany({ where: { userId: byEmail.id } }),
+                          db.emailToken.deleteMany({ where: { userId: byEmail.id } }),
+                      ]
+                    : []),
+            ]);
+            if (unconfirmed) await dropRevokedConnections([byEmail.id]);
+
             return { id: byEmail.id, created: false, locale: byEmail.locale };
         }
     }
@@ -247,13 +271,14 @@ async function findOrCreateUser(
         locale,
     };
 
-    try {
-        await db.user.create({ data: { ...data, username: usernameCandidate(profile.login, id) } });
-    } catch (error) {
-        if (!isUniqueViolation(error)) throw error;
-        await db.user.create({
-            data: { ...data, username: `user${id}`.slice(0, USERNAME_MAX_LENGTH) },
-        });
+    const usernames = usernameCandidates(profile.login, id);
+    for (const [index, username] of usernames.entries()) {
+        try {
+            await db.user.create({ data: { ...data, username } });
+            break;
+        } catch (error) {
+            if (!isUniqueViolation(error) || index === usernames.length - 1) throw error;
+        }
     }
 
     return { id, created: true, locale };
